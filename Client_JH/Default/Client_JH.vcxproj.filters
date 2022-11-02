@@ -27,6 +27,9 @@
     <ClInclude Include="..\public\MainApp.h">
       <Filter>00. MainApp</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Client_Defines.h">
+      <Filter>99. Defines</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">

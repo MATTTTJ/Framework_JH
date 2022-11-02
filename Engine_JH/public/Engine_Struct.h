@@ -1,8 +1,13 @@
 #pragma once
+namespace Engine
+{
+	typedef  struct tagGraphicDesc
+	{
+		enum WINMODE { WINMODE_FULL, WINMODE_WIN, WINMODE_END};
 
-
-#ifdef ENGINE_JH_EXPORTS
-#define ENGINE_DLL _declspec(dllexport)
-#else
-#define ENGINE_DLL _declspec(dllimport)
-#endif
+		WINMODE			eWindowMode;
+		unsigned int	iViewportSizeX;
+		unsigned int	iViewportSizeY;
+		HWND			hWnd;
+	}GRAPHIC_DESC;
+}

@@ -1,27 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="00. GameInstance">
+    <Filter Include="00. System">
+      <UniqueIdentifier>{28274d85-3c10-4084-ab93-e4aba29701b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility">
+      <UniqueIdentifier>{429c5484-9941-4940-87c4-fbb81f16a93d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\00. GameInstance">
       <UniqueIdentifier>{edcb1ff2-95b8-40c2-bd80-3b9a3fb45d24}</UniqueIdentifier>
     </Filter>
-    <Filter Include="98. SuperClass">
+    <Filter Include="01. Utility\98. SuperClass">
       <UniqueIdentifier>{6f4ffb8a-87c5-44ce-9e23-ac2661249042}</UniqueIdentifier>
     </Filter>
     <Filter Include="99.Defines">
       <UniqueIdentifier>{a05f2d1f-a241-46b2-89ce-213a1de705d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\Graphic">
+      <UniqueIdentifier>{58423790-3cd2-4b04-ad20-22ab046de1d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\Input">
+      <UniqueIdentifier>{1f63a2ce-4d0f-4ec5-bcc3-a64251eed7dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
-      <Filter>98. SuperClass</Filter>
+      <Filter>01. Utility\98. SuperClass</Filter>
     </ClInclude>
-    <ClInclude Include="Engine_Macro.h">
+    <ClInclude Include="..\public\Engine_Defines.h">
       <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Function.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Macro.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Struct.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Typedef.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Utility.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Input_Device.h">
+      <Filter>00. System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Graphic_Device.h">
+      <Filter>00. System\Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\GameInstance.h">
+      <Filter>01. Utility\00. GameInstance</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
-      <Filter>98. SuperClass</Filter>
+      <Filter>01. Utility\98. SuperClass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Input_Device.cpp">
+      <Filter>00. System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Graphic_Device.cpp">
+      <Filter>00. System\Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GameInstance.cpp">
+      <Filter>01. Utility\00. GameInstance</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

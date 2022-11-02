@@ -1,11 +1,24 @@
 #pragma once
-#include "Engine_Macro.h"
+#include "Engine_Defines.h"
 
+
+BEGIN(Engine)
 class ENGINE_DLL CBase abstract
-
 {
-public:
+protected:
 	CBase();
-	~CBase();
-};
+	virtual ~CBase() = default;
 
+public:
+	unsigned long	AddRef();
+	unsigned long	Release();
+
+private:
+	unsigned long	m_dwRefCnt;
+
+public:
+	virtual void Free() = 0; // PURE
+
+
+};
+END

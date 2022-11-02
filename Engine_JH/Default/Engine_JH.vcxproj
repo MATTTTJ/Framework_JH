@@ -113,6 +113,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalDependencies>d3d11.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>cd /d $(SolutionDir)
@@ -155,6 +156,7 @@ call Copy.bat</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalDependencies>d3d11.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>cd /d $(SolutionDir)
@@ -163,10 +165,21 @@ call Copy.bat</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h" />
-    <ClInclude Include="Engine_Macro.h" />
+    <ClInclude Include="..\public\Engine_Defines.h" />
+    <ClInclude Include="..\public\Engine_Function.h" />
+    <ClInclude Include="..\public\Engine_Macro.h" />
+    <ClInclude Include="..\public\Engine_Struct.h" />
+    <ClInclude Include="..\public\Engine_Typedef.h" />
+    <ClInclude Include="..\public\Engine_Utility.h" />
+    <ClInclude Include="..\public\GameInstance.h" />
+    <ClInclude Include="..\public\Graphic_Device.h" />
+    <ClInclude Include="..\public\Input_Device.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp" />
+    <ClCompile Include="..\private\GameInstance.cpp" />
+    <ClCompile Include="..\private\Graphic_Device.cpp" />
+    <ClCompile Include="..\private\Input_Device.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
