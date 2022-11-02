@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00. MainApp">
+      <UniqueIdentifier>{923ede66-604c-489c-a726-9aedc9ee0c23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Default">
+      <UniqueIdentifier>{b6e3488f-aaca-4d7f-914d-b7822bfef9f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Defines">
+      <UniqueIdentifier>{5bd21b18-5ada-4d45-825e-37528605eb57}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Client_JH.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MainApp.h">
+      <Filter>00. MainApp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Client_JH.cpp">
+      <Filter>98. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>98. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MainApp.cpp">
+      <Filter>00. MainApp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Client_JH.ico">
+      <Filter>98. Default</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>98. Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Client_JH.rc">
+      <Filter>98. Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt">
+      <Filter>98. Default</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

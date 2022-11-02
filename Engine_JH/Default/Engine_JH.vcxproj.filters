@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00. GameInstance">
+      <UniqueIdentifier>{edcb1ff2-95b8-40c2-bd80-3b9a3fb45d24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. SuperClass">
+      <UniqueIdentifier>{6f4ffb8a-87c5-44ce-9e23-ac2661249042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Defines">
+      <UniqueIdentifier>{a05f2d1f-a241-46b2-89ce-213a1de705d4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\public\Base.h">
+      <Filter>98. SuperClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine_Macro.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\private\Base.cpp">
+      <Filter>98. SuperClass</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
