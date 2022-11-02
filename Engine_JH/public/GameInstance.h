@@ -10,7 +10,7 @@ BEGIN(Engine)
 
 class ENGINE_DLL CGameInstance final : public CBase
 {
-	DECLARE_SINGLETON(CGameInstance);
+	DECLARE_SINGLETON(CGameInstance)
 private:
 	CGameInstance();
 	virtual ~CGameInstance() = default;

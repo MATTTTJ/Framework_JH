@@ -105,14 +105,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../public/;../../Reference/Headers/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public;../../Reference/Headers</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalLibraryDirectories>../../Reference/Librarys;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine_JH.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Reference/Librarys</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Engine_JH.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,7 +141,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../public/;../../Reference/Headers/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public;../../Reference/Headers</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,8 +149,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalLibraryDirectories>../../Reference/Librarys;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine_JH.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Reference/Librarys</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Engine_JH.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
