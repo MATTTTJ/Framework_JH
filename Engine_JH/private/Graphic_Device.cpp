@@ -106,7 +106,7 @@ HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMo
 	SwapChain.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
 	SwapChain.SampleDesc.Quality = 0;
-	SwapChain.SampleDesc.Count = 0;
+	SwapChain.SampleDesc.Count = 1;
 	SwapChain.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	SwapChain.BufferCount = 1;
 	SwapChain.OutputWindow = hWnd;

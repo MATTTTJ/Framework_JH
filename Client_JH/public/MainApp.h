@@ -1,5 +1,4 @@
 #pragma once
-#include "Client_Defines.h"
 #include "Base.h"
 
 BEGIN(Engine)
@@ -20,11 +19,15 @@ public:
 	HRESULT	Render();
 
 private:
-	CGameInstance*	m_pGameInstance = nullptr;
+	CGameInstance*			m_pGameInstance = nullptr;
 
 private:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pContext = nullptr;
+
+
+private:
+	HRESULT	Start_Level(LEVEL eLevelID);
 
 public:
 	static CMainApp*	Create();

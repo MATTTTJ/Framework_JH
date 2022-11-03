@@ -1,0 +1,49 @@
+#pragma once
+#include "Base.h"
+
+BEGIN(Client)
+
+class CLoader final : public CBase
+{
+private:
+	CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual ~CLoader() = default;
+
+public:
+	LEVEL	Get_NextLevelID() const
+	{
+		return m_eNextLevelID;
+	}
+
+	const _tchar*	Get_LoadingText() const
+	{
+		return m_szLoadingText;
+	}
+
+	_bool IsFinished() const
+	{
+		return m_bIsLoadingFinished;
+	}
+
+public:
+	HRESULT	Initialize(LEVEL eNextLevelID);
+	HRESULT	Loading_For_Logo();
+	HRESULT	Loading_For_GamePlay();
+
+private:
+	ID3D11Device*			m_pDevice = nullptr;
+	ID3D11DeviceContext*	m_pContext = nullptr;
+
+private:
+	HANDLE		m_hTread;
+	LEVEL		m_eNextLevelID = LEVEL_END;
+	_bool		m_bIsLoadingFinished = false;
+	_tchar		m_szLoadingText[MAX_PATH] = TEXT("");
+
+public:
+	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID);
+	virtual void Free() override;
+};
+
+END
+
