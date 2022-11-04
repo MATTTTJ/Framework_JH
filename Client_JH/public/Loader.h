@@ -20,11 +20,15 @@ public:
 		return m_szLoadingText;
 	}
 
-	_bool IsFinished() const
+	_bool	IsFinished() const
 	{
 		return m_bIsLoadingFinished;
 	}
 
+	CRITICAL_SECTION	Get_Critical_Section() const
+	{
+		return m_Critical_Section;
+	}
 public:
 	HRESULT	Initialize(LEVEL eNextLevelID);
 	HRESULT	Loading_For_Logo();
@@ -33,9 +37,9 @@ public:
 private:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pContext = nullptr;
-
+	CRITICAL_SECTION		m_Critical_Section;
 private:
-	HANDLE		m_hTread;
+	HANDLE		m_hThread;
 	LEVEL		m_eNextLevelID = LEVEL_END;
 	_bool		m_bIsLoadingFinished = false;
 	_tchar		m_szLoadingText[MAX_PATH] = TEXT("");
