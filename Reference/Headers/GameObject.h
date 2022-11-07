@@ -3,7 +3,7 @@
 
 BEGIN(Engine)
 
-class CGameObject :	public CBase
+class ENGINE_DLL CGameObject abstract :	public CBase
 {
 protected:
 	CGameObject(ID3D11Device*	pDevice, ID3D11DeviceContext* pContext);
@@ -18,8 +18,8 @@ public:
 	virtual HRESULT Render();
 
 protected:
-	ID3D11Device*	m_pDevice = nullptr;
-	ID3D11DeviceContext* m_pContext = nullptr;
+	ID3D11Device*			m_pDevice = nullptr;
+	ID3D11DeviceContext*	m_pContext = nullptr;
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

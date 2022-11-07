@@ -23,7 +23,7 @@ HRESULT CMainApp::Initialize()
 	GraphicDesc.iViewportSizeY = g_iWinSizeY;
 	GraphicDesc.eWindowMode = GRAPHIC_DESC::WINMODE_WIN;
 
-	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst, GraphicDesc, &m_pDevice, &m_pContext)))
+	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst, LEVEL_END, GraphicDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 
 	if (FAILED(Start_Level(LEVEL_LOGO)))
@@ -42,7 +42,7 @@ void CMainApp::Tick(_double TimeDelta)
 
 HRESULT CMainApp::Render()
 {
-	if (m_pGameInstance == nullptr)
+	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
 	m_pGameInstance->Clear_Graphic_Device(&_float4(0.0f, 0.f, 1.f, 1.f));
@@ -60,7 +60,7 @@ HRESULT CMainApp::Start_Level(LEVEL eLevelID)
 		m_pGameInstance == nullptr)
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Open_Level(CLevel_Loading::Create(m_pDevice, m_pContext, eLevelID))))
+	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING,CLevel_Loading::Create(m_pDevice, m_pContext, eLevelID))))
 		return E_FAIL;
 
 	return S_OK;
@@ -68,7 +68,6 @@ HRESULT CMainApp::Start_Level(LEVEL eLevelID)
 
 CMainApp* CMainApp::Create()
 {
-
 	CMainApp*		pInstance = new CMainApp;
 
 	if (FAILED(pInstance->Initialize()))

@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Loader.h"
 
+#include <GameInstance.h>
+
+#include "BackGround.h"
+
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:m_pDevice(pDevice),
@@ -40,7 +44,7 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelID)
 	m_hThread = (HANDLE)_beginthreadex(nullptr, 0,
 		LoadingThread, this, 0, nullptr);
 
-	if (m_hThread == 0)
+	if (0 == m_hThread)
 		return E_FAIL;
 
 	return S_OK;
@@ -48,23 +52,49 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelID)
 
 HRESULT CLoader::Loading_For_Logo()
 {
-	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다. "));
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
 
-	lstrcpy(m_szLoadingText, TEXT("버퍼를 로딩중입니다. "));
-
-	lstrcpy(m_szLoadingText, TEXT("모델을 로딩중입니다. "));
-
-	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다. "));
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"),
+		CBackGround::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩끝. "));
 
 	m_bIsLoadingFinished = true;
+
+	Safe_Release(pGameInstance);
+
 
 	return S_OK;
 }
 
 HRESULT CLoader::Loading_For_GamePlay()
 {
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다. "));
+
+
+	lstrcpy(m_szLoadingText, TEXT("버퍼를 로딩중입니다. "));
+
+
+	lstrcpy(m_szLoadingText, TEXT("모델을 로딩중입니다. "));
+
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다. "));
+
+
+	lstrcpy(m_szLoadingText, TEXT("객체원형을 생성중입니다. "));
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩끝. "));
+
+	m_bIsLoadingFinished = true;
+
+	Safe_Release(pGameInstance);
+
 	return S_OK;
 }
 

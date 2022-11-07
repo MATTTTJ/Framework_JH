@@ -38,6 +38,16 @@ namespace Engine
 	}
 
 	template<typename T>
+	void	Safe_Delete_Array(T& pPointer)
+	{
+		if (pPointer != nullptr)
+		{
+			delete [] pPointer;
+			pPointer = nullptr;
+		}
+	}
+
+	template<typename T>
 	unsigned long	Safe_AddRef(T& pInstance)
 	{
 		unsigned long dwRefCnt = 0;

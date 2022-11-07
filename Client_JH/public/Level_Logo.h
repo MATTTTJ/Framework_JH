@@ -11,9 +11,13 @@ private:
 
 public:
 	virtual HRESULT Initialize() override;
-	virtual void Tick(_double TimeDelta) override;
-	virtual void Late_Tick(_double TimeDelta) override;
+	virtual void	Tick(_double TimeDelta) override;
+	virtual void	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
+
+
+private:
+	HRESULT			Ready_Layer_BackGround(const _tchar* pLayerTag);
 
 public:
 	static CLevel_Logo*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

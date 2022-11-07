@@ -16,8 +16,9 @@ private:
 	virtual ~CGameInstance() = default;
 
 public:
-	HRESULT		Initialize_Engine(HINSTANCE hInst, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut);
+	HRESULT		Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut);
 	void		Tick_Engine(_double TimeDelta);
+	void		Clear_Level(_uint iLevelIndex);
 
 public:
 	HRESULT		Clear_Graphic_Device(const _float4* pColor);
@@ -29,13 +30,19 @@ public:
 	_long		Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMoveState);
 
 public:
-	HRESULT		Open_Level(class CLevel* pNewLevel);
+	HRESULT		Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	HRESULT		Render_Level();
+
+public:
+	HRESULT		Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
+	HRESULT		Clone_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pPrototypeTag, void* pArg = nullptr);
+
 
 private:
 	class CGraphic_Device*			m_pGraphic_Device = nullptr;
 	class CInput_Device*			m_pInput_Device = nullptr;
 	class CLevel_Manager*			m_pLevel_Manager = nullptr;
+	class CObject_Manager*			m_pObject_Manager = nullptr;
 public:
 	static void Release_Engine();
 

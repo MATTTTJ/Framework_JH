@@ -77,7 +77,7 @@ HRESULT CGraphic_Device::Clear_DepthStencil_View()
 
 HRESULT CGraphic_Device::Present()
 {
-	if (m_pSwapChain == nullptr)
+	if (nullptr == m_pSwapChain)
 		return E_FAIL;
 
 	return m_pSwapChain->Present(0, 0);
@@ -125,7 +125,7 @@ HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMo
 
 HRESULT CGraphic_Device::Ready_BackBufferRenderTargetView()
 {
-	if (m_pDevice == nullptr)
+	if (nullptr == m_pDevice)
 		return E_FAIL;
 
 	ID3D11Texture2D*		pBackBufferTexture = nullptr;

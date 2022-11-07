@@ -29,12 +29,19 @@ void CLevel_Loading::Tick(_double TimeDelta)
 {
 	CLevel::Tick(TimeDelta);
 
+
+}
+
+void CLevel_Loading::Late_Tick(_double TimeDelta)
+{
+	CLevel::Late_Tick(TimeDelta);
+
 	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if(m_pLoader->IsFinished() == true)
+	if (m_pLoader->IsFinished() == true)
 	{
-		if(GetKeyState(VK_RETURN) & 0x8000)
+		if (GetKeyState(VK_RETURN) & 0x8000)
 		{
 			CLevel*		pLevel = nullptr;
 
@@ -51,17 +58,12 @@ void CLevel_Loading::Tick(_double TimeDelta)
 			if (pLevel == nullptr)
 				return;
 
-			if (FAILED(pGameInstance->Open_Level(pLevel)))
+			if (FAILED(pGameInstance->Open_Level(m_eNextLevelID, pLevel)))
 				return;
 		}
 	}
 
 	Safe_Release(pGameInstance);
-}
-
-void CLevel_Loading::Late_Tick(_double TimeDelta)
-{
-	CLevel::Late_Tick(TimeDelta);
 }
 
 HRESULT CLevel_Loading::Render()
