@@ -165,6 +165,7 @@ call Copy.bat</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h" />
+    <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\Engine_Defines.h" />
     <ClInclude Include="..\public\Engine_Function.h" />
     <ClInclude Include="..\public\Engine_Macro.h" />
@@ -179,9 +180,11 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\Level.h" />
     <ClInclude Include="..\public\Level_Manager.h" />
     <ClInclude Include="..\public\Object_Manager.h" />
+    <ClInclude Include="..\public\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp" />
+    <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\GameInstance.cpp" />
     <ClCompile Include="..\private\GameObject.cpp" />
     <ClCompile Include="..\private\Graphic_Device.cpp" />
@@ -190,6 +193,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\Level.cpp" />
     <ClCompile Include="..\private\Level_Manager.cpp" />
     <ClCompile Include="..\private\Object_Manager.cpp" />
+    <ClCompile Include="..\private\Renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

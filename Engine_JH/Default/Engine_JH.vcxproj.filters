@@ -37,6 +37,15 @@
     <Filter Include="01. Utility\02. GameObject\Manager\Layer">
       <UniqueIdentifier>{f84dc8a6-ed80-47af-92a7-237522243460}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Components">
+      <UniqueIdentifier>{fab5ae8b-8693-4055-b4a8-d36f11db2a18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Components\00. Manager">
+      <UniqueIdentifier>{827d97ae-2cc1-4050-b457-959d2e1c5cc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Components\01. Renderer">
+      <UniqueIdentifier>{da61f267-7a03-464c-8992-c608e4996c65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -69,20 +78,26 @@
     <ClInclude Include="..\public\GameInstance.h">
       <Filter>01. Utility\00. GameInstance</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Level.h">
-      <Filter>01. Utility\01. Level</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Level_Manager.h">
       <Filter>01. Utility\01. Level\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\GameObject.h">
-      <Filter>01. Utility\02. GameObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Layer.h">
       <Filter>01. Utility\02. GameObject\Manager\Layer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Object_Manager.h">
       <Filter>01. Utility\02. GameObject\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level.h">
+      <Filter>01. Utility\01. Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\GameObject.h">
+      <Filter>01. Utility\02. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Component.h">
+      <Filter>03. Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Renderer.h">
+      <Filter>03. Components\01. Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -98,20 +113,26 @@
     <ClCompile Include="..\private\GameInstance.cpp">
       <Filter>01. Utility\00. GameInstance</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Level.cpp">
-      <Filter>01. Utility\01. Level</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Level_Manager.cpp">
       <Filter>01. Utility\01. Level\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\GameObject.cpp">
-      <Filter>01. Utility\02. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Layer.cpp">
       <Filter>01. Utility\02. GameObject\Manager\Layer</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Object_Manager.cpp">
       <Filter>01. Utility\02. GameObject\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level.cpp">
+      <Filter>01. Utility\01. Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GameObject.cpp">
+      <Filter>01. Utility\02. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Component.cpp">
+      <Filter>03. Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Renderer.cpp">
+      <Filter>03. Components\01. Renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
