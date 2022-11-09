@@ -33,11 +33,11 @@ private:
 	typedef list<class CGameObject*>	RENDEROBJECTS;
 
 private:
-	HRESULT		Render_Priority();
-	HRESULT		Render_NonAlphaBlend();
-	HRESULT		Render_NonLight();
-	HRESULT		Render_AlphaBlend();
-	HRESULT		Render_UI();
+	HRESULT				Render_Priority();
+	HRESULT				Render_NonAlphaBlend();
+	HRESULT				Render_NonLight();
+	HRESULT				Render_AlphaBlend();
+	HRESULT				Render_UI();
 
 public:
 	static CRenderer*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -3,7 +3,7 @@
 
 BEGIN(Engine)
 
-class CComponent abstract : public CBase
+class ENGINE_DLL CComponent abstract : public CBase
 {
 protected:
 	CComponent(ID3D11Device* pDevice,ID3D11DeviceContext* pContext);
@@ -11,8 +11,8 @@ protected:
 	virtual ~CComponent() = default;
 
 public:
-	virtual HRESULT			Initialize_Prototype();
-	virtual HRESULT			Initialize_Clone(void* pArg);
+	virtual HRESULT				Initialize_Prototype();
+	virtual HRESULT				Initialize_Clone(void* pArg);
 
 
 protected:
@@ -21,9 +21,8 @@ protected:
 
 
 public:
-	virtual CComponent*		Clone(void* pArg = nullptr) = 0;
-	virtual void			Free() override;
-
+	virtual CComponent*			Clone(void* pArg = nullptr) = 0;
+	virtual void				Free() override;
 };
 
 END

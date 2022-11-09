@@ -68,9 +68,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				DispatchMessage(&msg);
 			}
 		}
-
-		pMainApp->Tick(0.0);
-		pMainApp->Render();
+		else
+		{
+			pMainApp->Tick(0.0);
+			pMainApp->Render();
+		}
 	}
 
 	Safe_Release(pMainApp);

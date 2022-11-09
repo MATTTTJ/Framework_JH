@@ -12,7 +12,9 @@ CGameInstance::CGameInstance()
 	, m_pInput_Device(CInput_Device::GetInstance())
 	, m_pLevel_Manager(CLevel_Manager::GetInstance())
 	, m_pObject_Manager(CObject_Manager::GetInstance())
+	, m_pComponent_Manager(CComponent_Manager::GetInstance())
 {
+	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pInput_Device);
@@ -23,7 +25,8 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst,_uint iNumLevels, const
 {
 	if (nullptr == m_pGraphic_Device || 
 		nullptr == m_pInput_Device || 
-		nullptr == m_pObject_Manager)
+		nullptr == m_pObject_Manager ||
+		nullptr == m_pComponent_Manager)
 		return E_FAIL;
 
 	/* 그래픽 디바이스 초기화. */
@@ -35,6 +38,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst,_uint iNumLevels, const
 		return E_FAIL;
 
 	if (FAILED(m_pObject_Manager->Reserve_Manager(iNumLevels)))
+		return E_FAIL;
+
+	if (FAILED(m_pComponent_Manager->Reserve_Manager(iNumLevels)))
 		return E_FAIL;
 
 	return S_OK;
@@ -143,11 +149,29 @@ HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const _tchar* pLayerT
 	return m_pObject_Manager->Clone_GameObject(iLevelIndex,pLayerTag, pPrototypeTag);
 }
 
+HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, CComponent* pPrptotype)
+{
+	if (nullptr == m_pComponent_Manager)
+		return E_FAIL;
+
+	return m_pComponent_Manager->Add_Prototype(iLevelIndex, pPrototypeTag, pPrptotype);
+}
+
+CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg)
+{
+	if (nullptr == m_pComponent_Manager)
+		return nullptr;
+
+	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance(); //가급적 제일 먼저하는게 좋다. 
 
 	CObject_Manager::GetInstance()->DestroyInstance();
+
+	CComponent_Manager::GetInstance()->DestroyInstance();
 
 	CLevel_Manager::GetInstance()->DestroyInstance();
 
@@ -158,6 +182,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pInput_Device);

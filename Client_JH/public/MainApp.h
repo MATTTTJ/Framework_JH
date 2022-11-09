@@ -2,6 +2,7 @@
 #include "Base.h"
 
 BEGIN(Engine)
+class CRenderer;
 class CGameInstance;
 END
 
@@ -20,6 +21,7 @@ public:
 
 private:
 	CGameInstance*			m_pGameInstance = nullptr;
+	CRenderer*				m_pRenderer = nullptr;
 
 private:
 	ID3D11Device*			m_pDevice = nullptr;
@@ -28,10 +30,12 @@ private:
 
 private:
 	HRESULT	Start_Level(LEVEL eLevelID);
+	HRESULT Ready_Prototype_Component();
+	HRESULT Ready_Prototype_GameObject();
 
 public:
 	static CMainApp*	Create();
-	virtual void Free() override;
+	virtual void		Free() override;
 };
 
 END

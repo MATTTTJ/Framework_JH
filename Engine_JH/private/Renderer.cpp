@@ -149,5 +149,5 @@ CComponent* CRenderer::Clone(void* pArg)
 
 void CRenderer::Free()
 {
-	CComponent::Free();
+	__super::Free();
 }

@@ -58,10 +58,10 @@ HRESULT CObject_Manager::Clone_GameObject(_uint iLevelIndex, const _tchar*  pLay
 
 	CLayer*				pLayer = Find_Layer(iLevelIndex,pLayerTag);
 
-	if (pLayer == nullptr)
+	if ( nullptr == pLayer)
 	{
 		pLayer = CLayer::Create();
-		if (pLayer == nullptr)
+		if (nullptr == pLayer)
 			return E_FAIL;
 	
 		if (FAILED(pLayer->Add_GameObject(pGameObject)))

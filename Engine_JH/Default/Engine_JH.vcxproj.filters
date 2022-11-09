@@ -99,6 +99,9 @@
     <ClInclude Include="..\public\Renderer.h">
       <Filter>03. Components\01. Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Component_Manager.h">
+      <Filter>03. Components\00. Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -133,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Renderer.cpp">
       <Filter>03. Components\01. Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Component_Manager.cpp">
+      <Filter>03. Components\00. Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
