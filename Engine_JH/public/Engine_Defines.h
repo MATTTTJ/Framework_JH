@@ -1,5 +1,9 @@
 #pragma once
 // #pragma comment(lib, "d3d11.lib")
+
+#pragma warning (disable : 4005)
+#pragma warning (disable : 4251)
+
 #include "d3d11.h"
 #define DIRECTINPUT_VERSION 0x0800
 

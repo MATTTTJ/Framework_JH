@@ -1,5 +1,7 @@
 #include "GameObject.h"
 
+#include "GameInstance.h"
+
 CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
 	, m_pContext(pContext)
@@ -37,6 +39,42 @@ void CGameObject::Late_Tick(_double TimeDelta)
 HRESULT CGameObject::Render()
 {
 	return S_OK;
+}
+
+HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag,
+	CComponent** ppOut, void* pArg)
+{
+	if (nullptr != Find_Component(pComponentTag))
+		return E_FAIL;
+
+	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CComponent*		pComponentInstance = pGameInstance->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
+
+	if (nullptr == pComponentInstance)
+		return E_FAIL;
+
+	m_Components.emplace(pPrototypeTag, pComponentInstance);
+
+	Safe_AddRef(pComponentInstance);
+
+	*ppOut = pComponentInstance;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+
+}
+
+CComponent* CGameObject::Find_Component(const _tchar* pComopnentTag)
+{
+	auto iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(pComopnentTag));
+
+		if (iter == m_Components.end())
+			return nullptr;
+
+	return iter->second;
 }
 
 void CGameObject::Free()

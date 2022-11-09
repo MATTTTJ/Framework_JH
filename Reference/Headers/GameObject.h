@@ -21,6 +21,14 @@ protected:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pContext = nullptr;
 
+protected:
+	/* 객체들이 사용해야 할 컴포넌트들을 보관한다.*/
+	map<const _tchar*, class CComponent*>		m_Components;
+
+protected:
+	HRESULT					Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
+	class CComponent*		Find_Component(const _tchar* pComopnentTag);
+
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;
 	virtual void Free() override;

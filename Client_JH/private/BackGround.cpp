@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "BackGround.h"
 
+#include <Component.h>
+
 CBackGround::CBackGround(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice,pContext)
 {
@@ -41,6 +43,15 @@ void CBackGround::Late_Tick(_double TimeDelta)
 HRESULT CBackGround::Render()
 {
 	if (FAILED(CGameObject::Render()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBackGround::SetUp_Component()
+{
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),TEXT("Com_Renderer"),
+		(CComponent**)&m_pRendererCom, m_pRendererCom)))
 		return E_FAIL;
 
 	return S_OK;

@@ -49,11 +49,10 @@ void CMainApp::Tick(_double TimeDelta)
 HRESULT CMainApp::Render()
 {
 	if (nullptr == m_pGameInstance ||
-		nullptr == m_pRenderer
-		)
+		nullptr == m_pRenderer)
 		return E_FAIL;
 
-	m_pGameInstance->Clear_Graphic_Device(&_float4(0.0f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Clear_Graphic_Device(&_float4(0.0f, 1.f, 1.f, 1.f));
 
 	m_pRenderer->Draw_RenderGroup();
 
@@ -80,13 +79,13 @@ HRESULT CMainApp::Ready_Prototype_Component()
 {
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
-
+	
 	/* For.Prototype_Component_Renderer */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
-		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	Safe_AddRef(m_pRenderer);
+	 if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
+	 	m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
+	 	return E_FAIL;
+	
+	 Safe_AddRef(m_pRenderer);
 
 	return S_OK;
 }
@@ -110,9 +109,10 @@ CMainApp* CMainApp::Create()
 
 void CMainApp::Free()
 {
+	Safe_Release(m_pGameInstance);
+	Safe_Release(m_pRenderer);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
-	Safe_Release(m_pGameInstance);
 
 	CGameInstance::Release_Engine();
 }

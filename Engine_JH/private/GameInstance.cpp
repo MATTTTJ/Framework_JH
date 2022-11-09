@@ -1,6 +1,6 @@
 #include "..\public\GameInstance.h"
 
-#include "GameObject.h"
+
 #include "Graphic_Device.h"
 #include "Level_Manager.h"
 #include "Object_Manager.h"
@@ -149,12 +149,12 @@ HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const _tchar* pLayerT
 	return m_pObject_Manager->Clone_GameObject(iLevelIndex,pLayerTag, pPrototypeTag);
 }
 
-HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, CComponent* pPrptotype)
+HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, CComponent* pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
 		return E_FAIL;
 
-	return m_pComponent_Manager->Add_Prototype(iLevelIndex, pPrototypeTag, pPrptotype);
+	return m_pComponent_Manager->Add_Prototype(iLevelIndex, pPrototypeTag, pPrototype);
 }
 
 CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg)

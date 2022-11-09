@@ -3,7 +3,7 @@
 
 BEGIN(Engine)
 
-class CRenderer final : public CComponent
+class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
 	enum RENDERGROUP
