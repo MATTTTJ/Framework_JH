@@ -46,6 +46,15 @@
     <Filter Include="03. Components\01. Renderer">
       <UniqueIdentifier>{da61f267-7a03-464c-8992-c608e4996c65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Components\02. VIBuffer">
+      <UniqueIdentifier>{aee879f3-7770-4e64-b23f-5596b5e2a3e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Components\03. Shader">
+      <UniqueIdentifier>{038d856d-1907-4ae2-a079-d0f283068a86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Components\02. VIBuffer\Rect">
+      <UniqueIdentifier>{8bea8e1c-6729-4b52-83d6-491a42af9248}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -102,6 +111,15 @@
     <ClInclude Include="..\public\Component_Manager.h">
       <Filter>03. Components\00. Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer.h">
+      <Filter>03. Components\02. VIBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Shader.h">
+      <Filter>03. Components\03. Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="VIBuffer_Rect.h">
+      <Filter>03. Components\02. VIBuffer\Rect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -139,6 +157,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Component_Manager.cpp">
       <Filter>03. Components\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer.cpp">
+      <Filter>03. Components\02. VIBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Shader.cpp">
+      <Filter>03. Components\03. Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="VIBuffer_Rect.cpp">
+      <Filter>03. Components\02. VIBuffer\Rect</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
