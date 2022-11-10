@@ -49,7 +49,7 @@ HRESULT CInput_Device::Ready_Input_Device(HINSTANCE hInst, HWND hWnd)
 void CInput_Device::Invalidate_Input_Device(void)
 {
 	m_pKeyBoard->GetDeviceState(256, m_byKeyState);
-	m_pMouse->GetDeviceState(sizeof(m_MouseState), &m_MouseState);
+	m_pMouse->GetDeviceState(sizeof m_MouseState, &m_MouseState);
 }
 
 void Engine::CInput_Device::Free(void)

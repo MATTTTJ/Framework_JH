@@ -27,7 +27,7 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const _tchar* pProt
 
 	if (nullptr != Find_Prototype(iLevelIndex, pPrototypeTag))
 	{
-		MSG_BOX("[Failed to Add_Prototype] \n Code : Duplicate source");
+		MSG_BOX("[Failed to Add Prototype] \n Code : Duplicate source");
 		return E_FAIL;
 	}
 

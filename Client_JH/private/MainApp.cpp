@@ -32,7 +32,7 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Prototype_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Start_Level(LEVEL_LOGO)))
+	if (FAILED(Start_Level(LEVEL_LOGO)))			// 무엇을 넣든 로딩을 거쳐서 가게 된다. 
 		return E_FAIL;
 
 	return S_OK;
