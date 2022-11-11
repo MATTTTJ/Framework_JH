@@ -117,7 +117,7 @@
     <ClInclude Include="..\public\Shader.h">
       <Filter>03. Components\03. Shader</Filter>
     </ClInclude>
-    <ClInclude Include="VIBuffer_Rect.h">
+    <ClInclude Include="..\public\VIBuffer_Rect.h">
       <Filter>03. Components\02. VIBuffer\Rect</Filter>
     </ClInclude>
   </ItemGroup>
@@ -164,7 +164,10 @@
     <ClCompile Include="..\private\Shader.cpp">
       <Filter>03. Components\03. Shader</Filter>
     </ClCompile>
-    <ClCompile Include="VIBuffer_Rect.cpp">
+    <ClCompile Include="Engine_Struct.cpp">
+      <Filter>99.Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Rect.cpp">
       <Filter>03. Components\02. VIBuffer\Rect</Filter>
     </ClCompile>
   </ItemGroup>

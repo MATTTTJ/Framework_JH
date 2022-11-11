@@ -9,7 +9,11 @@ CComponent::CComponent(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CComponent::CComponent(const CComponent& rhs)
+	: m_pDevice(rhs.m_pDevice)
+	, m_pContext(rhs.m_pContext)
 {
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pContext);
 }
 
 HRESULT CComponent::Initialize_Prototype()

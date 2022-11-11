@@ -4,7 +4,7 @@
 #include "Level_Loading.h"
 
 CMainApp::CMainApp()
-	:m_pGameInstance(CGameInstance::GetInstance())
+	: m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
 }
@@ -84,6 +84,16 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	 if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 	 	m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
 	 	return E_FAIL;
+
+	 /* For.Prototype_Component_VIBuffer_Rect */
+	 if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
+		 CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		 return E_FAIL;
+
+	 /* For.Prototype_Component_Shader_VtxTex */
+	 if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"),
+		 CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
+		 return E_FAIL;
 	
 	 Safe_AddRef(m_pRenderer);
 

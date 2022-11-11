@@ -7,22 +7,6 @@ CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 }
 
-HRESULT CRenderer::Initialize_Prototype()
-{
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CRenderer::Initialize_Clone(void* pArg)
-{
-	if (FAILED(__super::Initialize_Clone(pArg)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
 HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pGameObject)
 {
 	if (nullptr == pGameObject ||
@@ -51,6 +35,26 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 	return S_OK;
 }
+
+
+HRESULT CRenderer::Initialize_Prototype()
+{
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Initialize_Clone(void* pArg)
+{
+	if (FAILED(__super::Initialize_Clone(pArg)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+
+
 
 HRESULT CRenderer::Render_Priority()
 {
