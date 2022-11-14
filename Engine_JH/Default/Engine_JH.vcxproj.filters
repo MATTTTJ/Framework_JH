@@ -105,9 +105,6 @@
     <ClInclude Include="..\public\GameObject.h">
       <Filter>01. Utility\02. GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Component.h">
-      <Filter>03. Components</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Renderer.h">
       <Filter>03. Components\01. Renderer</Filter>
     </ClInclude>
@@ -123,7 +120,12 @@
     <ClInclude Include="..\public\VIBuffer_Rect.h">
       <Filter>03. Components\02. VIBuffer\Rect</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Transform.h" />
+    <ClInclude Include="..\public\Component.h">
+      <Filter>03. Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Transform.h">
+      <Filter>03. Components\04. Transform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -153,9 +155,6 @@
     <ClCompile Include="..\private\GameObject.cpp">
       <Filter>01. Utility\02. GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Component.cpp">
-      <Filter>03. Components</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Renderer.cpp">
       <Filter>03. Components\01. Renderer</Filter>
     </ClCompile>
@@ -174,6 +173,11 @@
     <ClCompile Include="..\private\VIBuffer_Rect.cpp">
       <Filter>03. Components\02. VIBuffer\Rect</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Transform.cpp" />
+    <ClCompile Include="..\private\Component.cpp">
+      <Filter>03. Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Transform.cpp">
+      <Filter>03. Components\04. Transform</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

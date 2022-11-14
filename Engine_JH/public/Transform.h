@@ -36,6 +36,15 @@ public:
 	virtual HRESULT			Initialize_Prototype();
 	virtual HRESULT			Initialize_Clone(void* pArg);
 
+public:
+	void Go_Straight(_double TimeDelta);
+	void Go_Backward(_double TimeDelta);
+	void Go_Left(_double TimeDelta);
+	void Go_Right(_double TimeDelta);
+
+	void Turn(_fvector vAxis, _double TimeDelta);
+	void Rotation(_fvector vAxis, _float fRadian);
+
 
 private:
 	_float4x4				m_WorldMatrix;
