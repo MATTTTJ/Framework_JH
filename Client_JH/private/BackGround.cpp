@@ -28,6 +28,23 @@ HRESULT CBackGround::Initialize_Clone(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	m_fSizeX = g_iWinSizeX;
+	m_fSizeY = g_iWinSizeY;
+
+	m_fX = m_fSizeX * 0.5f; // 중점
+	m_fY = m_fSizeY * 0.5f;
+
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
+
+	m_WorldMatrix._11 = m_fSizeX; // X 스케일
+	m_WorldMatrix._22 = m_fSizeY; // Y 스케일
+
+	m_WorldMatrix._41 = m_fX - g_iWinSizeX * 0.5f; // 왼쪽위로 맞추는 작업
+	m_WorldMatrix._42 = -m_fY + g_iWinSizeY * 0.5f;
+
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX,g_iWinSizeY, 0, 1.f));
+
 
 
 	return S_OK;
@@ -51,6 +68,9 @@ HRESULT CBackGround::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
+	if (FAILED(SetUp_ShaderResources()))
+		return E_FAIL;
+
 	m_pShaderCom->Begin(0);
 
 	m_pVIBufferCom->Render();
@@ -70,11 +90,22 @@ HRESULT CBackGround::SetUp_Components()
 		(CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"),
 		(CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBackGround::SetUp_ShaderResources()
+{
+	if (nullptr == m_pShaderCom)
+		return E_FAIL;
+
+	m_pShaderCom->Set_Matrix("g_WorldMatrix", &m_WorldMatrix);
+	m_pShaderCom->Set_Matrix("g_ViewMatrix", &m_ViewMatrix);
+	m_pShaderCom->Set_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
 	return S_OK;
 }

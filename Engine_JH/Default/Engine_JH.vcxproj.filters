@@ -55,6 +55,9 @@
     <Filter Include="03. Components\02. VIBuffer\Rect">
       <UniqueIdentifier>{8bea8e1c-6729-4b52-83d6-491a42af9248}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Components\04. Transform">
+      <UniqueIdentifier>{361c9ea3-dba3-4759-8087-2421a6d287de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -120,6 +123,7 @@
     <ClInclude Include="..\public\VIBuffer_Rect.h">
       <Filter>03. Components\02. VIBuffer\Rect</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -170,5 +174,6 @@
     <ClCompile Include="..\private\VIBuffer_Rect.cpp">
       <Filter>03. Components\02. VIBuffer\Rect</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Transform.cpp" />
   </ItemGroup>
 </Project>

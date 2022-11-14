@@ -82,6 +82,35 @@ HRESULT CShader::Begin(_uint iPassIndex)
 	return S_OK;
 }
 
+HRESULT CShader::Set_RawValue(const char* pConstantName, const void* pData, _uint iLength)
+{
+	if (nullptr == m_pEffect)
+		return E_FAIL;
+
+	ID3DX11EffectVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName);
+
+	if (nullptr == pVariable)
+		return E_FAIL;
+
+	// ByOffset : 건내주는 데이터 몇번째에서 넘겨줄건지, 보통은 0
+	return pVariable->SetRawValue(pData, 0, iLength);
+}
+
+HRESULT CShader::Set_Matrix(const char* pConstantName, const _float4x4* pMatrix)
+{
+	if (nullptr == m_pEffect)
+		return E_FAIL;
+
+	//AsMatrix() : 넘겨주고자 하는 행렬을 전치해주는 함수
+	ID3DX11EffectMatrixVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName)->AsMatrix();
+
+	if (nullptr == pVariable)
+		return E_FAIL;
+
+	// MatrixVariable함수는 float 타입만 받기 때문에 캐스팅 해준다. 
+	return pVariable->SetMatrix((_float*)pMatrix);
+}
+
 CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
 {
 	CShader*		pInstance = new CShader(pDevice, pContext);

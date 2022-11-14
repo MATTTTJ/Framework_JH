@@ -19,6 +19,9 @@ public:
 public:
 	HRESULT Begin(_uint iPassIndex);
 
+	HRESULT	Set_RawValue(const char* pConstantName, const void* pData, _uint iLength);
+	HRESULT	Set_Matrix(const char* pConstantName, const _float4x4* pMatrix);
+
 private:
 	ID3DX11Effect*				m_pEffect = nullptr;
 	vector<ID3D11InputLayout*>	m_InputLayouts;

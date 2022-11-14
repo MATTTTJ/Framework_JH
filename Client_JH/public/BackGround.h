@@ -31,7 +31,15 @@ private:
 	CVIBuffer_Rect*		m_pVIBufferCom	= nullptr;
 
 private:
+	_float4x4			m_WorldMatrix;
+	_float4x4			m_ViewMatrix;
+	_float4x4			m_ProjMatrix;
+
+	_float				m_fX, m_fY, m_fSizeX, m_fSizeY;
+
+private:
 	HRESULT			SetUp_Components();
+	HRESULT			SetUp_ShaderResources();
 
 public:
 	static CBackGround*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
