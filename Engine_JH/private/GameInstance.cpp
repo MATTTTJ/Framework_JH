@@ -1,9 +1,8 @@
 #include "..\public\GameInstance.h"
-
-
 #include "Graphic_Device.h"
 #include "Level_Manager.h"
 #include "Object_Manager.h"
+
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -21,10 +20,10 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pGraphic_Device);
 }
 
-HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst,_uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut)
+HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut)
 {
-	if (nullptr == m_pGraphic_Device || 
-		nullptr == m_pInput_Device || 
+	if (nullptr == m_pGraphic_Device ||
+		nullptr == m_pInput_Device ||
 		nullptr == m_pObject_Manager ||
 		nullptr == m_pComponent_Manager)
 		return E_FAIL;
@@ -32,6 +31,8 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst,_uint iNumLevels, const
 	/* 그래픽 디바이스 초기화. */
 	if (FAILED(m_pGraphic_Device->Ready_Graphic_Device(GraphicDesc.hWnd, GraphicDesc.eWindowMode, GraphicDesc.iViewportSizeX, GraphicDesc.iViewportSizeY, ppDeviceOut, ppContextOut)))
 		return E_FAIL;
+
+	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
 	/* 입력 디바이스 초기화. */
 	if (FAILED(m_pInput_Device->Ready_Input_Device(hInst, GraphicDesc.hWnd)))
@@ -48,8 +49,8 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst,_uint iNumLevels, const
 
 void CGameInstance::Tick_Engine(_double TimeDelta)
 {
-	if (nullptr == m_pInput_Device	||
-		nullptr == m_pLevel_Manager || 
+	if (nullptr == m_pInput_Device ||
+		nullptr == m_pLevel_Manager ||
 		nullptr == m_pObject_Manager)
 		return;
 
@@ -59,8 +60,10 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 	m_pObject_Manager->Tick(TimeDelta);
 	m_pLevel_Manager->Tick(TimeDelta);
 
+
 	m_pObject_Manager->Late_Tick(TimeDelta);
 	m_pLevel_Manager->Late_Tick(TimeDelta);
+
 }
 
 void CGameInstance::Clear_Level(_uint iLevelIndex)
@@ -69,6 +72,7 @@ void CGameInstance::Clear_Level(_uint iLevelIndex)
 		return;
 
 	m_pObject_Manager->Clear(iLevelIndex);
+
 }
 
 HRESULT CGameInstance::Clear_Graphic_Device(const _float4 * pColor)
@@ -83,6 +87,7 @@ HRESULT CGameInstance::Clear_Graphic_Device(const _float4 * pColor)
 
 	return hr;
 }
+
 
 HRESULT CGameInstance::Present()
 {
@@ -116,12 +121,12 @@ _long CGameInstance::Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMoveState)
 	return m_pInput_Device->Get_DIMouseMove(eMoveState);
 }
 
-HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pNewLevel)
+HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
 
-	return	m_pLevel_Manager->Open_Level(iLevelIndex, pNewLevel);
+	return m_pLevel_Manager->Open_Level(iLevelIndex, pNewLevel);
 }
 
 HRESULT CGameInstance::Render_Level()
@@ -132,7 +137,7 @@ HRESULT CGameInstance::Render_Level()
 	return m_pLevel_Manager->Render();
 }
 
-HRESULT CGameInstance::Add_Prototype(const _tchar* pPrototypeTag, CGameObject* pPrototype)
+HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
@@ -140,16 +145,15 @@ HRESULT CGameInstance::Add_Prototype(const _tchar* pPrototypeTag, CGameObject* p
 	return m_pObject_Manager->Add_Prototype(pPrototypeTag, pPrototype);
 }
 
-HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pPrototypeTag,
-	void* pArg)
+HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pPrototypeTag, void * pArg)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Clone_GameObject(iLevelIndex,pLayerTag, pPrototypeTag);
+	return m_pObject_Manager->Clone_GameObject(iLevelIndex, pLayerTag, pPrototypeTag, pArg);
 }
 
-HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, CComponent* pPrototype)
+HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, CComponent * pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
 		return E_FAIL;
@@ -157,7 +161,7 @@ HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar* pPrototype
 	return m_pComponent_Manager->Add_Prototype(iLevelIndex, pPrototypeTag, pPrototype);
 }
 
-CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg)
+CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, void * pArg)
 {
 	if (nullptr == m_pComponent_Manager)
 		return nullptr;
@@ -167,7 +171,8 @@ CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar* pPro
 
 void CGameInstance::Release_Engine()
 {
-	CGameInstance::GetInstance()->DestroyInstance(); //가급적 제일 먼저하는게 좋다. 
+
+	CGameInstance::GetInstance()->DestroyInstance();
 
 	CObject_Manager::GetInstance()->DestroyInstance();
 
@@ -187,5 +192,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pGraphic_Device);
+
 }
 

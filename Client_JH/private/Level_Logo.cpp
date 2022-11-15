@@ -1,16 +1,18 @@
 #include "stdafx.h"
-#include "Level_Logo.h"
-#include <GameInstance.h>
-#include "Level_Loading.h"
+#include "..\public\Level_Logo.h"
 
-CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CLevel(pDevice,pContext)
+#include "Level_Loading.h"
+#include "GameInstance.h"
+
+CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CLevel(pDevice, pContext)
 {
+
 }
 
 HRESULT CLevel_Logo::Initialize()
 {
-	if (FAILED(CLevel::Initialize()))
+	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
@@ -21,14 +23,15 @@ HRESULT CLevel_Logo::Initialize()
 
 void CLevel_Logo::Tick(_double TimeDelta)
 {
-	CLevel::Tick(TimeDelta);
+	__super::Tick(TimeDelta);
+
 }
 
 void CLevel_Logo::Late_Tick(_double TimeDelta)
 {
-	CLevel::Late_Tick(TimeDelta);
+	__super::Late_Tick(TimeDelta);
 
-	if(GetKeyState(VK_SPACE) & 0x8000)
+	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
 		CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 		Safe_AddRef(pGameInstance);
@@ -37,12 +40,14 @@ void CLevel_Logo::Late_Tick(_double TimeDelta)
 			return;
 
 		Safe_Release(pGameInstance);
+
 	}
+
 }
 
 HRESULT CLevel_Logo::Render()
 {
-	if (FAILED(CLevel::Render()))
+	if (FAILED(__super::Render()))
 		return E_FAIL;
 
 	SetWindowText(g_hWnd, TEXT("Level : LOGO"));
@@ -50,10 +55,9 @@ HRESULT CLevel_Logo::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
+HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-
 	Safe_AddRef(pGameInstance);
 
 	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_BackGround"))))
@@ -64,20 +68,21 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _tchar* pLayerTag)
 	return S_OK;
 }
 
-CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_Logo * CLevel_Logo::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CLevel_Logo* pInst = new CLevel_Logo(pDevice, pContext);
+	CLevel_Logo*		pInstance = new CLevel_Logo(pDevice, pContext);
 
-	if(FAILED(pInst->Initialize()))
+	if (FAILED(pInstance->Initialize()))
 	{
 		MSG_BOX("Failed to Created : CLevel_Logo");
-		Safe_Release(pInst);
+		Safe_Release(pInstance);
 	}
-
-	return pInst;
+	return pInstance;
 }
 
 void CLevel_Logo::Free()
 {
-	CLevel::Free();
+	__super::Free();
+
+
 }

@@ -14,7 +14,7 @@ public:
 	unsigned long	Release();
 
 private:
-	unsigned long	m_dwRefCnt;
+	unsigned long	m_dwRefCnt = 0;
 
 public:
 	virtual void Free() = 0; // PURE

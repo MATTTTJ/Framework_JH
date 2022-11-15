@@ -2,7 +2,8 @@
 #include "Shader.h"
 #include "Renderer.h"
 #include "VIBuffer_Rect.h"
-
+#include "Transform.h"
+#include "Texture.h"
 
 BEGIN(Engine)
 

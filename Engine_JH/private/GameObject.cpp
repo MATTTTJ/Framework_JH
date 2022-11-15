@@ -79,6 +79,11 @@ CComponent* CGameObject::Find_Component(const _tchar* pComopnentTag)
 
 void CGameObject::Free()
 {
+	for (auto& Pair : m_Components)
+		Safe_Release(Pair.second);
+
+	m_Components.clear();
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 }

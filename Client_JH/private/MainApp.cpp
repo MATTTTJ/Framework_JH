@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "MainApp.h"
+#include "..\public\MainApp.h"
+
 #include "GameInstance.h"
 #include "Level_Loading.h"
 
@@ -32,7 +33,7 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Prototype_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Start_Level(LEVEL_LOGO)))			// 무엇을 넣든 로딩을 거쳐서 가게 된다. 
+	if (FAILED(Start_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
 	return S_OK;
@@ -40,7 +41,7 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Tick(_double TimeDelta)
 {
-	if (m_pGameInstance == nullptr)
+	if (nullptr == m_pGameInstance)
 		return;
 
 	m_pGameInstance->Tick_Engine(TimeDelta);
@@ -52,7 +53,7 @@ HRESULT CMainApp::Render()
 		nullptr == m_pRenderer)
 		return E_FAIL;
 
-	m_pGameInstance->Clear_Graphic_Device(&_float4(0.0f, 1.f, 1.f, 1.f));
+	m_pGameInstance->Clear_Graphic_Device(&_float4(0.0f, 0.f, 1.f, 1.f));
 
 	m_pRenderer->Draw_RenderGroup();
 
@@ -66,11 +67,13 @@ HRESULT CMainApp::Render()
 HRESULT CMainApp::Start_Level(LEVEL eLevelID)
 {
 	if (LEVEL_LOADING == eLevelID ||
-		m_pGameInstance == nullptr)
+		nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING,CLevel_Loading::Create(m_pDevice, m_pContext, eLevelID))))
+	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eLevelID))))
 		return E_FAIL;
+
+
 
 	return S_OK;
 }
@@ -79,33 +82,40 @@ HRESULT CMainApp::Ready_Prototype_Component()
 {
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
-	
+
 	/* For.Prototype_Component_Renderer */
-	 if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
-	 	m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
-	 	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
+		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
-	 /* For.Prototype_Component_VIBuffer_Rect */
-	 if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
-		 CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
-		 return E_FAIL;
+	/* For.Prototype_Component_Transform */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
+		CTransform::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
-	 /* For.Prototype_Component_Shader_VtxTex */
-	 if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"),
-		 CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
-		 return E_FAIL;
-	
-	 Safe_AddRef(m_pRenderer);
+	/* For.Prototype_Component_VIBuffer_Rect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
+		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxTex */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+
+	Safe_AddRef(m_pRenderer);
 
 	return S_OK;
 }
 
 HRESULT CMainApp::Ready_Prototype_GameObject()
 {
+
 	return S_OK;
 }
 
-CMainApp* CMainApp::Create()
+CMainApp * CMainApp::Create()
 {
 	CMainApp*		pInstance = new CMainApp;
 

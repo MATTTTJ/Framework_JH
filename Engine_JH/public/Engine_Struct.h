@@ -1,7 +1,7 @@
 #pragma once
 namespace Engine
 {
-	typedef  struct tagGraphicDesc
+	typedef struct tagGraphicDesc
 	{
 		enum WINMODE { WINMODE_FULL, WINMODE_WIN, WINMODE_END};
 

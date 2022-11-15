@@ -1,12 +1,15 @@
 #pragma once
+
+#include "Client_Defines.h"
 #include "GameObject.h"
 
 BEGIN(Engine)
 class CShader;
+class CTexture;
 class CRenderer;
+class CTransform;
 class CVIBuffer_Rect;
 END
-
 
 BEGIN(Client)
 
@@ -18,33 +21,33 @@ private:
 	virtual ~CBackGround() = default;
 
 public:
-	virtual HRESULT		Initialize_Prototype()			override;
-	virtual HRESULT		Initialize_Clone(void* pArg)	override;
-	virtual void		Tick(_double TimeDelta)			override;
-	virtual void		Late_Tick(_double TimeDelta)	override;
-	virtual HRESULT		Render()						override;
-
-
-private:
-	CRenderer*			m_pRendererCom	= nullptr;
-	CShader*			m_pShaderCom	= nullptr;
-	CVIBuffer_Rect*		m_pVIBufferCom	= nullptr;
+	virtual HRESULT Initialize_Prototype()			override;
+	virtual HRESULT Initialize_Clone(void* pArg)	override;
+	virtual void Tick(_double TimeDelta)			override;
+	virtual void Late_Tick(_double TimeDelta)		override;
+	virtual HRESULT Render()						override;
 
 private:
-	_float4x4			m_WorldMatrix;
-	_float4x4			m_ViewMatrix;
-	_float4x4			m_ProjMatrix;
-
-	_float				m_fX, m_fY, m_fSizeX, m_fSizeY;
+	CShader*				m_pShaderCom = nullptr;
+	CRenderer*				m_pRendererCom = nullptr;
+	CTexture*				m_pTextureCom = nullptr;
+	CVIBuffer_Rect*			m_pVIBufferCom = nullptr;
+	CTransform*				m_pTransformCom = nullptr;
 
 private:
-	HRESULT			SetUp_Components();
-	HRESULT			SetUp_ShaderResources();
+	_float4x4				m_ViewMatrix;
+	_float4x4				m_ProjMatrix;
+
+	_float					m_fX, m_fY, m_fSizeX, m_fSizeY;
+
+private:
+	HRESULT SetUp_Components();
+	HRESULT SetUp_ShaderResources();
 
 public:
-	static CBackGround*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*		Clone(void* pArg) override;
-	virtual void				Free() override;
+	static CBackGround* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg = nullptr) override;
+	virtual void Free() override;
 };
 
 END

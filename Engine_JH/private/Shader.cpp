@@ -1,11 +1,12 @@
 #include "..\public\Shader.h"
 
-CShader::CShader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CComponent(pDevice,pContext)
+CShader::CShader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CComponent(pDevice, pContext)
 {
+
 }
 
-CShader::CShader(const CShader& rhs)
+CShader::CShader(const CShader & rhs)
 	: CComponent(rhs)
 	, m_pEffect(rhs.m_pEffect)
 	, m_InputLayouts(rhs.m_InputLayouts)
@@ -15,28 +16,30 @@ CShader::CShader(const CShader& rhs)
 
 	for (auto& pInputLayout : m_InputLayouts)
 		Safe_AddRef(pInputLayout);
+
 }
 
 HRESULT CShader::Initialize_Prototype(const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
 {
-	_uint		iHlslFlag = 0;
+	_uint			iHlslFlag = 0;
 
 #ifdef _DEBUG
 	iHlslFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
-	iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1; // 통상적으로 1단계 최적화가 제일 나음
+	iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
+
 #endif
 	if (FAILED(D3DX11CompileEffectFromFile(pShaderFilePath, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, iHlslFlag, 0, m_pDevice, &m_pEffect, nullptr)))
 		return E_FAIL;
 
-	ID3DX11EffectTechnique*		pTechnique = m_pEffect->GetTechniqueByIndex(0);
+	ID3DX11EffectTechnique*	pTechnique = m_pEffect->GetTechniqueByIndex(0);
 
 	D3DX11_TECHNIQUE_DESC	TechniqueDesc;
 	pTechnique->GetDesc(&TechniqueDesc);
 
 	m_iNumPasses = TechniqueDesc.Passes;
 
-	for(_uint i = 0; i< m_iNumPasses; ++i)
+	for (_uint i = 0; i < m_iNumPasses; ++i)
 	{
 		ID3D11InputLayout*		pInputLayout = nullptr;
 
@@ -56,7 +59,7 @@ HRESULT CShader::Initialize_Prototype(const _tchar * pShaderFilePath, const D3D1
 	return S_OK;
 }
 
-HRESULT CShader::Initialize_Clone(void* pArg)
+HRESULT CShader::Initialize_Clone(void * pArg)
 {
 	return S_OK;
 }
@@ -67,11 +70,11 @@ HRESULT CShader::Begin(_uint iPassIndex)
 		iPassIndex >= m_iNumPasses)
 		return E_FAIL;
 
-	ID3DX11EffectTechnique*		pTechnique = m_pEffect->GetTechniqueByIndex(0);
+	ID3DX11EffectTechnique*	pTechnique = m_pEffect->GetTechniqueByIndex(0);
 	if (nullptr == pTechnique)
 		return E_FAIL;
 
-	ID3DX11EffectPass*			pPass = pTechnique->GetPassByIndex(iPassIndex);
+	ID3DX11EffectPass*	pPass = pTechnique->GetPassByIndex(iPassIndex);
 	if (nullptr == pPass)
 		return E_FAIL;
 
@@ -88,34 +91,44 @@ HRESULT CShader::Set_RawValue(const char* pConstantName, const void* pData, _uin
 		return E_FAIL;
 
 	ID3DX11EffectVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName);
-
 	if (nullptr == pVariable)
 		return E_FAIL;
 
-	// ByOffset : 건내주는 데이터 몇번째에서 넘겨줄건지, 보통은 0
 	return pVariable->SetRawValue(pData, 0, iLength);
 }
 
-HRESULT CShader::Set_Matrix(const char* pConstantName, const _float4x4* pMatrix)
+HRESULT CShader::Set_Matrix(const char * pConstantName, const _float4x4* pMatrix)
 {
 	if (nullptr == m_pEffect)
 		return E_FAIL;
 
-	//AsMatrix() : 넘겨주고자 하는 행렬을 전치해주는 함수
-	ID3DX11EffectMatrixVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName)->AsMatrix();
-
+	ID3DX11EffectMatrixVariable*	pVariable = m_pEffect->GetVariableByName(pConstantName)->AsMatrix();
 	if (nullptr == pVariable)
 		return E_FAIL;
 
-	// MatrixVariable함수는 float 타입만 받기 때문에 캐스팅 해준다. 
 	return pVariable->SetMatrix((_float*)pMatrix);
 }
 
-CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
+HRESULT CShader::Set_ShaderResourceView(const char * pConstantName, ID3D11ShaderResourceView * pSRV)
+{
+	if (nullptr == m_pEffect)
+		return E_FAIL;
+
+	ID3DX11EffectShaderResourceVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName)->AsShaderResource();
+	if (nullptr == pVariable)
+		return E_FAIL;
+
+
+	return pVariable->SetResource(pSRV);
+
+}
+
+
+CShader * CShader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
 {
 	CShader*		pInstance = new CShader(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pShaderFilePath, pElements,iNumElements)))
+	if (FAILED(pInstance->Initialize_Prototype(pShaderFilePath, pElements, iNumElements)))
 	{
 		MSG_BOX("Failed to Created : CShader");
 		Safe_Release(pInstance);
@@ -123,7 +136,7 @@ CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, c
 	return pInstance;
 }
 
-CComponent* CShader::Clone(void* pArg)
+CComponent * CShader::Clone(void * pArg)
 {
 	CShader*		pInstance = new CShader(*this);
 
