@@ -78,7 +78,10 @@ void CGameInstance::Clear_Level(_uint iLevelIndex)
 HRESULT CGameInstance::Clear_Graphic_Device(const _float4 * pColor)
 {
 	if (nullptr == m_pGraphic_Device)
+	{
+		assert(!"m_pGraphic_Device is nullptr");
 		return E_FAIL;
+	}
 
 	HRESULT			hr = 0;
 
@@ -92,7 +95,10 @@ HRESULT CGameInstance::Clear_Graphic_Device(const _float4 * pColor)
 HRESULT CGameInstance::Present()
 {
 	if (nullptr == m_pGraphic_Device)
+	{
+		assert(!"m_pGraphic_Device is nullptr");
 		return E_FAIL;
+	}
 
 	return m_pGraphic_Device->Present();
 }
@@ -124,7 +130,10 @@ _long CGameInstance::Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMoveState)
 HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 {
 	if (nullptr == m_pLevel_Manager)
+	{
+		assert(!"m_pLevel_Manager is nullptr");
 		return E_FAIL;
+	}
 
 	return m_pLevel_Manager->Open_Level(iLevelIndex, pNewLevel);
 }
@@ -132,7 +141,10 @@ HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 HRESULT CGameInstance::Render_Level()
 {
 	if (nullptr == m_pLevel_Manager)
+	{
+		assert(!"m_pLevel_Manager is nullptr");
 		return E_FAIL;
+	}
 
 	return m_pLevel_Manager->Render();
 }
@@ -140,7 +152,10 @@ HRESULT CGameInstance::Render_Level()
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr == m_pObject_Manager)
+	{
+		assert(!"m_pObject_Manager is nullptr");
 		return E_FAIL;
+	}
 
 	return m_pObject_Manager->Add_Prototype(pPrototypeTag, pPrototype);
 }
@@ -148,7 +163,10 @@ HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject *
 HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pPrototypeTag, void * pArg)
 {
 	if (nullptr == m_pObject_Manager)
+	{
+		assert(!"m_pObject_Manager is nullptr");
 		return E_FAIL;
+	}
 
 	return m_pObject_Manager->Clone_GameObject(iLevelIndex, pLayerTag, pPrototypeTag, pArg);
 }
@@ -156,7 +174,10 @@ HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const _tchar * pLayer
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, CComponent * pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
+	{
+		assert(!"m_pComponent_Manager is nullptr");
 		return E_FAIL;
+	}
 
 	return m_pComponent_Manager->Add_Prototype(iLevelIndex, pPrototypeTag, pPrototype);
 }
@@ -164,8 +185,10 @@ HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar * pPrototyp
 CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, void * pArg)
 {
 	if (nullptr == m_pComponent_Manager)
+	{
+		assert(!"m_pComponent_Manager is nullptr");
 		return nullptr;
-
+	}
 	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
 }
 

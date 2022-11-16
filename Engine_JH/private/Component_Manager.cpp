@@ -27,7 +27,7 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const _tchar* pProt
 
 	if (nullptr != Find_Prototype(iLevelIndex, pPrototypeTag))
 	{
-		MSG_BOX("[Failed to Add Prototype] \n Code : Duplicate source");
+		assert(!"Already have Prototype in ComponentMgr");
 		return E_FAIL;
 	}
 
@@ -41,25 +41,34 @@ CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const _tchar*
 {
 	CComponent*		pPrototype = Find_Prototype(iLevelIndex, pPrototypeTag);
 	if (nullptr == pPrototype)
+	{
+		assert(!"Have no Prototype. You must be Add_Prototype");
 		return nullptr;
+	}
 
 	CComponent*		pComponent = pPrototype->Clone(pArg);
 	if (nullptr == pComponent)
+	{
+		assert(!"Failed to Clone in ComponentMgr");
 		return nullptr;
-
+	}
 	return pComponent;
 }
 
 CComponent* CComponent_Manager::Find_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag)
 {
 	if (iLevelIndex >= m_iNumLevels)
+	{
+		assert(!"Worng Level Index");
 		return nullptr;
-
+	}
 	auto iter = find_if(m_pPrototypes[iLevelIndex].begin(), m_pPrototypes[iLevelIndex].end(), CTag_Finder(pPrototypeTag));
 
 	if (iter == m_pPrototypes[iLevelIndex].end())
+	{
+		assert("Failed to find_if in Find_Prototype");
 		return nullptr;
-
+	}
 	return iter->second;
 }
 

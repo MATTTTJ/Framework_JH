@@ -23,7 +23,6 @@
 	pInstance->Release();}														\
 	}();
 
-
 #define BEGIN(NAMESPACE)  namespace NAMESPACE {
 #define END				  }
 

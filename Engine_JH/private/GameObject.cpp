@@ -45,7 +45,10 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTa
 	CComponent** ppOut, void* pArg)
 {
 	if (nullptr != Find_Component(pComponentTag))
+	{
+		assert(!"Already have Component in GameObject");
 		return E_FAIL;
+	}
 
 	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -53,7 +56,10 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTa
 	CComponent*		pComponentInstance = pGameInstance->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
 
 	if (nullptr == pComponentInstance)
+	{
+		assert(!"pComponentInstance is nullptr");
 		return E_FAIL;
+	}
 
 	m_Components.emplace(pPrototypeTag, pComponentInstance);
 
