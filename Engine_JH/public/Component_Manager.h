@@ -1,9 +1,10 @@
 #pragma once
 #include "Shader.h"
-#include "Renderer.h"
-#include "VIBuffer_Rect.h"
-#include "Transform.h"
 #include "Texture.h"
+#include "Renderer.h"
+#include "Transform.h"
+#include "VIBuffer_Rect.h"
+#include "VIBuffer_Terrain.h"
 
 BEGIN(Engine)
 
@@ -18,7 +19,6 @@ public:
 	HRESULT				Reserve_Manager(_uint iNumLevels);
 	HRESULT				Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	class CComponent*	Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
-
 
 private:
 	_uint												m_iNumLevels = 0;

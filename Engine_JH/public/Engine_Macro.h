@@ -1,14 +1,36 @@
 #pragma once
 
+#define GET_INSTANCE(CLASSNAME)	[](){											\
+	CLASSNAME*	pInstance = CLASSNAME::GetInstance();							\
+	if(nullptr == pInstance) {													\
+	char	szMessage[MAX_PATH] = "";											\
+	strcpy_s(szMessage, typeid(CLASSNAME).name());								\
+	strcat_s(szMessage, "is nullptr");											\
+	MessageBoxA(0, szMessage, nullptr, MB_OK);}									\
+	else {																		\
+	pInstance->AddRef();}														\
+	return pInstance;															\
+	}();
+
+#define RELEASE_INSTANCE(CLASSNAME)	[](){										\
+	CLASSNAME*	pInstance = CLASSNAME::GetInstance();							\
+	if(nullptr == pInstance) {													\
+	char	szMessage[MAX_PATH] = "";											\
+	strcpy_s(szMessage, typeid(CLASSNAME).name());								\
+	strcat_s(szMessage, "is nullptr");											\
+	MessageBoxA(0, szMessage, nullptr, MB_OK);}									\
+	else {																		\
+	pInstance->Release();}														\
+	}();
 
 
 #define BEGIN(NAMESPACE)  namespace NAMESPACE {
 #define END				  }
 
 #ifdef ENGINE_JH_EXPORTS
-#define ENGINE_DLL _declspec(dllexport)
+#define ENGINE_DLL _declspec(dllexport) 
 #else
-#define ENGINE_DLL _declspec(dllimport)
+#define ENGINE_DLL _declspec(dllimport) 
 #endif
 
 #define			MSG_BOX(_message)			MessageBox(NULL, TEXT(_message), L"System Message", MB_OK)
@@ -43,5 +65,6 @@
 			}													\
 			return dwRefCnt;									\
 		}
+
 
 

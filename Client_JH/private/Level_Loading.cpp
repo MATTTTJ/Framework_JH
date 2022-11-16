@@ -55,7 +55,7 @@ void CLevel_Loading::Late_Tick(_double TimeDelta)
 				break;
 			}
 
-			if (pLevel == nullptr)
+			if (nullptr == pLevel)
 				return;
 
 			if (FAILED(pGameInstance->Open_Level(m_eNextLevelID, pLevel)))

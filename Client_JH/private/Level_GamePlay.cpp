@@ -1,14 +1,19 @@
 #include "stdafx.h"
-#include "Level_GamePlay.h"
+#include "..\public\Level_GamePlay.h"
+#include "GameInstance.h"
 
-CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CLevel(pDevice,pContext)
+CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CLevel(pDevice, pContext)
 {
+
 }
 
 HRESULT CLevel_GamePlay::Initialize()
 {
-	if (FAILED(CLevel::Initialize()))
+	if (FAILED(__super::Initialize()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -16,17 +21,18 @@ HRESULT CLevel_GamePlay::Initialize()
 
 void CLevel_GamePlay::Tick(_double TimeDelta)
 {
-	CLevel::Tick(TimeDelta);
+	__super::Tick(TimeDelta);
+
 }
 
 void CLevel_GamePlay::Late_Tick(_double TimeDelta)
 {
-	CLevel::Late_Tick(TimeDelta);
+	__super::Late_Tick(TimeDelta);
 }
 
 HRESULT CLevel_GamePlay::Render()
 {
-	if (FAILED(CLevel::Render()))
+	if (FAILED(__super::Render()))
 		return E_FAIL;
 
 	SetWindowText(g_hWnd, TEXT("Level : GAMEPLAY"));
@@ -34,20 +40,33 @@ HRESULT CLevel_GamePlay::Render()
 	return S_OK;
 }
 
-CLevel_GamePlay* CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
-	CLevel_GamePlay*	pInst = new CLevel_GamePlay(pDevice, pContext);
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if(FAILED(pInst->Initialize()))
+	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+{
+	CLevel_GamePlay*		pInstance = new CLevel_GamePlay(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize()))
 	{
 		MSG_BOX("Failed to Created : CLevel_GamePlay");
-		Safe_Release(pInst);
+		Safe_Release(pInstance);
 	}
-
-	return pInst;
+	return pInstance;
 }
 
 void CLevel_GamePlay::Free()
 {
-	CLevel::Free();
+	__super::Free();
+
+
 }

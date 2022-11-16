@@ -17,7 +17,7 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_iNumVertexBuffer = 1;
+	m_iNumVertexBuffers = 1;
 	m_iStride = sizeof(VTXTEX);
 	m_iNumVertices = 4;				// 사각형 하나에 정점 4개 필요 
 	m_iNumPrimitives = 2;			// 삼각형 두개로 사각형 표현

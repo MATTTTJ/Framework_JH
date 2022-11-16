@@ -30,9 +30,6 @@ namespace Engine
 	typedef		HXMVECTOR				_hvector;
 	typedef		GXMVECTOR				_gvector;
 
-
-
 	typedef		XMFLOAT4X4				_float4x4;
 	typedef		XMMATRIX				_matrix;
-
 }

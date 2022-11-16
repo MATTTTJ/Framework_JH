@@ -33,7 +33,7 @@ protected:
 	// 인덱스의 갯수
 	_uint						m_iNumIndices = 0;
 	// 버텍스 버퍼의 갯수
-	_uint						m_iNumVertexBuffer = 0;
+	_uint						m_iNumVertexBuffers = 0;
 	// 인덱스의 포맷
 	DXGI_FORMAT					m_eIndexFormat;
 	// 트라이앵글리스트와 같이 어떤식으로 데이터를 들고있을지 결정

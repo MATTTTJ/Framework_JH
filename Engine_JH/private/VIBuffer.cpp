@@ -15,7 +15,7 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	, m_iNumPrimitives(rhs.m_iNumPrimitives)
 	, m_iIndicesSizePerPrimitive(rhs.m_iIndicesSizePerPrimitive)
 	, m_iNumIndicesPerPrimitive(rhs.m_iNumIndicesPerPrimitive)
-	, m_iNumVertexBuffer(rhs.m_iNumVertexBuffer)
+	, m_iNumVertexBuffers(rhs.m_iNumVertexBuffers)
 	, m_eIndexFormat(rhs.m_eIndexFormat)
 	, m_eTopology(rhs.m_eTopology)
 	, m_iNumIndices(rhs.m_iNumIndices)
@@ -52,7 +52,7 @@ HRESULT CVIBuffer::Render()
 
 	_uint			iOffests[]		 = { 0, };
 
-	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffer, pVertexBuffers, iStrides, iOffests);
+	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertexBuffers, iStrides, iOffests);
 
 	m_pContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
 

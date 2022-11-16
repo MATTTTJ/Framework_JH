@@ -2,7 +2,7 @@
 #include "..\public\Loader.h"
 #include "GameInstance.h"
 #include "BackGround.h"
-
+#include "Terrain.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -93,18 +93,35 @@ HRESULT CLoader::Loading_For_GamePlay()
 	Safe_AddRef(pGameInstance);
 
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다. "));
+	/* For.Prototype_Component_Texture_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Tile0.jpg"), 1))))
+		return E_FAIL;
+
 
 
 	lstrcpy(m_szLoadingText, TEXT("버퍼를 로딩중입니다. "));
+	/* For.Prototype_Component_VIBuffer_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
+		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩중입니다. "));
 
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다. "));
+	/* For.Prototype_Component_Shader_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Terrain"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements))))
+		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("객체원형을 생성중입니다. "));
+	/* For.Prototype_GameObject_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
+		CTerrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩끝. "));
