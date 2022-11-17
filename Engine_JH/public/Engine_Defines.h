@@ -9,7 +9,6 @@
 #include <DirectXTK/WICTextureLoader.h>
 #include <d3dcompiler.h>
 #include <TypeInfo.h>
-#include <assert.h>
 
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>

@@ -19,7 +19,7 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevelID);
 
-	if (m_pLoader == nullptr)
+	if ( nullptr == m_pLoader)
 		return E_FAIL;
 
 	return S_OK;
@@ -27,14 +27,12 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 
 void CLevel_Loading::Tick(_double TimeDelta)
 {
-	CLevel::Tick(TimeDelta);
-
-
+	__super::Tick(TimeDelta);
 }
 
 void CLevel_Loading::Late_Tick(_double TimeDelta)
 {
-	CLevel::Late_Tick(TimeDelta);
+	__super::Late_Tick(TimeDelta);
 
 	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -68,7 +66,7 @@ void CLevel_Loading::Late_Tick(_double TimeDelta)
 
 HRESULT CLevel_Loading::Render()
 {
-	if (FAILED(CLevel::Render()))
+	if (FAILED(__super::Render()))
 		return E_FAIL;
 
 	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());

@@ -27,6 +27,10 @@ protected:
 	virtual ~CTransform() = default;
 
 public:
+	_matrix Get_WorldMatrix_Inverse() {
+		return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix));
+	}
+
 	_vector	Get_State(STATE eState) const
 	{
 		return XMLoadFloat4x4(&m_WorldMatrix).r[eState];

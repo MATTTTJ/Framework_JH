@@ -20,11 +20,21 @@ CGameObject::CGameObject(const CGameObject& rhs)
 
 HRESULT CGameObject::Initialize_Prototype()
 {
+
 	return S_OK;
 }
 
 HRESULT CGameObject::Initialize_Clone(void* pArg)
 {
+	GAMEOBJECTDESC GameObjectDesc;
+	ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
+
+	if (nullptr != pArg)
+		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
+
+	if (FAILED(Add_Component(CGameInstance::Get_StaticLevelIndex(), CGameInstance::m_pPrototypeTransformTag, m_pTransformComTag, (CComponent**)&m_pTransformCom, &GameObjectDesc.TransformDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -85,6 +95,8 @@ CComponent* CGameObject::Find_Component(const _tchar* pComopnentTag)
 
 void CGameObject::Free()
 {
+	Safe_Release(m_pTransformCom);
+
 	for (auto& Pair : m_Components)
 		Safe_Release(Pair.second);
 
