@@ -37,32 +37,38 @@
     <Filter Include="01. Utility\02. GameObject\Manager\Layer">
       <UniqueIdentifier>{f84dc8a6-ed80-47af-92a7-237522243460}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Components">
+    <Filter Include="01. Utility\03. Components">
       <UniqueIdentifier>{fab5ae8b-8693-4055-b4a8-d36f11db2a18}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Components\00. Manager">
+    <Filter Include="01. Utility\03. Components\00. Manager">
       <UniqueIdentifier>{827d97ae-2cc1-4050-b457-959d2e1c5cc5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Components\01. Renderer">
+    <Filter Include="01. Utility\03. Components\01. Renderer">
       <UniqueIdentifier>{da61f267-7a03-464c-8992-c608e4996c65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Components\02. VIBuffer">
+    <Filter Include="01. Utility\03. Components\02. VIBuffer">
       <UniqueIdentifier>{aee879f3-7770-4e64-b23f-5596b5e2a3e4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Components\03. Shader">
-      <UniqueIdentifier>{038d856d-1907-4ae2-a079-d0f283068a86}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Components\02. VIBuffer\Rect">
+    <Filter Include="01. Utility\03. Components\02. VIBuffer\Rect">
       <UniqueIdentifier>{8bea8e1c-6729-4b52-83d6-491a42af9248}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Components\04. Transform">
+    <Filter Include="01. Utility\03. Components\02. VIBuffer\Terrain">
+      <UniqueIdentifier>{ca15b4f1-8360-4a19-8c92-fea8cdd745e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\03. Shader">
+      <UniqueIdentifier>{038d856d-1907-4ae2-a079-d0f283068a86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\04. Transform">
       <UniqueIdentifier>{361c9ea3-dba3-4759-8087-2421a6d287de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Components\05. Texture">
+    <Filter Include="01. Utility\03. Components\05. Texture">
       <UniqueIdentifier>{3cbcec41-553e-46ea-8caf-d1723967c838}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Components\02. VIBuffer\Terrain">
-      <UniqueIdentifier>{ca15b4f1-8360-4a19-8c92-fea8cdd745e0}</UniqueIdentifier>
+    <Filter Include="01. Utility\04. PipeLine">
+      <UniqueIdentifier>{4cb5fb4d-c6b2-4e04-847c-3bb2614f77ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\02. GameObject\Camera">
+      <UniqueIdentifier>{9ed37e91-cf8c-4d20-b11d-80b01e8f9f2c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -112,31 +118,37 @@
       <Filter>01. Utility\02. GameObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Renderer.h">
-      <Filter>03. Components\01. Renderer</Filter>
+      <Filter>01. Utility\03. Components\01. Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Component_Manager.h">
-      <Filter>03. Components\00. Manager</Filter>
+      <Filter>01. Utility\03. Components\00. Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer.h">
-      <Filter>03. Components\02. VIBuffer</Filter>
+      <Filter>01. Utility\03. Components\02. VIBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Shader.h">
-      <Filter>03. Components\03. Shader</Filter>
+      <Filter>01. Utility\03. Components\03. Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Rect.h">
-      <Filter>03. Components\02. VIBuffer\Rect</Filter>
+      <Filter>01. Utility\03. Components\02. VIBuffer\Rect</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Component.h">
-      <Filter>03. Components</Filter>
+      <Filter>01. Utility\03. Components</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Transform.h">
-      <Filter>03. Components\04. Transform</Filter>
+      <Filter>01. Utility\03. Components\04. Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Texture.h">
-      <Filter>03. Components\05. Texture</Filter>
+      <Filter>01. Utility\03. Components\05. Texture</Filter>
     </ClInclude>
     <ClInclude Include="..\public\VIBuffer_Terrain.h">
-      <Filter>03. Components\02. VIBuffer\Terrain</Filter>
+      <Filter>01. Utility\03. Components\02. VIBuffer\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PipeLine.h">
+      <Filter>01. Utility\04. PipeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Camera.h">
+      <Filter>01. Utility\02. GameObject\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -168,34 +180,43 @@
       <Filter>01. Utility\02. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Renderer.cpp">
-      <Filter>03. Components\01. Renderer</Filter>
+      <Filter>01. Utility\03. Components\01. Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Component_Manager.cpp">
-      <Filter>03. Components\00. Manager</Filter>
+      <Filter>01. Utility\03. Components\00. Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer.cpp">
-      <Filter>03. Components\02. VIBuffer</Filter>
+      <Filter>01. Utility\03. Components\02. VIBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Shader.cpp">
-      <Filter>03. Components\03. Shader</Filter>
+      <Filter>01. Utility\03. Components\03. Shader</Filter>
     </ClCompile>
     <ClCompile Include="Engine_Struct.cpp">
       <Filter>99.Defines</Filter>
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Rect.cpp">
-      <Filter>03. Components\02. VIBuffer\Rect</Filter>
+      <Filter>01. Utility\03. Components\02. VIBuffer\Rect</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Component.cpp">
-      <Filter>03. Components</Filter>
+      <Filter>01. Utility\03. Components</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Transform.cpp">
-      <Filter>03. Components\04. Transform</Filter>
+      <Filter>01. Utility\03. Components\04. Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Texture.cpp">
-      <Filter>03. Components\05. Texture</Filter>
+      <Filter>01. Utility\03. Components\05. Texture</Filter>
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp">
-      <Filter>03. Components\02. VIBuffer\Terrain</Filter>
+      <Filter>01. Utility\03. Components\02. VIBuffer\Terrain</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\PipeLine.cpp">
+      <Filter>01. Utility\04. PipeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera.cpp">
+      <Filter>01. Utility\02. GameObject\Camera</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

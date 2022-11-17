@@ -12,23 +12,19 @@ private:
 	virtual ~CLoader() = default;
 
 public:
-	LEVEL	Get_NextLevelID() const
-	{
+	LEVEL	Get_NextLevelID() const {
 		return m_eNextLevelID;
 	}
 
-	const _tchar*	Get_LoadingText() const
-	{
+	const _tchar*	Get_LoadingText() const {
 		return m_szLoadingText;
 	}
 
-	_bool	IsFinished() const
-	{
+	_bool	IsFinished() const {
 		return m_bIsLoadingFinished;
 	}
 
-	CRITICAL_SECTION	Get_Critical_Section() const
-	{
+	CRITICAL_SECTION	Get_Critical_Section() const {
 		return m_Critical_Section;
 	}
 public:

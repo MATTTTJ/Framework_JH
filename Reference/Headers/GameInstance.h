@@ -6,6 +6,7 @@
 #include "Base.h"
 #include "Input_Device.h"
 #include "Component_Manager.h"
+#include "PipeLine.h"
 
 BEGIN(Engine)
 
@@ -15,6 +16,15 @@ class ENGINE_DLL CGameInstance final : public CBase
 private:
 	CGameInstance();
 	virtual ~CGameInstance() = default;
+
+public:
+	static _uint	Get_StaticLevelIndex()
+	{
+		return m_iStaticLevelIndex;
+	}
+
+public:
+	static const _tchar* m_pPrototypeTransformTag;
 
 public: /* For.GameInstance */
 	HRESULT Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut);
@@ -42,6 +52,11 @@ public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
 
+public:/* For.Component_Manager */
+	_matrix		Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eState);
+	_float4x4	Get_TransformFloat4x4(CPipeLine::TRANSFORMSTATE eState);
+	_matrix		Get_TransformMatrix_Inverse(CPipeLine::TRANSFORMSTATE eState);
+	void		Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix);
 
 private:
 	class CGraphic_Device*			m_pGraphic_Device = nullptr;
@@ -49,6 +64,10 @@ private:
 	class CLevel_Manager*			m_pLevel_Manager = nullptr;
 	class CObject_Manager*			m_pObject_Manager = nullptr;
 	class CComponent_Manager*		m_pComponent_Manager = nullptr;
+	class CPipeLine*				m_pPipeLine = nullptr;
+
+private:
+	static _uint		m_iStaticLevelIndex;
 
 public:
 	static void Release_Engine();

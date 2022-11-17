@@ -7,7 +7,6 @@ BEGIN(Engine)
 class CShader;
 class CTexture;
 class CRenderer;
-class CTransform;
 class CVIBuffer_Rect;
 END
 
@@ -23,16 +22,15 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype()			override;
 	virtual HRESULT Initialize_Clone(void* pArg)	override;
-	virtual void Tick(_double TimeDelta)			override;
-	virtual void Late_Tick(_double TimeDelta)		override;
+	virtual void	Tick(_double TimeDelta)			override;
+	virtual void	Late_Tick(_double TimeDelta)	override;
 	virtual HRESULT Render()						override;
 
 private:
-	CShader*				m_pShaderCom = nullptr;
-	CRenderer*				m_pRendererCom = nullptr;
-	CTexture*				m_pTextureCom = nullptr;
-	CVIBuffer_Rect*			m_pVIBufferCom = nullptr;
-	CTransform*				m_pTransformCom = nullptr;
+	CShader*				m_pShaderCom	= nullptr;
+	CRenderer*				m_pRendererCom	= nullptr;
+	CTexture*				m_pTextureCom	= nullptr;
+	CVIBuffer_Rect*			m_pVIBufferCom	= nullptr;
 
 private:
 	_float4x4				m_ViewMatrix;
@@ -45,7 +43,7 @@ private:
 	HRESULT SetUp_ShaderResources();
 
 public:
-	static CBackGround* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CBackGround*	 Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 };

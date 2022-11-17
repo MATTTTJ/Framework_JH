@@ -37,6 +37,9 @@
     <Filter Include="02. GameObjects\Terrain">
       <UniqueIdentifier>{c7a253d8-3691-4db7-8305-330df89a75aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\DynamicCamera">
+      <UniqueIdentifier>{8c1a88e5-8e98-481a-8c36-5f9ba18915a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -75,6 +78,9 @@
     <ClInclude Include="..\public\Terrain.h">
       <Filter>02. GameObjects\Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Dynamic_Camera.h">
+      <Filter>02. GameObjects\DynamicCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -103,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Terrain.cpp">
       <Filter>02. GameObjects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Dynamic_Camera.cpp">
+      <Filter>02. GameObjects\DynamicCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

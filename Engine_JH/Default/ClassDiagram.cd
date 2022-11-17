@@ -1,0 +1,417 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CGraphic_Device" Collapsed="true">
+    <Position X="1" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAACIBAAAAAQAwAAAAAAEAIAEAAAABAAAAo=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Graphic_Device.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CInput_Device" Collapsed="true">
+    <Position X="5.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAgAICAAAAAAIAAAAAADAAAgAAAAIARAAIAAI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Input_Device.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CGameInstance" Collapsed="true">
+    <Position X="7.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAQACgGACBDAACIIAAAACSDAAFQISACAAAAKBACI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\GameInstance.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CBase" Collapsed="true">
+    <Position X="18" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACBAAAEAAAAAAAACAAAAAAAAAAABAAAAI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Base.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CLevel" Collapsed="true">
+    <Position X="28" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAQAAAAAAQAAAEAAAAAIAABAACAAAQAI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Level.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CLevel_Manager" Collapsed="true">
+    <Position X="30.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAABAAAAAEAAAABAAAAAAAAAAAACABAAAAAAQAI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Level_Manager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CGameObject" Collapsed="true">
+    <Position X="32.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAIAAAAAAAAAAAAEEAAAAAKAIAIAABAAKAIAQFI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\GameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CObject_Manager" Collapsed="true">
+    <Position X="34.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAQAAAgAAAACAgIAAAAEAAAAAADgQAY=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Object_Manager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CLayer" Collapsed="true">
+    <Position X="3.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAQQAAAAAAAQAAAAAAACAAAAAAAEAAAAAAAAgAQAI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Layer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CCamera" Collapsed="true">
+    <Position X="32.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAABAAAAAIAAKAAAAAEAAAAAAAAAAAAABAAAAIAQBI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CComponent" Collapsed="true">
+    <Position X="15.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAEAAAAAQAAAAIAAAAACAIAABI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Component.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CComponent_Manager" Collapsed="true">
+    <Position X="23.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAABAAAgAAAAAAgAAAQAAAAAAAACgAAI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Component_Manager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CRenderer" Collapsed="true">
+    <Position X="16.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAgAAAAQEAAAAFgCAABBAAAEAAEAAAAAIAABI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Renderer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVIBuffer" Collapsed="true">
+    <Position X="20.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQBAIBABAAYAAAAAiAEAQCQIBAAAAIAABAAAAMAAJI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\VIBuffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVIBuffer_Rect" Collapsed="true">
+    <Position X="19" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAEAAAAAAAIIAgBI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\VIBuffer_Rect.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVIBuffer_Terrain" Collapsed="true">
+    <Position X="21.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAEIACAAAAAAEAAAAAAAAIAABI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\VIBuffer_Terrain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CShader" Collapsed="true">
+    <Position X="10" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAFMAAAAAAAAAAAAEAAAAAAAIkEAAAAAAAIIAABI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CTransform" Collapsed="true">
+    <Position X="12.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>iAAAACGAAAECCKgAAAAGABAACBAAAEBAgAAAAAIAEBI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Transform.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CTexture" Collapsed="true">
+    <Position X="14.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAEAAAAACAAAAEAIAAAAAAAEAAAAAAAAIAABo=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CPipeLine" Collapsed="true">
+    <Position X="25.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAiAAAACAACAAAAAAASAAIEAAAAAAAAAAAQAI=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\PipeLine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine::CTag_Finder" Collapsed="true">
+    <Position X="37.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAEAAAAAAAAEAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Function.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Engine::tagGraphicDesc" Collapsed="true">
+    <Position X="8.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AGAAAAAAAAAAAAAAAAAIIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Engine::tagFaceIndices16" Collapsed="true">
+    <Position X="4.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAEAAAACAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Engine::tagFaceIndices32" Collapsed="true">
+    <Position X="0.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAEAAAACAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Engine::tagVertexPositionTexture" Collapsed="true">
+    <Position X="4.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Engine::tagVertexPositionTexture_Declaration" Collapsed="true">
+    <Position X="39" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Engine::tagVertexPositionNormalTexture" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAgAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Engine::tagVertexPositionNormalTexture_Declaration" Collapsed="true">
+    <Position X="37.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="Engine::GRAPHIC_DESC" Collapsed="true">
+    <Position X="8.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::FACEINDICES16" Collapsed="true">
+    <Position X="4.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::FACEINDICES32" Collapsed="true">
+    <Position X="0.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::VTXTEX" Collapsed="true">
+    <Position X="4.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::VTXTEX_DECLARATION" Collapsed="true">
+    <Position X="39" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::VTXNORTEX" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::VTXNORTEX_DECLARATION" Collapsed="true">
+    <Position X="37.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Struct.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_byte" Collapsed="true">
+    <Position X="39" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_ubyte" Collapsed="true">
+    <Position X="39" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_tchar" Collapsed="true">
+    <Position X="37.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_short" Collapsed="true">
+    <Position X="46" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_ushort" Collapsed="true">
+    <Position X="44.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_int" Collapsed="true">
+    <Position X="40.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_uint" Collapsed="true">
+    <Position X="40.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_long" Collapsed="true">
+    <Position X="42.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_ulong" Collapsed="true">
+    <Position X="42.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_float" Collapsed="true">
+    <Position X="46" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_double" Collapsed="true">
+    <Position X="44.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_bool" Collapsed="true">
+    <Position X="37.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_float2" Collapsed="true">
+    <Position X="37.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_float3" Collapsed="true">
+    <Position X="39" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_float4" Collapsed="true">
+    <Position X="40.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_vector" Collapsed="true">
+    <Position X="46" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_fvector" Collapsed="true">
+    <Position X="46" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_cvector" Collapsed="true">
+    <Position X="42.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_hvector" Collapsed="true">
+    <Position X="39" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_gvector" Collapsed="true">
+    <Position X="37.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_float4x4" Collapsed="true">
+    <Position X="42.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_matrix" Collapsed="true">
+    <Position X="44.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_fmatrix" Collapsed="true">
+    <Position X="44.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Engine::_cmatrix" Collapsed="true">
+    <Position X="40.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\Jihoon\Documents\Visual Studio 2015\Projects\Framework_JH\Engine_JH\public\Engine_Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>
