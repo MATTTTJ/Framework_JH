@@ -93,6 +93,8 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	if (FAILED(__super::Create_IndexBuffer()))
 		return E_FAIL;
 
+	Safe_Delete_Array(pIndices);
+
 #pragma endregion
 
 	return S_OK;

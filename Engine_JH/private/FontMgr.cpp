@@ -1,12 +1,12 @@
-#include "..\public\FontMgr.h"
-
-
-
-CFontMgr::CFontMgr()
-{
-}
-
-
-CFontMgr::~CFontMgr()
-{
-}
+// #include "..\public\FontMgr.h"
+//
+//
+//
+// CFontMgr::CFontMgr()
+// {
+// }
+//
+//
+// CFontMgr::~CFontMgr()
+// {
+// }

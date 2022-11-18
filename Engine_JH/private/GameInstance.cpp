@@ -2,6 +2,7 @@
 #include "Graphic_Device.h"
 #include "Level_Manager.h"
 #include "Object_Manager.h"
+#include "Timer_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -15,7 +16,9 @@ CGameInstance::CGameInstance()
 	, m_pObject_Manager(CObject_Manager::GetInstance())
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
 	, m_pPipeLine(CPipeLine::GetInstance())
+	, m_pTimer_Manager(CTimer_Manager::GetInstance())
 {
+	Safe_AddRef(m_pTimer_Manager);
 	Safe_AddRef(m_pPipeLine);
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pObject_Manager);
@@ -42,13 +45,14 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (FAILED(m_pInput_Device->Ready_Input_Device(hInst, GraphicDesc.hWnd)))
 		return E_FAIL;
 
-	m_iStaticLevelIndex = iNumLevels;
 
 	if (FAILED(m_pObject_Manager->Reserve_Manager(iNumLevels + 1)))
 		return E_FAIL;
 
 	if (FAILED(m_pComponent_Manager->Reserve_Manager(iNumLevels + 1)))
 		return E_FAIL;
+
+	m_iStaticLevelIndex = iNumLevels;
 
 	if (FAILED(m_pComponent_Manager->Add_Prototype(m_iStaticLevelIndex, m_pPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut))))
 		return E_FAIL;
@@ -234,6 +238,30 @@ void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix Tra
 	return m_pPipeLine->Set_Transform(eState, TransformMatrix);
 }
 
+_double CGameInstance::Get_TimeDelta(const _tchar* pTimerTag)
+{
+	if (nullptr == m_pTimer_Manager)
+		return 0.0;
+
+	return m_pTimer_Manager->Get_TimeDelta(pTimerTag);
+}
+
+HRESULT CGameInstance::Ready_Timer(const _tchar* pTimerTag)
+{
+	if (nullptr == m_pTimer_Manager)
+		return E_FAIL;
+
+	return m_pTimer_Manager->Ready_Timer(pTimerTag);
+}
+
+void CGameInstance::Update_Timer(const _tchar* pTimaerTag)
+{
+	if (nullptr == m_pTimer_Manager)
+		return;
+
+	return m_pTimer_Manager->Update_Timer(pTimaerTag);
+}
+
 void CGameInstance::Release_Engine()
 {
 
@@ -250,15 +278,18 @@ void CGameInstance::Release_Engine()
 	CPipeLine::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
+
+	CTimer_Manager::GetInstance()->DestroyInstance();
 }
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pInput_Device);
-	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pGraphic_Device);
 
 }

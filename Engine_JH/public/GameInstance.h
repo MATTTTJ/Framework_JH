@@ -58,6 +58,11 @@ public:/* For.Component_Manager */
 	_matrix		Get_TransformMatrix_Inverse(CPipeLine::TRANSFORMSTATE eState);
 	void		Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix);
 
+public: /* For. Timeer_Manager*/
+	_double		Get_TimeDelta(const _tchar* pTimerTag);
+	HRESULT		Ready_Timer(const _tchar* pTimerTag);
+	void		Update_Timer(const _tchar* pTimaerTag);
+
 private:
 	class CGraphic_Device*			m_pGraphic_Device = nullptr;
 	class CInput_Device*			m_pInput_Device = nullptr;
@@ -65,6 +70,7 @@ private:
 	class CObject_Manager*			m_pObject_Manager = nullptr;
 	class CComponent_Manager*		m_pComponent_Manager = nullptr;
 	class CPipeLine*				m_pPipeLine = nullptr;
+	class CTimer_Manager*			m_pTimer_Manager = nullptr;
 
 private:
 	static _uint		m_iStaticLevelIndex;

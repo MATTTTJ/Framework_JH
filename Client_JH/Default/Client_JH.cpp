@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Client_JH.h"
 #include "MainApp.h"
+#include "GameInstance.h"
 
 #define MAX_LOADSTRING 100
 
@@ -55,6 +56,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	if (nullptr == pMainApp)
 		return FALSE;
 
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Default"))))
+		return FALSE;
+	if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_60"))))
+		return FALSE;
+
+	_double			TimerAcc = 0.0;
+
 	while (true)
 	{
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -68,12 +78,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				DispatchMessage(&msg);
 			}
 		}
-		else
-		{
-			pMainApp->Tick(0.0);
-			pMainApp->Render();
-		}
+			pGameInstance->Update_Timer(TEXT("Timer_Default"));
+
+			TimerAcc += pGameInstance->Get_TimeDelta(TEXT("Timer_Default"));
+
+			if(TimerAcc > 1.0 / 60.0)
+			{
+				pGameInstance->Update_Timer(TEXT("Timer_60"));
+
+				pMainApp->Tick(pGameInstance->Get_TimeDelta(TEXT("Timer_60")));
+				pMainApp->Render();
+
+				TimerAcc = 0.0;
+			}
 	}
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	Safe_Release(pMainApp);
 

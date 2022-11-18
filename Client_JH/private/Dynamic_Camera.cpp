@@ -48,10 +48,41 @@ HRESULT CDynamic_Camera::Initialize_Clone(void* pArg)
 
 void CDynamic_Camera::Tick(_double TimeDelta)
 {
-	if(GetKeyState(VK_UP) & 0x8000)
+	if (GetKeyState('W') & 0x8000)
 	{
 		m_pTransformCom->Go_Straight(TimeDelta);
 	}
+
+	if (GetKeyState('S') & 0x8000)
+	{
+		m_pTransformCom->Go_Backward(TimeDelta);
+	}
+
+	if (GetKeyState('A') & 0x8000)
+	{
+		m_pTransformCom->Go_Left(TimeDelta);
+	}
+
+	if (GetKeyState('D') & 0x8000)
+	{
+		m_pTransformCom->Go_Right(TimeDelta);
+	}
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_long			MouseMove = 0;
+
+	if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_X))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
+	}
+
+	if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_Y))
+	{
+		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	__super::Tick(TimeDelta);
 }
@@ -100,5 +131,5 @@ CGameObject * CDynamic_Camera::Clone(void * pArg)
 
 void CDynamic_Camera::Free()
 {
-	CGameObject::Free();
+	__super::Free();
 }

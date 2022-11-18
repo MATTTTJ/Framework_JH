@@ -11,6 +11,16 @@ namespace Engine
 		HWND			hWnd;
 	}GRAPHIC_DESC;
 
+	typedef struct tagLightDesc
+	{
+		XMFLOAT4			vDiffuse;
+	};
+
+	typedef struct tagMtrlDesc
+	{
+		XMFLOAT4			vDiffuse;
+	};
+
 	typedef struct tagFaceIndices16
 	{
 		unsigned short			_0, _1, _2;

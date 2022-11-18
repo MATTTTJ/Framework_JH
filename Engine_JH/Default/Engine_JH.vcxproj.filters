@@ -73,6 +73,9 @@
     <Filter Include="01. Utility\02. GameObject\Camera">
       <UniqueIdentifier>{9ed37e91-cf8c-4d20-b11d-80b01e8f9f2c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\Timer">
+      <UniqueIdentifier>{62e4bc7c-c398-4d66-a6cf-bc8fff2eb3c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -156,7 +159,16 @@
     <ClInclude Include="..\public\FontMgr.h">
       <Filter>00. System\FontMgr</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MyFont.h" />
+    <ClInclude Include="..\public\Timer.h">
+      <Filter>00. System\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MyFont.h">
+      <Filter>00. System\FontMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\public\Timer_Manager.h">
+      <Filter>00. System\Timer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -225,9 +237,20 @@
     <ClCompile Include="..\private\FontMgr.cpp">
       <Filter>00. System\FontMgr</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\MyFont.cpp" />
+    <ClCompile Include="..\private\Timer.cpp">
+      <Filter>00. System\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MyFont.cpp">
+      <Filter>00. System\FontMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Timer_Manager.cpp">
+      <Filter>00. System\Timer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Engine_JH.rc" />
   </ItemGroup>
 </Project>

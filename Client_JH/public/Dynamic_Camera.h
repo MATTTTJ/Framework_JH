@@ -11,19 +11,19 @@ public:
 	CDynamic_Camera(const CDynamic_Camera& rhs);
 	virtual ~CDynamic_Camera() = default;
 
-	virtual HRESULT Initialize_Prototype()		 override;
-	virtual HRESULT Initialize_Clone(void* pArg) override;
-	virtual void	Tick(_double TimeDelta)		 override;
-	virtual void	Late_Tick(_double TimeDelta) override;
-	virtual HRESULT Render() override;
+	virtual HRESULT			Initialize_Prototype()		 override;
+	virtual HRESULT			Initialize_Clone(void* pArg) override;
+	virtual void			Tick(_double TimeDelta)		 override;
+	virtual void			Late_Tick(_double TimeDelta) override;
+	virtual HRESULT			Render()					 override;
 
 public:
-	HRESULT			SetUp_Components();
+	HRESULT					SetUp_Components();
 
 public:
-	static CDynamic_Camera*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*		Clone(void* pArg) override;
-	virtual void				Free() override;
+	static CDynamic_Camera*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject*	Clone(void* pArg = nullptr) override;
+	virtual void			Free() override;
 };
 
 END
