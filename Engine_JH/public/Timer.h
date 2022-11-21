@@ -9,7 +9,7 @@ public:
 	CTimer();
 	virtual ~CTimer() = default;
 public:
-	_float		Get_TimeDelta(void) {
+	_double		Get_TimeDelta(void) {
 		return m_TimeDelta;
 	}
 
