@@ -13,6 +13,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Light()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
@@ -39,6 +42,28 @@ HRESULT CLevel_GamePlay::Render()
 		return E_FAIL;
 
 	SetWindowText(g_hWnd, TEXT("Level : GAMEPLAY"));
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Light()
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	LIGHTDESC			LightDesc;
+	ZeroMemory(&LightDesc, sizeof(LightDesc));
+
+	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
+	LightDesc.isEnable = true;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 1.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }

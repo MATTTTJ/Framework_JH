@@ -52,16 +52,20 @@ public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
 
-public:/* For.Component_Manager */
+public:/* For.PipeLine*/
 	_matrix		Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eState);
 	_float4x4	Get_TransformFloat4x4(CPipeLine::TRANSFORMSTATE eState);
 	_matrix		Get_TransformMatrix_Inverse(CPipeLine::TRANSFORMSTATE eState);
 	void		Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix);
-
+	_float4		Get_CamPos();
 public: /* For. Timeer_Manager*/
 	_double		Get_TimeDelta(const _tchar* pTimerTag);
 	HRESULT		Ready_Timer(const _tchar* pTimerTag);
 	void		Update_Timer(const _tchar* pTimaerTag);
+
+public: /* For. Light_Manager*/
+	const LIGHTDESC*	Get_LightDesc(_uint iIndex);
+	HRESULT				Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc);
 
 private:
 	class CGraphic_Device*			m_pGraphic_Device = nullptr;
@@ -71,7 +75,7 @@ private:
 	class CComponent_Manager*		m_pComponent_Manager = nullptr;
 	class CPipeLine*				m_pPipeLine = nullptr;
 	class CTimer_Manager*			m_pTimer_Manager = nullptr;
-
+	class CLight_Manager*			m_pLight_Manager = nullptr;
 private:
 	static _uint		m_iStaticLevelIndex;
 
