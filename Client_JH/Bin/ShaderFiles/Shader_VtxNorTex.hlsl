@@ -4,16 +4,23 @@ vector			g_vCamPosition;
 
 /* 빛정보 */
 vector			g_vLightDir;
+vector			g_vLightPos;
+float			g_fRange;
 vector			g_vLightDiffuse;
 vector			g_vLightAmbient;
 vector			g_vLightSpecular;
 
 
 /* 재질정보 */
-texture2D		g_DiffuseTexture;
+texture2D		g_DiffuseTexture[2];
 vector			g_vMtrlAmbient = vector(0.4f, 0.4f, 0.4f, 1.f);
 vector			g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
+/* 지형 셰이딩 */
+texture2D		g_BrushTexture;
+vector			g_vBrushPos;
+float			g_fBrushRange = 5.f;
+texture2D		g_FilterTexture;
 
 sampler LinearSampler = sampler_state
 {
@@ -42,12 +49,13 @@ struct VS_IN
 	float2		vTexUV : TEXCOORD0;
 };
 
+
 struct VS_OUT
 {
 	float4		vPosition : SV_POSITION;
-	float		fShade : COLORD0;
-	float		fSpecular : COLORD1;
+	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
+	float4		vWorldPos : TEXCOORD1;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -62,27 +70,19 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
 
-	vector		vWorldPosition = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-	vector		vWorldNormal = mul(float4(In.vNormal, 0.f), g_WorldMatrix);
-
-	Out.fShade = saturate(dot(normalize(g_vLightDir) * -1.f, 
-		normalize(vWorldNormal)));
-
-	vector		vReflect = reflect(normalize(g_vLightDir), normalize(vWorldNormal));
-	vector		vLook = vWorldPosition - g_vCamPosition;
-
-	Out.fSpecular = saturate(dot(normalize(vReflect) * -1.f,
-		normalize(vLook)));
+	Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vNormal = mul(float4(In.vNormal, 0.f), g_WorldMatrix);
 
 	return Out;
 }
 
+
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
-	float		fShade : COLORD0;
-	float		fSpecular : COLORD1;
+	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
+	float4		vWorldPos : TEXCOORD1;
 };
 
 struct PS_OUT
@@ -91,17 +91,50 @@ struct PS_OUT
 	float4		vColor : SV_TARGET0;
 };
 
+
+
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 30.f);
+	vector		vSourDiffuse = g_DiffuseTexture[0].Sample(LinearSampler, In.vTexUV * 30.f);
+	vector		vDestDiffuse = g_DiffuseTexture[1].Sample(LinearSampler, In.vTexUV * 30.f);
+	vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
 
-	vector		vDiffuse = g_vLightDiffuse * vMtrlDiffuse;
 
-	Out.vColor = vDiffuse * saturate(In.fShade + (g_vLightAmbient * g_vMtrlAmbient))
-		+ In.fSpecular * (g_vLightSpecular * g_vMtrlSpecular);
-	
+
+	/*vector		*/
+	vector		vBrush = (vector)0.f;
+
+	if (g_vBrushPos.x - g_fBrushRange <= In.vWorldPos.x && In.vWorldPos.x < g_vBrushPos.x + g_fBrushRange &&
+		g_vBrushPos.z - g_fBrushRange <= In.vWorldPos.z && In.vWorldPos.z < g_vBrushPos.z + g_fBrushRange)
+	{
+		float2		vUV;
+
+		vUV.x = (In.vWorldPos.x - (g_vBrushPos.x - g_fBrushRange)) / (2.f * g_fBrushRange);
+		vUV.y = ((g_vBrushPos.z + g_fBrushRange) - In.vWorldPos.z) / (2.f * g_fBrushRange);
+
+		vBrush = g_BrushTexture.Sample(LinearSampler, vUV);
+	}
+
+	vector		vMtrlDiffuse = vSourDiffuse * vFilter.r +
+		vDestDiffuse * (1.f - vFilter.r) + vBrush;
+
+	vector		vDiffuse = (g_vLightDiffuse * vMtrlDiffuse);
+
+	float		fShade = saturate(dot(normalize(g_vLightDir) * -1.f,
+		normalize(In.vNormal)));
+
+	vector		vReflect = reflect(normalize(g_vLightDir), normalize(In.vNormal));
+	vector		vLook = In.vWorldPos - g_vCamPosition;
+
+	/* 두 벡터 : 빛의 반사벡터, 정점을 바라보는 시선벡터 */
+	float		fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f,
+		normalize(vLook))), 30.f);
+
+	Out.vColor = vDiffuse * saturate(fShade + (g_vLightAmbient * g_vMtrlAmbient))
+		+ fSpecular * (g_vLightSpecular * g_vMtrlSpecular);
+
 	return Out;
 }
 

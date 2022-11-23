@@ -40,9 +40,9 @@ namespace Engine
 	template<typename T>
 	void	Safe_Delete_Array(T& pPointer)
 	{
-		if (pPointer != nullptr)
+		if (nullptr != pPointer)
 		{
-			delete [] pPointer;
+			delete[] pPointer;
 			pPointer = nullptr;
 		}
 	}

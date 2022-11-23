@@ -109,6 +109,18 @@ HRESULT CShader::Set_Matrix(const char * pConstantName, const _float4x4* pMatrix
 	return pVariable->SetMatrix((_float*)pMatrix);
 }
 
+HRESULT CShader::Set_ShaderResourceViewArray(const char * pConstantName, ID3D11ShaderResourceView ** ppSRV, _uint iNumTextures)
+{
+	if (nullptr == m_pEffect)
+		return E_FAIL;
+
+	ID3DX11EffectShaderResourceVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName)->AsShaderResource();
+	if (nullptr == pVariable)
+		return E_FAIL;
+
+	return pVariable->SetResourceArray(ppSRV, 0, iNumTextures);
+}
+
 HRESULT CShader::Set_ShaderResourceView(const char * pConstantName, ID3D11ShaderResourceView * pSRV)
 {
 	if (nullptr == m_pEffect)
@@ -118,9 +130,7 @@ HRESULT CShader::Set_ShaderResourceView(const char * pConstantName, ID3D11Shader
 	if (nullptr == pVariable)
 		return E_FAIL;
 
-
 	return pVariable->SetResource(pSRV);
-
 }
 
 
