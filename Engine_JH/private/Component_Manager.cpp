@@ -27,7 +27,7 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const _tchar* pProt
 
 	if (nullptr != Find_Prototype(iLevelIndex, pPrototypeTag))
 	{
-		assert(!"Already have Prototype in ComponentMgr");
+		// assert(!"Already have Prototype in ComponentMgr");
 		return E_FAIL;
 	}
 
@@ -65,10 +65,8 @@ CComponent* CComponent_Manager::Find_Prototype(_uint iLevelIndex, const _tchar* 
 	auto iter = find_if(m_pPrototypes[iLevelIndex].begin(), m_pPrototypes[iLevelIndex].end(), CTag_Finder(pPrototypeTag));
 
 	if (iter == m_pPrototypes[iLevelIndex].end())
-	{
-		assert("Failed to find_if in Find_Prototype");
 		return nullptr;
-	}
+
 	return iter->second;
 }
 

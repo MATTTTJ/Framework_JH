@@ -14,6 +14,7 @@ public:
 	HRESULT		Initialize();
 	void		Tick(_double TimeDelta);
 	void		Late_Tick(_double TimeDelta);
+	list<class CGameObject*>& GetGameObjects() { return m_GameObjects; }
 
 private:
 	list<class CGameObject*>			m_GameObjects;

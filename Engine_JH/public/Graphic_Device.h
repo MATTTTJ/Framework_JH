@@ -18,6 +18,7 @@ public:
 	HRESULT		Clear_BackBuffer_View(_float4 vClearColor);
 	HRESULT		Clear_DepthStencil_View();
 	HRESULT		Present();
+	HRESULT		Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen, _bool bNeedUpdate);
 
 private:
 	ID3D11Device*			m_pDevice = nullptr;

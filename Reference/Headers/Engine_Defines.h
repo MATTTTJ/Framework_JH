@@ -16,6 +16,8 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
+#include <cassert>
+
 #include <vector>
 #include <list>
 #include <map>
@@ -23,6 +25,9 @@ using namespace DirectX;
 #include <algorithm>
 using namespace std;
 
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
 
 #include "Engine_Macro.h"
 #include "Engine_Typedef.h"

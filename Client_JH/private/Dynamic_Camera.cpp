@@ -1,15 +1,14 @@
 #include "stdafx.h"
-#include "Dynamic_Camera.h"
+#include "..\public\Dynamic_Camera.h"
 #include "GameInstance.h"
 
-
-CDynamic_Camera::CDynamic_Camera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CCamera(pDevice,pContext)
+CDynamic_Camera::CDynamic_Camera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CCamera(pDevice, pContext)
 {
 }
 
-CDynamic_Camera::CDynamic_Camera(const CDynamic_Camera& rhs)
-	:CCamera(rhs)
+CDynamic_Camera::CDynamic_Camera(const CDynamic_Camera & rhs)
+	: CCamera(rhs)
 {
 }
 
@@ -21,7 +20,7 @@ HRESULT CDynamic_Camera::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CDynamic_Camera::Initialize_Clone(void* pArg)
+HRESULT CDynamic_Camera::Initialize_Clone(void * pArg)
 {
 	CCamera::CAMERADESC			CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof CameraDesc);
@@ -30,14 +29,14 @@ HRESULT CDynamic_Camera::Initialize_Clone(void* pArg)
 		memcpy(&CameraDesc, pArg, sizeof(CAMERADESC));
 	else
 	{
-		CameraDesc.vEye = _float4(0.f, 0.f, -10.f, 1.f);
+		CameraDesc.vEye = _float4(0.f, 10.f, -10.f, 1.f);
 		CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 		CameraDesc.vUp = _float4(0.f, 1.f, 0.f, 0.f);
 		CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 		CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 	}
 
-	if (FAILED(__super::Initialize_Clone(&CameraDesc)))
+	if (FAILED(CCamera::Initialize_Clone(&CameraDesc)))
 		return E_FAIL;
 
 	if (FAILED(SetUp_Components()))
@@ -58,6 +57,7 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 		m_pTransformCom->Go_Backward(TimeDelta);
 	}
 
+
 	if (GetKeyState('A') & 0x8000)
 	{
 		m_pTransformCom->Go_Left(TimeDelta);
@@ -70,16 +70,19 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	_long			MouseMove = 0;
-
-	if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_X))
+	if (pGameInstance->Get_DIMouseState(CInput_Device::DIM_RB) & 0x80)
 	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
-	}
+		_long			MouseMove = 0;
 
-	if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_Y))
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
+		if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_X))
+		{
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
+		}
+
+		if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_Y))
+		{
+			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
+		}
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -90,6 +93,8 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 void CDynamic_Camera::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
+
+
 }
 
 HRESULT CDynamic_Camera::Render()
@@ -102,16 +107,18 @@ HRESULT CDynamic_Camera::Render()
 
 HRESULT CDynamic_Camera::SetUp_Components()
 {
+
 	return S_OK;
 }
 
-CDynamic_Camera* CDynamic_Camera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+
+CDynamic_Camera * CDynamic_Camera::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
 	CDynamic_Camera*		pInstance = new CDynamic_Camera(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CDynamic_Camera");
+		MSG_BOX("Failed to Created : CCamera_Dynamic");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
@@ -123,7 +130,7 @@ CGameObject * CDynamic_Camera::Clone(void * pArg)
 
 	if (FAILED(pInstance->Initialize_Clone(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CDynamic_Camera");
+		MSG_BOX("Failed to Cloned : CCamera_Dynamic");
 		Safe_Release(pInstance);
 	}
 	return pInstance;

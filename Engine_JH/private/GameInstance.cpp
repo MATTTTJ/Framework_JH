@@ -1,5 +1,6 @@
 #include "..\public\GameInstance.h"
 #include "Graphic_Device.h"
+#include "Imgui_Manager.h"
 #include "Level_Manager.h"
 #include "Light_Manager.h"
 #include "Object_Manager.h"
@@ -19,6 +20,9 @@ CGameInstance::CGameInstance()
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pTimer_Manager(CTimer_Manager::GetInstance())
 	, m_pLight_Manager(CLight_Manager::GetInstance())
+
+	, m_pImgui_Manager(CImgui_Manager::GetInstance())
+
 {
 	Safe_AddRef(m_pLight_Manager);
 	Safe_AddRef(m_pTimer_Manager);
@@ -28,6 +32,9 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pGraphic_Device);
+
+	Safe_AddRef(m_pImgui_Manager);
+
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut)
@@ -44,19 +51,26 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
+	/* imgui 초기화 */
+	m_pImgui_Manager->Ready_Imgui(GraphicDesc.hWnd, *ppDeviceOut, *ppContextOut);
+
 	/* 입력 디바이스 초기화. */
 	if (FAILED(m_pInput_Device->Ready_Input_Device(hInst, GraphicDesc.hWnd)))
 		return E_FAIL;
 
-
+	/* +1개로 예약하는 이유 : 엔진에서 Level_Static을 추가로 제공하기 위해서. */
 	if (FAILED(m_pObject_Manager->Reserve_Manager(iNumLevels + 1)))
 		return E_FAIL;
 
 	if (FAILED(m_pComponent_Manager->Reserve_Manager(iNumLevels + 1)))
 		return E_FAIL;
-
+	/* 엔진에서 제공하는 스태틱레벨의 인덱스를 저장해준다. */
+	/* 클라이언트 개발자가 스태틱 레벨에 컴포넌트 원형을 추가하고싶은 경우에 스태틱레벨인덱스를
+	클랑리언트에 보여주기 위해서. */
 	m_iStaticLevelIndex = iNumLevels;
-
+	/* 엔진에서 제공하는 CGameObject를 상속받는 객체들이 기본적으로 CTransform컴포넌트를 기본으로 가지고 있게 만들어주기위해
+	복제할 수 있는 CTransform의 원형객체를 생성한다. */
+	/* 실제 이 원형을 복제하는 루틴 CGameObject의 Initialize함수에서 복제를 담당한다. */
 	if (FAILED(m_pComponent_Manager->Add_Prototype(m_iStaticLevelIndex, m_pPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut))))
 		return E_FAIL;
 
@@ -73,6 +87,8 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 	/* 입력장치의 상태를 갱신받아온다. */
 	m_pInput_Device->Invalidate_Input_Device();
 
+	m_pImgui_Manager->Tick_Imgui();
+	
 	m_pObject_Manager->Tick(TimeDelta);
 	m_pLevel_Manager->Tick(TimeDelta);
 
@@ -118,6 +134,14 @@ HRESULT CGameInstance::Present()
 	}
 
 	return m_pGraphic_Device->Present();
+}
+
+HRESULT CGameInstance::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen, _bool bNeedUpdate)
+{
+	if (nullptr == m_pGraphic_Device)
+		return E_FAIL;
+
+	return m_pGraphic_Device->Update_SwapChain(hWnd, iWinCX, iWinCY, bIsFullScreen, bNeedUpdate);
 }
 
 _byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)
@@ -289,6 +313,40 @@ HRESULT CGameInstance::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);
 }
 
+void CGameInstance::Render_ImGui()
+{
+	if (nullptr == m_pImgui_Manager)
+		return;
+
+	m_pImgui_Manager->Render_Imgui();
+}
+
+void CGameInstance::Render_Update_ImGui()
+{
+	if (nullptr == m_pImgui_Manager)
+		return;
+
+	m_pImgui_Manager->Render_Update_ImGui();
+}
+
+void CGameInstance::Add_ImguiTabObject(CImguiObject* ImguiObject)
+{
+	if (m_pImgui_Manager == nullptr) return;
+	m_pImgui_Manager->Add_ImguiTabObject(ImguiObject);
+}
+
+void CGameInstance::Add_ImguiWindowObject(CImguiObject* ImguiObject)
+{
+	if (m_pImgui_Manager == nullptr) return;
+	m_pImgui_Manager->Add_ImguiWindowObject(ImguiObject);
+}
+
+void CGameInstance::Clear_ImguiObjects()
+{
+	if (m_pImgui_Manager == nullptr) return;
+	m_pImgui_Manager->Clear_ImguiObjects();
+}
+
 void CGameInstance::Release_Engine()
 {
 
@@ -313,6 +371,9 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+
+	Safe_Release(m_pImgui_Manager);
+
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pPipeLine);

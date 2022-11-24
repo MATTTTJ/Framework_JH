@@ -14,12 +14,12 @@ public:
 	virtual HRESULT				Initialize_Prototype();
 	virtual HRESULT				Initialize_Clone(void* pArg);
 
+	virtual void Imgui_RenderProperty() {}
+
 
 protected:
 	ID3D11Device*				m_pDevice = nullptr;
 	ID3D11DeviceContext*		m_pContext = nullptr;
-
-protected:
 	_bool						m_bIsCloned;
 
 public:

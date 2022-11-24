@@ -22,6 +22,7 @@ public:
 	{
 		return m_iStaticLevelIndex;
 	}
+	HWND GetHWND() { return m_hWnd; }
 
 public:
 	static const _tchar* m_pPrototypeTransformTag;
@@ -34,6 +35,7 @@ public: /* For.GameInstance */
 public: /* For.Graphic_Device */
 	HRESULT				Clear_Graphic_Device(const _float4* pColor);
 	HRESULT				Present();
+	HRESULT				Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen, _bool bNeedUpdate);
 
 public: /* For.Input_Device */
 	_byte				Get_DIKeyState(_ubyte byKeyID);
@@ -59,7 +61,7 @@ public:/* For.PipeLine*/
 	void				Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix);
 	_float4				Get_CamPos();
 
-public: /* For. Timeer_Manager*/
+public: /* For. Timer_Manager*/
 	_double				Get_TimeDelta(const _tchar* pTimerTag);
 	HRESULT				Ready_Timer(const _tchar* pTimerTag);
 	void				Update_Timer(const _tchar* pTimaerTag);
@@ -67,6 +69,13 @@ public: /* For. Timeer_Manager*/
 public: /* For. Light_Manager*/
 	const LIGHTDESC*	Get_LightDesc(_uint iIndex);
 	HRESULT				Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc);
+
+public: // for imgui manager
+	void				Render_ImGui();
+	void				Render_Update_ImGui();
+	void				Add_ImguiTabObject(class CImguiObject* ImguiObject);
+	void				Add_ImguiWindowObject(class CImguiObject* ImguiObject);
+	void				Clear_ImguiObjects();
 
 private:
 	class CGraphic_Device*			m_pGraphic_Device = nullptr;
@@ -77,11 +86,18 @@ private:
 	class CPipeLine*				m_pPipeLine = nullptr;
 	class CTimer_Manager*			m_pTimer_Manager = nullptr;
 	class CLight_Manager*			m_pLight_Manager = nullptr;
+
+
+	class CImgui_Manager*			m_pImgui_Manager = nullptr;
+
 private:
 	static _uint					m_iStaticLevelIndex;
 
 public:
 	static void Release_Engine();
+
+private:
+	HWND m_hWnd;
 
 public:
 	virtual void Free() override;

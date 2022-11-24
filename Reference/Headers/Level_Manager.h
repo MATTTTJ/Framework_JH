@@ -16,6 +16,9 @@ public:
 	void   		Late_Tick(_double TimeDelta);
 	HRESULT		Render();
 
+
+	_uint GetCurLevelIdx() const { return m_iLevelIndex; }
+
 private:
 	class CLevel*		m_pCurrentLevel = nullptr;
 	_uint				m_iLevelIndex = 0;

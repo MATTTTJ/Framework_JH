@@ -107,7 +107,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ENGINE_JH_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../public/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public/;../public/Imgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,7 +149,7 @@ call Copy.bat</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;ENGINE_JH_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../public/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public/;../public/Imgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -179,7 +179,28 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\FontMgr.h" />
     <ClInclude Include="..\public\GameInstance.h" />
     <ClInclude Include="..\public\GameObject.h" />
+    <ClInclude Include="..\public\GameUtils.h" />
     <ClInclude Include="..\public\Graphic_Device.h" />
+    <ClInclude Include="..\public\ImguiObject.h" />
+    <ClInclude Include="..\public\Imgui\dirent.h" />
+    <ClInclude Include="..\public\Imgui\GraphEditor.h" />
+    <ClInclude Include="..\public\Imgui\imconfig.h" />
+    <ClInclude Include="..\public\Imgui\ImCurveEdit.h" />
+    <ClInclude Include="..\public\Imgui\ImGradient.h" />
+    <ClInclude Include="..\public\Imgui\imgui.h" />
+    <ClInclude Include="..\public\Imgui\ImGuiFileDialog.h" />
+    <ClInclude Include="..\public\Imgui\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="..\public\Imgui\ImGuizmo.h" />
+    <ClInclude Include="..\public\Imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="..\public\Imgui\imgui_impl_win32.h" />
+    <ClInclude Include="..\public\Imgui\imgui_internal.h" />
+    <ClInclude Include="..\public\Imgui\ImSequencer.h" />
+    <ClInclude Include="..\public\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\public\Imgui\imstb_textedit.h" />
+    <ClInclude Include="..\public\Imgui\imstb_truetype.h" />
+    <ClInclude Include="..\public\Imgui\ImZoomSlider.h" />
+    <ClInclude Include="..\public\Imgui_Manager.h" />
+    <ClInclude Include="..\public\Imgui_PropertyEditor.h" />
     <ClInclude Include="..\public\Input_Device.h" />
     <ClInclude Include="..\public\Layer.h" />
     <ClInclude Include="..\public\Level.h" />
@@ -210,7 +231,11 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\FontMgr.cpp" />
     <ClCompile Include="..\private\GameInstance.cpp" />
     <ClCompile Include="..\private\GameObject.cpp" />
+    <ClCompile Include="..\private\GameUtils.cpp" />
     <ClCompile Include="..\private\Graphic_Device.cpp" />
+    <ClCompile Include="..\private\ImguiObject.cpp" />
+    <ClCompile Include="..\private\Imgui_Manager.cpp" />
+    <ClCompile Include="..\private\Imgui_PropertyEditor.cpp" />
     <ClCompile Include="..\private\Input_Device.cpp" />
     <ClCompile Include="..\private\Layer.cpp" />
     <ClCompile Include="..\private\Level.cpp" />
@@ -231,6 +256,19 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\VIBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
     <ClCompile Include="..\private\VIBuffer_Terrain.cpp" />
+    <ClCompile Include="..\public\Imgui\GraphEditor.cpp" />
+    <ClCompile Include="..\public\Imgui\ImCurveEdit.cpp" />
+    <ClCompile Include="..\public\Imgui\ImGradient.cpp" />
+    <ClCompile Include="..\public\Imgui\imgui.cpp" />
+    <ClCompile Include="..\public\Imgui\ImGuiFileDialog.cpp" />
+    <ClCompile Include="..\public\Imgui\ImGuizmo.cpp" />
+    <ClCompile Include="..\public\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\public\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\public\Imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\public\Imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\public\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\public\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\public\Imgui\ImSequencer.cpp" />
     <ClCompile Include="Engine_Struct.cpp" />
   </ItemGroup>
   <ItemGroup>

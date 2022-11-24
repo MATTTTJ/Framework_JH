@@ -67,13 +67,40 @@ HRESULT CMainApp::Render()
 		nullptr == m_pRenderer)
 		return E_FAIL;
 
+	m_pGameInstance->Render_ImGui();
+
 	m_pGameInstance->Clear_Graphic_Device(&_float4(0.0f, 0.f, 1.f, 1.f));
 
 	m_pRenderer->Draw_RenderGroup();
 
+	m_pGameInstance->Render_Update_ImGui();
+
 	m_pGameInstance->Render_Level();
 
 	m_pGameInstance->Present();
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Resize_BackBuffer()
+{
+	GRAPHIC_DESC	tGraphicDesc;
+	ZeroMemory(&tGraphicDesc, sizeof(GRAPHIC_DESC));
+
+	tGraphicDesc.hWnd = g_hWnd;
+	if (!g_bFullScreen)
+	{
+		tGraphicDesc.iViewportSizeX = g_iWinSizeX;
+		tGraphicDesc.iViewportSizeY = g_iWinSizeY;
+	}
+	else
+	{
+		tGraphicDesc.iViewportSizeX = GetSystemMetrics(SM_CXSCREEN);
+		tGraphicDesc.iViewportSizeY = GetSystemMetrics(SM_CYSCREEN);
+	}
+
+	if (FAILED(m_pGameInstance->Update_SwapChain(tGraphicDesc.hWnd, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY, g_bFullScreen, g_bNeedResizeSwapChain)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -146,6 +173,8 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
+	m_pGameInstance->Clear_ImguiObjects();
+
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pContext);

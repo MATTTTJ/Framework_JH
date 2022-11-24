@@ -1,5 +1,7 @@
 #include "..\public\Transform.h"
 #include "Shader.h"
+#include "ImGuizmo.h"
+#include "GameInstance.h"
 
 CTransform::CTransform(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -28,9 +30,9 @@ void CTransform::Set_Scaled(STATE eState, _float fScale)
 
 void CTransform::Set_Scaled(_float3 vScale)
 {
-	Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(Get_State(STATE_RIGHT)) * vScale.x);
-	Set_State(CTransform::STATE_UP, XMVector3Normalize(Get_State(STATE_UP)) * vScale.y);
-	Set_State(CTransform::STATE_LOOK, XMVector3Normalize(Get_State(STATE_LOOK)) * vScale.z);
+	Set_State(STATE_RIGHT, XMVector3Normalize(Get_State(STATE_RIGHT)) * vScale.x);
+	Set_State(STATE_UP, XMVector3Normalize(Get_State(STATE_UP)) * vScale.y);
+	Set_State(STATE_LOOK, XMVector3Normalize(Get_State(STATE_LOOK)) * vScale.z);
 }
 
 void CTransform::Scaling(STATE eState, _float fScale)
@@ -54,6 +56,82 @@ HRESULT CTransform::Initialize_Clone(void * pArg)
 		memcpy(&m_TransformDesc, pArg, sizeof(TRANSFORMDESC));
 
 	return S_OK;
+}
+
+void CTransform::Imgui_RenderProperty()
+{
+	ImGuizmo::BeginFrame();
+	static float snap[3] = { 1.f, 1.f, 1.f };
+	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
+	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+	if (ImGui::IsKeyPressed(90))
+		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+	if (ImGui::IsKeyPressed(69))
+		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+	if (ImGui::IsKeyPressed(82)) // r Key
+		mCurrentGizmoOperation = ImGuizmo::SCALE;
+	if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
+		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
+		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
+		mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+	float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+
+	ImGuizmo::DecomposeMatrixToComponents(reinterpret_cast<float*>(&m_WorldMatrix), matrixTranslation, matrixRotation, matrixScale);
+	ImGui::InputFloat3("Translate", matrixTranslation);
+	ImGui::InputFloat3("Rotate", matrixRotation);
+	ImGui::InputFloat3("Scale", matrixScale);
+	ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, reinterpret_cast<float*>(&m_WorldMatrix));
+
+	if (mCurrentGizmoOperation != ImGuizmo::SCALE)
+	{
+		if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
+			mCurrentGizmoMode = ImGuizmo::LOCAL;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
+			mCurrentGizmoMode = ImGuizmo::WORLD;
+	}
+
+	static bool useSnap(false);
+	if (ImGui::IsKeyPressed(83))
+		useSnap = !useSnap;
+	ImGui::Checkbox("##something", &useSnap);
+	ImGui::SameLine();
+	switch (mCurrentGizmoOperation)
+	{
+	case ImGuizmo::TRANSLATE:
+		ImGui::InputFloat3("Snap", &snap[0]);
+		break;
+	case ImGuizmo::ROTATE:
+		ImGui::InputFloat("Angle Snap", &snap[0]);
+		break;
+	case ImGuizmo::SCALE:
+		ImGui::InputFloat("Scale Snap", &snap[0]);
+		break;
+	}
+
+	ImGuiIO& io = ImGui::GetIO();
+	RECT rt;
+	GetClientRect(CGameInstance::GetInstance()->GetHWND(), &rt);
+	POINT lt{ rt.left, rt.top };
+	ClientToScreen(CGameInstance::GetInstance()->GetHWND(), &lt);
+	ImGuizmo::SetRect((_float)lt.x, (_float)lt.y, io.DisplaySize.x, io.DisplaySize.y);
+
+	_float4x4 matView, matProj;
+	XMStoreFloat4x4(&matView, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+	XMStoreFloat4x4(&matProj, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+
+	ImGuizmo::Manipulate(
+		reinterpret_cast<float*>(&matView),
+		reinterpret_cast<float*>(&matProj),
+		mCurrentGizmoOperation,
+		mCurrentGizmoMode,
+		reinterpret_cast<float*>(&m_WorldMatrix),
+		nullptr, useSnap ? &snap[0] : nullptr);
 }
 
 void CTransform::Go_Straight(_double TimeDelta)
@@ -153,7 +231,7 @@ void CTransform::Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit)
 	}
 }
 
-HRESULT CTransform::Bind_ShaderResource(CShader * pShaderCom, const char * pConstantName)
+HRESULT CTransform::Bind_ShaderResource(CShader* pShaderCom, const char* pConstantName)
 {
 	if (nullptr == pShaderCom)
 		return E_FAIL;

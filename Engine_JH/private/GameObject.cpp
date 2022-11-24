@@ -1,6 +1,9 @@
 #include "GameObject.h"
 
 #include "GameInstance.h"
+#include "GameUtils.h"
+
+const _tchar* CGameObject::m_pTransformComTag = TEXT("Com_Transform");
 
 CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -51,41 +54,48 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
+void CGameObject::Imgui_RenderComponentProperties()
+{
+	for (const auto& com : m_Components)
+	{
+		ImGui::Separator();
+		char szName[128];
+		CGameUtils::wc2c(com.first, szName);
+
+		ImGui::Text("%s", szName);
+		com.second->Imgui_RenderProperty();
+	}
+}
+
+
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag,
 	CComponent** ppOut, void* pArg)
 {
-	if (nullptr != Find_Component(pComponentTag))
-	{
-		assert(!"Already have Component in GameObject");
-		return E_FAIL;
-	}
 
-	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
+	if (nullptr != Find_Component(pComponentTag))
+		return E_FAIL;
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	CComponent*		pComponentInstance = pGameInstance->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
-
-	if (nullptr == pComponentInstance)
-	{
-		assert(!"pComponentInstance is nullptr");
+	CComponent*	pComponent = pGameInstance->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
+	if (nullptr == pComponent)
 		return E_FAIL;
-	}
 
-	m_Components.emplace(pPrototypeTag, pComponentInstance);
+	m_Components.emplace(pComponentTag, pComponent);
 
-	Safe_AddRef(pComponentInstance);
+	Safe_AddRef(pComponent);
 
-	*ppOut = pComponentInstance;
+	*ppOut = pComponent;
 
 	Safe_Release(pGameInstance);
 
 	return S_OK;
-
 }
 
-CComponent* CGameObject::Find_Component(const _tchar* pComopnentTag)
+CComponent* CGameObject::Find_Component(const _tchar* ComponentTag)
 {
-	auto iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(pComopnentTag));
+	auto iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(ComponentTag));
 
 		if (iter == m_Components.end())
 			return nullptr;

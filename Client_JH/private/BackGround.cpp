@@ -2,6 +2,7 @@
 #include "..\public\BackGround.h"
 #include "GameInstance.h"
 
+
 CBackGround::CBackGround(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -28,26 +29,24 @@ HRESULT CBackGround::Initialize_Clone(void * pArg)
 	GameObjectDesc.TransformDesc.fSpeedPerSec = 5.f;
 	GameObjectDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(__super::Initialize_Clone(&GameObjectDesc)))
+	if (FAILED(CGameObject::Initialize_Clone(&GameObjectDesc)))
 		return E_FAIL;
 
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_fSizeX = g_iWinSizeX;
-	m_fSizeY = g_iWinSizeY;
+	m_fSizeX = (_float)g_iWinSizeX;
+	m_fSizeY = (_float)g_iWinSizeY;
 
 	m_fX = m_fSizeX * 0.5f;
 	m_fY = m_fSizeY * 0.5f;
 
-
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION,
-		XMVectorSet(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+		XMVectorSet(m_fX - (_float)g_iWinSizeX * 0.5f, -m_fY + (_float)g_iWinSizeY * 0.5f, 0.f, 1.f));
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.f));
-
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
 
 	return S_OK;
@@ -81,6 +80,8 @@ HRESULT CBackGround::Render()
 	return S_OK;
 }
 
+
+
 HRESULT CBackGround::SetUp_Components()
 {
 	/* For.Com_Renderer */
@@ -105,13 +106,6 @@ HRESULT CBackGround::SetUp_Components()
 		return E_FAIL;
 
 
-	///* For.Com_Tranform */
-	//
-
-	//if (FAILED(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), TEXT("Prototype_Component_Transform"), TEXT("Com_Tranform"),
-	//	(CComponent**)&m_pTransformCom, &TransformDesc)))
-	//	return E_FAIL;
-
 
 	return S_OK;
 }
@@ -121,7 +115,6 @@ HRESULT CBackGround::SetUp_ShaderResources()
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 
-	// m_pShaderCom->Set_Matrix("g_WorldMatrix", &m_WorldMatrix);
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -143,6 +136,7 @@ CBackGround * CBackGround::Create(ID3D11Device * pDevice, ID3D11DeviceContext * 
 		MSG_BOX("Failed to Created : CBackGround");
 		Safe_Release(pInstance);
 	}
+
 	return pInstance;
 }
 
@@ -166,5 +160,4 @@ void CBackGround::Free()
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
-
 }

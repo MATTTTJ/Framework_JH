@@ -13,8 +13,11 @@ HWND	g_hWnd;
 HINSTANCE g_hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
-
-												// 이 코드 모듈에 들어 있는 함수의 정방향 선언입니다.
+bool			g_bFullScreen = false;
+bool			g_bNeedResizeSwapChain = false;
+unsigned int	g_iWinSizeX = 1280;
+unsigned int	g_iWinSizeY = 720;
+// 이 코드 모듈에 들어 있는 함수의 정방향 선언입니다.
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -78,19 +81,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				DispatchMessage(&msg);
 			}
 		}
+		else
+		{
+			static _double OneFrameSec = 1.0 / 60.0;
 			pGameInstance->Update_Timer(TEXT("Timer_Default"));
 
 			TimerAcc += pGameInstance->Get_TimeDelta(TEXT("Timer_Default"));
 
-			if(TimerAcc > 1.0 / 60.0)
+			if (TimerAcc > OneFrameSec)
 			{
 				pGameInstance->Update_Timer(TEXT("Timer_60"));
 
 				pMainApp->Tick(pGameInstance->Get_TimeDelta(TEXT("Timer_60")));
 				pMainApp->Render();
+				pMainApp->Resize_BackBuffer();
+				g_bNeedResizeSwapChain = false;
 
 				TimerAcc = 0.0;
 			}
+		}
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -142,7 +151,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	g_hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-	RECT		rcWindow = { 0, 0, g_iWinSizeX, g_iWinSizeY };
+	RECT		rcWindow = { 0, 0, (LONG)g_iWinSizeX, (LONG)g_iWinSizeY };
+
 
 	AdjustWindowRect(&rcWindow, WS_OVERLAPPEDWINDOW, FALSE);
 
@@ -172,8 +182,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		return true;
+
 	switch (message)
 	{
 	case WM_COMMAND:
@@ -201,6 +216,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &ps);
 	}
 	break;
+	case WM_SIZE:
+	{
+		if (!g_bFullScreen)
+		{
+			RECT	rt;
+			GetClientRect(hWnd, &rt);
+			g_iWinSizeX = rt.right - rt.left;
+			g_iWinSizeY = rt.bottom - rt.top;
+		}
+		g_bNeedResizeSwapChain = true;
+		break;
+	}
+	case WM_SYSKEYDOWN:
+	{
+		if (wParam == VK_RETURN && (GetAsyncKeyState(VK_MENU) & 0x8000))
+		{
+			if (!g_bFullScreen)
+			{
+				RECT	rt;
+				GetClientRect(hWnd, &rt);
+				g_iWinSizeX = rt.right - rt.left;
+				g_iWinSizeY = rt.bottom - rt.top;
+			}
+			g_bFullScreen = !g_bFullScreen;
+			g_bNeedResizeSwapChain = true;
+			return 0;
+		}
+		break;
+	}
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

@@ -82,6 +82,18 @@
     <Filter Include="01. Utility\05. Lights\LightManager">
       <UniqueIdentifier>{c63e57f7-ac57-4775-a21b-184ffd134538}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\80. Imgui">
+      <UniqueIdentifier>{fe1546e6-87c9-44e3-8027-1174a34baf75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\80. Imgui\00. Manager">
+      <UniqueIdentifier>{4bfe6d2a-6317-4cc1-94d1-a1a88f3dd511}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\80. Imgui\01. ImguiObject">
+      <UniqueIdentifier>{e5c25f59-817b-4d1e-a3ca-ff7e2c2c00e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\80. Imgui\libs">
+      <UniqueIdentifier>{21e2d57a-b50c-48a6-9645-7fa0b6999ea1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -181,6 +193,69 @@
     <ClInclude Include="..\public\Light_Manager.h">
       <Filter>01. Utility\05. Lights\LightManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Imgui\dirent.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\GraphEditor.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\imconfig.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\ImCurveEdit.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\ImGradient.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\imgui.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\imgui_impl_dx11.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\imgui_impl_win32.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\imgui_internal.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\ImGuiFileDialog.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\ImGuiFileDialogConfig.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\ImGuizmo.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\ImSequencer.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\imstb_rectpack.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\imstb_textedit.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\imstb_truetype.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui\ImZoomSlider.h">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui_PropertyEditor.h">
+      <Filter>01. Utility\80. Imgui\01. ImguiObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImguiObject.h">
+      <Filter>01. Utility\80. Imgui\01. ImguiObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui_Manager.h">
+      <Filter>01. Utility\80. Imgui\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\GameUtils.h">
+      <Filter>01. Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -263,6 +338,57 @@
     </ClCompile>
     <ClCompile Include="..\private\Light_Manager.cpp">
       <Filter>01. Utility\05. Lights\LightManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\GraphEditor.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\ImCurveEdit.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\ImGradient.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\imgui.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\imgui_demo.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\imgui_draw.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\imgui_impl_dx11.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\imgui_impl_win32.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\imgui_tables.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\imgui_widgets.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\ImGuiFileDialog.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\ImGuizmo.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Imgui\ImSequencer.cpp">
+      <Filter>01. Utility\80. Imgui\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Imgui_PropertyEditor.cpp">
+      <Filter>01. Utility\80. Imgui\01. ImguiObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImguiObject.cpp">
+      <Filter>01. Utility\80. Imgui\01. ImguiObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Imgui_Manager.cpp">
+      <Filter>01. Utility\80. Imgui\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GameUtils.cpp">
+      <Filter>01. Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -6,15 +6,15 @@ namespace Engine
 	{
 	public:
 		explicit CTag_Finder(const wchar_t* pTag)
-			:	m_pTargetTag(pTag)
+			: m_pTargetTag(pTag)
 		{
 		}
-		~CTag_Finder(){}
+		~CTag_Finder() {		}
 	public:
 		template<typename T>
 		bool operator()(const T& pair)
 		{
-			if( 0 == lstrcmpW(m_pTargetTag,pair.first))
+			if (0 == lstrcmpW(m_pTargetTag, pair.first))
 			{
 				return true;
 			}
@@ -27,18 +27,18 @@ namespace Engine
 	};
 
 
-	template<typename T>
-	void	Safe_Delete(T& pPointer)
+	template <typename T>
+	void Safe_Delete(T& pPointer)
 	{
-		if(pPointer != nullptr)
+		if (nullptr != pPointer)
 		{
 			delete pPointer;
 			pPointer = nullptr;
 		}
 	}
 
-	template<typename T>
-	void	Safe_Delete_Array(T& pPointer)
+	template <typename T>
+	void Safe_Delete_Array(T& pPointer)
 	{
 		if (nullptr != pPointer)
 		{
@@ -47,28 +47,28 @@ namespace Engine
 		}
 	}
 
-	template<typename T>
-	unsigned long	Safe_AddRef(T& pInstance)
+	template <typename T>
+	unsigned long Safe_AddRef(T& pInstance)
 	{
-		unsigned long dwRefCnt = 0;
+		unsigned long	dwRefCnt = 0;
 
-		if(pInstance != nullptr)
+		if (nullptr != pInstance)
 			dwRefCnt = pInstance->AddRef();
 
 		return dwRefCnt;
 	}
 
-	template<typename T>
-	unsigned long	Safe_Release(T& pInstance)
+	template <typename T>
+	unsigned long Safe_Release(T& pInstance)
 	{
-		unsigned long dwRefCnt = 0;
-		if (pInstance != nullptr)
+		unsigned long	dwRefCnt = 0;
+		if (nullptr != pInstance)
 		{
 			dwRefCnt = pInstance->Release();
-
-			if (dwRefCnt == 0)
+			if (0 == dwRefCnt)
 				pInstance = nullptr;
 		}
+
 		return dwRefCnt;
 	}
 }
