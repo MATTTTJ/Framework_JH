@@ -94,6 +94,9 @@
     <Filter Include="01. Utility\80. Imgui\libs">
       <UniqueIdentifier>{21e2d57a-b50c-48a6-9645-7fa0b6999ea1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\06. Model">
+      <UniqueIdentifier>{1d967710-98d8-4a78-9f71-c1bc29dd2a8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -256,6 +259,7 @@
     <ClInclude Include="..\public\GameUtils.h">
       <Filter>01. Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -390,6 +394,7 @@
     <ClCompile Include="..\private\GameUtils.cpp">
       <Filter>01. Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

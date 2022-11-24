@@ -40,6 +40,9 @@
     <Filter Include="02. GameObjects\DynamicCamera">
       <UniqueIdentifier>{8c1a88e5-8e98-481a-8c36-5f9ba18915a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Player">
+      <UniqueIdentifier>{1968dafe-99ea-49a4-af7a-8931117caf2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -81,6 +84,9 @@
     <ClInclude Include="..\public\Dynamic_Camera.h">
       <Filter>02. GameObjects\DynamicCamera</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Player.h">
+      <Filter>02. GameObjects\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -112,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Dynamic_Camera.cpp">
       <Filter>02. GameObjects\DynamicCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player.cpp">
+      <Filter>02. GameObjects\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

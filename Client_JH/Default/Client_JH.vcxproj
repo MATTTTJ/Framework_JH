@@ -176,6 +176,7 @@
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="Client_JH.h" />
     <ClInclude Include="Resource.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="Client_JH.cpp" />
     <ClCompile Include="stdafx.cpp">
