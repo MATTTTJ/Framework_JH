@@ -45,6 +45,8 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 		nullptr == m_pComponent_Manager)
 		return E_FAIL;
 
+	m_hWnd = GraphicDesc.hWnd;
+
 	/* 그래픽 디바이스 초기화. */
 	if (FAILED(m_pGraphic_Device->Ready_Graphic_Device(GraphicDesc.hWnd, GraphicDesc.eWindowMode, GraphicDesc.iViewportSizeX, GraphicDesc.iViewportSizeY, ppDeviceOut, ppContextOut)))
 		return E_FAIL;
