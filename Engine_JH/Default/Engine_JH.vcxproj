@@ -207,6 +207,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\Level_Manager.h" />
     <ClInclude Include="..\public\Light.h" />
     <ClInclude Include="..\public\Light_Manager.h" />
+    <ClInclude Include="..\public\Mesh.h" />
     <ClInclude Include="..\public\Model.h" />
     <ClInclude Include="..\public\MyFont.h" />
     <ClInclude Include="..\public\Object_Manager.h" />
@@ -243,6 +244,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\Level_Manager.cpp" />
     <ClCompile Include="..\private\Light.cpp" />
     <ClCompile Include="..\private\Light_Manager.cpp" />
+    <ClCompile Include="..\private\Mesh.cpp" />
     <ClCompile Include="..\private\Model.cpp" />
     <ClCompile Include="..\private\MyFont.cpp" />
     <ClCompile Include="..\private\Object_Manager.cpp" />

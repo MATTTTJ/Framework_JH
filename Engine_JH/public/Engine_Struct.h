@@ -11,6 +11,10 @@ namespace Engine
 		HWND			hWnd;
 	}GRAPHIC_DESC;
 
+	typedef struct tagModelMaterial
+	{
+		class CTexture*		pTexture[AI_TEXTURE_TYPE_MAX];
+	}MODELMATERIAL;
 
 	/* 방향성광원, 점광원 : 방향벡터가 필요함*/
 	typedef struct tagLightDesc
@@ -53,6 +57,20 @@ namespace Engine
 		static const unsigned int		iNumElements = 2;
 		static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXTEX_DECLARATION;
+
+	typedef struct tagVertexModel
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexUV;
+		XMFLOAT3		vTangent;
+	}VTXMODEL;
+
+	typedef struct ENGINE_DLL tagVertexModel_Declaration
+	{
+		static const unsigned int			iNumElements = 4;
+		static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
+	}VTXMODEL_DECLARATION;
 
 	typedef struct tagVertexPositionNormalTexture
 	{

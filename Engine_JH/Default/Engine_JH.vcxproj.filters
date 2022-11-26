@@ -97,6 +97,9 @@
     <Filter Include="01. Utility\03. Components\06. Model">
       <UniqueIdentifier>{1d967710-98d8-4a78-9f71-c1bc29dd2a8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\06. Model\Mesh">
+      <UniqueIdentifier>{65dab559-6003-46a9-ba9b-36e88f9b80d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -259,7 +262,12 @@
     <ClInclude Include="..\public\GameUtils.h">
       <Filter>01. Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Model.h" />
+    <ClInclude Include="..\public\Model.h">
+      <Filter>01. Utility\03. Components\06. Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Mesh.h">
+      <Filter>01. Utility\03. Components\06. Model\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -394,7 +402,12 @@
     <ClCompile Include="..\private\GameUtils.cpp">
       <Filter>01. Utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Model.cpp" />
+    <ClCompile Include="..\private\Model.cpp">
+      <Filter>01. Utility\03. Components\06. Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Mesh.cpp">
+      <Filter>01. Utility\03. Components\06. Model\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
