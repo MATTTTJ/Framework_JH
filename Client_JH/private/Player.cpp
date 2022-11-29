@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Player.h"
-#include "Model.h"
 #include "GameInstance.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -56,9 +55,15 @@ HRESULT CPlayer::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-	m_pModelCom->Render();
+	for(_uint i = 0; i< iNumMeshes; ++i)
+	{
+		// 이 모델을 그리기위한 셰이더에 머테리얼 텍스쳐를 전달한다.
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture");
+
+		m_pModelCom->Render(m_pShaderCom, i);
+	}
 
 	return S_OK;
 }
@@ -79,11 +84,6 @@ HRESULT CPlayer::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"), TEXT("Com_Model"),
 	(CComponent**)&m_pModelCom)))
 		return E_FAIL;
-
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"), TEXT("Com_Model"),
-		(CComponent**)&m_pModelCom)))
-			return E_FAIL;
 
 	return S_OK;
 }
@@ -109,7 +109,7 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	if (nullptr == pLightDesc)
 		return E_FAIL;
 
-	// if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
+	// if (FAILED(m_pShaderCom->Set_RawlValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
 	// 	return E_FAIL;
 	// if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
 	// 	return E_FAIL;

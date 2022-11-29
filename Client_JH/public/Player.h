@@ -18,11 +18,11 @@ private:
 	virtual ~CPlayer() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize_Clone(void* pArg) override;
-	virtual void	Tick(_double TimeDelta) override;
-	virtual void	Late_Tick(_double TimeDelta) override;
-	virtual HRESULT Render() override;
+	virtual HRESULT			Initialize_Prototype() override;
+	virtual HRESULT			Initialize_Clone(void* pArg) override;
+	virtual void			Tick(_double TimeDelta) override;
+	virtual void			Late_Tick(_double TimeDelta) override;
+	virtual HRESULT			Render() override;
 
 private:
 	CShader*				m_pShaderCom	= nullptr;
@@ -31,8 +31,8 @@ private:
 	CTexture*				m_pTexture		= nullptr;
 
 private:
-	HRESULT		SetUp_Components();
-	HRESULT		SetUp_ShaderResources();
+	HRESULT					SetUp_Components();
+	HRESULT					SetUp_ShaderResources();
 
 public:
 	static	CPlayer*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -9,6 +9,11 @@ public:
 	virtual ~CMesh() = default;
 
 public:
+	_uint Get_MaterialIndex() const {
+		return m_iMaterialIndex;
+	}
+
+public:
 	virtual HRESULT		Initialize_Prototype(aiMesh* pAIMesh);
 	virtual HRESULT		Initialize_Clone(void* pArg) override;
 

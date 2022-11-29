@@ -1,5 +1,6 @@
 #include "..\public\Model.h"
 #include "Mesh.h"
+#include "Shader.h"
 #include "Texture.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -13,7 +14,18 @@ CModel::CModel(const CModel & rhs)
 	, m_eType(rhs.m_eType)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
 	, m_Meshes(rhs.m_Meshes)
+	, m_Materials(rhs.m_Materials)
+	, m_iNumMaterials(rhs.m_iNumMaterials)
 {
+
+	for(auto& Material : m_Materials)
+	{
+		for(_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
+		{
+			Safe_AddRef(Material.pTexture[i]);
+		}
+	}
+
 	for (auto& pMesh : m_Meshes)
 		Safe_AddRef(pMesh);
 
@@ -47,15 +59,32 @@ HRESULT CModel::Initialize_Clone(void * pArg)
 	return S_OK;
 }
 
-HRESULT CModel::Render()
+HRESULT CModel::Bind_Material(CShader* pShader, _uint iMeshIndex, aiTextureType eType, const char* pConstantName)
 {
-	for (_uint i = 0; i < m_iNumMeshes; ++i)
-	{
-		/* 셰이더에 맵핑해야할 재질(텍스쳐)을 던진다. */
+	if (iMeshIndex >= m_iNumMeshes)
+		return E_FAIL;
 
-		if (nullptr != m_Meshes[i])
-			m_Meshes[i]->Render();
+	_uint iMaterialIndex = m_Meshes[iMeshIndex]->Get_MaterialIndex();
+
+	if (iMaterialIndex >= m_iNumMaterials)
+		return E_FAIL;
+
+	if (nullptr != m_Materials[iMaterialIndex].pTexture[eType])
+	{
+		m_Materials[iMaterialIndex].pTexture[eType]->Bind_ShaderResource(pShader, pConstantName);
 	}
+	else
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex)
+{
+	pShader->Begin(0);
+
+	if (nullptr != m_Meshes[iMeshIndex])
+		m_Meshes[iMeshIndex]->Render();
 
 	return S_OK;
 }
@@ -71,7 +100,7 @@ HRESULT CModel::Ready_MeshContainers()
 	{
 		aiMesh*		pAIMesh = m_pAIScene->mMeshes[i];
 
-		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext, pAIMesh);
+		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext, pAIMesh); // 어떤 타입인지
 		if (nullptr == pMesh)
 			return E_FAIL;
 
@@ -130,7 +159,6 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 
 		m_Materials.push_back(ModelMaterial);
 	}
-
 	return S_OK;
 }
 
@@ -162,6 +190,14 @@ CComponent * CModel::Clone(void * pArg)
 void CModel::Free()
 {
 	__super::Free();
+
+	for (auto& Material : m_Materials)
+	{
+		for (_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
+		{
+			Safe_Release(Material.pTexture[i]);
+		}
+	}
 
 	for (auto& pMesh : m_Meshes)
 		Safe_Release(pMesh);

@@ -167,6 +167,7 @@ call Copy.bat</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h" />
+    <ClInclude Include="..\public\Calculator.h" />
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\Component_Manager.h" />
@@ -227,6 +228,7 @@ call Copy.bat</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp" />
+    <ClCompile Include="..\private\Calculator.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\Component_Manager.cpp" />

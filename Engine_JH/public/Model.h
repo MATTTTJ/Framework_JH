@@ -13,8 +13,20 @@ public:
 	virtual ~CModel() = default;
 
 public:
+	_uint					Get_NumMeshes() const
+	{
+		return m_iNumMeshes;
+	}
+
+public:
 	virtual HRESULT			Initialize_Prototype(TYPE eType, const char* pModelFilePath);
 	virtual HRESULT			Initialize_Clone(void* pArg);
+
+public:
+	// 어떤 메쉬에 어떤 텍스쳐를 쓸건지 묶는 함수
+	HRESULT					Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const char* pConstantName);
+	// 모델 자체에서 메쉬에 대한 렌더를 돌림
+	HRESULT					Render(CShader* pShader, _uint iMeshIndex);
 
 public:
 	const aiScene*			m_pAIScene = nullptr;
@@ -22,8 +34,6 @@ public:
 	TYPE					m_eType = TYPE_END;
 
 public:
-	HRESULT					Render();
-
 	// 하나의 모델은 교체가 가능한 여러개의 메시로 구성되어있다. 
 	_uint					m_iNumMeshes = 0;
 	vector<class CMesh*>	m_Meshes;
