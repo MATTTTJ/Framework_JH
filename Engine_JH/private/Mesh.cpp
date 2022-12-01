@@ -29,7 +29,6 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh)
 
 #pragma region VERTEX_BUFFER
 
-	
 	if (CModel::TYPE_NONANIM == m_eType)
 	{
 
@@ -38,7 +37,8 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh)
 	{
 
 	}
-	
+
+
 
 #pragma endregion
 
@@ -82,9 +82,8 @@ HRESULT CMesh::Initialize_Clone(void * pArg)
 	return S_OK;
 }
 
-HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh)
+HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh)
 {
-
 	m_iStride = sizeof(VTXMODEL);
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 
@@ -117,7 +116,7 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh)
 	return S_OK;
 }
 
-HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh)
+HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh)
 {
 	m_iStride = sizeof(VTXANIMMODEL);
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
@@ -190,7 +189,7 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh)
 	return S_OK;
 }
 
-CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext,CModel::TYPE eType, aiMesh * pAIMesh)
+CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, CModel::TYPE eType, aiMesh * pAIMesh)
 {
 	CMesh*		pInstance = new CMesh(pDevice, pContext);
 

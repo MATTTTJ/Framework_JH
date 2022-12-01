@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Player.h"
+#include "..\public\Player.h"
 #include "GameInstance.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -44,7 +44,7 @@ void CPlayer::Late_Tick(_double TimeDelta)
 	__super::Late_Tick(TimeDelta);
 
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
 HRESULT CPlayer::Render()
@@ -55,11 +55,12 @@ HRESULT CPlayer::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
+
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-	for(_uint i = 0; i< iNumMeshes; ++i)
+	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		// 이 모델을 그리기위한 셰이더에 머테리얼 텍스쳐를 전달한다.
+		/* 이 모델을 그리기위한 셰이더에 머테리얼 텍스쳐를 전달하낟. */
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, "g_DiffuseTexture");
 
 		m_pModelCom->Render(m_pShaderCom, i);
@@ -82,8 +83,11 @@ HRESULT CPlayer::SetUp_Components()
 
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"), TEXT("Com_Model"),
-	(CComponent**)&m_pModelCom)))
+		(CComponent**)&m_pModelCom)))
 		return E_FAIL;
+
+
+
 
 	return S_OK;
 }
@@ -108,20 +112,24 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	const LIGHTDESC* pLightDesc = pGameInstance->Get_LightDesc(0);
 	if (nullptr == pLightDesc)
 		return E_FAIL;
-
-	// if (FAILED(m_pShaderCom->Set_RawlValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
-	// 	return E_FAIL;
-	// if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
-	// 	return E_FAIL;
-	// if (FAILED(m_pShaderCom->Set_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
-	// 	return E_FAIL;
-	// if (FAILED(m_pShaderCom->Set_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
-	// 	return E_FAIL;
 	//
-	// if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pGameInstance->Get_CamPos(), sizeof(_float4))))
-	// 	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Set_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Set_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
+	//	return E_FAIL;
+
+	//if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
+	//	return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+
+
+
 
 	return S_OK;
 }
@@ -153,6 +161,7 @@ CGameObject * CPlayer::Clone(void * pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);

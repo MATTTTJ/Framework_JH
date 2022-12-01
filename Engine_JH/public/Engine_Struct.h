@@ -16,24 +16,25 @@ namespace Engine
 		class CTexture*		pTexture[AI_TEXTURE_TYPE_MAX];
 	}MODELMATERIAL;
 
-	/* 방향성광원, 점광원 : 방향벡터가 필요함*/
+	/* 방향성광원, 점광원 : 방향벡터가 필요하다. */
 	typedef struct tagLightDesc
 	{
 		enum TYPE { TYPE_DIRECTIONAL, TYPE_POINT, TYPE_END };
 
-		TYPE		eType;
+		TYPE				eType;
 
-		bool		isEnable; // 사용중인 조명인지?
+		bool				isEnable;
 
-		XMFLOAT4	vDirection;
+		XMFLOAT4			vDirection;
 
-		/* 모든 정점(픽셀)이 받는 빛의 방향벡터가 다 다르게 표현되어야함*/
-		/* 셰이더내에서 빛의 방향벡터를 연산한다.*/
+		/* 모든 정점(픽셀)이 받는 빛의 방향벡터가 다 다르게 표현되어야하기때문이다. */
+		/* 셰)이더내에서 빛의 방향벡터를 구해서 연산한다. */
 		XMFLOAT4			vPosition;
-		float				fRange;			// 점광원의 범위
-		XMFLOAT4			vDiffuse;		// 난반사 
-		XMFLOAT4			vAmbient;		// 환경광(완전 어둡지 않게 최소한으로 받는 빛) 
-		XMFLOAT4			vSpecular;		// 정반사(기존의 색을 날리고 완전히 하얀 빛)
+		float				fRange;
+
+		XMFLOAT4			vDiffuse;
+		XMFLOAT4			vAmbient;
+		XMFLOAT4			vSpecular;
 	}LIGHTDESC;
 
 	typedef struct tagFaceIndices16
@@ -74,6 +75,8 @@ namespace Engine
 		static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXANIMMODEL_DECLARATION;
 
+
+
 	typedef struct tagVertexModel
 	{
 		XMFLOAT3		vPosition;
@@ -84,9 +87,10 @@ namespace Engine
 
 	typedef struct ENGINE_DLL tagVertexModel_Declaration
 	{
-		static const unsigned int			iNumElements = 4;
+		static const unsigned int		iNumElements = 4;
 		static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXMODEL_DECLARATION;
+
 
 	typedef struct tagVertexPositionNormalTexture
 	{

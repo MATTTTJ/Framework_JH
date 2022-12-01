@@ -44,12 +44,22 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath)
 	if (nullptr == m_pAIScene)
 		return E_FAIL;
 
+	/* 뼈. */
+	//m_pAIScene->mRootNode->mChildren->mChildren;
+
+	//m_pAIScene->mAnimations[0]->mChannels[0];
+
+	//m_pAIScene->mMeshes[0]->mBones[0]
+
+
+
+
+
 	if (FAILED(Ready_MeshContainers()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Materials(pModelFilePath)))
 		return E_FAIL;
-
 
 	return S_OK;
 }
@@ -100,7 +110,7 @@ HRESULT CModel::Ready_MeshContainers()
 	{
 		aiMesh*		pAIMesh = m_pAIScene->mMeshes[i];
 
-		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext, pAIMesh); // 어떤 타입인지
+		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext,m_eType, pAIMesh); // 어떤 타입인지
 		if (nullptr == pMesh)
 			return E_FAIL;
 
@@ -193,11 +203,13 @@ void CModel::Free()
 
 	for (auto& Material : m_Materials)
 	{
-		for (_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
+		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
 		{
 			Safe_Release(Material.pTexture[i]);
 		}
 	}
+	m_Materials.clear();
+
 
 	for (auto& pMesh : m_Meshes)
 		Safe_Release(pMesh);
