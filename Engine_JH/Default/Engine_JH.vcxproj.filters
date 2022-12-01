@@ -103,6 +103,12 @@
     <Filter Include="01. Utility\03. Components\07. Calculator">
       <UniqueIdentifier>{d5640280-6eb6-4369-8ac4-8eec943bb887}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\06. Model\Bone">
+      <UniqueIdentifier>{c6ef8b9d-5f69-4a89-96cd-15bc603a5462}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\06. Model\Animation">
+      <UniqueIdentifier>{077e9925-0649-48b8-ab8b-df506189105b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -274,6 +280,12 @@
     <ClInclude Include="..\public\Calculator.h">
       <Filter>01. Utility\03. Components\07. Calculator</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Bone.h">
+      <Filter>01. Utility\03. Components\06. Model\Bone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Animation.h">
+      <Filter>01. Utility\03. Components\06. Model\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -416,6 +428,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Calculator.cpp">
       <Filter>01. Utility\03. Components\07. Calculator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bone.cpp">
+      <Filter>01. Utility\03. Components\06. Model\Bone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Animation.cpp">
+      <Filter>01. Utility\03. Components\06. Model\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

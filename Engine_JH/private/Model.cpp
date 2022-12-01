@@ -2,6 +2,9 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Bone.h"
+#include "Animation.h"
+
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -31,6 +34,31 @@ CModel::CModel(const CModel & rhs)
 
 }
 
+CBone* CModel::Get_BonePtr(const char* pBoneName)
+{
+	auto iter = find_if(m_Bones.begin(),m_Bones.end(),[&](CBone* pBone)->_bool
+	{
+		return !strcmp(pBoneName, pBone->Get_Name());
+	});
+
+	if (iter == m_Bones.end())
+		return nullptr;
+	return *iter;
+}
+
+void CModel::Play_Animation(_double TimeDelta)
+{
+	// 현재 애니메이션에 맞는 뼈들의 TransformMatrix를 갱신한다.
+
+	for(auto& pBone : m_Bones)
+	{
+		if(nullptr != pBone)
+		{
+			pBone->compute_CombindTransformationMatrix();
+		}
+	}
+}
+
 HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath)
 {
 	_uint			iFlag = 0;
@@ -41,14 +69,12 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath)
 		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
 
 	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
-	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
 
-	if (FAILED(Ready_MeshContainers()))
-		return E_FAIL;
+	NULL_CHECK_RETURN(m_pAIScene, E_FAIL)
 
-	if (FAILED(Ready_Materials(pModelFilePath)))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(Ready_MeshContainers(), E_FAIL)
 
+	FAILED_CHECK_RETURN(Ready_Materials(pModelFilePath), E_FAIL)
 
 	return S_OK;
 }
@@ -88,6 +114,21 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex)
 	return S_OK;
 }
 
+HRESULT CModel::Ready_Bones(aiNode* pAINode)
+{
+	CBone*	pBone = CBone::Create(pAINode);
+	NULL_CHECK_RETURN(pBone, E_FAIL);
+
+	m_Bones.push_back(pBone);
+
+	for(_uint i =0; i<pAINode->mNumChildren; ++i)
+	{
+		Ready_Bones(pAINode->mChildren[i]);
+	}
+
+	return S_OK;
+}
+
 HRESULT CModel::Ready_MeshContainers()
 {
 	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
@@ -98,7 +139,7 @@ HRESULT CModel::Ready_MeshContainers()
 	{
 		aiMesh*		pAIMesh = m_pAIScene->mMeshes[i];
 
-		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext,m_eType, pAIMesh); // 어떤 타입인지
+		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext,m_eType, pAIMesh, this); // 어떤 타입인지
 		NULL_CHECK_RETURN(pMesh, E_FAIL);
 
 		m_Meshes.push_back(pMesh);
