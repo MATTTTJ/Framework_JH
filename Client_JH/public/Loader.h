@@ -32,7 +32,7 @@ public:
 	HRESULT	Initialize(LEVEL eNextLevelID);
 	HRESULT	Loading_For_Logo();
 	HRESULT	Loading_For_GamePlay();
-
+	HRESULT	Loading_For_MapTool();
 private:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pContext = nullptr;

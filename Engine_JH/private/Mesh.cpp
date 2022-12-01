@@ -1,5 +1,7 @@
 #include "..\public\Mesh.h"
 
+#include "Bone.h"
+
 CMesh::CMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CVIBuffer(pDevice, pContext)
 {
@@ -10,12 +12,11 @@ CMesh::CMesh(const CMesh & rhs)
 {
 }
 
-HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh)
+HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh, CModel* pModel)
 {
 	m_eType = eType;
 
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL)
 
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
 	m_iNumVertexBuffers = 1;
@@ -29,6 +30,7 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh)
 
 #pragma region VERTEX_BUFFER
 
+	
 	if (CModel::TYPE_NONANIM == m_eType)
 	{
 
@@ -37,8 +39,7 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh)
 	{
 
 	}
-
-
+	
 
 #pragma endregion
 
@@ -66,8 +67,7 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh)
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pIndices;
 
-	if (FAILED(__super::Create_IndexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL)
 
 	Safe_Delete_Array(pIndices);
 
@@ -82,8 +82,9 @@ HRESULT CMesh::Initialize_Clone(void * pArg)
 	return S_OK;
 }
 
-HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh)
+HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh)
 {
+
 	m_iStride = sizeof(VTXMODEL);
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 
@@ -108,15 +109,14 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh)
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pVertices;
 
-	if (FAILED(__super::Create_VertexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL)
 
 	Safe_Delete_Array(pVertices);
 
 	return S_OK;
 }
 
-HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh)
+HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 {
 	m_iStride = sizeof(VTXANIMMODEL);
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
@@ -138,12 +138,25 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh)
 		memcpy(&pVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
 		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
 	}
-
+	// 메시에 영향을 준다. 
 	m_iNumBones = pAIMesh->mNumBones;
 
 	for (_uint i = 0; i < m_iNumBones; ++i)
 	{
 		aiBone*		pAIBone = pAIMesh->mBones[i];
+
+		CBone*		pBone = pModel->Get_BonePtr(pAIMesh->mName.data);
+		NULL_CHECK_RETURN(pBone, E_FAIL)
+
+		_float4x4	OffsetMatrix;
+
+		memcpy(&OffsetMatrix, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
+		XMStoreFloat4x4(&OffsetMatrix, XMMatrixTranspose(XMLoadFloat4x4(&OffsetMatrix)));
+
+		pBone->Set_OffetMatrix(OffsetMatrix);
+		m_Bones.push_back(pBone);
+
+		Safe_AddRef(pBone);
 
 		/* 이 뼈는 몇개의 정점에 영향을 주는가?! */
 		_uint iNumWeights = pAIBone->mNumWeights;
@@ -181,19 +194,18 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh)
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pVertices;
 
-	if (FAILED(__super::Create_VertexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL)
 
 	Safe_Delete_Array(pVertices);
 
 	return S_OK;
 }
 
-CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, CModel::TYPE eType, aiMesh * pAIMesh)
+CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext,CModel::TYPE eType, aiMesh * pAIMesh, CModel* pModel)
 {
 	CMesh*		pInstance = new CMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eType, pAIMesh)))
+	if (FAILED(pInstance->Initialize_Prototype(eType, pAIMesh, pModel)))
 	{
 		MSG_BOX("Failed to Created : CMesh");
 		Safe_Release(pInstance);

@@ -53,7 +53,7 @@ struct VS_IN
 struct VS_OUT
 {
 	float4		vPosition : SV_POSITION;
-	float4		vNormal : NORMAL;
+	float4		vNormal : NORMAL;	
 	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
 };
@@ -101,12 +101,12 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector		vDestDiffuse = g_DiffuseTexture[1].Sample(LinearSampler, In.vTexUV * 30.f);
 	vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
 
-
+	
 
 	/*vector		*/
 	vector		vBrush = (vector)0.f;
 
-	if (g_vBrushPos.x - g_fBrushRange <= In.vWorldPos.x && In.vWorldPos.x < g_vBrushPos.x + g_fBrushRange &&
+	if (g_vBrushPos.x - g_fBrushRange <= In.vWorldPos.x && In.vWorldPos.x < g_vBrushPos.x + g_fBrushRange && 
 		g_vBrushPos.z - g_fBrushRange <= In.vWorldPos.z && In.vWorldPos.z < g_vBrushPos.z + g_fBrushRange)
 	{
 		float2		vUV;
@@ -117,10 +117,10 @@ PS_OUT PS_MAIN(PS_IN In)
 		vBrush = g_BrushTexture.Sample(LinearSampler, vUV);
 	}
 
-	vector		vMtrlDiffuse = vSourDiffuse * vFilter.r +
+	vector		vMtrlDiffuse = vSourDiffuse * vFilter.r + 
 		vDestDiffuse * (1.f - vFilter.r) + vBrush;
-
-	vector		vDiffuse = (g_vLightDiffuse * vMtrlDiffuse);
+		
+	vector		vDiffuse = (g_vLightDiffuse * vMtrlDiffuse);	
 
 	float		fShade = saturate(dot(normalize(g_vLightDir) * -1.f,
 		normalize(In.vNormal)));

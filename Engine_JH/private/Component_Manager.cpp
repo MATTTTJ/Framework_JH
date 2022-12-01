@@ -26,10 +26,7 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const _tchar* pProt
 		return E_FAIL;
 
 	if (nullptr != Find_Prototype(iLevelIndex, pPrototypeTag))
-	{
-		// assert(!"Already have Prototype in ComponentMgr");
 		return E_FAIL;
-	}
 
 	m_pPrototypes[iLevelIndex].emplace(pPrototypeTag, pPrototype);
 
@@ -40,18 +37,11 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const _tchar* pProt
 CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg)
 {
 	CComponent*		pPrototype = Find_Prototype(iLevelIndex, pPrototypeTag);
-	if (nullptr == pPrototype)
-	{
-		assert(!"Have no Prototype. You must be Add_Prototype");
-		return nullptr;
-	}
+	NULL_CHECK_RETURN(pPrototype, nullptr);
 
 	CComponent*		pComponent = pPrototype->Clone(pArg);
-	if (nullptr == pComponent)
-	{
-		assert(!"Failed to Clone in ComponentMgr");
-		return nullptr;
-	}
+	NULL_CHECK_RETURN(pComponent, nullptr);
+
 	return pComponent;
 }
 

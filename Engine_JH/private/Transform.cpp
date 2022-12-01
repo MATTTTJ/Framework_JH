@@ -233,8 +233,7 @@ void CTransform::Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit)
 
 HRESULT CTransform::Bind_ShaderResource(CShader* pShaderCom, const char* pConstantName)
 {
-	if (nullptr == pShaderCom)
-		return E_FAIL;
+	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
 
 	return pShaderCom->Set_Matrix(pConstantName, &m_WorldMatrix);
 }

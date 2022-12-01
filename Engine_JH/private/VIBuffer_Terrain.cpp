@@ -14,8 +14,8 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain & rhs)
 
 HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath)
 {
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	_ulong		dwByte = 0;
 	HANDLE		hFile = CreateFile(pHeightMapFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -51,8 +51,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitives;
 
 #pragma region VERTEX_BUFFER
-	VTXNORTEX*			pVertices = new VTXNORTEX[m_iNumVertices];
-	ZeroMemory(pVertices, sizeof(VTXNORTEX));
+	m_pVertices = new VTXNORTEX[m_iNumVertices];
+	ZeroMemory(m_pVertices, sizeof(VTXNORTEX));
 
 	for (_uint i = 0; i < m_iNumVerticesZ; ++i)
 	{
@@ -63,12 +63,12 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 			//	11111111 11111011 11111011 11111011
 			//& 00000000 00000000 00000000 11111111
 
-			pVertices[iIndex].vPosition = _float3(j, (pPixel[iIndex] & 0x000000ff) / 10.f, i);
-			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
-			pVertices[iIndex].vTexUV = _float2(j / (m_iNumVerticesX - 1.0f), i / (m_iNumVerticesZ - 1.0f));
+			m_pVertices[iIndex].vPosition = _float3(j, (pPixel[iIndex] & 0x000000ff) / 10.f, i);
+			m_pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
+			m_pVertices[iIndex].vTexUV = _float2(j / (m_iNumVerticesX - 1.0f), i / (m_iNumVerticesZ - 1.0f));
 		}
 	}
-
+	
 	Safe_Delete_Array(pPixel);
 
 #pragma endregion
@@ -100,13 +100,13 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 			pIndices[iNumFaces]._1 = iIndices[1];
 			pIndices[iNumFaces]._2 = iIndices[2];
 
-			vSour = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vPosition);
-			vDest = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition);
+			vSour = XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._1].vPosition) - XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._0].vPosition);
+			vDest = XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._2].vPosition) - XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._1].vPosition);
 			vNormal = XMVector3Normalize(XMVector3Cross(vSour, vDest));
 
-			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal) + vNormal));
-			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal) + vNormal));
-			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal) + vNormal));
+			XMStoreFloat3(&m_pVertices[pIndices[iNumFaces]._0].vNormal, XMVector3Normalize(XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._0].vNormal) + vNormal));
+			XMStoreFloat3(&m_pVertices[pIndices[iNumFaces]._1].vNormal, XMVector3Normalize(XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._1].vNormal) + vNormal));
+			XMStoreFloat3(&m_pVertices[pIndices[iNumFaces]._2].vNormal, XMVector3Normalize(XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._2].vNormal) + vNormal));
 
 			++iNumFaces;
 
@@ -114,13 +114,13 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 			pIndices[iNumFaces]._1 = iIndices[2];
 			pIndices[iNumFaces]._2 = iIndices[3];
 
-			vSour = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vPosition);
-			vDest = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition);
+			vSour = XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._1].vPosition) - XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._0].vPosition);
+			vDest = XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._2].vPosition) - XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._1].vPosition);
 			vNormal = XMVector3Normalize(XMVector3Cross(vSour, vDest));
 
-			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal) + vNormal));
-			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal) + vNormal));
-			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal) + vNormal));
+			XMStoreFloat3(&m_pVertices[pIndices[iNumFaces]._0].vNormal, XMVector3Normalize(XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._0].vNormal) + vNormal));
+			XMStoreFloat3(&m_pVertices[pIndices[iNumFaces]._1].vNormal, XMVector3Normalize(XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._1].vNormal) + vNormal));
+			XMStoreFloat3(&m_pVertices[pIndices[iNumFaces]._2].vNormal, XMVector3Normalize(XMLoadFloat3(&m_pVertices[pIndices[iNumFaces]._2].vNormal) + vNormal));
 
 			++iNumFaces;
 		}
@@ -139,11 +139,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	m_BufferDesc.MiscFlags = 0;
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
-	m_SubResourceData.pSysMem = pVertices;
+	m_SubResourceData.pSysMem = m_pVertices;
 
-	if (FAILED(__super::Create_VertexBuffer()))
-		return E_FAIL;
-
+	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
 
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 
@@ -157,10 +155,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pIndices;
 
-	if (FAILED(__super::Create_IndexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL);
 
-	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
 
 	return S_OK;
@@ -168,13 +164,115 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 
 HRESULT CVIBuffer_Terrain::Initialize_Clone(void * pArg)
 {
-	if (FAILED(__super::Initialize_Clone(pArg)))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
 
 	return S_OK;
 }
 
+_float3 CVIBuffer_Terrain::PickingOnTerrain(HWND hwnd, const CTransform* pTerrainTransformCom)
+{
+	POINT	ptMouse{};
 
+	GetCursorPos(&ptMouse);
+	ScreenToClient(hwnd, &ptMouse);
+
+	_float3 vPoint;
+
+	D3D11_VIEWPORT	ViewPort;
+	ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
+	ViewPort.Width = 1280;
+	ViewPort.Height = 720;
+	ViewPort.MinDepth = 0.0f;
+	ViewPort.MaxDepth = 1.0f;
+	ViewPort.TopLeftX = 0;
+	ViewPort.TopLeftY = 0;
+
+	_uint itmp = 1;
+
+	m_pContext->RSGetViewports(&itmp, &ViewPort);
+	
+	vPoint.x = ptMouse.x / (ViewPort.Width * 0.5f) - 1.f;
+	vPoint.y = ptMouse.y / -(ViewPort.Height * 0.5f) + 1.f;
+	vPoint.z = 0.f;
+	_matrix matProj = m_pPipeLine->Get_TransformMatrix_Inverse(CPipeLine::D3DTS_PROJ);
+
+	_vector vtmp = XMLoadFloat3(&vPoint);
+
+	XMVector3TransformCoord(vtmp, matProj);
+
+	_vector vRayDir, vRayPos;
+
+	vRayPos = { 0.f,0.f,0.f };
+	vRayDir = vtmp - vRayPos;
+
+	// 뷰스페이스 -> 월드
+	_matrix  matView = m_pPipeLine->Get_TransformMatrix_Inverse(CPipeLine::D3DTS_VIEW);
+	XMVector3TransformCoord(vRayPos, matView);
+	XMVector3TransformNormal(vRayDir, matView);
+
+	// 월드 -> 로컬
+	_matrix matWorld = m_pTransformCom->Get_WorldMatrix_Inverse();
+	XMVector3TransformCoord(vRayPos, matWorld);
+	XMVector3TransformNormal(vRayDir, matWorld);
+
+	const _vector*		pTerrainVtx = &XMLoadFloat3(&m_pVertices->vPosition);
+
+	_ulong	dwVtxCntX = m_iNumVerticesX;
+	_ulong	dwVtxCntZ = m_iNumVerticesZ;
+
+	_ulong	dwVtxIdx[3] {};
+	_float  fDist = 0.f;
+
+	for (_ulong i = 0; i < dwVtxCntZ - 1; ++i)
+	{
+		for (_ulong j = 0; j < dwVtxCntZ; ++j)
+		{
+			_ulong dwIndex = i * dwVtxCntX + j;
+
+			// 오른쪽 위
+			dwVtxIdx[0] = dwIndex + dwVtxCntX;
+			dwVtxIdx[1] = dwIndex + dwVtxCntX + 1;
+			dwVtxIdx[2] = dwIndex + 1;
+
+
+			if (TriangleTests::Intersects(vRayPos, vRayDir, 
+										pTerrainVtx[dwVtxIdx[1]], pTerrainVtx[dwVtxIdx[0]],
+										pTerrainVtx[dwVtxIdx[2]], fDist))
+			{
+				_float3 fFirst, fSecond, fThird;
+				XMStoreFloat3(&fFirst, pTerrainVtx[dwVtxIdx[0]]);
+				XMStoreFloat3(&fSecond, pTerrainVtx[dwVtxIdx[1]]);
+				XMStoreFloat3(&fThird, pTerrainVtx[dwVtxIdx[2]]);
+
+				return _float3(fSecond.x + (fFirst.x - fSecond.x)
+					, 0.f
+					, fSecond.z + (fThird.z - fSecond.z));
+			}
+
+			//왼쪽 아래
+			dwVtxIdx[0] = dwIndex + dwVtxCntX;
+			dwVtxIdx[1] = dwIndex + 1;
+			dwVtxIdx[2] = dwIndex;
+
+			if (TriangleTests::Intersects(vRayPos, vRayDir,
+											pTerrainVtx[dwVtxIdx[2]], pTerrainVtx[dwVtxIdx[1]],
+											pTerrainVtx[dwVtxIdx[0]], fDist))
+			{
+				_float3 fFirst, fSecond, fThird;
+				XMStoreFloat3(&fFirst, pTerrainVtx[dwVtxIdx[0]]);
+				XMStoreFloat3(&fSecond, pTerrainVtx[dwVtxIdx[1]]);
+				XMStoreFloat3(&fThird, pTerrainVtx[dwVtxIdx[2]]);
+				return _float3(fThird.x + (fSecond.x - fThird.x)
+					, 0.f
+					, fThird.z + (fFirst.z - fThird.z));
+			}
+		}
+	}
+
+	return _float3(0.f, 0.f, 0.f);
+
+
+}
 
 
 CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar* pHeightMapFilePath)
@@ -204,6 +302,10 @@ CComponent * CVIBuffer_Terrain::Clone(void * pArg)
 
 void CVIBuffer_Terrain::Free()
 {
+
 	__super::Free();
+
+	if (!m_bIsCloned)
+		Safe_Delete_Array(m_pVertices);
 
 }

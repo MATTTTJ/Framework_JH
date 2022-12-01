@@ -14,8 +14,7 @@ CDynamic_Camera::CDynamic_Camera(const CDynamic_Camera & rhs)
 
 HRESULT CDynamic_Camera::Initialize_Prototype()
 {
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	return S_OK;
 }
@@ -35,9 +34,7 @@ HRESULT CDynamic_Camera::Initialize_Clone(void * pArg)
 		CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 		CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 	}
-
-	if (FAILED(CCamera::Initialize_Clone(&CameraDesc)))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(CCamera::Initialize_Clone(&CameraDesc), E_FAIL);
 
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;

@@ -28,9 +28,7 @@ HRESULT CCamera::Initialize_Clone(void* pArg)
 
 	if (nullptr != pArg)
 		memcpy(&m_CameraDesc, pArg, sizeof(m_CameraDesc));
-
-	if (FAILED(__super::Initialize_Clone(&m_CameraDesc)))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(&m_CameraDesc), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMLoadFloat4(&m_CameraDesc.vEye));
 	m_pTransformCom->LookAt(XMLoadFloat4(&m_CameraDesc.vAt));
@@ -40,11 +38,8 @@ HRESULT CCamera::Initialize_Clone(void* pArg)
 
 void CCamera::Tick(_double TimeDelta)
 {
-	if (nullptr == m_pPipeLine)
-	{
-		MSG_BOX("m_PipeLine is nullptr : CCamera");
-		return;
-	}
+	NULL_CHECK(m_pPipeLine);
+
 	// 월드스페이스의 역행렬은 카메라의 뷰스페이스
 	m_pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
 	m_pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), 1280 / (_float)720, 0.2f, 300.f));
