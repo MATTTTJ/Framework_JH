@@ -27,24 +27,21 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 
 HRESULT CVIBuffer::Initialize_Prototype()
 {
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	return S_OK;
 }
 
 HRESULT CVIBuffer::Initialize_Clone(void* pArg)
 {
-	if (FAILED(__super::Initialize_Clone(pArg)))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
 
 	return S_OK;
 }
 
 HRESULT CVIBuffer::Render()
 {
-	if (nullptr == m_pContext)
-		return E_FAIL;
+	NULL_CHECK_RETURN(m_pContext, E_FAIL);
 
 	ID3D11Buffer*	pVertexBuffers[] = { m_pVB, };
 

@@ -34,8 +34,7 @@ void CLayer::Late_Tick(_double TimeDelta)
 
 HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 {
-	if (nullptr == pGameObject)
-		return E_FAIL;
+	NULL_CHECK_RETURN(pGameObject, E_FAIL);
 
 	m_GameObjects.push_back(pGameObject);
 

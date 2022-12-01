@@ -13,9 +13,9 @@ CMesh::CMesh(const CMesh & rhs)
 HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh)
 {
 	m_eType = eType;
-
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
+	// if (FAILED(__super::Initialize_Prototype()))
+	// 	return E_FAIL;
 
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
 	m_iNumVertexBuffers = 1;

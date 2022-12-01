@@ -43,6 +43,9 @@
     <Filter Include="02. GameObjects\Player">
       <UniqueIdentifier>{1968dafe-99ea-49a4-af7a-8931117caf2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Level\98. MapTool">
+      <UniqueIdentifier>{bacf02ee-dc01-4e6c-9520-62f4aafea879}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -87,6 +90,9 @@
     <ClInclude Include="..\public\Player.h">
       <Filter>02. GameObjects\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Level_MapTool.h">
+      <Filter>01. Level\98. MapTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -122,6 +128,9 @@
     <ClCompile Include="..\private\Player.cpp">
       <Filter>02. GameObjects\Player</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Level_MapTool.cpp">
+      <Filter>01. Level\98. MapTool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">
@@ -142,10 +151,10 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl">

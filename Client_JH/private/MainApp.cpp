@@ -52,13 +52,18 @@ HRESULT CMainApp::Initialize()
 
 	return S_OK;
 }
-
 void CMainApp::Tick(_double TimeDelta)
 {
 	if (nullptr == m_pGameInstance)
 		return;
 
 	m_pGameInstance->Tick_Engine(TimeDelta);
+
+	if(GetAsyncKeyState(VK_F5) & 0x8000)
+	{
+		// m_pGameInstance->Open_Level(LEVEL_LOADING,CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MAPTOOL));
+		Start_Level(LEVEL_MAPTOOL);
+	}
 }
 
 HRESULT CMainApp::Render()

@@ -41,8 +41,7 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath)
 		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
 
 	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
-	if (nullptr == m_pAIScene)
-		return E_FAIL;
+	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
 
 	if (FAILED(Ready_MeshContainers()))
 		return E_FAIL;
@@ -91,8 +90,7 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex)
 
 HRESULT CModel::Ready_MeshContainers()
 {
-	if (nullptr == m_pAIScene)
-		return E_FAIL;
+	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
 
 	m_iNumMeshes = m_pAIScene->mNumMeshes;
 
@@ -100,9 +98,8 @@ HRESULT CModel::Ready_MeshContainers()
 	{
 		aiMesh*		pAIMesh = m_pAIScene->mMeshes[i];
 
-		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext, pAIMesh); // 어떤 타입인지
-		if (nullptr == pMesh)
-			return E_FAIL;
+		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext,m_eType, pAIMesh); // 어떤 타입인지
+		NULL_CHECK_RETURN(pMesh, E_FAIL);
 
 		m_Meshes.push_back(pMesh);
 	}
@@ -152,9 +149,7 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 			MultiByteToWideChar(CP_ACP, 0, szTexturePath, strlen(szTexturePath), szFullPath, MAX_PATH);
 
 			ModelMaterial.pTexture[j] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
-
-			if (nullptr == ModelMaterial.pTexture[j])
-				return E_FAIL;
+			NULL_CHECK_RETURN(ModelMaterial.pTexture[j], E_FAIL);
 		}
 
 		m_Materials.push_back(ModelMaterial);

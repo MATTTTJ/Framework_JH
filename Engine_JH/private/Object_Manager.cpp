@@ -57,11 +57,9 @@ HRESULT CObject_Manager::Clone_GameObject(_uint iLevelIndex, const _tchar * pLay
 	if (nullptr == pLayer)
 	{
 		pLayer = CLayer::Create();
-		if (nullptr == pLayer)
-			return E_FAIL;
+		NULL_CHECK_RETURN(pLayer, E_FAIL);
 
-		if (FAILED(pLayer->Add_GameObject(pGameObject)))
-			return E_FAIL;
+		FAILED_CHECK_RETURN(pLayer->Add_GameObject(pGameObject), E_FAIL);
 
 		m_pLayers[iLevelIndex].emplace(pLayerTag, pLayer);
 	}

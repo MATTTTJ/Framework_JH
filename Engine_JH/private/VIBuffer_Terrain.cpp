@@ -14,8 +14,8 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain & rhs)
 
 HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath)
 {
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	_ulong		dwByte = 0;
 	HANDLE		hFile = CreateFile(pHeightMapFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -141,9 +141,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pVertices;
 
-	if (FAILED(__super::Create_VertexBuffer()))
-		return E_FAIL;
-
+	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
 
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 
@@ -157,8 +155,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pIndices;
 
-	if (FAILED(__super::Create_IndexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL);
 
 	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
@@ -168,8 +165,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 
 HRESULT CVIBuffer_Terrain::Initialize_Clone(void * pArg)
 {
-	if (FAILED(__super::Initialize_Clone(pArg)))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
 
 	return S_OK;
 }

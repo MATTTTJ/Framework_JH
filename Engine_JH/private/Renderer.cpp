@@ -22,16 +22,11 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pGameO
 
 HRESULT CRenderer::Draw_RenderGroup()
 {
-	if (FAILED(Render_Priority()))
-		return E_FAIL;
-	if (FAILED(Render_NonAlphaBlend()))
-		return E_FAIL;
-	if (FAILED(Render_NonLight()))
-		return E_FAIL;
-	if (FAILED(Render_AlphaBlend()))
-		return E_FAIL;
-	if (FAILED(Render_UI()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_NonAlphaBlend(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_NonLight(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 	return S_OK;
 }
@@ -39,16 +34,14 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 HRESULT CRenderer::Initialize_Prototype()
 {
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	return S_OK;
 }
 
 HRESULT CRenderer::Initialize_Clone(void* pArg)
 {
-	if (FAILED(__super::Initialize_Clone(pArg)))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
 
 	return S_OK;
 }

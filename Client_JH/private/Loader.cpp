@@ -28,6 +28,9 @@ _uint APIENTRY LoadingThread(void* pArg)
 	case LEVEL_GAMEPLAY:
 		pLoader->Loading_For_GamePlay();
 		break;
+	case LEVEL_MAPTOOL:
+		pLoader->Loading_For_MapTool();
+		break;
 	}
 
 	LeaveCriticalSection(&pLoader->Get_Critical_Section());
@@ -144,6 +147,57 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Player */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("로딩끝. "));
+
+	m_bIsLoadingFinished = true;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_MapTool()
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다. "));
+	/* For.Prototype_Component_Texture_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MAPTOOL, TEXT("Prototype_Component_Texture_Terrain"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Tile%d.dds"), 2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Brush*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MAPTOOL, TEXT("Prototype_Component_Texture_Brush"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Brush.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Filter */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MAPTOOL, TEXT("Prototype_Component_Texture_Filter"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Filter.bmp"), 1))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("버퍼를 로딩중입니다. "));
+	/* For.Prototype_Component_VIBuffer_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MAPTOOL, TEXT("Prototype_Component_VIBuffer_Terrain"),
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("모델을 로딩중입니다. "));
+
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다. "));
+	/* For.Prototype_Component_Shader_VtxNorTex */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MAPTOOL, TEXT("Prototype_Component_Shader_VtxNorTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("객체원형을 생성중입니다. "));
+	/* For.Prototype_GameObject_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
+		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩끝. "));

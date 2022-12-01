@@ -14,8 +14,7 @@ CVIBuffer_Rect::CVIBuffer_Rect(const CVIBuffer_Rect& rhs)
 
 HRESULT CVIBuffer_Rect::Initialize_Prototype()
 {
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	m_iNumVertexBuffers = 1;
 	m_iStride = sizeof(VTXTEX);
@@ -56,8 +55,7 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 
 	m_SubResourceData.pSysMem = pVertices;
 
-	if (FAILED(__super::Create_VertexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
 
 	Safe_Delete_Array(pVertices);
 
@@ -90,8 +88,7 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	ZeroMemory(&m_SubResourceData, sizeof(m_SubResourceData));
 	m_SubResourceData.pSysMem = pIndices;
 
-	if (FAILED(__super::Create_IndexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL);
 
 	Safe_Delete_Array(pIndices);
 
@@ -103,8 +100,7 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 
 HRESULT CVIBuffer_Rect::Initialize_Clone(void* pArg)
 {
-	if (FAILED(__super::Initialize_Clone(pArg)))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
 
 	return S_OK;
 }
