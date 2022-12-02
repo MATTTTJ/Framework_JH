@@ -27,6 +27,7 @@ public:
 	CRITICAL_SECTION	Get_Critical_Section() const {
 		return m_Critical_Section;
 	}
+
 public:
 	HRESULT	Initialize(LEVEL eNextLevelID);
 	HRESULT	Loading_For_Logo();

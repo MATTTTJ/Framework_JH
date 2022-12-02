@@ -21,8 +21,8 @@ public:
 public:
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Clone_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pPrototypeTag, void* pArg = nullptr);
-	void Tick(_double TimeDelta);
-	void Late_Tick(_double TimeDelta);
+	void	Tick(_double TimeDelta);
+	void	Late_Tick(_double TimeDelta);
 
 public: /* imgui */
 		// 모든 원본 Object를 Imgui로 출력한다.

@@ -1,12 +1,12 @@
 #include "..\public\VIBuffer.h"
 
-
-CVIBuffer::CVIBuffer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CVIBuffer::CVIBuffer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
 {
+
 }
 
-CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
+CVIBuffer::CVIBuffer(const CVIBuffer & rhs)
 	: CComponent(rhs)
 	, m_pVB(rhs.m_pVB)
 	, m_pIB(rhs.m_pIB)
@@ -19,7 +19,6 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	, m_eIndexFormat(rhs.m_eIndexFormat)
 	, m_eTopology(rhs.m_eTopology)
 	, m_iNumIndices(rhs.m_iNumIndices)
-		
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
@@ -32,7 +31,7 @@ HRESULT CVIBuffer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer::Initialize_Clone(void* pArg)
+HRESULT CVIBuffer::Initialize_Clone(void * pArg)
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
 
@@ -43,14 +42,23 @@ HRESULT CVIBuffer::Render()
 {
 	NULL_CHECK_RETURN(m_pContext, E_FAIL);
 
-	ID3D11Buffer*	pVertexBuffers[] = { m_pVB, };
+	/* 정점버퍼들을 장치에 바인딩한다.(복수를 바인딩한다.)  */
 
-	_uint			iStrides[]		 = { m_iStride, };
+	ID3D11Buffer*			pVertexBuffers[] = {
+		m_pVB,
+	};
 
-	_uint			iOffests[]		 = { 0, };
+	_uint					iStrides[] = {
+		m_iStride,
+	};
 
-	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertexBuffers, iStrides, iOffests);
+	_uint					iOffsets[] = {
+		0,
+	};
 
+	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertexBuffers, iStrides, iOffsets);
+
+	/* 인덱스버퍼를 장치에 바인딩한다.(단일로 바인딩한다.)  */
 	m_pContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
 
 	m_pContext->IASetPrimitiveTopology(m_eTopology);
@@ -59,6 +67,8 @@ HRESULT CVIBuffer::Render()
 
 	return S_OK;
 }
+
+
 
 HRESULT CVIBuffer::Create_VertexBuffer()
 {
