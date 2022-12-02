@@ -11,6 +11,9 @@ CChannel::CChannel()
 // 특정 애니메이션에서 사용되는 뼈들을 관리함
 HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel, CModel* pModel)
 {
+	NULL_CHECK_RETURN(pAIChannel, E_FAIL)
+	NULL_CHECK_RETURN(pModel, E_FAIL)
+
 	strcpy_s(m_szName, pAIChannel->mNodeName.data);
 
 	m_pBone = pModel->Get_BonePtr(m_szName); // 모델에서 보관하는 뼈와 채널에서 불러온 뼈의 이름이 같은 경우 주소를 넘겨준다.

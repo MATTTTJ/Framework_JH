@@ -43,6 +43,8 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE W
 	ViewPortDesc.MinDepth = 0.f;
 	ViewPortDesc.MaxDepth = 1.f;
 
+	m_pViewPort = ViewPortDesc;
+
 	m_pDeviceContext->RSSetViewports(1, &ViewPortDesc);
 
 	*ppDeviceOut = m_pDevice;

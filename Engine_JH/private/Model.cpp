@@ -5,7 +5,6 @@
 #include "Bone.h"
 #include "Animation.h"
 
-
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
 {
@@ -19,7 +18,14 @@ CModel::CModel(const CModel & rhs)
 	, m_Meshes(rhs.m_Meshes)
 	, m_Materials(rhs.m_Materials)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
+	, m_Bones(rhs.m_Bones)
+	, m_iNumBones(rhs.m_iNumBones)
+	, m_Animations(rhs.m_Animations)
+	, m_iNumAnimation(rhs.m_iNumAnimation)
+	, m_iCurrentAnimIndex(rhs.m_iCurrentAnimIndex)
 {
+	for (auto& pMesh : m_Meshes)
+		Safe_AddRef(pMesh);
 
 	for(auto& Material : m_Materials)
 	{
@@ -29,8 +35,11 @@ CModel::CModel(const CModel & rhs)
 		}
 	}
 
-	for (auto& pMesh : m_Meshes)
-		Safe_AddRef(pMesh);
+	for (auto& pBone : m_Bones)
+		Safe_AddRef(pBone);
+
+	for (auto& pAnimation : m_Animations)
+		Safe_AddRef(pAnimation);
 
 }
 
@@ -46,18 +55,7 @@ CBone* CModel::Get_BonePtr(const char* pBoneName)
 	return *iter;
 }
 
-void CModel::Play_Animation(_double TimeDelta)
-{
-	// 현재 애니메이션에 맞는 뼈들의 TransformMatrix를 갱신한다.
 
-	for(auto& pBone : m_Bones)
-	{
-		if(nullptr != pBone)
-		{
-			pBone->compute_CombindTransformationMatrix();
-		}
-	}
-}
 
 HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath)
 {
@@ -72,9 +70,13 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath)
 
 	NULL_CHECK_RETURN(m_pAIScene, E_FAIL)
 
+	FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode), E_FAIL)
+
 	FAILED_CHECK_RETURN(Ready_MeshContainers(), E_FAIL)
 
 	FAILED_CHECK_RETURN(Ready_Materials(pModelFilePath), E_FAIL)
+
+	FAILED_CHECK_RETURN(Ready_Animation(), E_FAIL)
 
 	return S_OK;
 }
@@ -82,6 +84,20 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath)
 HRESULT CModel::Initialize_Clone(void * pArg)
 {
 	return S_OK;
+}
+
+void CModel::Play_Animation(_double TimeDelta)
+{
+	// 현재 애니메이션에 맞는 뼈들의 TransformMatrix를 갱신한다.
+	m_Animations[m_iCurrentAnimIndex]->Update_Bones(TimeDelta);
+
+	for (auto& pBone : m_Bones)
+	{
+		if (nullptr != pBone)
+		{
+			pBone->compute_CombindTransformationMatrix();
+		}
+	}
 }
 
 HRESULT CModel::Bind_Material(CShader* pShader, _uint iMeshIndex, aiTextureType eType, const char* pConstantName)
@@ -105,19 +121,35 @@ HRESULT CModel::Bind_Material(CShader* pShader, _uint iMeshIndex, aiTextureType 
 }
 
 HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex)
-{
+{	 
 	pShader->Begin(0);
 
 	if (nullptr != m_Meshes[iMeshIndex])
 		m_Meshes[iMeshIndex]->Render();
 
 	return S_OK;
+
+
+	// if(nullptr != m_Meshes[iMeshIndex])
+	// {
+	// 	if(nullptr!= pBoneConstantName)
+	// 	{
+	// 		_float4x4		BoneMatrices[256];
+	//
+	// 		m_Meshes[iMeshIndex]->SetUp_BoneMatrix(BoneMatrices);
+	//
+	// 		pShader->Set_MatrixArray(pBoneConstantName, BoneMatrices, 256);
+	// 	}
+	// }
+	//
+	// pShader->Begin(0);
+	// m_Meshes[iMeshIndex]->Render();
 }
 
 HRESULT CModel::Ready_Bones(aiNode* pAINode)
 {
 	CBone*	pBone = CBone::Create(pAINode);
-	NULL_CHECK_RETURN(pBone, E_FAIL);
+	NULL_CHECK_RETURN(pBone, E_FAIL)
 
 	m_Bones.push_back(pBone);
 
@@ -140,7 +172,7 @@ HRESULT CModel::Ready_MeshContainers()
 		aiMesh*		pAIMesh = m_pAIScene->mMeshes[i];
 
 		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext,m_eType, pAIMesh, this); // 어떤 타입인지
-		NULL_CHECK_RETURN(pMesh, E_FAIL);
+		NULL_CHECK_RETURN(pMesh, E_FAIL)
 
 		m_Meshes.push_back(pMesh);
 	}
@@ -187,7 +219,7 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 
 			_tchar			szFullPath[MAX_PATH] = TEXT("");
 
-			MultiByteToWideChar(CP_ACP, 0, szTexturePath, strlen(szTexturePath), szFullPath, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szTexturePath, (_int)strlen(szTexturePath), szFullPath, MAX_PATH);
 
 			ModelMaterial.pTexture[j] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
 			NULL_CHECK_RETURN(ModelMaterial.pTexture[j], E_FAIL);
@@ -257,6 +289,14 @@ void CModel::Free()
 	for (auto& pMesh : m_Meshes)
 		Safe_Release(pMesh);
 	m_Meshes.clear();
+
+	for (auto& pBone : m_Bones)
+		Safe_Release(pBone);
+	m_Bones.clear();
+
+	for (auto& pAnimation : m_Animations)
+		Safe_Release(pAnimation);
+	m_Animations.clear();
 
 	m_Importer.FreeScene();
 }

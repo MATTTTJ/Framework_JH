@@ -36,13 +36,15 @@ void CTerrain::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if(pGameInstance->Get_DIMouseState(CInput_Device::DIM_LB) & 0x80)
+	if(pGameInstance->Get_DIMouseState(CInput_Device::DIM_LB))
 	{
 		 m_vPos = Picking_Terrain();
 	}
 	ImGui::Begin("Test");
 	ImGui::Text("%f / %f ", m_vPos.x, m_vPos.z);
 	ImGui::End();
+
+	RELEASE_INSTANCE(CGameInstance)
 }
 
 void CTerrain::Late_Tick(_double TimeDelta)
@@ -67,7 +69,7 @@ HRESULT CTerrain::Render()
 
 _float4 CTerrain::Picking_Terrain()
 {
-	return	m_pVIBufferCom->PickingOnTerrain(g_hWnd, m_pTransformCom, m_pTransformCom->Get_WorldMatrix_Inverse(););
+	return	m_pVIBufferCom->PickingOnTerrain(g_hWnd, m_pTransformCom->Get_WorldMatrix_Inverse());
 }
 
 HRESULT CTerrain::SetUp_Components()

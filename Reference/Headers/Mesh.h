@@ -16,9 +16,13 @@ public:
 		return m_iMaterialIndex;
 	}
 
+
 public:
 	virtual HRESULT			Initialize_Prototype(CModel::TYPE eTYPE, aiMesh* pAIMesh, CModel* pModel);
 	virtual HRESULT			Initialize_Clone(void* pArg) override;
+
+public:
+	void SetUp_BoneMatrix(_float4x4* pBoneMatrices);
 
 private:
 	CModel::TYPE			m_eType;

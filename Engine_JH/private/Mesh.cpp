@@ -30,16 +30,19 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh, CModel
 
 #pragma region VERTEX_BUFFER
 
+	HRESULT		hr = 0;
 	
 	if (CModel::TYPE_NONANIM == m_eType)
 	{
-
+		hr = Ready_VertexBuffer_NonAnimModel(pAIMesh);
 	}
 	else
 	{
-
+		hr = Ready_VertexBuffer_AnimModel(pAIMesh, pModel);
 	}
 	
+	if (FAILED(hr))
+		return E_FAIL;
 
 #pragma endregion
 
@@ -84,12 +87,14 @@ HRESULT CMesh::Initialize_Clone(void * pArg)
 
 void CMesh::SetUp_BoneMatrix(_float4x4* pBoneMatrices)
 {
+	// 뼈를 하나씩 돌면서 순회하기 위한 갯수 
 	_uint iNumBones = 0;
 
-	// for(auto& pBone : m_Bones)
-	// {
-	// 	XMStoreFloat4x4(&pBoneMatrices[iNumBones++],pBone->Get_OffsetMatrix() * pBone-->Get_CombindMatrix())
-	// }
+	for(auto& pBone : m_Bones)
+	{
+		// BoneMatrix = 오프셋 매트릭스 * 콤바인 매트릭스
+		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_OffsetMatrix() * pBone->Get_CombindMatrix());
+	}
 }
 
 HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh)
@@ -139,7 +144,7 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 	m_BufferDesc.MiscFlags = 0;
 
 	VTXANIMMODEL*			pVertices = new VTXANIMMODEL[m_iNumVertices];
-	ZeroMemory(pVertices, sizeof(VTXANIMMODEL));
+	ZeroMemory(pVertices, sizeof(VTXANIMMODEL) * m_iNumVertices);
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
@@ -159,7 +164,6 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 		NULL_CHECK_RETURN(pBone, E_FAIL)
 
 		_float4x4	OffsetMatrix;
-
 		memcpy(&OffsetMatrix, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
 		XMStoreFloat4x4(&OffsetMatrix, XMMatrixTranspose(XMLoadFloat4x4(&OffsetMatrix)));
 
@@ -240,4 +244,9 @@ CComponent * CMesh::Clone(void * pArg)
 void CMesh::Free()
 {
 	__super::Free();
+
+	for(auto& pBone : m_Bones)
+		Safe_Release(pBone);
+
+	m_Bones.clear();
 }

@@ -18,7 +18,7 @@ public:
 
 
 public:
-	_float4			PickingOnTerrain(HWND hwnd, CTransform* pTerrainTransformCom);
+	_float4			PickingOnTerrain(HWND hwnd, _matrix WorldMatrixInverse);
 
 private:
 	_uint			m_iNumVerticesX = 0;

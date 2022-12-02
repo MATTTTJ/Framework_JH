@@ -18,6 +18,21 @@ public:
 		m_OffsetMatrix = OffsetMatrix;
 	}
 
+	_matrix Get_OffsetMatrix()
+	{
+		return XMLoadFloat4x4(&m_OffsetMatrix);
+	}
+
+	_matrix Get_CombindMatrix()
+	{
+		return XMLoadFloat4x4(&m_CombindTransformMatrix);
+	}
+
+	void	Set_TransformMatrix(_fmatrix TransformMatrix)
+	{
+		XMStoreFloat4x4(&m_TransformMatrix, TransformMatrix);
+	}
+
 public:
 	HRESULT			Initialize(aiNode* pAINode);
 	void			compute_CombindTransformationMatrix();
@@ -33,7 +48,7 @@ private:
 	_float4x4		m_TransformMatrix;
 	// 상속받는 뼈의 행렬을 곱한 상태행렬 (연산 완료된 최종 행렬)
 	_float4x4		m_CombindTransformMatrix;
-	CBone*			m_pParent;
+	CBone*			m_pParent = nullptr;
 
 public:
 	static	CBone*	Create(aiNode* pAINode);

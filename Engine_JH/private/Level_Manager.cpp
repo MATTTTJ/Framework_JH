@@ -31,7 +31,7 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex,CLevel* pNewLevel)
 
 void CLevel_Manager::Tick(_double TimeDelta)
 {
-	NULL_CHECK(m_pCurrentLevel);
+	NULL_CHECK(m_pCurrentLevel)
 
 	m_pCurrentLevel->Tick(TimeDelta);
 }

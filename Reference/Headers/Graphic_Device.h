@@ -20,6 +20,10 @@ public:
 	HRESULT		Present();
 	HRESULT		Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen, _bool bNeedUpdate);
 
+public:
+	D3D11_VIEWPORT		Get_ViewPort() {
+		return m_pViewPort;
+	}
 private:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pDeviceContext = nullptr;
@@ -27,7 +31,7 @@ private:
 
 	ID3D11RenderTargetView*	m_pBackBufferRTV = nullptr;
 	ID3D11DepthStencilView*	m_pDepthStencilView = nullptr;
-
+	D3D11_VIEWPORT			m_pViewPort; 
 private:
 	HRESULT		Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMode,
 		_uint iWinCX, _uint iWINCY);

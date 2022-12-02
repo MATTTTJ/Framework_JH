@@ -135,6 +135,11 @@ HRESULT CGameInstance::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _
 	return m_pGraphic_Device->Update_SwapChain(hWnd, iWinCX, iWinCY, bIsFullScreen, bNeedUpdate);
 }
 
+D3D11_VIEWPORT CGameInstance::Get_ViewPort()
+{
+	return m_pGraphic_Device->Get_ViewPort();
+}
+
 _byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)
 {
 	NULL_CHECK_RETURN(m_pInput_Device, 0);

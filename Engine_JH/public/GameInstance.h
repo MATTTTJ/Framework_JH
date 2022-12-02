@@ -36,7 +36,7 @@ public: /* For.Graphic_Device */
 	HRESULT				Clear_Graphic_Device(const _float4* pColor);
 	HRESULT				Present();
 	HRESULT				Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen, _bool bNeedUpdate);
-
+	D3D11_VIEWPORT	    Get_ViewPort();
 public: /* For.Input_Device */
 	_byte				Get_DIKeyState(_ubyte byKeyID);
 	_byte				Get_DIMouseState(CInput_Device::MOUSEKEYSTATE byMouseID);
