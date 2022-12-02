@@ -163,7 +163,7 @@ HRESULT CModel::Ready_Bones(aiNode* pAINode)
 
 HRESULT CModel::Ready_MeshContainers()
 {
-	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
+	NULL_CHECK_RETURN(m_pAIScene, E_FAIL)
 
 	m_iNumMeshes = m_pAIScene->mNumMeshes;
 
@@ -171,7 +171,7 @@ HRESULT CModel::Ready_MeshContainers()
 	{
 		aiMesh*		pAIMesh = m_pAIScene->mMeshes[i];
 
-		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext,m_eType, pAIMesh, this); // 어떤 타입인지
+		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext, m_eType, pAIMesh, this);
 		NULL_CHECK_RETURN(pMesh, E_FAIL)
 
 		m_Meshes.push_back(pMesh);

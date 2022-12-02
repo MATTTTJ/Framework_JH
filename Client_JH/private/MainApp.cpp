@@ -9,25 +9,12 @@ CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
-
-
-
-	/*D3D11_SAMPLER_DESC		SamplerDesc;
-
-	m_pDevice->CreateSamplerState();
-
-	m_pContext->PSSetSamplers();*/
-
-
-
-	/*
-	*/
 }
 
 HRESULT CMainApp::Initialize()
 {
-	if (nullptr == m_pGameInstance)
-		return E_FAIL;
+	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
+
 
 	/* 게임엔진 초기화 */
 	GRAPHIC_DESC			GraphicDesc;
@@ -38,27 +25,18 @@ HRESULT CMainApp::Initialize()
 	GraphicDesc.iViewportSizeY = g_iWinSizeY;
 	GraphicDesc.eWindowMode = GRAPHIC_DESC::WINMODE_WIN;
 
-	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst, LEVEL_END, GraphicDesc, &m_pDevice, &m_pContext)))
-		return E_FAIL;
-
-	if (FAILED(Ready_Prototype_Component()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Prototype_GameObject()))
-		return E_FAIL;
-
-	if (FAILED(Start_Level(LEVEL_LOGO)))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(m_pGameInstance->Initialize_Engine(g_hInst, LEVEL_END, GraphicDesc, &m_pDevice, &m_pContext), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Prototype_Component(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Prototype_GameObject(), E_FAIL);
+	FAILED_CHECK_RETURN(Start_Level(LEVEL_LOGO), E_FAIL);
 
 	return S_OK;
 }
 void CMainApp::Tick(_double TimeDelta)
 {
-	if (nullptr == m_pGameInstance)
-		return;
+	NULL_CHECK(m_pGameInstance)
 
 	m_pGameInstance->Tick_Engine(TimeDelta);
-
 }
 
 HRESULT CMainApp::Render()
@@ -121,24 +99,19 @@ HRESULT CMainApp::Start_Level(LEVEL eLevelID)
 
 HRESULT CMainApp::Ready_Prototype_Component()
 {
-	if (nullptr == m_pGameInstance)
-		return E_FAIL;
+	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
 	/* For.Prototype_Component_Renderer */
-	if (FAILED(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), TEXT("Prototype_Component_Renderer"),
-		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), TEXT("Prototype_Component_Renderer"),
+		m_pRenderer = CRenderer::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	/* For.Prototype_Component_VIBuffer_Rect */
-	if (FAILED(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), TEXT("Prototype_Component_VIBuffer_Rect"),
-		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), TEXT("Prototype_Component_VIBuffer_Rect"),
+		CVIBuffer_Rect::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	/* For.Prototype_Component_Shader_VtxTex */
-	if (FAILED(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), TEXT("Prototype_Component_Shader_VtxTex"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
-		return E_FAIL;
-
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), TEXT("Prototype_Component_Shader_VtxTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements)), E_FAIL);
 
 	Safe_AddRef(m_pRenderer);
 
@@ -147,14 +120,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 HRESULT CMainApp::Ready_Prototype_GameObject()
 {
-	if (nullptr == m_pGameInstance)
-		return E_FAIL;
+	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
 	/* For.Prototype_GameObject_Camera_Dynamic */
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
-		CDynamic_Camera::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
+		CDynamic_Camera::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	return S_OK;
 }

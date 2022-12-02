@@ -130,7 +130,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	/* 두 벡터 : 빛의 반사벡터, 정점을 바라보는 시선벡터 */
 	float		fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f,
-		normalize(vLook))), 30.f);
+		normalize(vLook))), 10.f);
 
 	Out.vColor = vDiffuse * saturate(fShade + (g_vLightAmbient * g_vMtrlAmbient))
 		+ fSpecular * (g_vLightSpecular * g_vMtrlSpecular);

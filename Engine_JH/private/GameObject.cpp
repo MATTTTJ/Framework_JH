@@ -34,9 +34,10 @@ HRESULT CGameObject::Initialize_Clone(void* pArg)
 
 	if (nullptr != pArg)
 		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
+
 	FAILED_CHECK_RETURN(Add_Component(CGameInstance::Get_StaticLevelIndex(),
 						CGameInstance::m_pPrototypeTransformTag, m_pTransformComTag, 
-		(CComponent**)&m_pTransformCom, &GameObjectDesc.TransformDesc), E_FAIL);
+		(CComponent**)&m_pTransformCom, &GameObjectDesc.TransformDesc), E_FAIL)
 
 	return S_OK;
 }
@@ -79,7 +80,7 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTa
 	Safe_AddRef(pGameInstance);
 
 	CComponent*	pComponent = pGameInstance->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
-	NULL_CHECK_RETURN(pComponent, E_FAIL);
+	NULL_CHECK_RETURN(pComponent, E_FAIL)
 
 	m_Components.emplace(pComponentTag, pComponent);
 
