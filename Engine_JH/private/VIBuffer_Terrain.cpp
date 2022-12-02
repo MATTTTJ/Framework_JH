@@ -8,6 +8,9 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(ID3D11Device * pDevice, ID3D11DeviceContext
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain & rhs)
 	: CVIBuffer(rhs)
+	, m_pVertices(rhs.m_pVertices)
+	, m_iNumVerticesX(rhs.m_iNumVerticesX)
+	, m_iNumVerticesZ(rhs.m_iNumVerticesZ)
 {
 
 }
@@ -169,14 +172,15 @@ HRESULT CVIBuffer_Terrain::Initialize_Clone(void * pArg)
 	return S_OK;
 }
 
-_float3 CVIBuffer_Terrain::PickingOnTerrain(HWND hwnd, const CTransform* pTerrainTransformCom)
+_float4 CVIBuffer_Terrain::PickingOnTerrain(HWND hwnd, CTransform* pTerrainTransformCom, _matrix WorldMatrix)
 {
 	POINT	ptMouse{};
 
 	GetCursorPos(&ptMouse);
 	ScreenToClient(hwnd, &ptMouse);
 
-	_float3 vPoint;
+	_float4 vOrigin;
+	_float4 vAt;
 
 	D3D11_VIEWPORT	ViewPort;
 	ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
@@ -190,32 +194,40 @@ _float3 CVIBuffer_Terrain::PickingOnTerrain(HWND hwnd, const CTransform* pTerrai
 	_uint itmp = 1;
 
 	m_pContext->RSGetViewports(&itmp, &ViewPort);
-	
-	vPoint.x = ptMouse.x / (ViewPort.Width * 0.5f) - 1.f;
-	vPoint.y = ptMouse.y / -(ViewPort.Height * 0.5f) + 1.f;
-	vPoint.z = 0.f;
-	_matrix matProj = m_pPipeLine->Get_TransformMatrix_Inverse(CPipeLine::D3DTS_PROJ);
 
-	_vector vtmp = XMLoadFloat3(&vPoint);
+	vOrigin.x = (_float)ptMouse.x / ((_float)ViewPort.Width * 0.5f) - 1.f;
+	vOrigin.y = (_float)ptMouse.y / -((_float)ViewPort.Height * 0.5f) + 1.f;
+	vOrigin.z = 0.f;
+	vOrigin.w = 1.f;
 
-	XMVector3TransformCoord(vtmp, matProj);
+	vAt.x = vOrigin.x;
+	vAt.y = vOrigin.y;
+	vAt.z = 1.f;
+	vAt.w = 1.f;
 
-	_vector vRayDir, vRayPos;
+	_vector vectorAt = XMLoadFloat4(&vAt);
+	_vector vectorOrigin = XMLoadFloat4(&vOrigin);
 
-	vRayPos = { 0.f,0.f,0.f };
-	vRayDir = vtmp - vRayPos;
+	CPipeLine*	pPipeline = GET_INSTANCE(CPipeLine)
+
+	_matrix matProjInverse = pPipeline->Get_TransformMatrix_Inverse(CPipeLine::D3DTS_PROJ);
+	XMVector4Transform(vectorOrigin, matProjInverse);
+	XMVector4Transform(vectorAt, matProjInverse);
 
 	// 뷰스페이스 -> 월드
-	_matrix  matView = m_pPipeLine->Get_TransformMatrix_Inverse(CPipeLine::D3DTS_VIEW);
-	XMVector3TransformCoord(vRayPos, matView);
-	XMVector3TransformNormal(vRayDir, matView);
+	_matrix  matView = pPipeline->Get_TransformMatrix_Inverse(CPipeLine::D3DTS_VIEW);
+	XMVector4Transform(vectorOrigin, matView);
+	XMVector4Transform(vectorAt, matView);
 
 	// 월드 -> 로컬
-	_matrix matWorld = m_pTransformCom->Get_WorldMatrix_Inverse();
-	XMVector3TransformCoord(vRayPos, matWorld);
-	XMVector3TransformNormal(vRayDir, matWorld);
+	_matrix matWorld = pTerrainTransformCom->Get_WorldMatrix();
+	matWorld = XMMatrixInverse(nullptr, matWorld);
+	XMVector4Transform(vectorOrigin, matWorld);
+	XMVector4Transform(vectorAt, matWorld);
 
-	const _vector*		pTerrainVtx = &XMLoadFloat3(&m_pVertices->vPosition);
+	_vector vRayDir;
+	vRayDir = vectorAt - vectorOrigin;
+	vRayDir = XMVector4Normalize(vRayDir);
 
 	_ulong	dwVtxCntX = m_iNumVerticesX;
 	_ulong	dwVtxCntZ = m_iNumVerticesZ;
@@ -225,7 +237,7 @@ _float3 CVIBuffer_Terrain::PickingOnTerrain(HWND hwnd, const CTransform* pTerrai
 
 	for (_ulong i = 0; i < dwVtxCntZ - 1; ++i)
 	{
-		for (_ulong j = 0; j < dwVtxCntZ; ++j)
+		for (_ulong j = 0; j < dwVtxCntX - 1; ++j)
 		{
 			_ulong dwIndex = i * dwVtxCntX + j;
 
@@ -234,42 +246,45 @@ _float3 CVIBuffer_Terrain::PickingOnTerrain(HWND hwnd, const CTransform* pTerrai
 			dwVtxIdx[1] = dwIndex + dwVtxCntX + 1;
 			dwVtxIdx[2] = dwIndex + 1;
 
+			_float4 v0 = _float4(m_pVertices[dwVtxIdx[0]].vPosition.x, m_pVertices[dwVtxIdx[0]].vPosition.y, m_pVertices[dwVtxIdx[0]].vPosition.z, 1.f);
+			_vector _v0 = XMLoadFloat4(&v0);
+			_float4 v1 = _float4(m_pVertices[dwVtxIdx[1]].vPosition.x, m_pVertices[dwVtxIdx[1]].vPosition.y, m_pVertices[dwVtxIdx[1]].vPosition.z, 1.f);
+			_vector _v1 = XMLoadFloat4(&v1);
+			_float4 v2 = _float4(m_pVertices[dwVtxIdx[2]].vPosition.x, m_pVertices[dwVtxIdx[2]].vPosition.y, m_pVertices[dwVtxIdx[2]].vPosition.z, 1.f);
+			_vector _v2 = XMLoadFloat4(&v2);
 
-			if (TriangleTests::Intersects(vRayPos, vRayDir, 
-										pTerrainVtx[dwVtxIdx[1]], pTerrainVtx[dwVtxIdx[0]],
-										pTerrainVtx[dwVtxIdx[2]], fDist))
+			if (TriangleTests::Intersects(vectorOrigin, vRayDir, 
+				_v0, _v1,_v2, fDist))
 			{
-				_float3 fFirst, fSecond, fThird;
-				XMStoreFloat3(&fFirst, pTerrainVtx[dwVtxIdx[0]]);
-				XMStoreFloat3(&fSecond, pTerrainVtx[dwVtxIdx[1]]);
-				XMStoreFloat3(&fThird, pTerrainVtx[dwVtxIdx[2]]);
-
-				return _float3(fSecond.x + (fFirst.x - fSecond.x)
-					, 0.f
-					, fSecond.z + (fThird.z - fSecond.z));
+				_float4 vDest;
+				XMStoreFloat4(&vDest, vectorOrigin + vRayDir * fDist);
+				return vDest;
 			}
 
 			//왼쪽 아래
 			dwVtxIdx[0] = dwIndex + dwVtxCntX;
 			dwVtxIdx[1] = dwIndex + 1;
 			dwVtxIdx[2] = dwIndex;
+			
+			v0 = _float4(m_pVertices[dwVtxIdx[0]].vPosition.x, m_pVertices[dwVtxIdx[0]].vPosition.y, m_pVertices[dwVtxIdx[0]].vPosition.z, 1.f);
+			_v0 = XMLoadFloat4(&v0);
+			v1 = _float4(m_pVertices[dwVtxIdx[1]].vPosition.x, m_pVertices[dwVtxIdx[1]].vPosition.y, m_pVertices[dwVtxIdx[1]].vPosition.z, 1.f);
+			_v1 = XMLoadFloat4(&v1);
+			v2 = _float4(m_pVertices[dwVtxIdx[2]].vPosition.x, m_pVertices[dwVtxIdx[2]].vPosition.y, m_pVertices[dwVtxIdx[2]].vPosition.z, 1.f);
+			_v2 = XMLoadFloat4(&v2);
 
-			if (TriangleTests::Intersects(vRayPos, vRayDir,
-											pTerrainVtx[dwVtxIdx[2]], pTerrainVtx[dwVtxIdx[1]],
-											pTerrainVtx[dwVtxIdx[0]], fDist))
+			if (TriangleTests::Intersects(vectorOrigin, vRayDir,
+											_v0, _v1,_v2, fDist))
 			{
-				_float3 fFirst, fSecond, fThird;
-				XMStoreFloat3(&fFirst, pTerrainVtx[dwVtxIdx[0]]);
-				XMStoreFloat3(&fSecond, pTerrainVtx[dwVtxIdx[1]]);
-				XMStoreFloat3(&fThird, pTerrainVtx[dwVtxIdx[2]]);
-				return _float3(fThird.x + (fSecond.x - fThird.x)
-					, 0.f
-					, fThird.z + (fFirst.z - fThird.z));
+				_float4 vDest;
+				XMStoreFloat4(&vDest, vectorOrigin + vRayDir * fDist);
+				return vDest;
 			}
+			RELEASE_INSTANCE(CPipeLine)
 		}
 	}
 
-	return _float3(0.f, 0.f, 0.f);
+	return _float4(0.f, 0.f, 0.f,0.f);
 
 
 }

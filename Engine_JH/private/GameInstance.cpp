@@ -44,12 +44,6 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	NULL_CHECK_RETURN(m_pObject_Manager, E_FAIL);
 	NULL_CHECK_RETURN(m_pComponent_Manager, E_FAIL);
 
-	// if (nullptr == m_pGraphic_Device ||
-	// 	nullptr == m_pInput_Device ||
-	// 	nullptr == m_pObject_Manager ||
-	// 	nullptr == m_pComponent_Manager)
-	// 	return E_FAIL;
-
 	m_hWnd = GraphicDesc.hWnd;
 
 	/* 그래픽 디바이스 초기화. */

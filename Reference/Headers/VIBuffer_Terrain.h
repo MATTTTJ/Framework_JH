@@ -18,7 +18,7 @@ public:
 
 
 public:
-	_float3			PickingOnTerrain(HWND hwnd, const CTransform* pTerrainTransformCom);
+	_float4			PickingOnTerrain(HWND hwnd, CTransform* pTerrainTransformCom);
 
 private:
 	_uint			m_iNumVerticesX = 0;

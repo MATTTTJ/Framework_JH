@@ -13,21 +13,26 @@ public:
 	virtual ~CModel() = default;
 
 public:
-	_uint					Get_NumMeshes() const
-	{
+	_uint		Get_NumMeshes() const {
 		return m_iNumMeshes;
 	}
-	class	CBone*			Get_BonePtr(const char* pBoneName);
-public:
-	virtual HRESULT			Initialize_Prototype(TYPE eType, const char* pModelFilePath);
-	virtual HRESULT			Initialize_Clone(void* pArg);
+
+	void		Set_AnimIndex(_uint AnimIndex) { // 실행하고자하는 애니메이션을 Set
+		m_iCurrentAnimIndex = AnimIndex;
+	}
+
+	class	CBone*	Get_BonePtr(const char* pBoneName);
 
 public:
-	void					Play_Animation(_double TimeDelta);
+	virtual HRESULT				Initialize_Prototype(TYPE eType, const char* pModelFilePath);
+	virtual HRESULT				Initialize_Clone(void* pArg);
+
+public:
+	void						Play_Animation(_double TimeDelta);
 	// 어떤 메쉬에 어떤 텍스쳐를 쓸건지 묶는 함수
-	HRESULT					Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const char* pConstantName);
+	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const char* pConstantName);
 	// 모델 자체에서 메쉬에 대한 렌더를 돌림
-	HRESULT					Render(CShader* pShader, _uint iMeshIndex);
+	HRESULT						Render(CShader* pShader, _uint iMeshIndex);
 
 public:
 	const aiScene*				m_pAIScene = nullptr;
@@ -42,19 +47,19 @@ public:
 	_uint						m_iNumMaterials = 0;
 	vector<MODELMATERIAL>		m_Materials;
 
-	// 뼈의 갯수
+	// 전체 뼈의 갯수
 	_uint						m_iNumBones = 0;
 	vector<class CBone*>		m_Bones;
 
-	// 애니메이션의 갯수
-	_uint						m_iNumAnimation = 0;
+	_uint						m_iCurrentAnimIndex = 0;
+	_uint						m_iNumAnimation = 0; // 애니메이션의 갯수 
 	vector<class CAnimation*>	m_Animations;
 
 public:
 	HRESULT						Ready_Bones(aiNode* pAINode);
 	HRESULT						Ready_MeshContainers();
 	HRESULT						Ready_Materials(const char* pModelFilePath);
-
+	HRESULT						Ready_Animation();
 public:
 	static	CModel*				Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const char* pModelFilePath);
 	virtual CComponent*			Clone(void* pArg) override;

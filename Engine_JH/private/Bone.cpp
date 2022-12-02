@@ -6,6 +6,8 @@ CBone::CBone()
 
 HRESULT CBone::Initialize(aiNode* pAINode)
 {
+	NULL_CHECK_RETURN(pAINode, E_FAIL)
+
 	strcpy_s(m_szName, pAINode->mName.data);
 	
 	XMStoreFloat4x4(&m_OffsetMatrix, XMMatrixIdentity());
@@ -24,7 +26,8 @@ void CBone::compute_CombindTransformationMatrix()
 	if (nullptr == m_pParent)
 		m_CombindTransformMatrix = m_TransformMatrix; // 부모가 없는 뼈의 경우 트랜스폼이 대체가능
 	// 부모의 최종으로 연산된 행렬과 현재 상태 행렬을 곱해서 현재 최종으로 연산된 행렬을 구함
-	XMStoreFloat4x4(&m_CombindTransformMatrix, XMLoadFloat4x4(&m_TransformMatrix) * XMLoadFloat4x4(&m_pParent->m_CombindTransformMatrix));
+	else
+		XMStoreFloat4x4(&m_CombindTransformMatrix, XMLoadFloat4x4(&m_TransformMatrix) * XMLoadFloat4x4(&m_pParent->m_CombindTransformMatrix));
 }
 
 CBone* CBone::Create(aiNode* pAINode)

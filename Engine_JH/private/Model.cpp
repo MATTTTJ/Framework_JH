@@ -198,6 +198,25 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 	return S_OK;
 }
 
+HRESULT CModel::Ready_Animation()
+{
+	// Assimp 상위 구조체에서 애니메이션의 갯수를 받아온다.
+	m_iNumAnimation = m_pAIScene->mNumAnimations;
+	// 애니메이션의 갯수만큼 Loop를 돌면서 애니메이션을 생성하는 작업
+	// Model에서 뼈를 보관하기 떄문에 뼈를 찾기 위해서 모델의 주소도 넣어준다. 
+	for(_uint i =0; i<m_iNumAnimation; ++i)
+	{
+		aiAnimation*		pAnimation = m_pAIScene->mAnimations[i];
+
+		CAnimation*			pAnim = CAnimation::Create(pAnimation, this);
+		NULL_CHECK_RETURN(pAnim, E_FAIL)
+
+		m_Animations.push_back(pAnim);
+	}
+
+	return S_OK;
+}
+
 CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, TYPE eType, const char * pModelFilePath)
 {
 	CModel*		pInstance = new CModel(pDevice, pContext);

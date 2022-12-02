@@ -82,6 +82,16 @@ HRESULT CMesh::Initialize_Clone(void * pArg)
 	return S_OK;
 }
 
+void CMesh::SetUp_BoneMatrix(_float4x4* pBoneMatrices)
+{
+	_uint iNumBones = 0;
+
+	// for(auto& pBone : m_Bones)
+	// {
+	// 	XMStoreFloat4x4(&pBoneMatrices[iNumBones++],pBone->Get_OffsetMatrix() * pBone-->Get_CombindMatrix())
+	// }
+}
+
 HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh)
 {
 

@@ -36,6 +36,14 @@ namespace Engine
 		XMFLOAT4			vSpecular;		// 정반사(기존의 색을 날리고 완전히 하얀 빛)
 	}LIGHTDESC;
 
+	typedef struct tagKeyframe
+	{
+		double		Time;
+		XMFLOAT3	vScale;
+		XMFLOAT4	vRotation;
+		XMFLOAT3	vPosition;
+	}KEYFRAME;
+
 	typedef struct tagFaceIndices16
 	{
 		unsigned short			_0, _1, _2;

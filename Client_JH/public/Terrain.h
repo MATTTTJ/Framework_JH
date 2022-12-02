@@ -27,12 +27,14 @@ public:
 	virtual void	Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
+	_float4 Picking_Terrain(void);
 private:
 	CShader*				m_pShaderCom	= nullptr;
 	CTexture*				m_pTextureCom[TYPE_END] = { nullptr };
 	CRenderer*				m_pRendererCom	= nullptr;
 	CVIBuffer_Terrain*		m_pVIBufferCom	= nullptr;
 
+	_float4					m_vPos;
 private:
 	HRESULT		SetUp_Components();
 	HRESULT		SetUp_ShaderResources();

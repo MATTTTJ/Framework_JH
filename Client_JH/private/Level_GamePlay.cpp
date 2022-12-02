@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Level_GamePlay.h"
 #include "GameInstance.h"
+#include "VIBuffer_Terrain.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -31,7 +32,6 @@ HRESULT CLevel_GamePlay::Initialize()
 void CLevel_GamePlay::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-
 }
 
 void CLevel_GamePlay::Late_Tick(_double TimeDelta)

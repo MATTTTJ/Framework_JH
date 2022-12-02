@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "..\public\Terrain.h"
 #include "GameInstance.h"
-
 CTerrain::CTerrain(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
+	
 {
 
 }
@@ -11,7 +11,6 @@ CTerrain::CTerrain(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 CTerrain::CTerrain(const CTerrain & rhs)
 	: CGameObject(rhs)
 {
-
 }
 
 HRESULT CTerrain::Initialize_Prototype()
@@ -27,12 +26,23 @@ HRESULT CTerrain::Initialize_Clone(void * pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
+	m_vPos = { 0.f,0.f,0.f,0.f };
+
 	return S_OK;
 }
 
 void CTerrain::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if(pGameInstance->Get_DIMouseState(CInput_Device::DIM_LB) & 0x80)
+	{
+		 m_vPos = Picking_Terrain();
+	}
+	ImGui::Begin("Test");
+	ImGui::Text("%f / %f ", m_vPos.x, m_vPos.z);
+	ImGui::End();
 }
 
 void CTerrain::Late_Tick(_double TimeDelta)
@@ -53,6 +63,11 @@ HRESULT CTerrain::Render()
 	m_pVIBufferCom->Render();
 
 	return S_OK;
+}
+
+_float4 CTerrain::Picking_Terrain()
+{
+	return	m_pVIBufferCom->PickingOnTerrain(g_hWnd, m_pTransformCom, m_pTransformCom->Get_WorldMatrix_Inverse(););
 }
 
 HRESULT CTerrain::SetUp_Components()
