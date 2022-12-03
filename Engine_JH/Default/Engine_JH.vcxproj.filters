@@ -292,6 +292,9 @@
     <ClInclude Include="..\public\Channel.h">
       <Filter>01. Utility\03. Components\06. Model\Animation\Channel</Filter>
     </ClInclude>
+    <ClInclude Include="Engine_Enum.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">

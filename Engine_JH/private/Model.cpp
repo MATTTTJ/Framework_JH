@@ -43,11 +43,11 @@ CModel::CModel(const CModel & rhs)
 
 }
 
-CBone* CModel::Get_BonePtr(const char* pBoneName)
+CBone* CModel::Get_BonePtr(const string& strBoneName)
 {
 	auto iter = find_if(m_Bones.begin(),m_Bones.end(),[&](CBone* pBone)->_bool
 	{
-		return !strcmp(pBoneName, pBone->Get_Name());
+		return strBoneName == pBone->Get_Name();
 	});
 
 	if (iter == m_Bones.end())
@@ -100,7 +100,7 @@ void CModel::Play_Animation(_double TimeDelta)
 	}
 }
 
-HRESULT CModel::Bind_Material(CShader* pShader, _uint iMeshIndex, aiTextureType eType, const char* pConstantName)
+HRESULT CModel::Bind_Material(CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName)
 {
 	if (iMeshIndex >= m_iNumMeshes)
 		return E_FAIL;

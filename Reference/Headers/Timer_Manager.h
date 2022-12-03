@@ -11,18 +11,18 @@ public:
 	virtual ~CTimer_Manager() = default;
 
 public:
-	_double		Get_TimeDelta(const _tchar* pTimerTag);
+	_double		Get_TimeDelta(const wstring pTimerTag);
 
 
 public:
-	HRESULT		Ready_Timer(const _tchar* pTimerTag);
-	void		Update_Timer(const _tchar* pTimerTag);
+	HRESULT		Ready_Timer(const wstring pTimerTag);
+	void		Update_Timer(const wstring pTimerTag);
 
 private:
-	CTimer*		Find_Timer(const _tchar* pTimerTag);
+	CTimer*		Find_Timer(const wstring pTimerTag);
 
 private:
-	map<const _tchar*, CTimer*>		m_mapTimers;
+	map<const wstring, CTimer*>		m_mapTimers;
 
 public:
 	virtual void Free(void);

@@ -19,18 +19,18 @@ public:
 
 public:
 	HRESULT				Reserve_Manager(_uint iNumLevels);
-	HRESULT				Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
-	class CComponent*	Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
+	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, class CComponent* pPrototype);
+	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, void* pArg = nullptr);
 
 private:
 	_uint												m_iNumLevels = 0;
 
 	// 레벨별로 원형 컴포넌트(텍스쳐, 매쉬 등)을 보관하려 함.
-	map<const _tchar*, class CComponent*>*				m_pPrototypes = nullptr;
-	typedef map<const _tchar*, class CComponent*>		PROTOTYPES;
+	map<const wstring, class CComponent*>*				m_pPrototypes = nullptr;
+	typedef map<const wstring, class CComponent*>		PROTOTYPES;
 
 private:
-	CComponent* Find_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag);
+	CComponent* Find_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag);
 
 public:
 	virtual void Free() override;

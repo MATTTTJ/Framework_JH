@@ -102,14 +102,14 @@
     <ClInclude Include="..\public\Player.h">
       <Filter>02. GameObjects\Player</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Level_MapTool.h">
-      <Filter>01. Level\98. MapTool</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Imgui_MapEditor.h">
       <Filter>96. Tool\MapEditor</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Imgui_LevelSwitcher.h">
       <Filter>96. Tool\LevelSwicher</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_MapEditor.h">
+      <Filter>01. Level\98. MapTool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -146,14 +146,14 @@
     <ClCompile Include="..\private\Player.cpp">
       <Filter>02. GameObjects\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Level_MapTool.cpp">
-      <Filter>01. Level\98. MapTool</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Imgui_MapEditor.cpp">
       <Filter>96. Tool\MapEditor</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Imgui_LevelSwitcher.cpp">
       <Filter>96. Tool\LevelSwicher</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_MapEditor.cpp">
+      <Filter>01. Level\98. MapTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

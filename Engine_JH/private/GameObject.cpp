@@ -36,7 +36,7 @@ HRESULT CGameObject::Initialize_Clone(void* pArg)
 		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
 
 	FAILED_CHECK_RETURN(Add_Component(CGameInstance::Get_StaticLevelIndex(),
-						CGameInstance::m_pPrototypeTransformTag, m_pTransformComTag, 
+						CGameInstance::m_wstrPrototypeTransformTag, m_pTransformComTag, 
 		(CComponent**)&m_pTransformCom, &GameObjectDesc.TransformDesc), E_FAIL)
 
 	return S_OK;
@@ -61,15 +61,15 @@ void CGameObject::Imgui_RenderComponentProperties()
 	{
 		ImGui::Separator();
 		char szName[128];
-		CGameUtils::wc2c(com.first, szName);
+		CGameUtils::wc2c(com.first.c_str(), szName);
 
-		ImGui::Text("%s", szName);
-		com.second->Imgui_RenderProperty();
+		if (ImGui::CollapsingHeader(szName))
+			com.second->Imgui_RenderProperty();
 	}
 }
 
 
-HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag,
+HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& pPrototypeTag, const wstring& pComponentTag,
 	CComponent** ppOut, void* pArg)
 {
 
@@ -93,7 +93,7 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTa
 	return S_OK;
 }
 
-CComponent* CGameObject::Find_Component(const _tchar* ComponentTag)
+CComponent* CGameObject::Find_Component(const wstring& ComponentTag)
 {
 	auto iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(ComponentTag));
 

@@ -17,7 +17,7 @@ CTexture::CTexture(const CTexture & rhs)
 
 }
 
-HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNumTextures)
+HRESULT CTexture::Initialize_Prototype(const wstring pTextureFilePath, _uint iNumTextures)
 {
 	m_pTextures = new ID3D11ShaderResourceView*[iNumTextures];
 
@@ -27,7 +27,7 @@ HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNu
 	{
 		_tchar	szTexturePath[MAX_PATH] = TEXT("");
 
-		wsprintf(szTexturePath, pTextureFilePath, i);
+		wsprintf(szTexturePath, pTextureFilePath.c_str(), i);
 
 		/* 문자열 분해하기. */
 		_tchar			szExt[MAX_PATH] = TEXT("");
@@ -56,12 +56,12 @@ HRESULT CTexture::Initialize_Clone(void * pArg)
 	return S_OK;
 }
 
-HRESULT CTexture::Bind_ShaderResources(CShader * pShaderCom, const char * pConstantName)
+HRESULT CTexture::Bind_ShaderResources(CShader * pShaderCom, const wstring pConstantName)
 {
 	return pShaderCom->Set_ShaderResourceViewArray(pConstantName, m_pTextures, m_iNumTextures);
 }
 
-HRESULT CTexture::Bind_ShaderResource(CShader * pShaderCom, const char * pConstantName, _uint iTextureIndex)
+HRESULT CTexture::Bind_ShaderResource(CShader * pShaderCom, const wstring pConstantName, _uint iTextureIndex)
 {
 	if (nullptr == pShaderCom ||
 		iTextureIndex >= m_iNumTextures)
@@ -72,7 +72,7 @@ HRESULT CTexture::Bind_ShaderResource(CShader * pShaderCom, const char * pConsta
 
 
 
-CTexture * CTexture::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pTextureFilePath, _uint iNumTextures)
+CTexture * CTexture::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring pTextureFilePath, _uint iNumTextures)
 {
 	CTexture*		pInstance = new CTexture(pDevice, pContext);
 

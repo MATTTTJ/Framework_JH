@@ -21,7 +21,7 @@ public:
 		m_iCurrentAnimIndex = AnimIndex;
 	}
 
-	class	CBone*	Get_BonePtr(const char* pBoneName);
+	class	CBone*	Get_BonePtr(const string& strBoneName);
 
 public:
 	virtual HRESULT				Initialize_Prototype(TYPE eType, const char* pModelFilePath);
@@ -30,7 +30,7 @@ public:
 public:
 	void						Play_Animation(_double TimeDelta);
 	// 어떤 메쉬에 어떤 텍스쳐를 쓸건지 묶는 함수
-	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const char* pConstantName);
+	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);
 	// 모델 자체에서 메쉬에 대한 렌더를 돌림
 	HRESULT						Render(CShader* pShader, _uint iMeshIndex);
 

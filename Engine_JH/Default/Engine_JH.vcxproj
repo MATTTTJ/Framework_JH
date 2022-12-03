@@ -227,6 +227,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\VIBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
     <ClInclude Include="..\public\VIBuffer_Terrain.h" />
+    <ClInclude Include="Engine_Enum.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

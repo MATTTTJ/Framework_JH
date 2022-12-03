@@ -5,7 +5,7 @@ namespace Engine
 	class CTag_Finder
 	{
 	public:
-		explicit CTag_Finder(const wchar_t* pTag)
+		explicit CTag_Finder(const wstring& pTag)
 			: m_pTargetTag(pTag)
 		{
 		}
@@ -14,7 +14,7 @@ namespace Engine
 		template<typename T>
 		bool operator()(const T& pair)
 		{
-			if (0 == lstrcmpW(m_pTargetTag, pair.first))
+			if (m_pTargetTag == pair.first)
 			{
 				return true;
 			}
@@ -23,7 +23,7 @@ namespace Engine
 		}
 
 	private:
-		const wchar_t*		m_pTargetTag = nullptr;
+		const wstring&		m_pTargetTag = nullptr;
 	};
 
 

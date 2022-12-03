@@ -32,15 +32,15 @@ void CImgui_LevelSwitcher::Imgui_RenderWindow()
 	{
 		_int iIdx = 0;
 		const bool bSelected = iCurSceneTagIdx == iIdx;
+
 		for (auto& pLevel : m_mapLevels)
 		{
 			if(ImGui::Selectable(pLevel.first.c_str(), bSelected))
 			{
 				iLevelIdx = pLevel.second;
 
-				if (pLevel.second >= LEVEL_END)
+				if(pLevel.second >= LEVEL_END)
 					return;
-
 				if (0 == iLevelIdx)
 					break;
 				if (1 == iLevelIdx)
@@ -49,7 +49,6 @@ void CImgui_LevelSwitcher::Imgui_RenderWindow()
 					m_Level = LEVEL_GAMEPLAY;
 				if (3 == iLevelIdx)
 					m_Level = LEVEL_MAPEDITOR;
-				
 			}
 
 			if (bSelected)
@@ -68,6 +67,7 @@ void CImgui_LevelSwitcher::Imgui_RenderWindow()
 		FAILED_CHECK_RETURN(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, m_Level)), );
 
 		RELEASE_INSTANCE(CGameInstance);
+
 	}
 }
 

@@ -7,7 +7,7 @@ CTimer_Manager::CTimer_Manager()
 {
 }
 
-_double Engine::CTimer_Manager::Get_TimeDelta(const _tchar* pTimerTag)
+_double Engine::CTimer_Manager::Get_TimeDelta(const wstring pTimerTag)
 {
 	CTimer*	pTimer = Find_Timer(pTimerTag);
 	if (nullptr == pTimer)
@@ -16,7 +16,7 @@ _double Engine::CTimer_Manager::Get_TimeDelta(const _tchar* pTimerTag)
 	return pTimer->Get_TimeDelta();
 }
 
-HRESULT Engine::CTimer_Manager::Ready_Timer(const _tchar* pTimerTag)
+HRESULT Engine::CTimer_Manager::Ready_Timer(const wstring pTimerTag)
 {
 	CTimer*	pTimer = Find_Timer(pTimerTag);
 
@@ -31,7 +31,7 @@ HRESULT Engine::CTimer_Manager::Ready_Timer(const _tchar* pTimerTag)
 
 	return S_OK;
 }
-void Engine::CTimer_Manager::Update_Timer(const _tchar* pTimerTag)
+void Engine::CTimer_Manager::Update_Timer(const wstring pTimerTag)
 {
 	CTimer*	pTimer = Find_Timer(pTimerTag);
 
@@ -42,7 +42,7 @@ void Engine::CTimer_Manager::Update_Timer(const _tchar* pTimerTag)
 }
 
 
-CTimer* Engine::CTimer_Manager::Find_Timer(const _tchar* pTimerTag)
+CTimer* Engine::CTimer_Manager::Find_Timer(const wstring pTimerTag)
 {
 	auto		iter = find_if(m_mapTimers.begin(), m_mapTimers.end(), CTag_Finder(pTimerTag));
 

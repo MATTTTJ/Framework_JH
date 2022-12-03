@@ -28,25 +28,19 @@ protected:
 	virtual ~CTransform() = default;
 
 public:
-	_matrix Get_WorldMatrix_Inverse() {
-		return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix));
-	}
+	_matrix		Get_WorldMatrix_Inverse() {	return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)); }
+	_matrix		Get_WorldMatrix() {	return XMLoadFloat4x4(&m_WorldMatrix);	}
+	_float4x4	Get_WorldFloat4x4() {	return m_WorldMatrix; }
 
-	_matrix Get_WorldMatrix() {
-		return XMLoadFloat4x4(&m_WorldMatrix);
-	}
+	_vector		Get_State(STATE eState) const {	return XMLoadFloat4x4(&m_WorldMatrix).r[eState]; }
 
-	_vector Get_State(STATE eState) const {
-		return XMLoadFloat4x4(&m_WorldMatrix).r[eState];
-	}
-
-	_float3 Get_Scaled() const {
+	_float3		Get_Scaled() const {
 		return _float3(XMVectorGetX(XMVector3Length(Get_State(STATE_RIGHT))),
 			XMVectorGetX(XMVector3Length(Get_State(STATE_UP))),
 			XMVectorGetX(XMVector3Length(Get_State(STATE_LOOK))));
 	}
 
-	void Set_State(STATE eState, _fvector vState) {
+	void		Set_State(STATE eState, _fvector vState) {
 		_float4		vTmp;
 		XMStoreFloat4(&vTmp, vState);
 		memcpy(&m_WorldMatrix.m[eState][0], &vTmp, sizeof vTmp);
@@ -79,7 +73,7 @@ public:
 	void Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit = 0.1f);
 
 public:
-	HRESULT Bind_ShaderResource(class CShader* pShaderCom, const char* pConstantName);
+	HRESULT Bind_ShaderResource(class CShader* pShaderCom, const wstring& pConstantName);
 
 private:
 	_float4x4				m_WorldMatrix;

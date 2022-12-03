@@ -17,6 +17,9 @@ protected:
 	virtual ~CGameObject() = default;
 
 public:
+	const _bool&		Get_HasModel() { return m_bHasModel; }
+
+public:
 	static const _tchar*		m_pTransformComTag;
 
 public:
@@ -40,13 +43,15 @@ protected:
 
 protected:
 	/* 객체들이 사용해야 할 컴포넌트들을 보관한다.*/
-	map<const _tchar*, class CComponent*>			m_Components;
+	map<const wstring, class CComponent*>			m_Components;
 
 	class CTransform*								m_pTransformCom = nullptr;
 
+	_bool					m_bHasModel = false; 
+
 protected:
-	HRESULT					Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
-	class CComponent*		Find_Component(const _tchar* pComopnentTag);
+	HRESULT					Add_Component(_uint iLevelIndex, const wstring& pPrototypeTag, const wstring& pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
+	class CComponent*		Find_Component(const wstring& pComopnentTag);
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

@@ -8,8 +8,8 @@
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
-_uint CGameInstance::m_iStaticLevelIndex = 0;
-const _tchar* CGameInstance::m_pPrototypeTransformTag = TEXT("Prototype_Component_Transform"); 
+_uint			CGameInstance::m_iStaticLevelIndex = 0;
+const wstring	CGameInstance::m_wstrPrototypeTransformTag = L"Prototype_Component_Transform"; 
 
 CGameInstance::CGameInstance()
 	: m_pGraphic_Device(CGraphic_Device::GetInstance())
@@ -40,6 +40,7 @@ CGameInstance::CGameInstance()
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut)
 {
 	NULL_CHECK_RETURN(m_pGraphic_Device, E_FAIL);
+	NULL_CHECK_RETURN(m_pImgui_Manager, E_FAIL);
 	NULL_CHECK_RETURN(m_pInput_Device, E_FAIL);
 	NULL_CHECK_RETURN(m_pObject_Manager, E_FAIL);
 	NULL_CHECK_RETURN(m_pComponent_Manager, E_FAIL);
@@ -72,8 +73,8 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	/* 엔진에서 제공하는 CGameObject를 상속받는 객체들이 기본적으로 CTransform컴포넌트를 기본으로 가지고 있게 만들어주기위해
 	복제할 수 있는 CTransform의 원형객체를 생성한다. */
 	/* 실제 이 원형을 복제하는 루틴 CGameObject의 Initialize함수에서 복제를 담당한다. */
-	FAILED_CHECK_RETURN(m_pComponent_Manager->Add_Prototype(m_iStaticLevelIndex, m_pPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut)), E_FAIL);
-	// if (FAILED(m_pComponent_Manager->Add_Prototype(m_iStaticLevelIndex, m_pPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut))))
+	FAILED_CHECK_RETURN(m_pComponent_Manager->Add_Prototype(m_iStaticLevelIndex, m_wstrPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut)), E_FAIL);
+	// if (FAILED(m_pComponent_Manager->Add_Prototype(m_iStaticLevelIndex, m_wstrPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut))))
 	// 	return E_FAIL;
 
 	return S_OK;
@@ -175,28 +176,56 @@ HRESULT CGameInstance::Render_Level()
 	return m_pLevel_Manager->Render();
 }
 
-HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)
+const _uint& CGameInstance::Get_CurLevelIndex()
+{
+	NULL_CHECK_RETURN(m_pLevel_Manager, 9999)
+
+	return m_pLevel_Manager->GetCurLevelIdx();
+}
+
+map<const wstring, CGameObject*>* CGameInstance::Get_Prototypes()
+{
+	NULL_CHECK_RETURN(m_pObject_Manager, nullptr)
+
+	return m_pObject_Manager->Get_Prototypes();
+}
+
+map<const wstring, CLayer*>* CGameInstance::Get_Layers(_uint iLevelIndex)
+{
+	NULL_CHECK_RETURN(m_pObject_Manager, nullptr)
+
+	return m_pObject_Manager->Get_Layers(iLevelIndex);
+}
+
+list<CGameObject*>* CGameInstance::Get_CloneObjectList(_uint iLevelIndex, const wstring& szLayerTag)
+{
+	NULL_CHECK_RETURN(m_pObject_Manager, nullptr)
+
+	return m_pObject_Manager->Get_CloneObjectList(iLevelIndex, szLayerTag);
+}
+
+HRESULT CGameInstance::Add_Prototype(const wstring& pPrototypeTag, CGameObject * pPrototype)
 {
 	NULL_CHECK_RETURN(m_pObject_Manager, E_FAIL);
 
 	return m_pObject_Manager->Add_Prototype(pPrototypeTag, pPrototype);
 }
 
-HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pPrototypeTag, void * pArg)
+HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void * pArg)
 {
 	NULL_CHECK_RETURN(m_pObject_Manager, E_FAIL);
 
 	return m_pObject_Manager->Clone_GameObject(iLevelIndex, pLayerTag, pPrototypeTag, pArg);
 }
 
-HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, CComponent * pPrototype)
+HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, CComponent * pPrototype)
 {
 	NULL_CHECK_RETURN(m_pComponent_Manager, E_FAIL);
 
 	return m_pComponent_Manager->Add_Prototype(iLevelIndex, pPrototypeTag, pPrototype);
 }
 
-CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, void * pArg)
+CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, void * pArg)
 {
 	NULL_CHECK_RETURN(m_pComponent_Manager, nullptr);
 
@@ -238,21 +267,21 @@ _float4 CGameInstance::Get_CamPos()
 	return m_pPipeLine->Get_CamPosition();
 }
 
-_double CGameInstance::Get_TimeDelta(const _tchar* pTimerTag)
+_double CGameInstance::Get_TimeDelta(const wstring pTimerTag)
 {
 	NULL_CHECK_RETURN(m_pTimer_Manager, 0.0f);
 
 	return m_pTimer_Manager->Get_TimeDelta(pTimerTag);
 }
 
-HRESULT CGameInstance::Ready_Timer(const _tchar* pTimerTag)
+HRESULT CGameInstance::Ready_Timer(const wstring pTimerTag)
 {
 	NULL_CHECK_RETURN(m_pTimer_Manager, E_FAIL);
 
 	return m_pTimer_Manager->Ready_Timer(pTimerTag);
 }
 
-void CGameInstance::Update_Timer(const _tchar* pTimaerTag)
+void CGameInstance::Update_Timer(const wstring pTimaerTag)
 {
 	NULL_CHECK(m_pTimer_Manager);
 

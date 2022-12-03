@@ -20,9 +20,9 @@ public:
 
 private:
 	HRESULT			Ready_Light();
-	HRESULT			Ready_Layer_BackGround(const _tchar* pLayerTag);
-	HRESULT			Ready_Layer_Camera(const _tchar* pLayerTag);
-	HRESULT			Ready_Layer_Player(const _tchar* pLayerTag);
+	HRESULT			Ready_Layer_BackGround(const wstring wstrLayerTag);
+	HRESULT			Ready_Layer_Camera(const wstring wstrLayerTag);
+	HRESULT			Ready_Layer_Player(const wstring wstrLayerTag);
 
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

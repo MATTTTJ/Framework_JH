@@ -18,14 +18,11 @@ private:
 	virtual ~CGameInstance() = default;
 
 public:
-	static _uint	Get_StaticLevelIndex()
-	{
-		return m_iStaticLevelIndex;
-	}
+	static _uint	Get_StaticLevelIndex() { return m_iStaticLevelIndex; }
 	HWND GetHWND() { return m_hWnd; }
 
 public:
-	static const _tchar* m_pPrototypeTransformTag;
+	static const wstring m_wstrPrototypeTransformTag;
 
 public: /* For.GameInstance */
 	HRESULT				Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut);
@@ -45,14 +42,17 @@ public: /* For.Input_Device */
 public: /* For.Level_Manager */
 	HRESULT				Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	HRESULT				Render_Level();
-
+	const _uint&		Get_CurLevelIndex();
 public: /* For.Object_Manager */
-	HRESULT				Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
-	HRESULT				Clone_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pPrototypeTag, void* pArg = nullptr);
+	map<const wstring, class CGameObject*>*	Get_Prototypes();
+	map<const wstring, class CLayer*>*		Get_Layers(_uint iLevelIndex);
+	list<class CGameObject*>*				Get_CloneObjectList(_uint iLevelIndex, const wstring& szLayerTag);
+	HRESULT				Add_Prototype(const wstring& pPrototypeTag, class CGameObject* pPrototype);
+	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void* pArg = nullptr);
 
 public: /* For.Component_Manager */
-	HRESULT				Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
-	class CComponent*	Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
+	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, class CComponent* pPrototype);
+	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, void* pArg = nullptr);
 
 public:/* For.PipeLine*/
 	_matrix				Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eState);
@@ -62,9 +62,9 @@ public:/* For.PipeLine*/
 	_float4				Get_CamPos();
 
 public: /* For. Timer_Manager*/
-	_double				Get_TimeDelta(const _tchar* pTimerTag);
-	HRESULT				Ready_Timer(const _tchar* pTimerTag);
-	void				Update_Timer(const _tchar* pTimaerTag);
+	_double				Get_TimeDelta(const wstring pTimerTag);
+	HRESULT				Ready_Timer(const wstring pTimerTag);
+	void				Update_Timer(const wstring pTimaerTag);
 
 public: /* For. Light_Manager*/
 	const LIGHTDESC*	Get_LightDesc(_uint iIndex);

@@ -4,7 +4,7 @@
 #include "GameInstance.h"
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
-#include "Level_MapTool.h"
+#include "Level_MapEditor.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLevel(pDevice,pContext)
@@ -53,7 +53,7 @@ void CLevel_Loading::Late_Tick(_double TimeDelta)
 				pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL_MAPEDITOR:
-				pLevel = CLevel_MapTool::Create(m_pDevice, m_pContext);
+				pLevel = CLevel_MapEditor::Create(m_pDevice, m_pContext);
 				break;
 			}
 			NULL_CHECK(pLevel)
@@ -69,7 +69,7 @@ HRESULT CLevel_Loading::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
+	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText().c_str());
 
 	return S_OK;
 }

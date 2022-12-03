@@ -28,11 +28,18 @@ using namespace DirectX;
 #include <algorithm>
 using namespace std;
 
+#define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
+#define IMGUI_DEFINE_MATH_OPERATORS
+
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
+#include "ImGuizmo.h"
+#include "ImGuiFileDialog.h"
+
 
 #include "Engine_Macro.h"
+#include "Engine_Enum.h"
 #include "Engine_Typedef.h"
 #include "Engine_Function.h"
 #include "Engine_Struct.h"

@@ -34,19 +34,19 @@ HRESULT CObject_Manager::Clear(_uint iLevelIndex)
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)
+HRESULT CObject_Manager::Add_Prototype(const wstring& pPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr != Find_Prototype(pPrototypeTag))
 	{
 		Safe_Release(pPrototype);
 		return S_OK;
 	}
-	m_Prototypes.emplace(pPrototypeTag, pPrototype);
+	m_mapPrototypes.emplace(pPrototypeTag, pPrototype);
 
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Clone_GameObject(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pPrototypeTag, void * pArg)
+HRESULT CObject_Manager::Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void * pArg)
 {
 	CGameObject*		pPrototype = Find_Prototype(pPrototypeTag);
 	if (nullptr == pPrototype)
@@ -112,7 +112,7 @@ void CObject_Manager::Imgui_ObjectViewer(_uint iLevel, CGameObject*& pSelectedOb
 		for (auto& Pair : targetLevel) // for layer loop
 		{
 			char szLayerTag[128];
-			CGameUtils::wc2c(Pair.first, szLayerTag);
+			CGameUtils::wc2c(Pair.first.c_str(), szLayerTag);
 			if (ImGui::TreeNode(szLayerTag))  // for object loop listbox
 			{
 				if (ImGui::BeginListBox("##"))
@@ -144,16 +144,16 @@ void CObject_Manager::Imgui_ObjectViewer(_uint iLevel, CGameObject*& pSelectedOb
 		pSelectedObject = nullptr;
 }
 
-CGameObject * CObject_Manager::Find_Prototype(const _tchar * pPrototypeTag)
+CGameObject * CObject_Manager::Find_Prototype(const wstring& pPrototypeTag)
 {
-	auto	iter = find_if(m_Prototypes.begin(), m_Prototypes.end(), CTag_Finder(pPrototypeTag));
-	if (iter == m_Prototypes.end())
+	auto	iter = find_if(m_mapPrototypes.begin(), m_mapPrototypes.end(), CTag_Finder(pPrototypeTag));
+	if (iter == m_mapPrototypes.end())
 		return nullptr;
 
 	return iter->second;
 }
 
-CLayer * CObject_Manager::Find_Layer(_uint iLevelIndex, const _tchar * pLayerTag)
+CLayer * CObject_Manager::Find_Layer(_uint iLevelIndex, const wstring& pLayerTag)
 {
 	auto	iter = find_if(m_pLayers[iLevelIndex].begin(), m_pLayers[iLevelIndex].end(), CTag_Finder(pLayerTag));
 	if (iter == m_pLayers[iLevelIndex].end())
@@ -175,10 +175,10 @@ void CObject_Manager::Free()
 	Safe_Delete_Array(m_pLayers);
 
 
-	for (auto& Pair : m_Prototypes)
+	for (auto& Pair : m_mapPrototypes)
 		Safe_Release(Pair.second);
 
-	m_Prototypes.clear();
+	m_mapPrototypes.clear();
 
 
 }

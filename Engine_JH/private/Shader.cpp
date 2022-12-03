@@ -1,5 +1,7 @@
 #include "..\public\Shader.h"
 
+#include "GameUtils.h"
+
 CShader::CShader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
 {
@@ -19,7 +21,7 @@ CShader::CShader(const CShader & rhs)
 
 }
 
-HRESULT CShader::Initialize_Prototype(const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
+HRESULT CShader::Initialize_Prototype(const wstring& pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
 {
 	_uint			iHlslFlag = 0;
 
@@ -29,7 +31,13 @@ HRESULT CShader::Initialize_Prototype(const _tchar * pShaderFilePath, const D3D1
 	iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
 
 #endif
-	if (FAILED(D3DX11CompileEffectFromFile(pShaderFilePath, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, iHlslFlag, 0, m_pDevice, &m_pEffect, nullptr)))
+	if (FAILED(D3DX11CompileEffectFromFile(pShaderFilePath.c_str(),
+														nullptr, 
+														D3D_COMPILE_STANDARD_FILE_INCLUDE, 
+														iHlslFlag, 
+														0, 
+														m_pDevice, 
+														&m_pEffect, nullptr)))
 		return E_FAIL;
 
 	ID3DX11EffectTechnique*	pTechnique = m_pEffect->GetTechniqueByIndex(0);
@@ -83,58 +91,73 @@ HRESULT CShader::Begin(_uint iPassIndex)
 	return S_OK;
 }
 
-HRESULT CShader::Set_RawValue(const char* pConstantName, const void* pData, _uint iLength)
+HRESULT CShader::Set_RawValue(const wstring& pConstantName, const void* pData, _uint iLength)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
 
-	ID3DX11EffectVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName);
+	char	szConstantName[MAX_PATH];
+	CGameUtils::wc2c(pConstantName.c_str(), szConstantName);
+
+	ID3DX11EffectVariable*		pVariable = m_pEffect->GetVariableByName(szConstantName);
 	NULL_CHECK_RETURN(pVariable, E_FAIL);
 
 	return pVariable->SetRawValue(pData, 0, iLength);
 }
 
-HRESULT CShader::Set_Matrix(const char * pConstantName, const _float4x4* pMatrix)
+HRESULT CShader::Set_Matrix(const wstring& pConstantName, const _float4x4* pMatrix)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
 
-	ID3DX11EffectMatrixVariable*	pVariable = m_pEffect->GetVariableByName(pConstantName)->AsMatrix();
+	char	szConstantName[MAX_PATH];
+	CGameUtils::wc2c(pConstantName.c_str(), szConstantName);
+
+	ID3DX11EffectMatrixVariable*	pVariable = m_pEffect->GetVariableByName(szConstantName)->AsMatrix();
 	NULL_CHECK_RETURN(pVariable, E_FAIL);
 
 	return pVariable->SetMatrix((_float*)pMatrix);
 }
 
-HRESULT CShader::Set_MatrixArray(const char* pConstantName, const _float4x4* pMatrix, _uint iNumMatrices)
+HRESULT CShader::Set_MatrixArray(const wstring& pConstantName, const _float4x4* pMatrix, _uint iNumMatrices)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
 
-	ID3DX11EffectMatrixVariable*	pVariable = m_pEffect->GetVariableByName(pConstantName)->AsMatrix();
+	char	szConstantName[MAX_PATH];
+	CGameUtils::wc2c(pConstantName.c_str(), szConstantName);
+
+	ID3DX11EffectMatrixVariable*	pVariable = m_pEffect->GetVariableByName(szConstantName)->AsMatrix();
 	NULL_CHECK_RETURN(pVariable, E_FAIL);
 
 	return pVariable->SetMatrixArray((_float*)pMatrix,0,iNumMatrices);
 }
 
-HRESULT CShader::Set_ShaderResourceViewArray(const char * pConstantName, ID3D11ShaderResourceView ** ppSRV, _uint iNumTextures)
+HRESULT CShader::Set_ShaderResourceViewArray(const wstring& pConstantName, ID3D11ShaderResourceView ** ppSRV, _uint iNumTextures)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
 
-	ID3DX11EffectShaderResourceVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName)->AsShaderResource();
+	char	szConstantName[MAX_PATH];
+	CGameUtils::wc2c(pConstantName.c_str(), szConstantName);
+
+	ID3DX11EffectShaderResourceVariable*		pVariable = m_pEffect->GetVariableByName(szConstantName)->AsShaderResource();
 	NULL_CHECK_RETURN(pVariable, E_FAIL);
 
 	return pVariable->SetResourceArray(ppSRV, 0, iNumTextures);
 }
 
-HRESULT CShader::Set_ShaderResourceView(const char * pConstantName, ID3D11ShaderResourceView * pSRV)
+HRESULT CShader::Set_ShaderResourceView(const wstring& pConstantName, ID3D11ShaderResourceView * pSRV)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
 
-	ID3DX11EffectShaderResourceVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName)->AsShaderResource();
+	char	szConstantName[MAX_PATH];
+	CGameUtils::wc2c(pConstantName.c_str(), szConstantName);
+
+	ID3DX11EffectShaderResourceVariable*		pVariable = m_pEffect->GetVariableByName(szConstantName)->AsShaderResource();
 	NULL_CHECK_RETURN(pVariable, E_FAIL);
 
 	return pVariable->SetResource(pSRV);
 }
 
 
-CShader * CShader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
+CShader * CShader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
 {
 	CShader*		pInstance = new CShader(pDevice, pContext);
 

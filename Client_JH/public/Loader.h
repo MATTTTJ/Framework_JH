@@ -16,11 +16,11 @@ public:
 		return m_eNextLevelID;
 	}
 
-	const _tchar*	Get_LoadingText() const {
-		return m_szLoadingText;
+	const wstring&	Get_LoadingText() const {
+		return m_wstrLoadingText;
 	}
 
-	_bool	IsFinished() const {
+	const _bool&	IsFinished() const {
 		return m_bIsLoadingFinished;
 	}
 
@@ -41,7 +41,7 @@ private:
 	HANDLE		m_hThread;
 	LEVEL		m_eNextLevelID = LEVEL_END;
 	_bool		m_bIsLoadingFinished = false;
-	_tchar		m_szLoadingText[MAX_PATH] = TEXT("");
+	wstring		m_wstrLoadingText = L"";
 
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID);

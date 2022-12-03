@@ -6,9 +6,7 @@ CBone::CBone()
 
 HRESULT CBone::Initialize(aiNode* pAINode)
 {
-	NULL_CHECK_RETURN(pAINode, E_FAIL)
-
-	strcpy_s(m_szName, pAINode->mName.data);
+	m_szName = pAINode->mName.data;
 	
 	XMStoreFloat4x4(&m_OffsetMatrix, XMMatrixIdentity());
 	// 이 트랜스폼 행렬은 전치된 상태로 저장되어있기때문에, 다시 전치해주어야한다. 

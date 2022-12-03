@@ -1,6 +1,5 @@
 #include "..\public\Transform.h"
 #include "Shader.h"
-#include "ImGuizmo.h"
 #include "GameInstance.h"
 
 CTransform::CTransform(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -231,7 +230,7 @@ void CTransform::Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit)
 	}
 }
 
-HRESULT CTransform::Bind_ShaderResource(CShader* pShaderCom, const char* pConstantName)
+HRESULT CTransform::Bind_ShaderResource(CShader* pShaderCom, const wstring&  pConstantName)
 {
 	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
 

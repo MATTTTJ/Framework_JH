@@ -2,11 +2,18 @@
 #include "Client_Defines.h"
 #include "ImguiObject.h"
 
+BEGIN(Engine)
+class CGameInstance;
+class CGameObject;
+class CLayer;
+END
+
 BEGIN(Client)
+
 class CImgui_MapEditor final : public CImguiObject
 {
 private:
-	CImgui_MapEditor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CImgui_MapEditor();
 	virtual ~CImgui_MapEditor() = default;
 
 public:
@@ -14,13 +21,17 @@ public:
 	virtual void	Imgui_RenderWindow() override;
 
 private:
-	ID3D11Device*			m_pDevice;
-	ID3D11DeviceContext*	m_pContext;
+	_uint								m_iProtypeCnt = 0;
+	map<const wstring, CGameObject*>*	m_mapPrototypes = nullptr;
 
-	_uint					m_iCurrentLevel = 0;
-	_uint					m_iNextLevel = 0;
-	
+	_uint								m_iCurLevel = 0;
+	map<const wstring, CLayer*>*		m_mapLayers = nullptr;
 
+	map<const wstring, CGameObject*>	m_mapPrototypeModels;
+
+private:
+	void			CheckNewPrototype();
+	void			CheckCurrentLevel();
 public:
 	static CImgui_MapEditor*	Create(void* pArg = nullptr);
 	virtual void				Free() override;

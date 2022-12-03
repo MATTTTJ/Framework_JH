@@ -19,7 +19,7 @@ HRESULT CComponent_Manager::Reserve_Manager(_uint iNumLevels)
 	return S_OK;
 }
 
-HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, CComponent* pPrototype)
+HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, CComponent* pPrototype)
 {
 	if (nullptr == m_pPrototypes ||
 		iLevelIndex >= m_iNumLevels)
@@ -36,7 +36,7 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const _tchar* pProt
 }
 
 
-CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg)
+CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, void* pArg)
 {
 	CComponent*		pPrototype = Find_Prototype(iLevelIndex, pPrototypeTag);
 	NULL_CHECK_RETURN(pPrototype, nullptr);
@@ -47,7 +47,7 @@ CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const _tchar*
 	return pComponent;
 }
 
-CComponent* CComponent_Manager::Find_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag)
+CComponent* CComponent_Manager::Find_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag)
 {
 	if (iLevelIndex >= m_iNumLevels)
 	{
