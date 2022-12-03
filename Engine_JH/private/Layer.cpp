@@ -34,8 +34,8 @@ void CLayer::Late_Tick(_double TimeDelta)
 
 HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 {
-	NULL_CHECK_RETURN(pGameObject, E_FAIL);
-
+	NULL_CHECK_RETURN(pGameObject, E_FAIL)
+	// 오브젝트 매니저에서 어떤 레이어에 넣을건지 동적할당후에 맞는 레벨 레이어에 게임오브젝트 보관
 	m_GameObjects.push_back(pGameObject);
 
 	return S_OK;

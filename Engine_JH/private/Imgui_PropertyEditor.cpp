@@ -23,6 +23,7 @@ void CImgui_PropertyEditor::Imgui_RenderTab()
 	{
 		ImGui::Separator();
 		ImGui::Text("%s", typeid(*m_pSelectedObject).name());
+
 		m_pSelectedObject->Imgui_RenderProperty();
 		m_pSelectedObject->Imgui_RenderComponentProperties();
 	}
@@ -35,11 +36,12 @@ void CImgui_PropertyEditor::Imgui_RenderWindow()
 
 CImgui_PropertyEditor* CImgui_PropertyEditor::Create(void* pArg)
 {
-	auto inst = new CImgui_PropertyEditor;
-	if (FAILED(inst->Initialize(pArg)))
+	CImgui_PropertyEditor* pInst = new CImgui_PropertyEditor;
+	if (FAILED(pInst->Initialize(pArg)))
 	{
-		return nullptr;
+		MSG_BOX("Failed to Create : CImgui_PropertyEditor");
+		Safe_Release(pInst);
 	}
 
-	return inst;
+	return pInst;
 }

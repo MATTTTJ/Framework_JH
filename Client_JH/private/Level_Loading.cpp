@@ -52,16 +52,12 @@ void CLevel_Loading::Late_Tick(_double TimeDelta)
 			case LEVEL_GAMEPLAY:
 				pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
 				break;
-			case LEVEL_MAPTOOL:
+			case LEVEL_MAPEDITOR:
 				pLevel = CLevel_MapTool::Create(m_pDevice, m_pContext);
 				break;
 			}
-
-			if (nullptr == pLevel)
-				return;
-
-			if (FAILED(pGameInstance->Open_Level(m_eNextLevelID, pLevel)))
-				return;
+			NULL_CHECK(pLevel)
+			FAILED_CHECK_RETURN(pGameInstance->Open_Level(m_eNextLevelID, pLevel), );
 		}
 	}
 

@@ -17,7 +17,7 @@ public:
 	HRESULT		Render();
 
 
-	_uint GetCurLevelIdx() const { return m_iLevelIndex; }
+	_uint		GetCurLevelIdx() const { return m_iLevelIndex; }
 
 private:
 	class CLevel*		m_pCurrentLevel = nullptr;

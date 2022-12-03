@@ -10,14 +10,17 @@ protected:
 	CImguiObject() = default;
 
 public:
+	const char*		GetTabName() const { return m_szTabname; }
+	const char*		GetWindowName() const { return m_szWindowName; }
+
+public:
 	virtual HRESULT Initialize(void* pArg);
 
-	virtual void Imgui_RenderTab(){}
-	virtual void Imgui_RenderWindow(){}
+	virtual void	Imgui_RenderTab(){}
+	virtual void	Imgui_RenderWindow(){}
 
-	const char* GetTabName() const { return m_szTabname; }
-	const char* GetWindowName() const { return m_szWindowName; }
-	virtual void Free() override {}
+	
+	virtual void	Free() override {}
 
 protected:
 	const char* m_szTabname = "";

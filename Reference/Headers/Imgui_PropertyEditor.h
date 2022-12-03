@@ -15,6 +15,8 @@ public:
 
 	virtual void Imgui_RenderTab() override;
 	virtual void Imgui_RenderWindow() override;
+
+public:
 	static CImgui_PropertyEditor* Create(void* pArg = nullptr);
 
 private:

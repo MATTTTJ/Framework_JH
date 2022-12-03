@@ -11,7 +11,7 @@ CLevel_Manager::CLevel_Manager()
 
 HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex,CLevel* pNewLevel)
 {
-	NULL_CHECK_RETURN(pNewLevel, E_FAIL);
+	NULL_CHECK_RETURN(pNewLevel, E_FAIL)
 
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);

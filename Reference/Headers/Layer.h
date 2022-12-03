@@ -17,8 +17,8 @@ public:
 	list<class CGameObject*>& GetGameObjects() { return m_GameObjects; }
 
 private:
-	list<class CGameObject*>			m_GameObjects;
-	typedef list<class CGameObject*>	GAMEOBJECTS;
+	list<class CGameObject*>			m_GameObjects; // 레이어에 맞게 보관된 게임오브젝트들을 업데이트 돌려주는 클래스 
+	typedef list<class CGameObject*>	GAMEOBJECTS; 
 
 public:
 	static CLayer*		Create();

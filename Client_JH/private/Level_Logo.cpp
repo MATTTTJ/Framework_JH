@@ -4,6 +4,7 @@
 #include "Level_Loading.h"
 #include "GameInstance.h"
 #include "Imgui_PropertyEditor.h"
+#include "Imgui_LevelSwitcher.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -18,8 +19,11 @@ HRESULT CLevel_Logo::Initialize()
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
+
 	CGameInstance::GetInstance()->Clear_ImguiObjects();
 	CGameInstance::GetInstance()->Add_ImguiTabObject(CImgui_PropertyEditor::Create());
+	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
+
 	return S_OK;
 }
 

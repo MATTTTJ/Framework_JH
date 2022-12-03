@@ -46,6 +46,18 @@
     <Filter Include="01. Level\98. MapTool">
       <UniqueIdentifier>{bacf02ee-dc01-4e6c-9520-62f4aafea879}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Tool">
+      <UniqueIdentifier>{ab291286-4b0f-498c-9e66-7115bbceb659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Tool\MapEditor">
+      <UniqueIdentifier>{26194212-847b-4b58-ada4-b8d5ca862e7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Tool\LevelSwicher">
+      <UniqueIdentifier>{f8142ae6-388f-4ab3-ac8f-676a67e37d67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager">
+      <UniqueIdentifier>{2a424dab-a796-451c-9205-502d7a61b77b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -93,6 +105,12 @@
     <ClInclude Include="..\public\Level_MapTool.h">
       <Filter>01. Level\98. MapTool</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Imgui_MapEditor.h">
+      <Filter>96. Tool\MapEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui_LevelSwitcher.h">
+      <Filter>96. Tool\LevelSwicher</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -130,6 +148,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_MapTool.cpp">
       <Filter>01. Level\98. MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Imgui_MapEditor.cpp">
+      <Filter>96. Tool\MapEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Imgui_LevelSwitcher.cpp">
+      <Filter>96. Tool\LevelSwicher</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

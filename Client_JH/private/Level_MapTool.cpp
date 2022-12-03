@@ -70,7 +70,7 @@ HRESULT CLevel_MapTool::Ready_Layer_Terrain(const _tchar* pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
+	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_MAPEDITOR, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -87,7 +87,7 @@ HRESULT CLevel_MapTool::Ready_Layer_Camera(const _tchar* pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Camera_Dynamic"))))
+	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_MAPEDITOR, pLayerTag, TEXT("Prototype_GameObject_Camera_Dynamic"))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
