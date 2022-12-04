@@ -17,7 +17,6 @@ public:
 
 public:
 	virtual HRESULT Initialize(void* pArg) override;
-	virtual void	Imgui_RenderTab() override;
 	virtual void	Imgui_RenderWindow() override;
 
 private:

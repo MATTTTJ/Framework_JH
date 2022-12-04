@@ -132,6 +132,7 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 				CGameUtils::wc2c(wstrLastTag.c_str(), szLastTag);
 				sprintf_s(ppCloneTags[i], sizeof(char) * MAX_PATH, strcat(szLastTag, "_%d"), i);
 			}
+			
 			ImGui::ListBox("Cloned Model List", &iSelectCloneObject, ppCloneTags, (_int)CloneObjectList->size());
 
 			if (CGameInstance::GetInstance()->Mouse_Down(CInput_Device::DIM_RB))

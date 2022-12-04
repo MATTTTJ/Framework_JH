@@ -26,6 +26,8 @@ HRESULT CTerrain::Initialize_Clone(void * pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
+	m_bHasModel = false;
+
 	m_vPos = { 0.f,0.f,0.f,0.f };
 
 	return S_OK;
