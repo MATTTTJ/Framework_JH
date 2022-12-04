@@ -58,7 +58,7 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE W
 
 HRESULT CGraphic_Device::Clear_BackBuffer_View(_float4 vClearColor)
 {
-	if (m_pDeviceContext == nullptr)
+	if (nullptr == m_pDeviceContext)
 		return E_FAIL;
 
 	m_pDeviceContext->ClearRenderTargetView(m_pBackBufferRTV, (_float*)&vClearColor);
@@ -68,7 +68,7 @@ HRESULT CGraphic_Device::Clear_BackBuffer_View(_float4 vClearColor)
 
 HRESULT CGraphic_Device::Clear_DepthStencil_View()
 {
-	if (m_pDeviceContext == nullptr)
+	if (nullptr == m_pDeviceContext)
 		return E_FAIL;
 
 	m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,

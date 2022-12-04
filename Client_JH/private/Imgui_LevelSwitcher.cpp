@@ -27,7 +27,7 @@ void CImgui_LevelSwitcher::Imgui_RenderWindow()
 
 	static int iCurSceneTagIdx = 0;
 	static int iLevelIdx = 0;
-	// ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 
 	ImGui::BulletText("Level Switcher");
 	ImGui::BulletText("Current Level  [ %s ]", m_pLevelName[m_iCurrentLevel]);
