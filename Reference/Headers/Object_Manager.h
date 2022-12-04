@@ -24,26 +24,22 @@ public:
 	HRESULT Reserve_Manager(_uint iNumLevels);
 	HRESULT Clear(_uint iLevelIndex);
 public:
+	HRESULT	Add_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
 	HRESULT Add_Prototype(const wstring& pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void* pArg = nullptr);
 	void	Tick(_double TimeDelta);
 	void	Late_Tick(_double TimeDelta);
 
-public: /* imgui */
-		// 모든 원본 Object를 Imgui로 출력한다.
-		// 선택한 원본의 이름을 szSelectedProto로 돌려준다.
+public:
 	void Imgui_ProtoViewer(OUT const _tchar*& szSelectedProto);
 
-	// iLevel에 있는 모든 사본 Object를 Layer별로 Imgui로 출력한다.
-	// 선택한 Object는 pSelectedObject로 돌려준다.
-	// 해당 Object가 없거나 사라지면 nullptr로 돌려준다.
 	void Imgui_ObjectViewer(_uint iLevel, OUT CGameObject*& pSelectedObject);
 
-private: /* 원형객체들을ㅇ 모아놓는다. */
+private: /* For Prototype Objects. */
 	map<const wstring, class CGameObject*>			m_mapPrototypes;
 	typedef map<const wstring, class CGameObject*>	PROTOTYPES;
 
-private: /* 사본객체들을 보관하기위한 컨테이너. */
+private: /* For Cloned Objects. */
 	map<const wstring, class CLayer*>*			m_pLayers = nullptr;
 	typedef map<const wstring, class CLayer*>	LAYERS;
 	_uint										m_iNumLevels = 0;

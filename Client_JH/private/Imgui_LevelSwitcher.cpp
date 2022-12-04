@@ -14,8 +14,8 @@ HRESULT CImgui_LevelSwitcher::Initialize(void* pArg)
 {
 	m_szWindowName = "LevelSwitcher";
 
-	m_mapLevels.emplace("Level_Logo", LEVEL_LOGO);
 	m_mapLevels.emplace("Level_Gameplay", LEVEL_GAMEPLAY);
+	m_mapLevels.emplace("Level_Logo", LEVEL_LOGO);
 	m_mapLevels.emplace("Level_MapEditor", LEVEL_MAPEDITOR);
 
 	return S_OK;
@@ -23,11 +23,14 @@ HRESULT CImgui_LevelSwitcher::Initialize(void* pArg)
 
 void CImgui_LevelSwitcher::Imgui_RenderWindow()
 {
+	m_iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
+
 	static int iCurSceneTagIdx = 0;
 	static int iLevelIdx = 0;
+	// ImGui::ShowDemoWindow();
 
 	ImGui::BulletText("Level Switcher");
-
+	ImGui::BulletText("Current Level  [ %s ]", m_pLevelName[m_iCurrentLevel]);
 	if(ImGui::BeginListBox("##"))
 	{
 		_int iIdx = 0;

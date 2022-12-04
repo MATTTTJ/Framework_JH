@@ -162,6 +162,48 @@ _long CGameInstance::Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMoveState)
 	return m_pInput_Device->Get_DIMouseMove(eMoveState);
 }
 
+_bool CGameInstance::Mouse_Down(CInput_Device::MOUSEKEYSTATE MouseButton)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, false);
+
+	return m_pInput_Device->Mouse_Down(MouseButton);
+}
+
+_bool CGameInstance::Mouse_Up(CInput_Device::MOUSEKEYSTATE MouseButton)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, false);
+
+	return m_pInput_Device->Mouse_Up(MouseButton);
+}
+
+_bool CGameInstance::Mouse_DoubleClick(CInput_Device::MOUSEKEYSTATE MouseButton)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, false);
+
+	return m_pInput_Device->Mouse_DoubleClick(MouseButton);
+}
+
+_bool CGameInstance::Key_Down(_ubyte byKeyID)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, false);
+
+	return m_pInput_Device->Key_Down(byKeyID);
+}
+
+_bool CGameInstance::Key_Up(_ubyte byKeyID)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, false);
+
+	return m_pInput_Device->Key_Up(byKeyID);
+}
+
+void CGameInstance::Reset_EveryKey()
+{
+	NULL_CHECK_RETURN(m_pInput_Device,);
+
+	return m_pInput_Device->Reset_EveryKey();
+}
+
 HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 {
 	NULL_CHECK_RETURN(m_pLevel_Manager, E_FAIL);
@@ -209,6 +251,13 @@ HRESULT CGameInstance::Add_Prototype(const wstring& pPrototypeTag, CGameObject *
 	NULL_CHECK_RETURN(m_pObject_Manager, E_FAIL);
 
 	return m_pObject_Manager->Add_Prototype(pPrototypeTag, pPrototype);
+}
+
+HRESULT CGameInstance::Add_Layer(const _uint iLevelIndex, const wstring& wstrLayerTag)
+{
+	NULL_CHECK_RETURN(m_pObject_Manager, E_FAIL);
+
+	return m_pObject_Manager->Add_Layer(iLevelIndex, wstrLayerTag);
 }
 
 HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void * pArg)

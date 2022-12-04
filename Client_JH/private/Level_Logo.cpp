@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "Imgui_PropertyEditor.h"
 #include "Imgui_LevelSwitcher.h"
+#include "Imgui_MapEditor.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -21,9 +22,9 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 
 	CGameInstance::GetInstance()->Clear_ImguiObjects();
-	CGameInstance::GetInstance()->Add_ImguiTabObject(CImgui_PropertyEditor::Create());
+	// CGameInstance::GetInstance()->Add_ImguiTabObject(CImgui_PropertyEditor::Create());
 	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
-
+	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_MapEditor::Create());
 	return S_OK;
 }
 

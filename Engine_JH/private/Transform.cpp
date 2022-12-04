@@ -54,83 +54,46 @@ HRESULT CTransform::Initialize_Clone(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_TransformDesc, pArg, sizeof(TRANSFORMDESC));
 
+	m_dInitSpeed = m_TransformDesc.fSpeedPerSec;
+
 	return S_OK;
 }
 
 void CTransform::Imgui_RenderProperty()
 {
 	ImGuizmo::BeginFrame();
-	static float snap[3] = { 1.f, 1.f, 1.f };
-	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
-	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
-	if (ImGui::IsKeyPressed(90))
-		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-	if (ImGui::IsKeyPressed(69))
-		mCurrentGizmoOperation = ImGuizmo::ROTATE;
-	if (ImGui::IsKeyPressed(82)) // r Key
-		mCurrentGizmoOperation = ImGuizmo::SCALE;
-	if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
-		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+
+	static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);
+
+	ImGui::BulletText("ImGuizmo Type");
+	if (ImGui::RadioButton("Translate", CurGuizmoType == ImGuizmo::TRANSLATE))
+		CurGuizmoType = ImGuizmo::TRANSLATE;
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
-		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+	if (ImGui::RadioButton("Scale", CurGuizmoType == ImGuizmo::SCALE))
+		CurGuizmoType = ImGuizmo::SCALE;
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
-		mCurrentGizmoOperation = ImGuizmo::SCALE;
+	if (ImGui::RadioButton("Rotate", CurGuizmoType == ImGuizmo::ROTATE))
+		CurGuizmoType = ImGuizmo::ROTATE;
 
-	float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+	_float	vPos[3], vScale[3], vAngle[3];
+	ImGuizmo::DecomposeMatrixToComponents((_float*)&m_WorldMatrix, vPos, vAngle, vScale);
+	IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Translate", vPos);
+	IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Scale", vScale);
+	IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Rotate", vAngle);
+	ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&m_WorldMatrix);
 
-	ImGuizmo::DecomposeMatrixToComponents(reinterpret_cast<float*>(&m_WorldMatrix), matrixTranslation, matrixRotation, matrixScale);
-	ImGui::InputFloat3("Translate", matrixTranslation);
-	ImGui::InputFloat3("Rotate", matrixRotation);
-	ImGui::InputFloat3("Scale", matrixScale);
-	ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, reinterpret_cast<float*>(&m_WorldMatrix));
-
-	if (mCurrentGizmoOperation != ImGuizmo::SCALE)
-	{
-		if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
-			mCurrentGizmoMode = ImGuizmo::LOCAL;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
-			mCurrentGizmoMode = ImGuizmo::WORLD;
-	}
-
-	static bool useSnap(false);
-	if (ImGui::IsKeyPressed(83))
-		useSnap = !useSnap;
-	ImGui::Checkbox("##something", &useSnap);
-	ImGui::SameLine();
-	switch (mCurrentGizmoOperation)
-	{
-	case ImGuizmo::TRANSLATE:
-		ImGui::InputFloat3("Snap", &snap[0]);
-		break;
-	case ImGuizmo::ROTATE:
-		ImGui::InputFloat("Angle Snap", &snap[0]);
-		break;
-	case ImGuizmo::SCALE:
-		ImGui::InputFloat("Scale Snap", &snap[0]);
-		break;
-	}
-
-	ImGuiIO& io = ImGui::GetIO();
-	RECT rt;
+	ImGuiIO&	io = ImGui::GetIO();
+	RECT		rt;
 	GetClientRect(CGameInstance::GetInstance()->GetHWND(), &rt);
-	POINT lt{ rt.left, rt.top };
-	ClientToScreen(CGameInstance::GetInstance()->GetHWND(), &lt);
-	ImGuizmo::SetRect((_float)lt.x, (_float)lt.y, io.DisplaySize.x, io.DisplaySize.y);
+	POINT		LT{ rt.left, rt.top };
+	ClientToScreen(CGameInstance::GetInstance()->GetHWND(), &LT);
+	ImGuizmo::SetRect((_float)LT.x, (_float)LT.y, io.DisplaySize.x, io.DisplaySize.y);
 
-	_float4x4 matView, matProj;
+	_float4x4		matView, matProj;
 	XMStoreFloat4x4(&matView, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
 	XMStoreFloat4x4(&matProj, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
 
-	ImGuizmo::Manipulate(
-		reinterpret_cast<float*>(&matView),
-		reinterpret_cast<float*>(&matProj),
-		mCurrentGizmoOperation,
-		mCurrentGizmoMode,
-		reinterpret_cast<float*>(&m_WorldMatrix),
-		nullptr, useSnap ? &snap[0] : nullptr);
+	ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&m_WorldMatrix);
 }
 
 void CTransform::Go_Straight(_double TimeDelta)
@@ -228,6 +191,14 @@ void CTransform::Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit)
 		vPosition += XMVector3Normalize(vDir) * m_TransformDesc.fSpeedPerSec * TimeDelta;
 		Set_State(CTransform::STATE_TRANSLATION, vPosition);
 	}
+}
+
+void CTransform::Speed_Up(_bool bKeyState)
+{
+	if (bKeyState)
+		m_TransformDesc.fSpeedPerSec = m_dInitSpeed * 5.0;
+	else
+		m_TransformDesc.fSpeedPerSec = m_dInitSpeed;
 }
 
 HRESULT CTransform::Bind_ShaderResource(CShader* pShaderCom, const wstring&  pConstantName)

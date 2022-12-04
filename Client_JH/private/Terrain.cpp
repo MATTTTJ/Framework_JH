@@ -75,9 +75,7 @@ _float4 CTerrain::Picking_Terrain()
 HRESULT CTerrain::SetUp_Components()
 {
 	/* For.Com_Renderer */
-	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), 
-		L"Prototype_Component_Renderer", L"Com_Renderer",
-		(CComponent**)&m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",	(CComponent**)&m_pRendererCom), E_FAIL);
 
 	/* For.Com_Shader */
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxNorTex",L"Com_Shader",

@@ -13,13 +13,9 @@ public:
 	virtual ~CModel() = default;
 
 public:
-	_uint		Get_NumMeshes() const {
-		return m_iNumMeshes;
-	}
+	_uint		Get_NumMeshes() const {	return m_iNumMeshes; }
 
-	void		Set_AnimIndex(_uint AnimIndex) { // 실행하고자하는 애니메이션을 Set
-		m_iCurrentAnimIndex = AnimIndex;
-	}
+	void		Set_AnimIndex(_uint AnimIndex) { m_iCurrentAnimIndex = AnimIndex; }
 
 	class	CBone*	Get_BonePtr(const string& strBoneName);
 
@@ -29,9 +25,7 @@ public:
 
 public:
 	void						Play_Animation(_double TimeDelta);
-	// 어떤 메쉬에 어떤 텍스쳐를 쓸건지 묶는 함수
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);
-	// 모델 자체에서 메쉬에 대한 렌더를 돌림
 	HRESULT						Render(CShader* pShader, _uint iMeshIndex);
 
 public:

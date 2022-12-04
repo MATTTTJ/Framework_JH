@@ -18,8 +18,9 @@ protected:
 
 public:
 	const _bool&		Get_HasModel() { return m_bHasModel; }
+	const _float4x4&	Get_WorldFloat4x4() const { return m_pTransformCom->Get_WorldFloat4x4(); }
 
-public:
+	public:
 	static const _tchar*		m_pTransformComTag;
 
 public:

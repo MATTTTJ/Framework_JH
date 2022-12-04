@@ -56,7 +56,7 @@ HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel, CModel* pModel)
 		KeyFrame.vRotation = vRotation;
 		KeyFrame.vPosition = vPosition;
 
-		m_Keyframes.push_back(KeyFrame);
+		m_vecKeyframes.push_back(KeyFrame);
 	}
 	return S_OK;
 }
@@ -73,41 +73,30 @@ void CChannel::Update_TransformMatrix(_double PlayTime)
 
 	// 현재 재생된 시간이 맨 뒤에있는 키 프레임의 시간보다 커지면 (솎아낸 키 프레임)
 	// 마지막 키프레임 데이터를 남겨두기위한 작업
-	if(PlayTime >= m_Keyframes.back().Time)
+	if(PlayTime >= m_vecKeyframes.back().Time)
 	{
-		vScale = XMLoadFloat3(&m_Keyframes.back().vScale);
-		vRotation = XMLoadFloat4(&m_Keyframes.back().vRotation);
-		vPosition = XMLoadFloat3(&m_Keyframes.back().vPosition);
+		vScale = XMLoadFloat3(&m_vecKeyframes.back().vScale);
+		vRotation = XMLoadFloat4(&m_vecKeyframes.back().vRotation);
+		vPosition = XMLoadFloat3(&m_vecKeyframes.back().vPosition);
 		vPosition = XMVectorSetW(vPosition, 1.f);
 	}
 	else
 	{
-		if(PlayTime >= m_Keyframes[m_iCurrentKeyframeIndex + 1].Time)
+		if(PlayTime >= m_vecKeyframes[m_iCurrentKeyframeIndex + 1].Time)
 		{
 			// 애니메이션 재생시간이 키프레임 사이에 존재할 때
 			// 플레이타임 시간이 다음 키프레임 시간보다 클 때 현재 키프레임 인덱스를 증가
 			++m_iCurrentKeyframeIndex;
 		}
 		// 현재 시간 - 현재 키프레임 인덱스 시간 / 현재 키프레임 인덱스 시간 - 현재 시간 
-		_double		Ratio = (PlayTime - m_Keyframes[m_iCurrentKeyframeIndex].Time) /
-			m_Keyframes[m_iCurrentKeyframeIndex + 1].Time - m_Keyframes[m_iCurrentKeyframeIndex].Time;
+		_double		Ratio = (PlayTime - m_vecKeyframes[m_iCurrentKeyframeIndex].Time) /
+			m_vecKeyframes[m_iCurrentKeyframeIndex + 1].Time - m_vecKeyframes[m_iCurrentKeyframeIndex].Time;
 		// 위 비율은 키 프레임 사이의 데이터 변경 값을 보간해주기 위한 비율이다.
 
-		_vector		vSourScale, vDestScale;
-		_vector		vSourRotation, vDestRotation;
-		_vector		vSourPosition, vDestPosition;
-
-		vSourScale = XMLoadFloat3(&m_Keyframes[m_iCurrentKeyframeIndex].vScale);
-		vSourRotation = XMLoadFloat4(&m_Keyframes[m_iCurrentKeyframeIndex].vRotation);
-		vSourPosition = XMLoadFloat3(&m_Keyframes[m_iCurrentKeyframeIndex].vPosition);
-
-		vDestScale = XMLoadFloat3(&m_Keyframes[m_iCurrentKeyframeIndex + 1].vScale);
-		vDestRotation = XMLoadFloat4(&m_Keyframes[m_iCurrentKeyframeIndex + 1].vRotation);
-		vDestPosition = XMLoadFloat3(&m_Keyframes[m_iCurrentKeyframeIndex + 1].vPosition);
-
-		vScale = XMVectorLerp(vSourScale, vDestScale, Ratio);
-		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, Ratio);
-		vPosition = XMVectorLerp(vSourPosition, vDestPosition, Ratio);
+		vScale = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vScale), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vScale), (_float)Ratio);
+		vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex].vRotation), XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vRotation), (_float)Ratio);
+		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition), (_float)Ratio);
+		vPosition = XMVectorSetW(vPosition, 1.f);
 	}
 	// 백터들을 받아서 행렬로 만들어주는 함수. 2번째 인자는 기준점인데 원점이 들어간다.
 	TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
@@ -131,5 +120,5 @@ void CChannel::Free()
 {
 	Safe_Release(m_pBone);
 
-	m_Keyframes.clear();
+	m_vecKeyframes.clear();
 }

@@ -38,6 +38,12 @@ public: /* For.Input_Device */
 	_byte				Get_DIKeyState(_ubyte byKeyID);
 	_byte				Get_DIMouseState(CInput_Device::MOUSEKEYSTATE byMouseID);
 	_long				Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMoveState);
+	_bool				Mouse_Down(CInput_Device::MOUSEKEYSTATE MouseButton);
+	_bool				Mouse_Up(CInput_Device::MOUSEKEYSTATE MouseButton);
+	_bool				Mouse_DoubleClick(CInput_Device::MOUSEKEYSTATE MouseButton);
+	_bool				Key_Down(_ubyte byKeyID);
+	_bool				Key_Up(_ubyte byKeyID);
+	void				Reset_EveryKey();
 
 public: /* For.Level_Manager */
 	HRESULT				Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
@@ -48,8 +54,9 @@ public: /* For.Object_Manager */
 	map<const wstring, class CLayer*>*		Get_Layers(_uint iLevelIndex);
 	list<class CGameObject*>*				Get_CloneObjectList(_uint iLevelIndex, const wstring& szLayerTag);
 	HRESULT				Add_Prototype(const wstring& pPrototypeTag, class CGameObject* pPrototype);
+	HRESULT				Add_Layer(const _uint iLevelIndex, const wstring& wstrLayerTag);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void* pArg = nullptr);
-
+	
 public: /* For.Component_Manager */
 	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, class CComponent* pPrototype);
 	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, void* pArg = nullptr);

@@ -34,6 +34,19 @@ HRESULT CObject_Manager::Clear(_uint iLevelIndex)
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Add_Layer(_uint iLevelIndex, const wstring& wstrLayerTag)
+{
+	CLayer*		pLayer = Find_Layer(iLevelIndex, wstrLayerTag);
+
+	if(nullptr == pLayer)
+	{
+		pLayer = CLayer::Create();
+		NULL_CHECK_RETURN(pLayer, E_FAIL);
+
+		m_pLayers[iLevelIndex].emplace(wstrLayerTag, pLayer);
+	}
+}
+
 HRESULT CObject_Manager::Add_Prototype(const wstring& pPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr != Find_Prototype(pPrototypeTag))
