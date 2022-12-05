@@ -61,7 +61,7 @@
     <Filter Include="96. Tool\ImGuiSetting">
       <UniqueIdentifier>{08d2c3bf-a4f3-4cdd-9eca-6ee22fcc5590}</UniqueIdentifier>
     </Filter>
-    <Filter Include="96. Tool\PrototypeEditor">
+    <Filter Include="96. Tool\PrototypeMgr">
       <UniqueIdentifier>{42f1aeaa-ace4-432c-8b94-cc360bf4edc6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -120,7 +120,9 @@
     <ClInclude Include="Imgui_Setting.h">
       <Filter>96. Tool\ImGuiSetting</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Imgui_ProtoMgr.h" />
+    <ClInclude Include="..\public\Imgui_ProtoMgr.h">
+      <Filter>96. Tool\PrototypeMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -168,7 +170,9 @@
     <ClCompile Include="Imgui_Setting.cpp">
       <Filter>96. Tool\ImGuiSetting</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Imgui_ProtoMgr.cpp" />
+    <ClCompile Include="..\private\Imgui_ProtoMgr.cpp">
+      <Filter>96. Tool\PrototypeMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

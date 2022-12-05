@@ -17,7 +17,7 @@ public:
 	void Tick_Imgui();
 	void Render_Imgui();
 	void Render_Update_ImGui();
-
+	void ImGui_DockSpace();
 	// imgui object를 tab에 추가한다.
 	void Add_ImguiTabObject(CImguiObject* ImguiObject);
 
@@ -34,6 +34,7 @@ private:
 private:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pDeviceContext = nullptr;
+	_bool						m_bDrawImGui = true;
 
 	vector<CImguiObject*> m_vecTab;
 	vector<CImguiObject*> m_vecWin;

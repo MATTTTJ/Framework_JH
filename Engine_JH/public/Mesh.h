@@ -18,27 +18,27 @@ public:
 
 
 public:
-	virtual HRESULT			Initialize_Prototype(CModel::TYPE eTYPE, aiMesh* pAIMesh, CModel* pModel);
+	virtual HRESULT			Initialize_Prototype(CModel::MODELTYPE eTYPE, aiMesh* pAIMesh, CModel* pModel);
 	virtual HRESULT			Initialize_Clone(void* pArg) override;
 
 public:
 	void SetUp_BoneMatrix(_float4x4* pBoneMatrices);
 
 private:
-	CModel::TYPE			m_eType;
+	CModel::MODELTYPE			m_eType;
 
 	// 이 메시는 m_iMaterialIndex번째 머테리얼을 사용한다. 
 	_uint					m_iMaterialIndex = 0;
 
 	// 이 메시의 정점들에게 영향을 주는 뼈의 갯수
-	_uint					m_iNumBones = 0;
-	vector<class CBone*>	m_Bones;
+	_uint					m_iNumMeshBones = 0;
+	vector<class CBone*>	m_vecMeshBones;
 private:
 	HRESULT					Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh);
 	HRESULT					Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel);
 
 public:
-	static CMesh*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,CModel::TYPE eType, aiMesh* pAIMesh, CModel* pModel);
+	static CMesh*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,CModel::MODELTYPE eType, aiMesh* pAIMesh, CModel* pModel);
 	virtual CComponent*		Clone(void* pArg = nullptr) override;
 	virtual void			Free();
 

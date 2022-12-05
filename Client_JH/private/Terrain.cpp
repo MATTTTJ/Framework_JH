@@ -20,9 +20,9 @@ HRESULT CTerrain::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CTerrain::Initialize_Clone(void * pArg)
+HRESULT CTerrain::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
@@ -42,9 +42,9 @@ void CTerrain::Tick(_double TimeDelta)
 	{
 		 m_vPos = Picking_Terrain();
 	}
-	ImGui::Begin("Test");
-	ImGui::Text("%f / %f ", m_vPos.x, m_vPos.z);
-	ImGui::End();
+	// ImGui::Begin("Test");
+	// ImGui::Text("%f / %f ", m_vPos.x, m_vPos.z);
+	// ImGui::End();
 
 	RELEASE_INSTANCE(CGameInstance)
 }
@@ -145,11 +145,11 @@ CTerrain * CTerrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pConte
 	return pInstance;
 }
 
-CGameObject * CTerrain::Clone(void * pArg)
+CGameObject * CTerrain::Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
 	CTerrain*		pInstance = new CTerrain(*this);
 
-	if (FAILED(pInstance->Initialize_Clone(pArg)))
+	if (FAILED(pInstance->Initialize_Clone(wstrPrototypeTag, pArg)))
 	{
 		MSG_BOX("Failed to Cloned : CTerrain");
 		Safe_Release(pInstance);

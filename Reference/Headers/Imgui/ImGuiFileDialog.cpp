@@ -2577,6 +2577,7 @@ namespace IGFD
 	std::string IGFD::FileManager::GetResultingFilePathName(FileDialogInternal& vFileDialogInternal)
 	{
 		std::string result = GetResultingPath();
+		result.erase(remove(result.begin(), result.end(), '\0'), result.end());
 
 		std::string filename = GetResultingFileName(vFileDialogInternal);
 		if (!filename.empty())

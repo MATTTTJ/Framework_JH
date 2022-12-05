@@ -58,6 +58,7 @@ public: /* For.Object_Manager */
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void* pArg = nullptr);
 	
 public: /* For.Component_Manager */
+	map<const wstring, class CComponent*>* Get_PrototypeComponents();
 	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, class CComponent* pPrototype);
 	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, void* pArg = nullptr);
 

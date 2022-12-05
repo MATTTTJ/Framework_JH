@@ -49,7 +49,7 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 		}
 
 		ImGui::BulletText("Prototype Model List");
-		ImGui::ListBox("Prototype Model List", &iSelectObject, ppProtoModelTag, (_int)m_mapPrototypeModels.size());
+		ImGui::ListBox("  ", &iSelectObject, ppProtoModelTag, (_int)m_mapPrototypeModels.size());
 
 		if (m_iCurLevel == LEVEL_LOADING)
 		{
@@ -133,7 +133,7 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 				sprintf_s(ppCloneTags[i], sizeof(char) * MAX_PATH, strcat(szLastTag, "_%d"), i);
 			}
 			
-			ImGui::ListBox("Cloned Model List", &iSelectCloneObject, ppCloneTags, (_int)CloneObjectList->size());
+			ImGui::ListBox(" ", &iSelectCloneObject, ppCloneTags, (_int)CloneObjectList->size());
 
 			if (CGameInstance::GetInstance()->Mouse_Down(CInput_Device::DIM_RB))
 				iSelectCloneObject = -1;

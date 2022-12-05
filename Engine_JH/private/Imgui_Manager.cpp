@@ -1,4 +1,6 @@
 #include "..\public\Imgui_Manager.h"
+
+#include "GameInstance.h"
 #include "Graphic_Device.h"
 #include "ImGuiFileDialog.h"
 #include "ImguiObject.h"
@@ -15,7 +17,7 @@ void CImgui_Manager::Ready_Imgui(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;		// Enable Gamepad Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;		// Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 	//io.ConfigViewportsNoAutoMerge = true;
@@ -42,13 +44,28 @@ void CImgui_Manager::Ready_Imgui(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 
 void CImgui_Manager::Tick_Imgui()
 {
+
+	if (CGameInstance::GetInstance()->Key_Down(DIK_T) && CGameInstance::GetInstance()->Get_DIKeyState(DIK_LCONTROL) & 0x80)
+		m_bDrawImGui = !m_bDrawImGui;
+
+	if (!m_bDrawImGui)
+		return;
+
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+
+	
 }
 
 void CImgui_Manager::Render_Imgui()
 {
+	if (!m_bDrawImGui)
+		return;
+
+	ImGui_DockSpace();
+
 	RenderTab();
 	RenderWindow();
 
@@ -57,6 +74,9 @@ void CImgui_Manager::Render_Imgui()
 
 void CImgui_Manager::Render_Update_ImGui()
 {
+	if (!m_bDrawImGui)
+		return;
+
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -64,6 +84,41 @@ void CImgui_Manager::Render_Update_ImGui()
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
 	}
+}
+
+void CImgui_Manager::ImGui_DockSpace()
+{
+	ImGuiWindowFlags			WindowFlag = ImGuiWindowFlags_NoDocking;
+
+	const ImGuiViewport*	Viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(Viewport->WorkPos);
+	ImGui::SetNextWindowSize(Viewport->WorkSize);
+	ImGui::SetNextWindowViewport(Viewport->ID);
+	ImGui::SetNextWindowBgAlpha(0.f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
+
+	WindowFlag |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+	WindowFlag |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+	WindowFlag |= ImGuiDockNodeFlags_PassthruCentralNode;
+	WindowFlag |= ImGuiWindowFlags_NoBackground;
+
+	_bool	bIsShow = true;
+
+	ImGui::Begin("DockSpace", &bIsShow, WindowFlag);
+	ImGui::PopStyleVar(1);
+	ImGui::PopStyleVar(2);
+
+	ImGuiIO&	io = ImGui::GetIO();
+	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+	{
+		ImGuiID	DockSpaceID = ImGui::GetID("DockSpace");
+		ImGuiDockNodeFlags Flag = ImGuiDockNodeFlags_PassthruCentralNode;
+		ImGui::DockSpace(DockSpaceID, ImVec2(0.f, 0.f), Flag);
+	}
+
+	ImGui::End();
 }
 
 void CImgui_Manager::Add_ImguiTabObject(CImguiObject* ImguiObject)

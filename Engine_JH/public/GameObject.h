@@ -19,15 +19,15 @@ protected:
 public:
 	const _bool&		Get_HasModel() { return m_bHasModel; }
 	const _float4x4&	Get_WorldFloat4x4() const { return m_pTransformCom->Get_WorldFloat4x4(); }
-
+	const wstring&		Get_PrototypeGameObjectTag() { return m_wstrPrototypeGameObjectTag; }
 	public:
-	static const _tchar*		m_pTransformComTag;
+	static const wstring		m_wstrTransformComTag;
 
 public:
 	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize_Clone(void* pArg);
-	virtual void	Tick(_double TimeDelta);
-	virtual void	Late_Tick(_double TimeDelta);
+	virtual HRESULT Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg);
+	virtual void	Tick(_double dTimeDelta);
+	virtual void	Late_Tick(_double dTimeDelta);
 	virtual HRESULT Render();
 
 public: /* imgui */
@@ -49,13 +49,15 @@ protected:
 	class CTransform*								m_pTransformCom = nullptr;
 
 	_bool					m_bHasModel = false; 
+	_bool					m_bIsClone = false;
+	wstring					m_wstrPrototypeGameObjectTag = L"";
 
 protected:
-	HRESULT					Add_Component(_uint iLevelIndex, const wstring& pPrototypeTag, const wstring& pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
+	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppOut, void* pArg = nullptr);
 	class CComponent*		Find_Component(const wstring& pComopnentTag);
 
 public:
-	virtual CGameObject* Clone(void* pArg = nullptr) = 0;
+	virtual CGameObject* Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) = 0;
 	virtual void Free() override;
 };
 

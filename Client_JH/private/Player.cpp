@@ -23,9 +23,9 @@ HRESULT CPlayer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayer::Initialize_Clone(void * pArg)
+HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
@@ -35,6 +35,7 @@ HRESULT CPlayer::Initialize_Clone(void * pArg)
 void CPlayer::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+	m_pModelCom->Play_Animation(TimeDelta);
 }
 
 void CPlayer::Late_Tick(_double TimeDelta)
@@ -50,9 +51,6 @@ HRESULT CPlayer::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
-	if (FAILED(SetUp_ShaderResources()))
-		return E_FAIL;
-
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
@@ -60,7 +58,7 @@ HRESULT CPlayer::Render()
 		/* 이 모델을 그리기위한 셰이더에 머테리얼 텍스쳐를 전달하낟. */
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 
-		m_pModelCom->Render(m_pShaderCom, i);
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
 	}
 
 	return S_OK;
@@ -73,7 +71,7 @@ HRESULT CPlayer::SetUp_Components()
 		(CComponent**)&m_pRendererCom), E_FAIL);
 
 	/* For.Com_Shader */
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxModel", L"Com_Shader",
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxAnimModel", L"Com_Shader",
 		(CComponent**)&m_pShaderCom), E_FAIL);
 
 	/* For.Com_Model */
@@ -128,11 +126,11 @@ CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext
 	return pInstance;
 }
 
-CGameObject * CPlayer::Clone(void * pArg)
+CGameObject * CPlayer::Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
 	CPlayer*		pInstance = new CPlayer(*this);
 
-	if (FAILED(pInstance->Initialize_Clone(pArg)))
+	if (FAILED(pInstance->Initialize_Clone(wstrPrototypeTag, pArg)))
 	{
 		MSG_BOX("Failed to Cloned : CPlayer");
 		Safe_Release(pInstance);

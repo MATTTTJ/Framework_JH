@@ -39,7 +39,7 @@ namespace Engine
 
 	typedef struct tagKeyframe
 	{
-		double		Time;
+		double		dTime;
 		XMFLOAT3	vScale;
 		XMFLOAT4	vRotation;
 		XMFLOAT3	vPosition;

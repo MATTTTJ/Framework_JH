@@ -21,7 +21,7 @@ HRESULT CBackGround::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CBackGround::Initialize_Clone(void * pArg)
+HRESULT CBackGround::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
 	CGameObject::GAMEOBJECTDESC		GameObjectDesc;
 	ZeroMemory(&GameObjectDesc, sizeof(GameObjectDesc));
@@ -29,7 +29,7 @@ HRESULT CBackGround::Initialize_Clone(void * pArg)
 	GameObjectDesc.TransformDesc.fSpeedPerSec = 5.f;
 	GameObjectDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(CGameObject::Initialize_Clone(&GameObjectDesc)))
+	if (FAILED(CGameObject::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc)))
 		return E_FAIL;
 
 	if (FAILED(SetUp_Components()))
@@ -140,11 +140,11 @@ CBackGround * CBackGround::Create(ID3D11Device * pDevice, ID3D11DeviceContext * 
 	return pInstance;
 }
 
-CGameObject * CBackGround::Clone(void * pArg)
+CGameObject * CBackGround::Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
 	CBackGround*		pInstance = new CBackGround(*this);
 
-	if (FAILED(pInstance->Initialize_Clone(pArg)))
+	if (FAILED(pInstance->Initialize_Clone(wstrPrototypeTag, pArg)))
 	{
 		MSG_BOX("Failed to Cloned : CBackGround");
 		Safe_Release(pInstance);

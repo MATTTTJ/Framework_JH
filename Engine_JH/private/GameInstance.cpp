@@ -99,6 +99,9 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 	m_pObject_Manager->Late_Tick(TimeDelta);
 	m_pLevel_Manager->Late_Tick(TimeDelta);
 
+	m_pInput_Device->Reset_EveryKey();
+
+
 }
 
 void CGameInstance::Clear_Level(_uint iLevelIndex)
@@ -265,6 +268,13 @@ HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const wstring& pLayer
 	NULL_CHECK_RETURN(m_pObject_Manager, E_FAIL);
 
 	return m_pObject_Manager->Clone_GameObject(iLevelIndex, pLayerTag, pPrototypeTag, pArg);
+}
+
+map<const wstring, CComponent*>* CGameInstance::Get_PrototypeComponents()
+{
+	NULL_CHECK_RETURN(m_pComponent_Manager, nullptr);
+
+	return m_pComponent_Manager->Get_PrototypeComponents();
 }
 
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, CComponent * pPrototype)

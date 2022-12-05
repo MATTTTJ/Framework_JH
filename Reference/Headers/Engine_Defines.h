@@ -3,21 +3,23 @@
 #pragma warning (disable : 4005)
 #pragma warning (disable : 4251)
 #pragma warning (disable : 4996) // strcat 
+
 #include <d3d11.h>
 #include <Effects11/d3dx11effect.h>
 #include <DirectXTK/DDSTextureLoader.h>
 #include <DirectXTK/WICTextureLoader.h>
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
 #include <d3dcompiler.h>
 #include <TypeInfo.h>
 #include <DirectXCollision.h>
-
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <DirectXMath.h>
 using namespace DirectX;
+
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+using namespace Assimp;
 
 #include <cassert>
 
@@ -37,6 +39,7 @@ using namespace std;
 #include "ImGuizmo.h"
 #include "ImGuiFileDialog.h"
 
+#include <Shlwapi.h>
 
 #include "Engine_Macro.h"
 #include "Engine_Enum.h"

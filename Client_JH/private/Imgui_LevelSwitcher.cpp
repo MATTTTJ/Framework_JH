@@ -12,7 +12,7 @@ CImgui_LevelSwitcher::CImgui_LevelSwitcher(ID3D11Device* pDevice, ID3D11DeviceCo
 
 HRESULT CImgui_LevelSwitcher::Initialize(void* pArg)
 {
-	m_szWindowName = "LevelSwitcher";
+	m_szWindowName = " [ Level Switcher ] ";
 
 	m_mapLevels.emplace("Level_Gameplay", LEVEL_GAMEPLAY);
 	m_mapLevels.emplace("Level_Logo", LEVEL_LOGO);
@@ -27,7 +27,7 @@ void CImgui_LevelSwitcher::Imgui_RenderWindow()
 
 	static int iCurSceneTagIdx = 0;
 	static int iLevelIdx = 0;
-	ImGui::ShowDemoWindow();
+	// ImGui::ShowDemoWindow();
 
 	ImGui::BulletText("Level Switcher");
 	ImGui::BulletText("Current Level  [ %s ]", m_pLevelName[m_iCurrentLevel]);

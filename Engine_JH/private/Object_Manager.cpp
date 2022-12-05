@@ -45,6 +45,8 @@ HRESULT CObject_Manager::Add_Layer(_uint iLevelIndex, const wstring& wstrLayerTa
 
 		m_pLayers[iLevelIndex].emplace(wstrLayerTag, pLayer);
 	}
+
+	return S_OK;
 }
 
 HRESULT CObject_Manager::Add_Prototype(const wstring& pPrototypeTag, CGameObject * pPrototype)
@@ -59,13 +61,13 @@ HRESULT CObject_Manager::Add_Prototype(const wstring& pPrototypeTag, CGameObject
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void * pArg)
+HRESULT CObject_Manager::Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, void * pArg)
 {
-	CGameObject*		pPrototype = Find_Prototype(pPrototypeTag);
+	CGameObject*		pPrototype = Find_Prototype(wstrPrototypeTag);
 	if (nullptr == pPrototype)
 		return E_FAIL;
 
-	CGameObject*		pGameObject = pPrototype->Clone(pArg);
+	CGameObject*		pGameObject = pPrototype->Clone(wstrPrototypeTag, pArg);
 
 	CLayer*		pLayer = Find_Layer(iLevelIndex, pLayerTag);
 

@@ -12,7 +12,7 @@ BEGIN(Client)
 class CImgui_ProtoMgr final : public CImguiObject
 {
 public:
-	CImgui_ProtoMgr();
+	CImgui_ProtoMgr(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CImgui_ProtoMgr() = default;
 
 public:

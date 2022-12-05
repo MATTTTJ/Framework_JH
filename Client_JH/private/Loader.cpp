@@ -119,7 +119,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* For.Prototype_Component_Model_Fiona */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fiona",
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Meshes/Fiona/Fiona.fbx"))))
+		CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Fiona/Fiona.fbx"))))
 		return E_FAIL;
 
 	m_wstrLoadingText = L"셰이더를 로딩중입니다. ";
@@ -132,6 +132,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_Component_Shader_VtxModel */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxModel",
 		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxModel.hlsl", VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxAnimModel*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 	m_wstrLoadingText = L"객체원형을 생성중입니다. ";
@@ -187,7 +192,7 @@ HRESULT CLoader::Loading_For_MapTool()
 
 	/* For.Prototype_Component_Model_Fiona */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fiona",
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Meshes/Fiona/Fiona.fbx"))))
+		CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Fiona/Fiona.fbx"))))
 		return E_FAIL;
 
 	m_wstrLoadingText = L"셰이더를 로딩중입니다. ";
@@ -196,6 +201,9 @@ HRESULT CLoader::Loading_For_MapTool()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxNorTex",
 		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNorTex.hlsl", VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements))))
 		return E_FAIL;
+
+
+
 
 	m_wstrLoadingText = L"객체원형을 생성중입니다. ";
 

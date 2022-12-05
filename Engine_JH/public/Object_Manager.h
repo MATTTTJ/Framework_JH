@@ -26,7 +26,7 @@ public:
 public:
 	HRESULT	Add_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
 	HRESULT Add_Prototype(const wstring& pPrototypeTag, class CGameObject* pPrototype);
-	HRESULT Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void* pArg = nullptr);
+	HRESULT Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 	void	Tick(_double TimeDelta);
 	void	Late_Tick(_double TimeDelta);
 

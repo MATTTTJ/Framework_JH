@@ -22,13 +22,14 @@ HRESULT CCamera::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CCamera::Initialize_Clone(void* pArg)
+HRESULT CCamera::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
 	ZeroMemory(&m_CameraDesc, sizeof(CAMERADESC));
 
 	if (nullptr != pArg)
 		memcpy(&m_CameraDesc, pArg, sizeof(m_CameraDesc));
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(&m_CameraDesc), E_FAIL);
+
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_CameraDesc), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMLoadFloat4(&m_CameraDesc.vEye));
 	m_pTransformCom->LookAt(XMLoadFloat4(&m_CameraDesc.vAt));

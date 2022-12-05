@@ -16,7 +16,7 @@ public:
 	virtual ~CCamera() = default;
 
 	virtual HRESULT			Initialize_Prototype();
-	virtual HRESULT			Initialize_Clone(void* pArg);
+	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void			Tick(_double TimeDelta);
 	virtual void			Late_Tick(_double TimeDelta);
 	virtual HRESULT			Render();
@@ -28,7 +28,7 @@ private:
 
 public:
 
-	virtual CGameObject*	Clone(void* pArg = nullptr) = 0;
+	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) = 0;
 	virtual void			Free() override;
 };
 

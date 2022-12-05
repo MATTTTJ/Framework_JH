@@ -6,7 +6,8 @@
 #include "Renderer.h"
 #include "Transform.h"
 #include "VIBuffer_Rect.h"
-#include "VIBuffer_Terrain.h"
+#include "VIBuffer_Terrain.h"	
+#include "Component.h"
 
 BEGIN(Engine)
 
@@ -18,15 +19,17 @@ public:
 	virtual ~CComponent_Manager() = default;
 
 public:
+	map<const wstring, class CComponent*>* Get_PrototypeComponents() { if (m_mapPrototypes) return m_mapPrototypes; else return nullptr; }
+public:
 	HRESULT				Reserve_Manager(_uint iNumLevels);
 	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, class CComponent* pPrototype);
 	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, void* pArg = nullptr);
-
+	
 private:
 	_uint												m_iNumLevels = 0;
 
 	// 레벨별로 원형 컴포넌트(텍스쳐, 매쉬 등)을 보관하려 함.
-	map<const wstring, class CComponent*>*				m_pPrototypes = nullptr;
+	map<const wstring, class CComponent*>*				m_mapPrototypes = nullptr;
 	typedef map<const wstring, class CComponent*>		PROTOTYPES;
 
 private:

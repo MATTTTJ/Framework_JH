@@ -4,10 +4,12 @@ CBone::CBone()
 {
 }
 
-HRESULT CBone::Initialize(aiNode* pAINode)
+HRESULT CBone::Initialize(aiNode* pAINode, CBone* pParent)
 {
 	m_szName = pAINode->mName.data;
-	
+	m_pParent = pParent;
+	Safe_AddRef(m_pParent);
+
 	XMStoreFloat4x4(&m_OffsetMatrix, XMMatrixIdentity());
 	// 이 트랜스폼 행렬은 전치된 상태로 저장되어있기때문에, 다시 전치해주어야한다. 
 	memcpy(&m_TransformMatrix, &pAINode->mTransformation, sizeof(_float4x4));
@@ -15,6 +17,8 @@ HRESULT CBone::Initialize(aiNode* pAINode)
 	XMStoreFloat4x4(&m_TransformMatrix, XMMatrixTranspose(XMLoadFloat4x4(&m_TransformMatrix)));
 	
 	XMStoreFloat4x4(&m_CombindTransformMatrix, XMMatrixIdentity());
+
+
 
 	return S_OK;
 }
@@ -28,11 +32,11 @@ void CBone::compute_CombindTransformationMatrix()
 		XMStoreFloat4x4(&m_CombindTransformMatrix, XMLoadFloat4x4(&m_TransformMatrix) * XMLoadFloat4x4(&m_pParent->m_CombindTransformMatrix));
 }
 
-CBone* CBone::Create(aiNode* pAINode)
+CBone* CBone::Create(aiNode* pAINode, CBone* pParent)
 {
 	CBone*	pInst = new CBone();
 
-	if(FAILED(pInst->Initialize(pAINode)))
+	if(FAILED(pInst->Initialize(pAINode, pParent)))
 	{
 		MSG_BOX("Failed to Create : CBone");
 
@@ -44,4 +48,5 @@ CBone* CBone::Create(aiNode* pAINode)
 
 void CBone::Free()
 {
+	Safe_Release(m_pParent);
 }

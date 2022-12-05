@@ -4,7 +4,7 @@
 
 HRESULT CImgui_Setting::Initialize(void * pArg)
 {
-	m_szWindowName = "ImGui Setting";
+	m_szWindowName = " [ ImGui Setting ] ";
 	m_pAlpha = &ImGui::GetStyle().Colors[ImGuiCol_WindowBg].w;
 	
 	return S_OK;

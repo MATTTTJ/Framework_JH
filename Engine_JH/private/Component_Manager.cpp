@@ -9,10 +9,10 @@ CComponent_Manager::CComponent_Manager()
 
 HRESULT CComponent_Manager::Reserve_Manager(_uint iNumLevels)
 {
-	if (nullptr != m_pPrototypes)
+	if (nullptr != m_mapPrototypes)
 		return E_FAIL;
 
-	m_pPrototypes = new PROTOTYPES[iNumLevels];
+	m_mapPrototypes = new PROTOTYPES[iNumLevels];
 
 	m_iNumLevels = iNumLevels;
 
@@ -21,7 +21,7 @@ HRESULT CComponent_Manager::Reserve_Manager(_uint iNumLevels)
 
 HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, CComponent* pPrototype)
 {
-	if (nullptr == m_pPrototypes ||
+	if (nullptr == m_mapPrototypes ||
 		iLevelIndex >= m_iNumLevels)
 		return E_FAIL;
 
@@ -30,7 +30,7 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const wstring& pPro
 		Safe_Release(pPrototype);
 		return S_OK;
 	}
-	m_pPrototypes[iLevelIndex].emplace(pPrototypeTag, pPrototype);
+	m_mapPrototypes[iLevelIndex].emplace(pPrototypeTag, pPrototype);
 
 	return S_OK;
 }
@@ -54,9 +54,9 @@ CComponent* CComponent_Manager::Find_Prototype(_uint iLevelIndex, const wstring&
 		assert(!"Worng Level Index");
 		return nullptr;
 	}
-	auto iter = find_if(m_pPrototypes[iLevelIndex].begin(), m_pPrototypes[iLevelIndex].end(), CTag_Finder(pPrototypeTag));
+	auto iter = find_if(m_mapPrototypes[iLevelIndex].begin(), m_mapPrototypes[iLevelIndex].end(), CTag_Finder(pPrototypeTag));
 
-	if (iter == m_pPrototypes[iLevelIndex].end())
+	if (iter == m_mapPrototypes[iLevelIndex].end())
 		return nullptr;
 
 	return iter->second;
@@ -66,12 +66,12 @@ void CComponent_Manager::Free()
 {
 	for(_uint i = 0; i < m_iNumLevels; ++i)
 	{
-		for (auto& Pair : m_pPrototypes[i])
+		for (auto& Pair : m_mapPrototypes[i])
 			Safe_Release(Pair.second);
-		m_pPrototypes[i].clear();
+		m_mapPrototypes[i].clear();
 	}
 
-	Safe_Delete_Array(m_pPrototypes);
+	Safe_Delete_Array(m_mapPrototypes);
 }
 
 

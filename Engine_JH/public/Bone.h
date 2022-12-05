@@ -13,7 +13,7 @@ public:
 		return m_szName;
 	}
 
-	void			Set_OffetMatrix(_float4x4 OffsetMatrix)
+	void			Set_OffsetMatrix(_float4x4 OffsetMatrix)
 	{
 		m_OffsetMatrix = OffsetMatrix;
 	}
@@ -34,7 +34,7 @@ public:
 	}
 
 public:
-	HRESULT			Initialize(aiNode* pAINode);
+	HRESULT			Initialize(aiNode* pAINode, CBone* pParent);
 	void			compute_CombindTransformationMatrix();
 
 
@@ -51,7 +51,7 @@ private:
 	CBone*			m_pParent = nullptr;
 
 public:
-	static	CBone*	Create(aiNode* pAINode);
+	static	CBone*	Create(aiNode* pAINode, CBone* pParent);
 	virtual void	Free() override;
 
 };

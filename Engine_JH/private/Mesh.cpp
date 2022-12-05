@@ -9,14 +9,18 @@ CMesh::CMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 CMesh::CMesh(const CMesh & rhs)
 	: CVIBuffer(rhs)
+	, m_iMaterialIndex(rhs.m_iMaterialIndex)
+	, m_iNumMeshBones(rhs.m_iNumMeshBones)
+	, m_vecMeshBones(rhs.m_vecMeshBones)
 {
 }
 
-HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh, CModel* pModel)
+HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, CModel* pModel)
 {
 	m_eType = eType;
 
-	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL)
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
 
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
 	m_iNumVertexBuffers = 1;
@@ -30,9 +34,9 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh, CModel
 
 #pragma region VERTEX_BUFFER
 
-	HRESULT		hr = 0;
-	
-	if (CModel::TYPE_NONANIM == m_eType)
+	HRESULT			hr = 0;
+
+	if (CModel::MODEL_NONANIM == m_eType)
 	{
 		hr = Ready_VertexBuffer_NonAnimModel(pAIMesh);
 	}
@@ -40,9 +44,10 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh, CModel
 	{
 		hr = Ready_VertexBuffer_AnimModel(pAIMesh, pModel);
 	}
-	
+
 	if (FAILED(hr))
 		return E_FAIL;
+
 
 #pragma endregion
 
@@ -70,7 +75,8 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eType, aiMesh * pAIMesh, CModel
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pIndices;
 
-	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL)
+	if (FAILED(__super::Create_IndexBuffer()))
+		return E_FAIL;
 
 	Safe_Delete_Array(pIndices);
 
@@ -88,9 +94,15 @@ HRESULT CMesh::Initialize_Clone(void * pArg)
 void CMesh::SetUp_BoneMatrix(_float4x4* pBoneMatrices)
 {
 	// 뼈를 하나씩 돌면서 순회하기 위한 갯수 
+
+	if(0 == m_iNumMeshBones)
+	{
+		XMStoreFloat4x4(&pBoneMatrices[0], XMMatrixIdentity());
+	}
+
 	_uint iNumBones = 0;
 
-	for(auto& pBone : m_Bones)
+	for(auto& pBone : m_vecMeshBones)
 	{
 		// BoneMatrix = 오프셋 매트릭스 * 콤바인 매트릭스
 		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_OffsetMatrix() * pBone->Get_CombindMatrix());
@@ -153,22 +165,26 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 		memcpy(&pVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
 		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
 	}
-	// 메시에 영향을 준다. 
-	m_iNumBones = pAIMesh->mNumBones;
 
-	for (_uint i = 0; i < m_iNumBones; ++i)
+	/* 메시에 영향ㅇ르 준다.ㅏ */
+	m_iNumMeshBones = pAIMesh->mNumBones;
+
+	for (_uint i = 0; i < m_iNumMeshBones; ++i)
 	{
+
 		aiBone*		pAIBone = pAIMesh->mBones[i];
 
-		CBone*		pBone = pModel->Get_BonePtr(pAIMesh->mName.data);
-		NULL_CHECK_RETURN(pBone, E_FAIL)
+		CBone*		pBone = pModel->Get_BonePtr(pAIBone->mName.data);
+		if (nullptr == pBone)
+			return E_FAIL;
 
-		_float4x4	OffsetMatrix;
+		_float4x4		OffsetMatrix;
 		memcpy(&OffsetMatrix, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
 		XMStoreFloat4x4(&OffsetMatrix, XMMatrixTranspose(XMLoadFloat4x4(&OffsetMatrix)));
 
-		pBone->Set_OffetMatrix(OffsetMatrix);
-		m_Bones.push_back(pBone);
+		pBone->Set_OffsetMatrix(OffsetMatrix);
+
+		m_vecMeshBones.push_back(pBone);
 
 		Safe_AddRef(pBone);
 
@@ -179,25 +195,25 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 		{
 			_uint iVertexIndex = pAIBone->mWeights[j].mVertexId;
 
-			if (0.0f == pVertices[iVertexIndex].vBlendWeight.x)
+			if (fabs(pVertices[iVertexIndex].vBlendWeight.x - 0.f) < EPSILON)
 			{
 				pVertices[iVertexIndex].vBlendIndex.x = i;
 				pVertices[iVertexIndex].vBlendWeight.x = pAIBone->mWeights[j].mWeight;
 			}
 
-			if (0.0f == pVertices[iVertexIndex].vBlendWeight.y)
+			else if (fabs(pVertices[iVertexIndex].vBlendWeight.y - 0.f) < EPSILON)
 			{
 				pVertices[iVertexIndex].vBlendIndex.y = i;
 				pVertices[iVertexIndex].vBlendWeight.y = pAIBone->mWeights[j].mWeight;
 			}
 
-			if (0.0f == pVertices[iVertexIndex].vBlendWeight.z)
+			else if (fabs(pVertices[iVertexIndex].vBlendWeight.z - 0.f) < EPSILON)
 			{
 				pVertices[iVertexIndex].vBlendIndex.z = i;
 				pVertices[iVertexIndex].vBlendWeight.z = pAIBone->mWeights[j].mWeight;
 			}
 
-			if (0.0f == pVertices[iVertexIndex].vBlendWeight.w)
+			else if (fabs(pVertices[iVertexIndex].vBlendWeight.w - 0.f) < EPSILON)
 			{
 				pVertices[iVertexIndex].vBlendIndex.w = i;
 				pVertices[iVertexIndex].vBlendWeight.w = pAIBone->mWeights[j].mWeight;
@@ -205,17 +221,24 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 		}
 	}
 
+	/*if (0 == m_iNumMeshBones)
+	{
+	m_iNumMeshBones = 1;
+	}*/
+
+
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pVertices;
 
-	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL)
+	if (FAILED(__super::Create_VertexBuffer()))
+		return E_FAIL;
 
 	Safe_Delete_Array(pVertices);
 
 	return S_OK;
 }
 
-CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext,CModel::TYPE eType, aiMesh * pAIMesh, CModel* pModel)
+CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext,CModel::MODELTYPE eType, aiMesh * pAIMesh, CModel* pModel)
 {
 	CMesh*		pInstance = new CMesh(pDevice, pContext);
 
@@ -245,8 +268,8 @@ void CMesh::Free()
 {
 	__super::Free();
 
-	for(auto& pBone : m_Bones)
+	for(auto& pBone : m_vecMeshBones)
 		Safe_Release(pBone);
 
-	m_Bones.clear();
+	m_vecMeshBones.clear();
 }
