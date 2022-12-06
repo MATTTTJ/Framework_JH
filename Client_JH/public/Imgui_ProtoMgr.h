@@ -32,7 +32,7 @@ private:
 	map<const wstring, CGameObject*>*	m_mapProtoObjects = nullptr;
 	_uint								m_iProtoObjCnt = 0;
 
-	char*								m_pLevelName[LEVEL_END + 1] = { "Level_Loading", "Level_Logo", "Level_Gameplay", "Level_MapEditor" };
+	char*								m_pLevelName[LEVEL_END + 1] = { "Level_Loading", "Level_Logo", "Level_Gameplay", "Public" };
 	_int*								m_iSelectTextureCom = nullptr;
 
 private:

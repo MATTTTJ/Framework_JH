@@ -15,17 +15,20 @@ CModel::CModel(const CModel & rhs)
 	, m_pAIScene(rhs.m_pAIScene)
 	, m_eType(rhs.m_eType)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
-	, m_vecMeshes(rhs.m_vecMeshes)
+	// , m_vecMeshes(rhs.m_vecMeshes)
 	, m_vecMaterials(rhs.m_vecMaterials)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
-	, m_vecBones(rhs.m_vecBones)
+	// , m_vecBones(rhs.m_vecBones)
 	, m_iNumBones(rhs.m_iNumBones)
-	, m_vecAnimations(rhs.m_vecAnimations)
+	// , m_vecAnimations(rhs.m_vecAnimations)
 	, m_iNumAnimation(rhs.m_iNumAnimation)
 	, m_iCurrentAnimIndex(rhs.m_iCurrentAnimIndex)
+	, m_PivotMatrix(rhs.m_PivotMatrix)
 {
-	for (auto& pMesh : m_vecMeshes)
-		Safe_AddRef(pMesh);
+	for (auto& pMesh : rhs.m_vecMeshes)
+	{
+		m_vecMeshes.push_back((CMesh*)pMesh->Clone());
+	}
 
 	for(auto& Material : m_vecMaterials)
 	{
@@ -33,11 +36,11 @@ CModel::CModel(const CModel & rhs)
 			Safe_AddRef(Material.pTexture[i]);
 	}
 
-	for (auto& pBone : m_vecBones)
-		Safe_AddRef(pBone);
+	// for (auto& pBone : m_vecBones)
+	// 	Safe_AddRef(pBone);
 
-	for (auto& pAnimation : m_vecAnimations)
-		Safe_AddRef(pAnimation);
+	// for (auto& pAnimation : m_vecAnimations)
+	// 	Safe_AddRef(pAnimation);
 
 }
 
@@ -55,7 +58,7 @@ CBone* CModel::Get_BonePtr(const string& strBoneName)
 
 
 
-HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath)
+HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix PivotMatrix)
 {
 	if (eType == MODELTYPE_END)
 		return E_FAIL;
@@ -67,36 +70,50 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePat
 	else
 		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
 
-	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
-	NULL_CHECK_RETURN(m_pAIScene, E_FAIL)
+	m_eType = eType;
 
-	FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode, nullptr), E_FAIL)
+	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
+	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
+
+	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
+	
+	// FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode, nullptr), E_FAIL)
 
 	FAILED_CHECK_RETURN(Ready_MeshContainers(), E_FAIL)
 
 	FAILED_CHECK_RETURN(Ready_Materials(pModelFilePath), E_FAIL)
 
-	FAILED_CHECK_RETURN(Ready_Animation(), E_FAIL)
+	// FAILED_CHECK_RETURN(Ready_Animation(), E_FAIL)
 
 	return S_OK;
 }
 
 HRESULT CModel::Initialize_Clone(void * pArg)
 {
+	FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode, nullptr), E_FAIL);
+
+	for(auto& pMesh : m_vecMeshes)
+	{
+		pMesh->SetUp_MeshBones(this);
+	}
+
+	FAILED_CHECK_RETURN(Ready_Animation(), E_FAIL);
+
 	return S_OK;
 }
 
 void CModel::Play_Animation(_double TimeDelta)
 {
+	if (MODEL_NONANIM == m_eType)
+		return;
+
 	// 현재 애니메이션에 맞는 뼈들의 TransformMatrix를 갱신한다.
 	m_vecAnimations[m_iCurrentAnimIndex]->Update_Bones(TimeDelta);
 
 	for (auto& pBone : m_vecBones)
 	{
 		if (nullptr != pBone)
-		{
 			pBone->compute_CombindTransformationMatrix();
-		}
 	}
 }
 
@@ -130,7 +147,7 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrB
 		{
 			_float4x4		BoneMatrices[256];
 	
-			m_vecMeshes[iMeshIndex]->SetUp_BoneMatrix(BoneMatrices);
+			m_vecMeshes[iMeshIndex]->SetUp_BoneMatrix(BoneMatrices, XMLoadFloat4x4(&m_PivotMatrix));
 	
 			pShader->Set_MatrixArray(wstrBoneConstantName, BoneMatrices, 256);
 		}
@@ -245,11 +262,11 @@ HRESULT CModel::Ready_Animation()
 	return S_OK;
 }
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, MODELTYPE eType, const char * pModelFilePath)
+CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, MODELTYPE eType, const char * pModelFilePath, _fmatrix PivotMatrix)
 {
 	CModel*		pInstance = new CModel(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eType, pModelFilePath)))
+	if (FAILED(pInstance->Initialize_Prototype(eType, pModelFilePath, PivotMatrix)))
 	{
 		MSG_BOX("Failed to Created : CModel");
 		Safe_Release(pInstance);

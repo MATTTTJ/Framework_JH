@@ -79,7 +79,7 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 	}
 	else
 	{
-		if(dPlayTime >= m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime)
+		while (dPlayTime >= m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime)
 		{
 			// 애니메이션 재생시간이 키프레임 사이에 존재할 때
 			// 플레이타임 시간이 다음 키프레임 시간보다 클 때 현재 키프레임 인덱스를 증가

@@ -97,6 +97,9 @@ HRESULT CCustomObject::Initialize_Clone(const wstring& wstrPrototypeTag, void* p
 	
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
+	if (m_pModelCom != nullptr)
+		m_bHasModel = true;
+
 	return S_OK;
 }
 

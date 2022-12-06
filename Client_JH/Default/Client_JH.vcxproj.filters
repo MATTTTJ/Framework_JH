@@ -64,6 +64,12 @@
     <Filter Include="96. Tool\PrototypeMgr">
       <UniqueIdentifier>{42f1aeaa-ace4-432c-8b94-cc360bf4edc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Monster">
+      <UniqueIdentifier>{0bbf329f-2bee-4b97-b8ee-4c1a9afeb6b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\StaticMesh">
+      <UniqueIdentifier>{dee98d7a-cf21-4013-a7aa-21f8cdb8dd8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -123,6 +129,12 @@
     <ClInclude Include="..\public\Imgui_ProtoMgr.h">
       <Filter>96. Tool\PrototypeMgr</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ForkLift.h">
+      <Filter>02. GameObjects\StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster.h">
+      <Filter>02. GameObjects\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -172,6 +184,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Imgui_ProtoMgr.cpp">
       <Filter>96. Tool\PrototypeMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ForkLift.cpp">
+      <Filter>02. GameObjects\StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster.cpp">
+      <Filter>02. GameObjects\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -70,8 +70,8 @@ HRESULT CLevel_MapEditor::Ready_Layer_Background(const wstring wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_MAPEDITOR, wstrLayerTag, L"Prototype_GameObject_Terrain")))
-		return E_FAIL;
+	// if (FAILED(pGameInstance->Clone_GameObject(LEVEL_MAPEDITOR, wstrLayerTag, L"Prototype_GameObject_Terrain")))
+	// 	return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -87,8 +87,8 @@ HRESULT CLevel_MapEditor::Ready_Layer_Camera(const wstring wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_MAPEDITOR, wstrLayerTag, L"Prototype_GameObject_Camera_Dynamic")))
-		return E_FAIL;
+	// if (FAILED(pGameInstance->Clone_GameObject(LEVEL_MAPEDITOR, wstrLayerTag, L"Prototype_GameObject_Camera_Dynamic")))
+	// 	return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 

@@ -16,7 +16,7 @@ HRESULT CImgui_LevelSwitcher::Initialize(void* pArg)
 
 	m_mapLevels.emplace("Level_Gameplay", LEVEL_GAMEPLAY);
 	m_mapLevels.emplace("Level_Logo", LEVEL_LOGO);
-	m_mapLevels.emplace("Level_MapEditor", LEVEL_MAPEDITOR);
+	// m_mapLevels.emplace("Level_MapEditor", LEVEL_MAPEDITOR);
 
 	return S_OK;
 }
@@ -50,8 +50,8 @@ void CImgui_LevelSwitcher::Imgui_RenderWindow()
 					m_Level = LEVEL_LOGO;
 				if (2 == iLevelIdx)
 					m_Level = LEVEL_GAMEPLAY;
-				if (3 == iLevelIdx)
-					m_Level = LEVEL_MAPEDITOR;
+				// if (3 == iLevelIdx)
+				// 	m_Level = LEVEL_MAPEDITOR;
 			}
 
 			if (bSelected)

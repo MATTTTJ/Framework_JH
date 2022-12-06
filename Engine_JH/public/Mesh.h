@@ -22,9 +22,11 @@ public:
 	virtual HRESULT			Initialize_Clone(void* pArg) override;
 
 public:
-	void SetUp_BoneMatrix(_float4x4* pBoneMatrices);
+	void SetUp_MeshBones(class CModel* pModel);
+	void SetUp_BoneMatrix(_float4x4* pBoneMatrices, _fmatrix PivotMatrix);
 
 private:
+	aiMesh*						m_pAIMesh = nullptr; // 깊은 복사를 하면서 데이터를 따로 관리하려함 
 	CModel::MODELTYPE			m_eType;
 
 	// 이 메시는 m_iMaterialIndex번째 머테리얼을 사용한다. 
@@ -34,7 +36,7 @@ private:
 	_uint					m_iNumMeshBones = 0;
 	vector<class CBone*>	m_vecMeshBones;
 private:
-	HRESULT					Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh);
+	HRESULT					Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh, CModel* pModel);
 	HRESULT					Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel);
 
 public:

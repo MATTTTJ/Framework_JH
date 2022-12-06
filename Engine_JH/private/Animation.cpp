@@ -34,11 +34,7 @@ void CAnimation::Update_Bones(_double TimeDelta)
 
 	m_dPlayTime += m_dTIckPerSecond * TimeDelta;
 
-	if(m_dPlayTime >= m_Duration)
-	{
-		m_dPlayTime = 0.0;
-		m_bIsFinished = true;
-	}
+	if(m_dPlayTime >= m_Duration) {	m_dPlayTime = 0.0;	m_bIsFinished = true; }
 
 	for(_uint i =0; i < m_iNumChannels; ++i)
 	{

@@ -8,30 +8,11 @@ private:
 	virtual ~CBone() = default;
 
 public:
-	const string&		Get_Name() const
-	{
-		return m_szName;
-	}
-
-	void			Set_OffsetMatrix(_float4x4 OffsetMatrix)
-	{
-		m_OffsetMatrix = OffsetMatrix;
-	}
-
-	_matrix Get_OffsetMatrix()
-	{
-		return XMLoadFloat4x4(&m_OffsetMatrix);
-	}
-
-	_matrix Get_CombindMatrix()
-	{
-		return XMLoadFloat4x4(&m_CombindTransformMatrix);
-	}
-
-	void	Set_TransformMatrix(_fmatrix TransformMatrix)
-	{
-		XMStoreFloat4x4(&m_TransformMatrix, TransformMatrix);
-	}
+	const string&	Get_Name() const	{ return m_szName; }
+	_matrix			Get_OffsetMatrix()	{ return XMLoadFloat4x4(&m_OffsetMatrix); }
+	_matrix			Get_CombindMatrix() { return XMLoadFloat4x4(&m_CombindTransformMatrix);	}
+	void			Set_TransformMatrix(_fmatrix TransformMatrix) { XMStoreFloat4x4(&m_TransformMatrix, TransformMatrix); }
+	void			Set_OffsetMatrix(_float4x4 OffsetMatrix) { m_OffsetMatrix = OffsetMatrix; }
 
 public:
 	HRESULT			Initialize(aiNode* pAINode, CBone* pParent);

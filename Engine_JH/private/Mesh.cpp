@@ -9,18 +9,20 @@ CMesh::CMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 CMesh::CMesh(const CMesh & rhs)
 	: CVIBuffer(rhs)
+	, m_pAIMesh(rhs.m_pAIMesh)
+	, m_eType(rhs.m_eType)
 	, m_iMaterialIndex(rhs.m_iMaterialIndex)
 	, m_iNumMeshBones(rhs.m_iNumMeshBones)
-	, m_vecMeshBones(rhs.m_vecMeshBones)
 {
 }
 
 HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, CModel* pModel)
 {
+	m_pAIMesh = pAIMesh;
+
 	m_eType = eType;
 
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
 	m_iNumVertexBuffers = 1;
@@ -38,17 +40,12 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, C
 
 	if (CModel::MODEL_NONANIM == m_eType)
 	{
-		hr = Ready_VertexBuffer_NonAnimModel(pAIMesh);
+		FAILED_CHECK_RETURN(Ready_VertexBuffer_NonAnimModel(pAIMesh,pModel), E_FAIL);
 	}
 	else
 	{
-		hr = Ready_VertexBuffer_AnimModel(pAIMesh, pModel);
+		FAILED_CHECK_RETURN(Ready_VertexBuffer_AnimModel(pAIMesh, pModel), E_FAIL);
 	}
-
-	if (FAILED(hr))
-		return E_FAIL;
-
-
 #pragma endregion
 
 #pragma region INDEX_BUFFER
@@ -91,25 +88,59 @@ HRESULT CMesh::Initialize_Clone(void * pArg)
 	return S_OK;
 }
 
-void CMesh::SetUp_BoneMatrix(_float4x4* pBoneMatrices)
+void CMesh::SetUp_MeshBones(CModel* pModel)
+{
+	for(_uint i=0;i<m_iNumMeshBones; ++i)
+	{
+		aiBone* pAIBone = m_pAIMesh->mBones[i];
+
+		CBone*	pBone = pModel->Get_BonePtr(pAIBone->mName.data);
+		if (nullptr == pBone)
+			return;
+
+		_float4x4		OffsetMatrix;
+		memcpy(&OffsetMatrix, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
+		XMStoreFloat4x4(&OffsetMatrix, XMMatrixTranspose(XMLoadFloat4x4(&OffsetMatrix)));
+
+		pBone->Set_OffsetMatrix(OffsetMatrix);
+
+		m_vecMeshBones.push_back(pBone);
+
+		Safe_AddRef(pBone);
+	}
+
+	// 애니메이션 메시를 로드하던 중 뼈의 갯수가 없으면 같은 이름의 뼈대위치에 존재하도록
+	if(0 == m_iNumMeshBones)
+	{
+		CBone* pBone = pModel->Get_BonePtr(m_pAIMesh->mName.data);
+
+		if (nullptr == pBone)
+			return;
+
+		m_vecMeshBones.push_back(pBone);
+
+		m_iNumMeshBones = 1;
+	}
+}
+
+void CMesh::SetUp_BoneMatrix(_float4x4* pBoneMatrices, _fmatrix PivotMatrix)
 {
 	// 뼈를 하나씩 돌면서 순회하기 위한 갯수 
 
 	if(0 == m_iNumMeshBones)
-	{
 		XMStoreFloat4x4(&pBoneMatrices[0], XMMatrixIdentity());
-	}
+	
 
 	_uint iNumBones = 0;
 
 	for(auto& pBone : m_vecMeshBones)
 	{
 		// BoneMatrix = 오프셋 매트릭스 * 콤바인 매트릭스
-		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_OffsetMatrix() * pBone->Get_CombindMatrix());
+		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_OffsetMatrix() * pBone->Get_CombindMatrix() * PivotMatrix);
 	}
 }
 
-HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh)
+HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh, CModel* pModel)
 {
 
 	m_iStride = sizeof(VTXMODEL);
@@ -125,10 +156,16 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh)
 	VTXMODEL*			pVertices = new VTXMODEL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXMODEL));
 
+	_matrix PivotMatrix = pModel->Get_PivotMatrix();
+
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
+		XMStoreFloat3(&pVertices[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition), PivotMatrix));
+
 		memcpy(&pVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
+		XMStoreFloat3(&pVertices[i].vNormal, XMVector3TransformNormal(XMLoadFloat3(&pVertices[i].vNormal), PivotMatrix));
+
 		memcpy(&pVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
 		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
 	}
@@ -171,22 +208,7 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 
 	for (_uint i = 0; i < m_iNumMeshBones; ++i)
 	{
-
-		aiBone*		pAIBone = pAIMesh->mBones[i];
-
-		CBone*		pBone = pModel->Get_BonePtr(pAIBone->mName.data);
-		if (nullptr == pBone)
-			return E_FAIL;
-
-		_float4x4		OffsetMatrix;
-		memcpy(&OffsetMatrix, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
-		XMStoreFloat4x4(&OffsetMatrix, XMMatrixTranspose(XMLoadFloat4x4(&OffsetMatrix)));
-
-		pBone->Set_OffsetMatrix(OffsetMatrix);
-
-		m_vecMeshBones.push_back(pBone);
-
-		Safe_AddRef(pBone);
+		aiBone*		pAIBone = pAIMesh->mBones[i];	
 
 		/* 이 뼈는 몇개의 정점에 영향을 주는가?! */
 		_uint iNumWeights = pAIBone->mNumWeights;
@@ -220,18 +242,10 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 			}
 		}
 	}
-
-	/*if (0 == m_iNumMeshBones)
-	{
-	m_iNumMeshBones = 1;
-	}*/
-
-
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = pVertices;
 
-	if (FAILED(__super::Create_VertexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
 
 	Safe_Delete_Array(pVertices);
 
