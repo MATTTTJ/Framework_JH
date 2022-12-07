@@ -100,8 +100,6 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 	m_pLevel_Manager->Late_Tick(TimeDelta);
 
 	m_pInput_Device->Reset_EveryKey();
-
-
 }
 
 void CGameInstance::Clear_Level(_uint iLevelIndex)
@@ -109,13 +107,11 @@ void CGameInstance::Clear_Level(_uint iLevelIndex)
 	NULL_CHECK(m_pObject_Manager);
 
 	m_pObject_Manager->Clear(iLevelIndex);
-
 }
 
 HRESULT CGameInstance::Clear_Graphic_Device(const _float4 * pColor)
 {
 	NULL_CHECK_RETURN(m_pGraphic_Device, E_FAIL);
-
 
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Clear_BackBuffer_View(*pColor), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Clear_DepthStencil_View(), E_FAIL);
