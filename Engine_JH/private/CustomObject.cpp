@@ -103,9 +103,12 @@ HRESULT CCustomObject::Initialize_Clone(const wstring& wstrPrototypeTag, void* p
 	return S_OK;
 }
 
-void CCustomObject::Tick(_double TimeDelta)
+void CCustomObject::Tick(_double dTimeDelta)
 {
-	__super::Tick(TimeDelta);
+	__super::Tick(dTimeDelta);
+
+	if (nullptr != m_pModelCom)
+		m_pModelCom->Play_Animation(dTimeDelta);
 }
 
 void CCustomObject::Late_Tick(_double TimeDelta)

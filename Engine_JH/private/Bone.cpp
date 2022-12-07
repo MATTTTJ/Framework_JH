@@ -7,8 +7,11 @@ CBone::CBone()
 HRESULT CBone::Initialize(aiNode* pAINode, CBone* pParent)
 {
 	m_szName = pAINode->mName.data;
-	m_pParent = pParent;
-	Safe_AddRef(m_pParent);
+	if (nullptr != pParent)
+	{
+		m_pParent = pParent;
+		Safe_AddRef(m_pParent);
+	}
 
 	XMStoreFloat4x4(&m_OffsetMatrix, XMMatrixIdentity());
 	// 이 트랜스폼 행렬은 전치된 상태로 저장되어있기때문에, 다시 전치해주어야한다. 
@@ -48,5 +51,8 @@ CBone* CBone::Create(aiNode* pAINode, CBone* pParent)
 
 void CBone::Free()
 {
-	Safe_Release(m_pParent);
+	if (nullptr != m_pParent)
+	{
+		Safe_Release(m_pParent);
+	}
 }

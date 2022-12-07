@@ -103,6 +103,16 @@ COMPONENTTYPE CGameUtils::CheckComponentTypeFromTag(const wstring & wstrComponen
 	return eType;
 }
 
+string CGameUtils::wstrTostr(const wstring& wstrSour)
+{
+	string		strDest = "";
+
+	if (wstrSour != L"")
+		strDest.assign(wstrSour.begin(), wstrSour.end());
+
+	return strDest;
+}
+
 void CGameUtils::Saturate(int & InValue, int InMax, int InMin)
 {
 	if (InValue > InMax)

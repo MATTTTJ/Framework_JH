@@ -4,7 +4,8 @@
 #include "GameObject.h"
 #include "GameUtils.h"
 #include "CustomObject.h"
-
+#include "Json/json.hpp"
+#include <fstream>
 #define LEVEL_PUBLIC 3
 
 CImgui_ProtoMgr::CImgui_ProtoMgr(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -40,9 +41,11 @@ void CImgui_ProtoMgr::Imgui_RenderWindow()
 
 void CImgui_ProtoMgr::Component_Editor()
 {
-	static _int	iSelectLevel = LEVEL_PUBLIC;
-	static _int	iSelectComponent = -1;
+	static _int		iSelectLevel = LEVEL_PUBLIC;
+	static _int		iSelectComponent = -1;
 	static _bool	bAddPrototype = false;
+	static _bool	bSave = false;
+	static _bool	bLoad = false;
 
 	if (ImGui::BeginTabItem("Component"))
 	{
@@ -61,16 +64,31 @@ void CImgui_ProtoMgr::Component_Editor()
 		ImGui::ListBox(" ", &iSelectComponent, ppProtoComponentTag, (_int)m_mapProtoComponenets[iSelectLevel].size());
 
 		if (ImGui::Button("Add"))
+		{
+			if (bSave)
+				bSave = false;
+			if (bLoad)
+				bLoad = false;
 			bAddPrototype = true;
+		}
 		ImGui::SameLine();
 		if (ImGui::Button("Save"))
 		{
+			if (bAddPrototype)
+				bAddPrototype = false;
 
+			if (bLoad)
+				bLoad = false;
+			bSave = true;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Load"))
 		{
-
+			if (bAddPrototype)
+				bAddPrototype = false;
+			if (bSave)
+				bSave = false;
+			ImGuiFileDialog::Instance()->OpenDialog("Select Json", "Select Json", ".json", "../Bin/Save Data", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
 		}
 
 		if (bAddPrototype)
@@ -152,7 +170,7 @@ void CImgui_ProtoMgr::Component_Editor()
 				else if (iSelectDeclaration == 3)
 					iNumElements = 6;
 
-				IMGUI_LEFT_LABEL(ImGui::InputInt, "Emelents Count", &iNumElements, 0, 0, ImGuiInputTextFlags_ReadOnly);
+				IMGUI_LEFT_LABEL(ImGui::InputInt, "Elements Count", &iNumElements, 0, 0, ImGuiInputTextFlags_ReadOnly);
 
 				if (ImGuiFileDialog::Instance()->Display("Choose HLSL"))
 				{
@@ -268,13 +286,13 @@ void CImgui_ProtoMgr::Component_Editor()
 					CGameUtils::ctwc(szFilePath, wszFilePath);
 
 					if (iSelectDeclaration == 0)
-						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements));
+						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration,VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements));
 					else if (iSelectDeclaration == 1)
-						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements));
+						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements));
 					else if (iSelectDeclaration == 2)
-						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements));
+						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements));
 					else if (iSelectDeclaration == 3)
-						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements));
+						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements));
 
 					break;
 				}
@@ -330,6 +348,38 @@ void CImgui_ProtoMgr::Component_Editor()
 			ImGui::Separator();
 		}
 
+		static char	szSaveFileName[MAX_PATH] = "";
+
+		if(bSave)
+		{
+			iSelectComponent = -1;
+
+			static _uint iSaveLevel = 3;
+
+			ImGui::Separator();
+
+			IMGUI_LEFT_LABEL(ImGui::Combo, "Save Level", (_int*)&iSaveLevel, m_pLevelName, LEVEL_END + 1);
+			IMGUI_LEFT_LABEL(ImGui::InputText, "File Name", szSaveFileName,	MAX_PATH);
+
+			if (ImGui::Button("Confirm"))
+				ImGuiFileDialog::Instance()->OpenDialog("Select Folder", "Select Folder", ".json", "../Bin/Save Data", 0, nullptr, ImGuiFileDialogFlags_Modal);
+
+			ImGui::SameLine();
+			if(ImGui::Button("Cancel"))
+			{
+				bSave = false;
+				iSelectLevel = 3;
+				strcpy_s(szSaveFileName, "");
+			}
+
+			if(ImGuiFileDialog::Instance()->Display("Select Folder"))
+			{
+				
+			}
+
+
+
+		}
 		if (iSelectComponent != -1)
 		{
 			ImGui::Separator();
@@ -600,6 +650,26 @@ COMPONENTTYPE CImgui_ProtoMgr::CheckComponentType(_int iSelectLevel, const char*
 		}
 	}
 
+	NULL_CHECK_RETURN(pComponent, COMPONENTTYPE_END);
+
+	if (dynamic_cast<CRenderer*>(pComponent))
+		return COM_RENDERER;
+	if (dynamic_cast<CVIBuffer*>(pComponent))
+		return COM_VIBUFFER;
+	if (dynamic_cast<CShader*>(pComponent))
+		return COM_SHADER;
+	if (dynamic_cast<CTransform*>(pComponent))
+		return COM_TRANSFORM;
+	if (dynamic_cast<CTexture*>(pComponent))
+		return COM_TEXTURE;
+	if (dynamic_cast<CModel*>(pComponent))
+		return COM_MODEL;
+
+	return COMPONENTTYPE_END;
+}
+
+COMPONENTTYPE CImgui_ProtoMgr::CheckComponentType(CComponent* pComponent)
+{
 	NULL_CHECK_RETURN(pComponent, COMPONENTTYPE_END);
 
 	if (dynamic_cast<CRenderer*>(pComponent))

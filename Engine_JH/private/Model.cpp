@@ -15,12 +15,9 @@ CModel::CModel(const CModel & rhs)
 	, m_pAIScene(rhs.m_pAIScene)
 	, m_eType(rhs.m_eType)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
-	// , m_vecMeshes(rhs.m_vecMeshes)
 	, m_vecMaterials(rhs.m_vecMaterials)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
-	// , m_vecBones(rhs.m_vecBones)
 	, m_iNumBones(rhs.m_iNumBones)
-	// , m_vecAnimations(rhs.m_vecAnimations)
 	, m_iNumAnimation(rhs.m_iNumAnimation)
 	, m_iCurrentAnimIndex(rhs.m_iCurrentAnimIndex)
 	, m_PivotMatrix(rhs.m_PivotMatrix)
@@ -35,13 +32,6 @@ CModel::CModel(const CModel & rhs)
 		for(_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(Material.pTexture[i]);
 	}
-
-	// for (auto& pBone : m_vecBones)
-	// 	Safe_AddRef(pBone);
-
-	// for (auto& pAnimation : m_vecAnimations)
-	// 	Safe_AddRef(pAnimation);
-
 }
 
 CBone* CModel::Get_BonePtr(const string& strBoneName)

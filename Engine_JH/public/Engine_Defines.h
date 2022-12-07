@@ -39,6 +39,10 @@ using namespace std;
 #include "ImGuizmo.h"
 #include "ImGuiFileDialog.h"
 
+#include <Json/json_fwd.hpp>
+using Json = nlohmann::json;
+using namespace nlohmann;
+
 #include <Shlwapi.h>
 
 #include "Engine_Macro.h"

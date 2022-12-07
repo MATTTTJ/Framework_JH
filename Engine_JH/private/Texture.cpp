@@ -17,17 +17,18 @@ CTexture::CTexture(const CTexture & rhs)
 
 }
 
-HRESULT CTexture::Initialize_Prototype(const wstring pTextureFilePath, _uint iNumTextures)
+HRESULT CTexture::Initialize_Prototype(const wstring wstrTextureFilePath, _uint iNumTextures)
 {
 	m_pTextures = new ID3D11ShaderResourceView*[iNumTextures];
 
+	m_wstrFilePath = wstrTextureFilePath;
 	m_iNumTextures = iNumTextures;
 
 	for (_uint i = 0; i < m_iNumTextures; ++i)
 	{
 		_tchar	szTexturePath[MAX_PATH] = TEXT("");
 
-		wsprintf(szTexturePath, pTextureFilePath.c_str(), i);
+		wsprintf(szTexturePath, wstrTextureFilePath.c_str(), i);
 
 		/* 문자열 분해하기. */
 		_tchar			szExt[MAX_PATH] = TEXT("");

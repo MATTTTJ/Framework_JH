@@ -57,7 +57,7 @@ public:
 	HRESULT						Ready_Materials(const char* pModelFilePath);
 	HRESULT						Ready_Animation();
 public:
-	static	CModel*				Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eType, const char* pModelFilePath, _fmatrix PivotMatrix);
+	static	CModel*				Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eType, const char* pModelFilePath, _fmatrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f)));
 	virtual CComponent*			Clone(void* pArg) override;
 	virtual void				Free() override;
 };

@@ -21,8 +21,12 @@ CShader::CShader(const CShader & rhs)
 
 }
 
-HRESULT CShader::Initialize_Prototype(const wstring& pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
+HRESULT CShader::Initialize_Prototype(const wstring& wstrShaderFilePath, DECLARATIONTYPE eType, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
 {
+	m_wstrFilePath = wstrShaderFilePath;
+	m_eType = eType;
+	m_iElementCnt = iNumElements;
+
 	_uint			iHlslFlag = 0;
 
 #ifdef _DEBUG
@@ -31,7 +35,7 @@ HRESULT CShader::Initialize_Prototype(const wstring& pShaderFilePath, const D3D1
 	iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
 
 #endif
-	if (FAILED(D3DX11CompileEffectFromFile(pShaderFilePath.c_str(),
+	if (FAILED(D3DX11CompileEffectFromFile(wstrShaderFilePath.c_str(),
 														nullptr, 
 														D3D_COMPILE_STANDARD_FILE_INCLUDE, 
 														iHlslFlag, 
@@ -157,11 +161,11 @@ HRESULT CShader::Set_ShaderResourceView(const wstring& pConstantName, ID3D11Shad
 }
 
 
-CShader * CShader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
+CShader * CShader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& pShaderFilePath, DECLARATIONTYPE eType, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements)
 {
 	CShader*		pInstance = new CShader(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pShaderFilePath, pElements, iNumElements)))
+	if (FAILED(pInstance->Initialize_Prototype(pShaderFilePath, eType, pElements, iNumElements)))
 	{
 		MSG_BOX("Failed to Created : CShader");
 		Safe_Release(pInstance);

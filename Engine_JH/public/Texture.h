@@ -14,7 +14,7 @@ public:
 	ID3D11ShaderResourceView*		Get_Texture(_uint iTextureIndex = 0) const { return m_pTextures[iTextureIndex]; }
 	const _uint&					Get_TextureCnt() const { return m_iNumTextures; }
 public:
-	virtual HRESULT Initialize_Prototype(const wstring pTextureFilePath, _uint iNumTextures);
+	virtual HRESULT Initialize_Prototype(const wstring wstrTextureFilePath, _uint iNumTextures);
 	virtual HRESULT Initialize_Clone(void* pArg) override;
 
 public:

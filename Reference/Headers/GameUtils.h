@@ -12,7 +12,7 @@ public:
 	static void		SplitTag(wchar_t* wszTag, wstring& wszChar);	// Split Tag by '_'
 	static void		ConvertNumberTo_d(char* szChar);
 	static COMPONENTTYPE	CheckComponentTypeFromTag(const wstring& wstrComponentTag);
-
+	static string	wstrTostr(const wstring& wstrSour);
 	static void		Saturate(int& InValue, int InMax, int InMin);
 
 };

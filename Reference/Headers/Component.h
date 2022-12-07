@@ -11,10 +11,13 @@ protected:
 	virtual ~CComponent() = default;
 
 public:
+	const wstring&				Get_FilePath() const { return m_wstrFilePath; }
+
+public:
 	virtual HRESULT				Initialize_Prototype();
 	virtual HRESULT				Initialize_Clone(void* pArg);
 
-	virtual void Imgui_RenderProperty() {}
+	virtual void				Imgui_RenderProperty() {}
 
 
 protected:
@@ -22,6 +25,7 @@ protected:
 	ID3D11DeviceContext*		m_pContext = nullptr;
 	_bool						m_bIsCloned;
 
+	wstring						m_wstrFilePath = L"";
 public:
 	virtual CComponent*			Clone(void* pArg = nullptr) = 0;
 	virtual void				Free() override;

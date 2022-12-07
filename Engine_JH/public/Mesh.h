@@ -26,8 +26,9 @@ public:
 	void SetUp_BoneMatrix(_float4x4* pBoneMatrices, _fmatrix PivotMatrix);
 
 private:
-	aiMesh*						m_pAIMesh = nullptr; // 깊은 복사를 하면서 데이터를 따로 관리하려함 
-	CModel::MODELTYPE			m_eType;
+	aiMesh*						m_pAIMesh = nullptr; // 깊은 복사를 하면서 데이터를 따로 관리하려함
+	string						m_strName = "";
+	CModel::MODELTYPE			m_eType = CModel::MODELTYPE_END;
 
 	// 이 메시는 m_iMaterialIndex번째 머테리얼을 사용한다. 
 	_uint					m_iMaterialIndex = 0;

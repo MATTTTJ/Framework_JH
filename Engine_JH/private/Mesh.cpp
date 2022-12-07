@@ -11,6 +11,7 @@ CMesh::CMesh(const CMesh & rhs)
 	: CVIBuffer(rhs)
 	, m_pAIMesh(rhs.m_pAIMesh)
 	, m_eType(rhs.m_eType)
+	, m_strName(rhs.m_strName)
 	, m_iMaterialIndex(rhs.m_iMaterialIndex)
 	, m_iNumMeshBones(rhs.m_iNumMeshBones)
 {
@@ -19,7 +20,6 @@ CMesh::CMesh(const CMesh & rhs)
 HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, CModel* pModel)
 {
 	m_pAIMesh = pAIMesh;
-
 	m_eType = eType;
 
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
@@ -95,8 +95,7 @@ void CMesh::SetUp_MeshBones(CModel* pModel)
 		aiBone* pAIBone = m_pAIMesh->mBones[i];
 
 		CBone*	pBone = pModel->Get_BonePtr(pAIBone->mName.data);
-		if (nullptr == pBone)
-			return;
+		NULL_CHECK(pBone);
 
 		_float4x4		OffsetMatrix;
 		memcpy(&OffsetMatrix, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
@@ -105,7 +104,6 @@ void CMesh::SetUp_MeshBones(CModel* pModel)
 		pBone->Set_OffsetMatrix(OffsetMatrix);
 
 		m_vecMeshBones.push_back(pBone);
-
 		Safe_AddRef(pBone);
 	}
 
@@ -113,13 +111,11 @@ void CMesh::SetUp_MeshBones(CModel* pModel)
 	if(0 == m_iNumMeshBones)
 	{
 		CBone* pBone = pModel->Get_BonePtr(m_pAIMesh->mName.data);
-
-		if (nullptr == pBone)
-			return;
-
-		m_vecMeshBones.push_back(pBone);
+		NULL_CHECK(pBone);
 
 		m_iNumMeshBones = 1;
+		m_vecMeshBones.push_back(pBone);
+		Safe_AddRef(pBone);
 	}
 }
 
@@ -127,8 +123,11 @@ void CMesh::SetUp_BoneMatrix(_float4x4* pBoneMatrices, _fmatrix PivotMatrix)
 {
 	// 뼈를 하나씩 돌면서 순회하기 위한 갯수 
 
-	if(0 == m_iNumMeshBones)
+	if (0 == m_iNumMeshBones)
+	{
 		XMStoreFloat4x4(&pBoneMatrices[0], XMMatrixIdentity());
+		return;
+	}
 	
 
 	_uint iNumBones = 0;
