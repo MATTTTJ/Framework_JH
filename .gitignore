@@ -263,14 +263,7 @@ ModelManifest.xml
 # Paket dependency manager
 .paket/paket.exe
 
-# FAKE - F# Make
-.fake/
-
-!Client_JH/Bin/Resources
-!Client_JH/ShaderFiles
-
-
-Client/Bin/*
+Client_JH/Bin/*
 !Client_JH/Bin/Debug/assimp-vc140-mtd.dll
 !Client_JH/Bin/Release/assimp-vc140-mt.dll
 !Client_JH/Bin/ShaderFiles

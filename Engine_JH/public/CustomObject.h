@@ -42,7 +42,7 @@ private:
 
 	class CRenderer*		m_pRendererCom = nullptr;
 	class CShader*			m_pShaderCom = nullptr;
-	class CTexture**			m_pTextureCom = nullptr;
+	class CTexture**		m_pTextureCom = nullptr;
 	class CVIBuffer*		m_pVIBufferCom = nullptr;
 	class CModel*			m_pModelCom = nullptr;
 
