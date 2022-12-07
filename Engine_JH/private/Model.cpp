@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Bone.h"
 #include "Animation.h"
+#include "GameUtils.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -14,18 +15,16 @@ CModel::CModel(const CModel & rhs)
 	: CComponent(rhs)
 	, m_pAIScene(rhs.m_pAIScene)
 	, m_eType(rhs.m_eType)
+	, m_PivotMatrix(rhs.m_PivotMatrix)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
 	, m_vecMaterials(rhs.m_vecMaterials)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_iNumBones(rhs.m_iNumBones)
 	, m_iNumAnimation(rhs.m_iNumAnimation)
 	, m_iCurrentAnimIndex(rhs.m_iCurrentAnimIndex)
-	, m_PivotMatrix(rhs.m_PivotMatrix)
 {
 	for (auto& pMesh : rhs.m_vecMeshes)
-	{
-		m_vecMeshes.push_back((CMesh*)pMesh->Clone());
-	}
+		m_vecMeshes.push_back(dynamic_cast<CMesh*>(pMesh->Clone()));
 
 	for(auto& Material : m_vecMaterials)
 	{
@@ -36,22 +35,26 @@ CModel::CModel(const CModel & rhs)
 
 CBone* CModel::Get_BonePtr(const string& strBoneName)
 {
-	auto iter = find_if(m_vecBones.begin(),m_vecBones.end(),[&](CBone* pBone)->_bool
-	{
+	auto iter = find_if(m_vecBones.begin(),m_vecBones.end(),[&](CBone* pBone)->_bool {
 		return strBoneName == pBone->Get_Name();
 	});
 
 	if (iter == m_vecBones.end())
 		return nullptr;
+
 	return *iter;
 }
-
-
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix PivotMatrix)
 {
 	if (eType == MODELTYPE_END)
 		return E_FAIL;
+
+	m_eType = eType;
+	_tchar	wszModelFilePath[MAX_PATH] = L"";
+	CGameUtils::ctwc(pModelFilePath, wszModelFilePath);
+	m_wstrFilePath = wstring(wszModelFilePath);
+	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
 
 	_uint			iFlag = 0;
 
@@ -60,20 +63,11 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePat
 	else
 		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
 
-	m_eType = eType;
-
 	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
 	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
 
-	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
-	
-	// FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode, nullptr), E_FAIL)
-
 	FAILED_CHECK_RETURN(Ready_MeshContainers(), E_FAIL)
-
 	FAILED_CHECK_RETURN(Ready_Materials(pModelFilePath), E_FAIL)
-
-	// FAILED_CHECK_RETURN(Ready_Animation(), E_FAIL)
 
 	return S_OK;
 }
@@ -83,13 +77,51 @@ HRESULT CModel::Initialize_Clone(void * pArg)
 	FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode, nullptr), E_FAIL);
 
 	for(auto& pMesh : m_vecMeshes)
-	{
 		pMesh->SetUp_MeshBones(this);
-	}
 
 	FAILED_CHECK_RETURN(Ready_Animation(), E_FAIL);
 
 	return S_OK;
+}
+
+void CModel::Imgui_RenderProperty()
+{
+	if (ImGui::CollapsingHeader("Materials"))
+	{
+		for (size_t i = 0; i < m_iNumMaterials; ++i)
+		{
+			ImGui::Text("%d", i);
+			ImGui::Separator();
+			for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; j++)
+			{
+				if (m_vecMaterials[i].pTexture[j] != nullptr)
+				{
+					ImGui::Image(m_vecMaterials[i].pTexture[j]->Get_Texture(), ImVec2(50.f, 50.f));
+					ImGui::SameLine();
+				}
+			}
+			ImGui::NewLine();
+		}
+	}
+
+	if (ImGui::CollapsingHeader("Meshes"))
+	{
+		for (size_t i = 0; i < m_iNumMeshes; ++i)
+		{
+			_uint	iMaterialIndex = m_vecMeshes[i]->Get_MaterialIndex();
+			ImGui::BulletText("%s", m_vecMeshes[i]->Get_MeshName().c_str());
+			ImGui::Separator();
+
+			for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; j++)
+			{
+				if (m_vecMaterials[iMaterialIndex].pTexture[j] != nullptr)
+				{
+					ImGui::SameLine();
+					ImGui::Image(m_vecMaterials[iMaterialIndex].pTexture[j]->Get_Texture(), ImVec2(50.f, 50.f));
+				}
+			}
+		}
+	}
 }
 
 void CModel::Play_Animation(_double TimeDelta)
@@ -156,10 +188,8 @@ HRESULT CModel::Ready_Bones(aiNode* pAINode, CBone* pParent)
 
 	m_vecBones.push_back(pBone);
 
-	for(_uint i =0; i<pAINode->mNumChildren; ++i)
-	{
+	for(_uint i =0; i < pAINode->mNumChildren; ++i)
 		Ready_Bones(pAINode->mChildren[i], pBone);
-	}
 
 	return S_OK;
 }
@@ -205,10 +235,6 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 
 		for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; ++j)
 		{
-			/*j == 0 = > aiTextureType_NONE;
-			j == 1 = > aiTextureType_DIFFUSE;
-			j == 2 = > aiTextureType_SPECULAR;*/
-
 			aiString			strTexturePath;
 
 			if (FAILED(pAIMaterial->GetTexture(aiTextureType(j), 0, &strTexturePath)))
@@ -281,17 +307,16 @@ void CModel::Free()
 {
 	__super::Free();
 
-	for (auto& Material : m_vecMaterials)
-	{
-		for (_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
-		{
-			Safe_Release(Material.pTexture[i]);
-		}
-	}
-
 	for (auto& pMesh : m_vecMeshes)
 		Safe_Release(pMesh);
 	m_vecMeshes.clear();
+
+	for (auto& Material : m_vecMaterials)
+	{
+		for (_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
+			Safe_Release(Material.pTexture[i]);
+	}
+	m_vecMaterials.clear();
 
 	for (auto& pBone : m_vecBones)
 		Safe_Release(pBone);

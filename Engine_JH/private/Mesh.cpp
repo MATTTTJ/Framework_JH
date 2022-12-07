@@ -25,6 +25,7 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, C
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
+	m_strName = pAIMesh->mName.C_Str();
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = pAIMesh->mNumVertices;
 	m_iNumPrimitives = pAIMesh->mNumFaces;
@@ -90,12 +91,12 @@ HRESULT CMesh::Initialize_Clone(void * pArg)
 
 void CMesh::SetUp_MeshBones(CModel* pModel)
 {
-	for(_uint i=0;i<m_iNumMeshBones; ++i)
+	for(_uint i = 0 ; i < m_iNumMeshBones; ++i)
 	{
 		aiBone* pAIBone = m_pAIMesh->mBones[i];
 
 		CBone*	pBone = pModel->Get_BonePtr(pAIBone->mName.data);
-		NULL_CHECK(pBone);
+		NULL_CHECK_RETURN(pBone, );
 
 		_float4x4		OffsetMatrix;
 		memcpy(&OffsetMatrix, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
@@ -110,8 +111,8 @@ void CMesh::SetUp_MeshBones(CModel* pModel)
 	// 애니메이션 메시를 로드하던 중 뼈의 갯수가 없으면 같은 이름의 뼈대위치에 존재하도록
 	if(0 == m_iNumMeshBones)
 	{
-		CBone* pBone = pModel->Get_BonePtr(m_pAIMesh->mName.data);
-		NULL_CHECK(pBone);
+		CBone* pBone = pModel->Get_BonePtr(m_strName);
+		NULL_CHECK_RETURN(pBone, );
 
 		m_iNumMeshBones = 1;
 		m_vecMeshBones.push_back(pBone);

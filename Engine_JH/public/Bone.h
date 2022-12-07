@@ -8,7 +8,7 @@ private:
 	virtual ~CBone() = default;
 
 public:
-	const string&	Get_Name() const	{ return m_szName; }
+	const string&	Get_Name() const	{ return m_strName; }
 	_matrix			Get_OffsetMatrix()	{ return XMLoadFloat4x4(&m_OffsetMatrix); }
 	_matrix			Get_CombindMatrix() { return XMLoadFloat4x4(&m_CombindTransformMatrix);	}
 	void			Set_TransformMatrix(_fmatrix TransformMatrix) { XMStoreFloat4x4(&m_TransformMatrix, TransformMatrix); }
@@ -20,7 +20,7 @@ public:
 
 
 private:
-	string			m_szName = "";
+	string			m_strName = "";
 
 	// 모든 뼈들은 한 스페이스로 옮겨져야한다.
 	// 모델러와 애니메이터가 작업한 스페이스가 달라서 같은 곳으로 보내주는 행렬

@@ -13,16 +13,16 @@ public:
 	virtual ~CModel() = default;
 
 public:
+	const MODELTYPE&		Get_ModelType() { return m_eType; }
 	_uint		Get_NumMeshes() const {	return m_iNumMeshes; }
 	_matrix		Get_PivotMatrix() const { return XMLoadFloat4x4(&m_PivotMatrix); }
 	void		Set_AnimIndex(_uint AnimIndex) { m_iCurrentAnimIndex = AnimIndex; }
-	
 	class	CBone*	Get_BonePtr(const string& strBoneName);
 
 public:
 	virtual HRESULT				Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix PivotMatrix);
 	virtual HRESULT				Initialize_Clone(void* pArg);
-
+	virtual void				Imgui_RenderProperty() override;
 public:
 	void						Play_Animation(_double TimeDelta);
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);

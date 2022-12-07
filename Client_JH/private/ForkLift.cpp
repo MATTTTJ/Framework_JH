@@ -70,9 +70,7 @@ HRESULT CForkLift::SetUp_Components()
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",
 		(CComponent**)&m_pRendererCom), E_FAIL);
 
-	/* For.Com_Shader */
-	// FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxModelTest", L"Com_Shader",
-	// 	(CComponent**)&m_pShaderCom), E_FAIL);
+
 
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxModel", L"Com_Shader",
 		(CComponent**)&m_pShaderCom), E_FAIL);

@@ -6,7 +6,7 @@ CBone::CBone()
 
 HRESULT CBone::Initialize(aiNode* pAINode, CBone* pParent)
 {
-	m_szName = pAINode->mName.data;
+	m_strName = pAINode->mName.data;
 	if (nullptr != pParent)
 	{
 		m_pParent = pParent;

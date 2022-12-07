@@ -12,9 +12,8 @@ public:
 	virtual ~CMesh() = default;
 
 public:
-	_uint Get_MaterialIndex() const {
-		return m_iMaterialIndex;
-	}
+	const _uint&	Get_MaterialIndex() const {return m_iMaterialIndex;}
+	const string&	Get_MeshName() const { return m_strName; }
 
 
 public:

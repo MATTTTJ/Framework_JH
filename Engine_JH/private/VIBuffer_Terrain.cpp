@@ -59,18 +59,18 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	m_pVertices = new VTXNORTEX[m_iNumVertices];
 	ZeroMemory(m_pVertices, sizeof(VTXNORTEX));
 
-	for (_uint i = 0; i < m_iNumVerticesZ; ++i)
+	for (_uint z = 0; z < m_iNumVerticesZ; ++z)
 	{
-		for (_uint j = 0; j < m_iNumVerticesX; ++j)
+		for (_uint x = 0; x < m_iNumVerticesX; ++x)
 		{
-			_uint			iIndex = i * m_iNumVerticesX + j;
+			_uint			iIndex = z * m_iNumVerticesX + x;
 
 			//	11111111 11111011 11111011 11111011
 			//& 00000000 00000000 00000000 11111111
 
-			m_pVertices[iIndex].vPosition = _float3(j, (pPixel[iIndex] & 0x000000ff) / 10.f, i);
+			m_pVertices[iIndex].vPosition = _float3((_float)x, (pPixel[iIndex] & 0x000000ff) / 10.f, (_float)z);
 			m_pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
-			m_pVertices[iIndex].vTexUV = _float2(j / (m_iNumVerticesX - 1.0f), i / (m_iNumVerticesZ - 1.0f));
+			m_pVertices[iIndex].vTexUV = _float2(x / (m_iNumVerticesX - 1.0f), z / (m_iNumVerticesZ - 1.0f));
 		}
 	}
 	
