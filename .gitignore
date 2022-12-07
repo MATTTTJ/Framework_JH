@@ -10,6 +10,11 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -40,10 +45,29 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+
 # DNX
 project.lock.json
 artifacts/
-
+*.gch
 *_i.c
 *_p.c
 *_i.h
@@ -81,6 +105,7 @@ ipch/
 *.sdf
 *.cachefile
 *.VC.db
+*.suo
 
 # Visual Studio profiler
 *.psess
@@ -243,3 +268,21 @@ ModelManifest.xml
 
 !Client_JH/Bin/Resources
 !Client_JH/ShaderFiles
+
+
+Client/Bin/*
+!Client_JH/Bin/Debug/assimp-vc140-mtd.dll
+!Client_JH/Bin/Release/assimp-vc140-mt.dll
+!Client_JH/Bin/ShaderFiles
+!Client_JH/Bin/Resources
+!Client_JH/Bin/Save Data
+
+Engine_JH/Default/Debug
+Engine_JH/Default/Debug
+Framework_JH.VC.db
+.vs/Framework_JH/v14/.suo
+Client_JH/Default/imgui.ini
+Engine_JH/Bin/Engine_JH.ilk
+Engine_JH/Bin/Engine_JH.pdb
+Engine_JH/Bin/vc140.idb
+Engine_JH/Bin/vc140.pdb
