@@ -269,7 +269,7 @@ Client_JH/Bin/*
 !Client_JH/Bin/ShaderFiles
 !Client_JH/Bin/Resources
 !Client_JH/Bin/Save Data
-
+Client_JH/Bin/Resources/DonotCommit(home)
 Engine_JH/Default/Debug
 Engine_JH/Default/Debug
 Framework_JH.VC.db
@@ -279,3 +279,4 @@ Engine_JH/Bin/Engine_JH.ilk
 Engine_JH/Bin/Engine_JH.pdb
 Engine_JH/Bin/vc140.idb
 Engine_JH/Bin/vc140.pdb
+/Client_JH/Bin/Resources/Meshes/Lobby_Obj/Lobby_Obj/Lobby_Heavy
