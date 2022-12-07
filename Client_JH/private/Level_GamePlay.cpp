@@ -101,6 +101,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
+	// for (_uint i = 0; i < 10; ++i)
+	// {
+	// 	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Player")))
+	// 		return E_FAIL;
+	// }
+
 	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Player")))
 		return E_FAIL;
 

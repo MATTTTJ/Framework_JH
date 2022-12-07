@@ -61,39 +61,39 @@ HRESULT CTransform::Initialize_Clone(void * pArg)
 
 void CTransform::Imgui_RenderProperty()
 {
-	ImGuizmo::BeginFrame();
-
-	static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);
-
-	ImGui::BulletText("ImGuizmo Type");
-	if (ImGui::RadioButton("Translate", CurGuizmoType == ImGuizmo::TRANSLATE))
-		CurGuizmoType = ImGuizmo::TRANSLATE;
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Scale", CurGuizmoType == ImGuizmo::SCALE))
-		CurGuizmoType = ImGuizmo::SCALE;
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Rotate", CurGuizmoType == ImGuizmo::ROTATE))
-		CurGuizmoType = ImGuizmo::ROTATE;
-
-	_float	vPos[3], vScale[3], vAngle[3];
-	ImGuizmo::DecomposeMatrixToComponents((_float*)&m_WorldMatrix, vPos, vAngle, vScale);
-	IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Translate", vPos);
-	IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Scale", vScale);
-	IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Rotate", vAngle);
-	ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&m_WorldMatrix);
-
-	ImGuiIO&	io = ImGui::GetIO();
-	RECT		rt;
-	GetClientRect(CGameInstance::GetInstance()->GetHWND(), &rt);
-	POINT		LT{ rt.left, rt.top };
-	ClientToScreen(CGameInstance::GetInstance()->GetHWND(), &LT);
-	ImGuizmo::SetRect((_float)LT.x, (_float)LT.y, io.DisplaySize.x, io.DisplaySize.y);
-
-	_float4x4		matView, matProj;
-	XMStoreFloat4x4(&matView, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
-	XMStoreFloat4x4(&matProj, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
-
-	ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&m_WorldMatrix);
+	// ImGuizmo::BeginFrame();
+	//
+	// static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);
+	//
+	// ImGui::BulletText("ImGuizmo Type");
+	// if (ImGui::RadioButton("Translate", CurGuizmoType == ImGuizmo::TRANSLATE))
+	// 	CurGuizmoType = ImGuizmo::TRANSLATE;
+	// ImGui::SameLine();
+	// if (ImGui::RadioButton("Scale", CurGuizmoType == ImGuizmo::SCALE))
+	// 	CurGuizmoType = ImGuizmo::SCALE;
+	// ImGui::SameLine();
+	// if (ImGui::RadioButton("Rotate", CurGuizmoType == ImGuizmo::ROTATE))
+	// 	CurGuizmoType = ImGuizmo::ROTATE;
+	//
+	// _float	vPos[3], vScale[3], vAngle[3];
+	// ImGuizmo::DecomposeMatrixToComponents((_float*)&m_WorldMatrix, vPos, vAngle, vScale);
+	// IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Translate", vPos);
+	// IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Scale", vScale);
+	// IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Rotate", vAngle);
+	// ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&m_WorldMatrix);
+	//
+	// ImGuiIO&	io = ImGui::GetIO();
+	// RECT		rt;
+	// GetClientRect(CGameInstance::GetInstance()->GetHWND(), &rt);
+	// POINT		LT{ rt.left, rt.top };
+	// ClientToScreen(CGameInstance::GetInstance()->GetHWND(), &LT);
+	// ImGuizmo::SetRect((_float)LT.x, (_float)LT.y, io.DisplaySize.x, io.DisplaySize.y);
+	//
+	// _float4x4		matView, matProj;
+	// XMStoreFloat4x4(&matView, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+	// XMStoreFloat4x4(&matProj, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+	//
+	// ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&m_WorldMatrix);
 }
 
 void CTransform::Go_Straight(_double TimeDelta)

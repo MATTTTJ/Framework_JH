@@ -25,9 +25,19 @@ HRESULT CPlayer::Initialize_Prototype()
 
 HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
+	CGameObject::GAMEOBJECTDESC		GameObjectDesc;
+	ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
+
+	GameObjectDesc.TransformDesc.fSpeedPerSec = 7.0;
+	GameObjectDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
+	// m_pModelCom->Set_AnimIndex(rand() % 20);
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f));
+
+	m_pModelCom->Set_AnimIndex(3);
 
 	return S_OK;
 }
@@ -35,7 +45,34 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 void CPlayer::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	if (pGameInstance->Get_DIKeyState(DIK_DOWN))
+	{
+		m_pTransformCom->Go_Backward(TimeDelta);
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_LEFT))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_RIGHT))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_UP))
+	{
+		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pModelCom->Set_AnimIndex(4);
+	}
+	else
+		m_pModelCom->Set_AnimIndex(3);
+
 	m_pModelCom->Play_Animation(TimeDelta);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CPlayer::Late_Tick(_double TimeDelta)
@@ -78,9 +115,6 @@ HRESULT CPlayer::SetUp_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fiona", L"Com_Model",
 	(CComponent**)&m_pModelCom)))
 		return E_FAIL;
-
-
-
 
 	return S_OK;
 }

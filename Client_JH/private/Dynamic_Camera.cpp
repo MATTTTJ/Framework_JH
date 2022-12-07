@@ -65,6 +65,8 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 		m_pTransformCom->Go_Right(TimeDelta);
 	}
 
+	m_pTransformCom->Speed_Up(GetKeyState(VK_LSHIFT) & 0x8000);
+
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (pGameInstance->Get_DIMouseState(CInput_Device::DIM_RB))

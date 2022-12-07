@@ -57,7 +57,7 @@ HRESULT CForkLift::Render()
 	{
 		/* 이 모델을 그리기위한 셰이더에 머테리얼 텍스쳐를 전달하낟. */
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 		m_pModelCom->Render(m_pShaderCom, i);
 	}
 
@@ -71,6 +71,9 @@ HRESULT CForkLift::SetUp_Components()
 		(CComponent**)&m_pRendererCom), E_FAIL);
 
 	/* For.Com_Shader */
+	// FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxModelTest", L"Com_Shader",
+	// 	(CComponent**)&m_pShaderCom), E_FAIL);
+
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxModel", L"Com_Shader",
 		(CComponent**)&m_pShaderCom), E_FAIL);
 
