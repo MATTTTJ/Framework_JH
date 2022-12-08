@@ -31,7 +31,7 @@ private:
 
 private:
 	void			CheckNewPrototype();
-	void			CheckCurrentLevel();
+	_bool			CheckCurrentLevel();
 public:
 	static CImgui_MapEditor*	Create(void* pArg = nullptr);
 	virtual void				Free() override;

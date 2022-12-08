@@ -19,15 +19,15 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
-		return E_FAIL;
+	// if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
+	// 	return E_FAIL;
 
-	CGameInstance::GetInstance()->Clear_ImguiObjects();
-	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_Setting::Create());
-	CGameInstance::GetInstance()->Add_ImguiTabObject(CImgui_PropertyEditor::Create());
-	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
-	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_MapEditor::Create());
-	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_ProtoMgr::Create(m_pDevice,m_pContext));
+	// CGameInstance::GetInstance()->Clear_ImguiObjects();
+	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_Setting::Create());
+	// CGameInstance::GetInstance()->Add_ImguiTabObject(CImgui_PropertyEditor::Create());
+	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
+	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_MapEditor::Create());
+	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_ProtoMgr::Create(m_pDevice,m_pContext));
 
 	return S_OK;
 }
@@ -46,12 +46,12 @@ void CLevel_Logo::Late_Tick(_double TimeDelta)
 	{
 		CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 		Safe_AddRef(pGameInstance);
-
+	
 		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
 			return;
-
+	
 		Safe_Release(pGameInstance);
-
+	
 	}
 
 }

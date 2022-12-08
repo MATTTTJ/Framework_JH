@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Imgui_MapEditor.h"
-#include "Layer.h"
+#include "CustomObject.h"
+// #include "Layer.h"
 #include "GameInstance.h"
 #include "GameObject.h"
 #include "GameUtils.h"
@@ -31,11 +32,19 @@ HRESULT CImgui_MapEditor::Initialize(void* pArg)
 
 void CImgui_MapEditor::Imgui_RenderWindow()
 {
-	CheckCurrentLevel();
+	_bool bLevelChanged = CheckCurrentLevel();
 	CheckNewPrototype();
 
 	static _int	iSelectObject = -1;
-	size_t i2 = m_mapPrototypeModels.size();
+	static _int	iSelectLayer = 0;
+	static	_int iSelectLayer2 = 0;
+
+	if (bLevelChanged)
+	{
+		iSelectObject = -1;
+		iSelectLayer = 0;
+		iSelectLayer2 = 0;
+	}
 
 	if (m_mapPrototypeModels.size())
 	{
@@ -49,7 +58,7 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 		}
 
 		ImGui::BulletText("Prototype Model List");
-		ImGui::ListBox("  ", &iSelectObject, ppProtoModelTag, (_int)m_mapPrototypeModels.size());
+		ImGui::ListBox("Prototype Model List", &iSelectObject, ppProtoModelTag, (_int)m_mapPrototypeModels.size());
 
 		if (m_iCurLevel == LEVEL_LOADING)
 		{
@@ -76,7 +85,6 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 				ZeroMemory(szLayerTag, MAX_PATH);
 			}
 
-			static _int	iSelectLayer = 0;
 			char**			ppLayerTags = new char*[m_mapLayers->size()];
 			_uint			j = 0;
 			for (auto Pair : *m_mapLayers)
@@ -102,7 +110,6 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 
 			ImGui::Separator();
 
-			static	_int iSelectLayer2 = 0;
 			static _int iLastSelectedLayer = iSelectLayer2;
 			static _int iSelectCloneObject = -1;
 			ImGui::BulletText("Layer Viewer");
@@ -118,7 +125,7 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 			CGameUtils::ctwc(ppLayerTags[iSelectLayer2], wszLayerTag);
 
 			list<CGameObject*>*	CloneObjectList = CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, wstring(wszLayerTag));
-
+			
 			char**		ppCloneTags = new char*[CloneObjectList->size()];
 			wstring	wstrLastTag = L"";
 			_tchar		wszBuff[128] = L"";
@@ -126,14 +133,24 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 			CGameUtils::SplitTag(wszBuff, wstrLastTag);
 			char		szLastTag[128] = "";
 
-			for (size_t i = 0; i < CloneObjectList->size(); ++i)
+			_uint i = 0;
+			for (auto iter : *CloneObjectList)
 			{
-				ppCloneTags[i] = new char[MAX_PATH];
+				wsprintf(wszBuff, &(*iter->Get_PrototypeGameObjectTag().c_str()));
+				CGameUtils::SplitTag(wszBuff, wstrLastTag);
 				CGameUtils::wc2c(wstrLastTag.c_str(), szLastTag);
+				ppCloneTags[i] = new char[MAX_PATH];
 				sprintf_s(ppCloneTags[i], sizeof(char) * MAX_PATH, strcat(szLastTag, "_%d"), i);
+				i++;
 			}
-			
-			ImGui::ListBox(" ", &iSelectCloneObject, ppCloneTags, (_int)CloneObjectList->size());
+
+			/*for (size_t i = 0; i < CloneObjectList->size(); ++i)
+			{
+			ppCloneTags[i] = new char[MAX_PATH];
+			CGameUtility::wctc(wstrLastTag.c_str(), szLastTag);
+			sprintf_s(ppCloneTags[i], sizeof(char) * MAX_PATH, strcat(szLastTag, "_%d"), i);
+			}*/
+			ImGui::ListBox("Clone Model List", &iSelectCloneObject, ppCloneTags, (_int)CloneObjectList->size());
 
 			if (CGameInstance::GetInstance()->Mouse_Down(CInput_Device::DIM_RB))
 				iSelectCloneObject = -1;
@@ -180,13 +197,31 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 					for (_int i = 0; i < iSelectCloneObject; ++i)
 						iter++;
 
-					CGameObject*		pGameObject = *iter;
-					const _float4x4&	matWorld = pGameObject->Get_WorldFloat4x4();
+					CGameObject*	pGameObject = *iter;
 
-					ImGui::BulletText("Current Selected Object [ %s ]", ppCloneTags[iSelectCloneObject]);
+					ImGui::BulletText("Current Selected Object : %s", ppCloneTags[iSelectCloneObject]);
+
+					if (pGameObject->Get_HasModel() && dynamic_cast<CCustomObject*>(pGameObject))
+					{
+						static _int	iCurrentAnimation = 0;
+						_uint	iAnimationCnt = dynamic_cast<CCustomObject*>(pGameObject)->Get_ModelComponent()->Get_NumAnimation();
+
+						ImGui::NewLine();
+						ImGui::BulletText("Current Animation : %d", iCurrentAnimation);
+						ImGui::SameLine();
+						if (ImGui::SmallButton("<"))
+							iCurrentAnimation--;
+						ImGui::SameLine();
+						if (ImGui::SmallButton(">"))
+							iCurrentAnimation++;
+						CGameUtils::Saturate(iCurrentAnimation, iAnimationCnt, 0);
+
+						dynamic_cast<CCustomObject*>(pGameObject)->Get_ModelComponent()->Set_CurAnimIndex(iCurrentAnimation);
+					}
 
 					ImGuizmo::BeginFrame();
 
+					const _float4x4&	matWorld = pGameObject->Get_WorldFloat4x4();
 					static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);
 
 					ImGui::Text("ImGuizmo Type");
@@ -258,13 +293,15 @@ void CImgui_MapEditor::CheckNewPrototype()
 	}
 }
 
-void CImgui_MapEditor::CheckCurrentLevel()
+_bool CImgui_MapEditor::CheckCurrentLevel()
 {
 	if(m_iCurLevel != CGameInstance::GetInstance()->Get_CurLevelIndex())
 	{
 		m_iCurLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
 		m_mapLayers = CGameInstance::GetInstance()->Get_Layers(m_iCurLevel);
+		return true;
 	}
+	return false;
 }
 
 CImgui_MapEditor* CImgui_MapEditor::Create(void* pArg)

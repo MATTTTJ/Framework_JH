@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "..\public\ForkLift.h"
+#include "..\public\Home.h"
 #include "GameInstance.h"
 
-CForkLift::CForkLift(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CHome::CHome(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice,pContext)
 {
 }
 
-CForkLift::CForkLift(const CForkLift& rhs)
+CHome::CHome(const CHome& rhs)
 	:CGameObject(rhs)
 {
 }
 
-HRESULT CForkLift::Initialize_Prototype()
+HRESULT CHome::Initialize_Prototype()
 {
 	m_bHasModel = true;
 
@@ -21,24 +21,24 @@ HRESULT CForkLift::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CForkLift::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
+HRESULT CHome::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f));
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f));
 
 	return S_OK;
 }
 
-void CForkLift::Tick(_double TimeDelta)
+void CHome::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 	// m_pModelCom->Play_Animation(TimeDelta);
 }
 
-void CForkLift::Late_Tick(_double TimeDelta)
+void CHome::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
 
@@ -46,7 +46,7 @@ void CForkLift::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
-HRESULT CForkLift::Render()
+HRESULT CHome::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
@@ -64,7 +64,7 @@ HRESULT CForkLift::Render()
 	return S_OK;
 }
 
-HRESULT CForkLift::SetUp_Components()
+HRESULT CHome::SetUp_Components()
 {
 	/* For.Com_Renderer */
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",
@@ -76,7 +76,7 @@ HRESULT CForkLift::SetUp_Components()
 		(CComponent**)&m_pShaderCom), E_FAIL);
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_ForkLift", L"Com_Model",
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Home", L"Com_Model",
 		(CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
@@ -86,7 +86,7 @@ HRESULT CForkLift::SetUp_Components()
 	return S_OK;
 }
 
-HRESULT CForkLift::SetUp_ShaderResources()
+HRESULT CHome::SetUp_ShaderResources()
 {
 	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
 
@@ -111,31 +111,31 @@ HRESULT CForkLift::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CForkLift* CForkLift::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CHome* CHome::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CForkLift*		pInstance = new CForkLift(pDevice, pContext);
+	CHome*		pInstance = new CHome(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CForkLift");
+		MSG_BOX("Failed to Created : CHome");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject* CForkLift::Clone(const wstring& wstrPrototypeTag, void* pArg)
+CGameObject* CHome::Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
-	CForkLift*		pInstance = new CForkLift(*this);
+	CHome*		pInstance = new CHome(*this);
 
 	if (FAILED(pInstance->Initialize_Clone(wstrPrototypeTag, pArg)))
 	{
-		MSG_BOX("Failed to Created : CForkLift");
+		MSG_BOX("Failed to Created : CHome");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CForkLift::Free()
+void CHome::Free()
 {
 	__super::Free();
 

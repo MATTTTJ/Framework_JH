@@ -20,9 +20,7 @@ CGameInstance::CGameInstance()
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pTimer_Manager(CTimer_Manager::GetInstance())
 	, m_pLight_Manager(CLight_Manager::GetInstance())
-
 	, m_pImgui_Manager(CImgui_Manager::GetInstance())
-
 {
 	Safe_AddRef(m_pLight_Manager);
 	Safe_AddRef(m_pTimer_Manager);
@@ -32,12 +30,10 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pGraphic_Device);
-
 	Safe_AddRef(m_pImgui_Manager);
-
 }
 
-HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut)
+HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut)
 {
 	NULL_CHECK_RETURN(m_pGraphic_Device, E_FAIL);
 	NULL_CHECK_RETURN(m_pImgui_Manager, E_FAIL);
@@ -46,6 +42,7 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	NULL_CHECK_RETURN(m_pComponent_Manager, E_FAIL);
 
 	m_hWnd = GraphicDesc.hWnd;
+	m_iStaticLevelIndex = iNumLevels;
 
 	/* 그래픽 디바이스 초기화. */
 	if (FAILED(m_pGraphic_Device->Ready_Graphic_Device(GraphicDesc.hWnd, GraphicDesc.eWindowMode, GraphicDesc.iViewportSizeX, GraphicDesc.iViewportSizeY, ppDeviceOut, ppContextOut)))
@@ -57,7 +54,7 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	m_pImgui_Manager->Ready_Imgui(GraphicDesc.hWnd, *ppDeviceOut, *ppContextOut);
 
 	/* 입력 디바이스 초기화. */
-	if (FAILED(m_pInput_Device->Ready_Input_Device(hInst, GraphicDesc.hWnd)))
+	if (FAILED(m_pInput_Device->Ready_Input_Device(GraphicDesc.hInst, GraphicDesc.hWnd)))
 		return E_FAIL;
 
 	/* +1개로 예약하는 이유 : 엔진에서 Level_Static을 추가로 제공하기 위해서. */
@@ -69,7 +66,6 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	/* 엔진에서 제공하는 스태틱레벨의 인덱스를 저장해준다. */
 	/* 클라이언트 개발자가 스태틱 레벨에 컴포넌트 원형을 추가하고싶은 경우에 스태틱레벨인덱스를
 	클랑리언트에 보여주기 위해서. */
-	m_iStaticLevelIndex = iNumLevels;
 	/* 엔진에서 제공하는 CGameObject를 상속받는 객체들이 기본적으로 CTransform컴포넌트를 기본으로 가지고 있게 만들어주기위해
 	복제할 수 있는 CTransform의 원형객체를 생성한다. */
 	/* 실제 이 원형을 복제하는 루틴 CGameObject의 Initialize함수에서 복제를 담당한다. */
@@ -84,20 +80,21 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 {
 	NULL_CHECK(m_pInput_Device);
 	NULL_CHECK(m_pLevel_Manager);
+	NULL_CHECK_RETURN(m_pImgui_Manager, );
 	NULL_CHECK(m_pObject_Manager);
 
 	/* 입력장치의 상태를 갱신받아온다. */
 	m_pInput_Device->Invalidate_Input_Device();
 
-	m_pImgui_Manager->Tick_Imgui();
 	
 	m_pObject_Manager->Tick(TimeDelta);
 	m_pLevel_Manager->Tick(TimeDelta);
-
 	m_pPipeLine->Tick();
 
 	m_pObject_Manager->Late_Tick(TimeDelta);
 	m_pLevel_Manager->Late_Tick(TimeDelta);
+
+	m_pImgui_Manager->Tick_Imgui();
 
 	m_pInput_Device->Reset_EveryKey();
 }

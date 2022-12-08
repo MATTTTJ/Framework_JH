@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "BackGround.h"
 #include "ForkLift.h"
+#include "Home.h"
+#include "LaiLuo_Home.h"
 #include "Player.h"
 #include "Terrain.h"
 
@@ -61,9 +63,9 @@ HRESULT CLoader::Loading_For_Logo()
 
 	m_wstrLoadingText = L"텍스쳐를 로딩중입니다.";
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Logo",
-		CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Default%d.jpg", 2))))
-		return E_FAIL;
+	// if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Logo",
+	// 	CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Default%d.jpg", 2))))
+	// 	return E_FAIL;
 
 
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOADING, L"Prototype_Component_FirstLoadingTexture", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Loading/Loading%d.png", 0)), E_FAIL);
@@ -81,6 +83,11 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(pGameInstance->Add_Prototype(L"Prototype_GameObject_BackGround",
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	// _matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
+	// if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Model_Home",
+	// 	CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Lobby_Home/Test/ForkLift.fbx", PivotMatrix))))
+	// 	return E_FAIL;
 
 	m_wstrLoadingText = L"로딩끝.";
 
@@ -129,12 +136,27 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Fiona/Fiona.fbx", PivotMatrix))))
 		return E_FAIL;
 
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	/* For.Prototype_Component_Model_Home */
+	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Home",
+		CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Lobby_Home/Home.fbx", PivotMatrix))))
+		return E_FAIL; 
+
+	/* For.Prototype_Component_Model_LaiHome */
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LaiHome",
+		CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/LaiLuo_Home/104_Showhome (merge).fbx", PivotMatrix))))
+		return E_FAIL;
+
 	// PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_ForkLift",
-		CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/ForkLift/ForkLift.fbx", PivotMatrix))))
-		return E_FAIL;
+	// PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
+	// if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_ForkLift",
+	// 	CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/ForkLift/ForkLift.fbx", PivotMatrix))))
+	// 	return E_FAIL;
+
+	
 
 	m_wstrLoadingText = L"셰이더를 로딩중입니다. ";
 
@@ -166,8 +188,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 	// 	return E_FAIL;
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Terrain", CTerrain::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player", CPlayer::Create(m_pDevice, m_pContext)), E_FAIL);
-
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_ForkLift", CForkLift::Create(m_pDevice, m_pContext)), E_FAIL);
+	
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Home", CHome::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_LaiHome", CLaiLuo_Home::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	m_wstrLoadingText = L"로딩끝. ";
 

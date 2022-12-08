@@ -8,6 +8,7 @@ namespace Engine
 		WINMODE			eWindowMode;
 		unsigned int	iViewportSizeX;
 		unsigned int	iViewportSizeY;
+		HINSTANCE		hInst;
 		HWND			hWnd;
 	}GRAPHIC_DESC;
 

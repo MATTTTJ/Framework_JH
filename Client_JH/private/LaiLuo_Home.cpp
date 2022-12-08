@@ -1,20 +1,20 @@
 #include "stdafx.h"
-#include "..\public\Player.h"
+#include "..\public\LaiLuo_Home.h"
 #include "GameInstance.h"
 
-CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CLaiLuo_Home::CLaiLuo_Home(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
 
 }
 
-CPlayer::CPlayer(const CPlayer & rhs)
+CLaiLuo_Home::CLaiLuo_Home(const CLaiLuo_Home & rhs)
 	: CGameObject(rhs)
 {
 
 }
 
-HRESULT CPlayer::Initialize_Prototype()
+HRESULT CLaiLuo_Home::Initialize_Prototype()
 {
 	m_bHasModel = true;
 
@@ -23,13 +23,13 @@ HRESULT CPlayer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
+HRESULT CLaiLuo_Home::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
 	CGameObject::GAMEOBJECTDESC		GameObjectDesc;
 	ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
-
-	GameObjectDesc.TransformDesc.fSpeedPerSec = 7.0;
-	GameObjectDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.f);
+	//
+	// GameObjectDesc.TransformDesc.fSpeedPerSec = 7.0;
+	// GameObjectDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.f);
 
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
 
@@ -42,40 +42,19 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	return S_OK;
 }
 
-void CPlayer::Tick(_double TimeDelta)
+void CLaiLuo_Home::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	if (pGameInstance->Get_DIKeyState(DIK_DOWN))
-	{
-		m_pTransformCom->Go_Backward(TimeDelta);
-	}
-
-	if (pGameInstance->Get_DIKeyState(DIK_LEFT))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
-	}
-
-	if (pGameInstance->Get_DIKeyState(DIK_RIGHT))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
-	}
-
-	if (pGameInstance->Get_DIKeyState(DIK_UP))
-	{
-		m_pTransformCom->Go_Straight(TimeDelta);
-		m_pModelCom->Set_CurAnimIndex(4);
-	}
-	else
-		m_pModelCom->Set_CurAnimIndex(3);
+	
+		m_pModelCom->Set_CurAnimIndex(1);
 
 	m_pModelCom->Play_Animation(TimeDelta);
 
 	RELEASE_INSTANCE(CGameInstance);
 }
 
-void CPlayer::Late_Tick(_double TimeDelta)
+void CLaiLuo_Home::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
 
@@ -83,7 +62,7 @@ void CPlayer::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
-HRESULT CPlayer::Render()
+HRESULT CLaiLuo_Home::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
@@ -101,7 +80,7 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::SetUp_Components()
+HRESULT CLaiLuo_Home::SetUp_Components()
 {
 	/* For.Com_Renderer */
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",
@@ -112,14 +91,14 @@ HRESULT CPlayer::SetUp_Components()
 		(CComponent**)&m_pShaderCom), E_FAIL);
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fiona", L"Com_Model",
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LaiHome", L"Com_Model",
 	(CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CPlayer::SetUp_ShaderResources()
+HRESULT CLaiLuo_Home::SetUp_ShaderResources()
 {
 	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
 
@@ -148,31 +127,31 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CLaiLuo_Home * CLaiLuo_Home::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CPlayer*		pInstance = new CPlayer(pDevice, pContext);
+	CLaiLuo_Home*		pInstance = new CLaiLuo_Home(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer");
+		MSG_BOX("Failed to Created : CLaiLuo_Home");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CPlayer::Clone(const wstring& wstrPrototypeTag, void * pArg)
+CGameObject * CLaiLuo_Home::Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
-	CPlayer*		pInstance = new CPlayer(*this);
+	CLaiLuo_Home*		pInstance = new CLaiLuo_Home(*this);
 
 	if (FAILED(pInstance->Initialize_Clone(wstrPrototypeTag, pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CPlayer");
+		MSG_BOX("Failed to Cloned : CLaiLuo_Home");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CPlayer::Free()
+void CLaiLuo_Home::Free()
 {
 	__super::Free();
 

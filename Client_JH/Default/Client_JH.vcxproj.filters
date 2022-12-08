@@ -70,6 +70,18 @@
     <Filter Include="02. GameObjects\StaticMesh">
       <UniqueIdentifier>{dee98d7a-cf21-4013-a7aa-21f8cdb8dd8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\00. LobbyObject">
+      <UniqueIdentifier>{e32f3b10-9e33-433a-a78d-17d0959a7630}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\00. LobbyObject\Home">
+      <UniqueIdentifier>{ede94a21-c603-4223-b52b-dfb1f022e4c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\00. LobbyObject\LaiLuo_Home">
+      <UniqueIdentifier>{c9cbb75c-1963-4184-8d13-711decebbad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\00. LobbyObject\Deco">
+      <UniqueIdentifier>{594493c1-5914-488d-8a59-e28b64f4f40a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -135,6 +147,15 @@
     <ClInclude Include="..\public\Monster.h">
       <Filter>02. GameObjects\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Home.h">
+      <Filter>02. GameObjects\00. LobbyObject\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Home_Deco.h">
+      <Filter>02. GameObjects\00. LobbyObject\Deco</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LaiLuo_Home.h">
+      <Filter>02. GameObjects\00. LobbyObject\LaiLuo_Home</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -190,6 +211,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Monster.cpp">
       <Filter>02. GameObjects\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Home_Deco.cpp">
+      <Filter>02. GameObjects\00. LobbyObject\Deco</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Home.cpp">
+      <Filter>02. GameObjects\00. LobbyObject\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LaiLuo_Home.cpp">
+      <Filter>02. GameObjects\00. LobbyObject\LaiLuo_Home</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

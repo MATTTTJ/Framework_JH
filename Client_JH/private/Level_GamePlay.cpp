@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\public\Level_GamePlay.h"
 #include "GameInstance.h"
-#include "VIBuffer_Terrain.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -108,6 +107,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring wstrLayerTag)
 	// }
 
 	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Player")))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Home")))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_LaiHome")))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

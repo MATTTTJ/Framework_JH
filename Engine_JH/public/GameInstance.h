@@ -25,7 +25,7 @@ public:
 	static const wstring m_wstrPrototypeTransformTag;
 
 public: /* For.GameInstance */
-	HRESULT				Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut);
+	HRESULT				Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut);
 	void				Tick_Engine(_double TimeDelta);
 	void				Clear_Level(_uint iLevelIndex);
 

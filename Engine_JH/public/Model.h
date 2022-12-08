@@ -17,7 +17,7 @@ public:
 	_uint		Get_NumMeshes() const {	return m_iNumMeshes; }
 	_uint		Get_NumAnimation() const { return m_iNumAnimation; }
 	_matrix		Get_PivotMatrix() const { return XMLoadFloat4x4(&m_PivotMatrix); }
-	void		Set_AnimIndex(_uint AnimIndex) { m_iCurrentAnimIndex = AnimIndex; }
+	void		Set_CurAnimIndex(_uint AnimIndex) { m_iCurrentAnimIndex = AnimIndex; }
 	class	CBone*	Get_BonePtr(const string& strBoneName);
 
 public:

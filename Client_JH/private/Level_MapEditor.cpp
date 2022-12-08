@@ -13,13 +13,13 @@ HRESULT CLevel_MapEditor::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
-
-	FAILED_CHECK_RETURN(Ready_Layer_Background(L"Layer_Terrain"), E_FAIL);
-
-	FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_Camera"), E_FAIL);
-
-	FAILED_CHECK_RETURN(Ready_Layer_StaticMesh(L"Layer_StaticMesh"), E_FAIL);
+	// FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
+	//
+	// FAILED_CHECK_RETURN(Ready_Layer_Background(L"Layer_Terrain"), E_FAIL);
+	//
+	// FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_Camera"), E_FAIL);
+	//
+	// FAILED_CHECK_RETURN(Ready_Layer_StaticMesh(L"Layer_StaticMesh"), E_FAIL);
 
 	return S_OK;
 }

@@ -112,7 +112,7 @@
     <Filter Include="01. Utility\03. Components\06. Model\Animation\Channel">
       <UniqueIdentifier>{37d3808d-f553-43b2-a011-221140c7a469}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\02. GameObject\CustumObject">
+    <Filter Include="01. Utility\02. GameObject\CustoumObject">
       <UniqueIdentifier>{f0d15428-c786-4890-9692-4f123a9b365e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -299,7 +299,7 @@
       <Filter>99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CustomObject.h">
-      <Filter>01. Utility\02. GameObject\CustumObject</Filter>
+      <Filter>01. Utility\02. GameObject\CustoumObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -454,7 +454,7 @@
       <Filter>01. Utility\03. Components\06. Model\Animation\Channel</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CustomObject.cpp">
-      <Filter>01. Utility\02. GameObject\CustumObject</Filter>
+      <Filter>01. Utility\02. GameObject\CustoumObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

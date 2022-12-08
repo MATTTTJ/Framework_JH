@@ -42,7 +42,7 @@ void CImgui_ProtoMgr::Imgui_RenderWindow()
 	ImGui::BeginTabBar("Prototype Manager");
 	Component_Editor();
 	GameObject_Editor();
-	CloneObject_Editor();
+	// CloneObject_Editor();
 	ImGui::EndTabBar();
 }
 
@@ -121,7 +121,7 @@ void CImgui_ProtoMgr::Component_Editor()
 
 			/* For Shader */
 			static _int	iSelectDeclaration = 0;
-			char*		szDeclarationType[4] = { "VTXTEX", "VTXNORTEX", "VTXMODEL", "VTXANIMMODEL" };
+			char*			szDeclarationType[4] = { "VTXTEX", "VTXNORTEX", "VTXMODEL", "VTXANIMMODEL" };
 			static _int	iNumElements = 0;
 
 			/* For Texture */
@@ -607,7 +607,7 @@ void CImgui_ProtoMgr::Component_Editor()
 					else if (strComponentType == "Texture")
 					{
 						string		strFilePath = "";
-						wstring		wstrFilePath = L"";
+						wstring	wstrFilePath = L"";
 						_uint		iTextureCount = 0;
 
 						Com["File Path"].get_to<string>(strFilePath);

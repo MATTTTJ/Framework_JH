@@ -36,10 +36,7 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, C
 	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitives;
 
 #pragma region VERTEX_BUFFER
-
-	HRESULT			hr = 0;
-
-	if (CModel::MODEL_NONANIM == m_eType)
+		if (CModel::MODEL_NONANIM == m_eType)
 	{
 		FAILED_CHECK_RETURN(Ready_VertexBuffer_NonAnimModel(pAIMesh,pModel), E_FAIL);
 	}

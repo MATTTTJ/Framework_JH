@@ -4,7 +4,6 @@
 #include "GameInstance.h"
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
-#include "Level_MapEditor.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLevel(pDevice,pContext)
@@ -13,7 +12,7 @@ CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 {
-	if(FAILED(CLevel::Initialize()))
+	if(FAILED(__super::Initialize()))
 	return E_FAIL;
 
 	// if (FAILED(Ready_Layer_Loading(L"Layer_Loading", eNextLevelID)))
@@ -60,7 +59,11 @@ void CLevel_Loading::Late_Tick(_double TimeDelta)
 			// 	break;
 			}
 			NULL_CHECK(pLevel)
-			FAILED_CHECK_RETURN(pGameInstance->Open_Level(m_eNextLevelID, pLevel), );
+				if (FAILED(pLevel == nullptr || pGameInstance->Open_Level(m_eNextLevelID, pLevel)))
+				{
+					Safe_Release(pGameInstance);
+					return;
+				}
 		}
 	}
 

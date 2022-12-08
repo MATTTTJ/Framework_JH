@@ -172,9 +172,12 @@
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\Dynamic_Camera.h" />
     <ClInclude Include="..\public\ForkLift.h" />
+    <ClInclude Include="..\public\Home.h" />
+    <ClInclude Include="..\public\Home_Deco.h" />
     <ClInclude Include="..\public\Imgui_LevelSwitcher.h" />
     <ClInclude Include="..\public\Imgui_MapEditor.h" />
     <ClInclude Include="..\public\Imgui_ProtoMgr.h" />
+    <ClInclude Include="..\public\LaiLuo_Home.h" />
     <ClInclude Include="..\public\Level_GamePlay.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
@@ -194,9 +197,12 @@
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Dynamic_Camera.cpp" />
     <ClCompile Include="..\private\ForkLift.cpp" />
+    <ClCompile Include="..\private\Home.cpp" />
+    <ClCompile Include="..\private\Home_Deco.cpp" />
     <ClCompile Include="..\private\Imgui_LevelSwitcher.cpp" />
     <ClCompile Include="..\private\Imgui_MapEditor.cpp" />
     <ClCompile Include="..\private\Imgui_ProtoMgr.cpp" />
+    <ClCompile Include="..\private\LaiLuo_Home.cpp" />
     <ClCompile Include="..\private\Level_GamePlay.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />

@@ -143,34 +143,34 @@ void CObject_Manager::Imgui_ProtoViewer(const _tchar*& szSelectedProto)
 
 void CObject_Manager::Imgui_ObjectViewer(_uint iLevel, CGameObject*& pSelectedObject)
 {
-	bool bFound = false;
 	if (m_iNumLevels <= iLevel)
 		return;
 
-	const LAYERS& targetLevel = m_pLayers[iLevel];
+	_bool	bFound = false;
 
-	if (ImGui::TreeNode("ObjectViewer"))
+	const LAYERS&	targetLevel = m_pLayers[iLevel];
+
+	if (ImGui::TreeNode("Object Viewer"))
 	{
-		for (auto& Pair : targetLevel) // for layer loop
+		for (auto& Pair : targetLevel)
 		{
-			char szLayerTag[128];
+			char szLayerTag[MAX_PATH];
 			CGameUtils::wc2c(Pair.first.c_str(), szLayerTag);
-			if (ImGui::TreeNode(szLayerTag))  // for object loop listbox
+			if (ImGui::TreeNode(szLayerTag))
 			{
-				if (ImGui::BeginListBox("##"))
+				if (ImGui::BeginListBox("##", ImVec2(250.f, 50.f)))
 				{
-					for (auto& obj : Pair.second->GetGameObjects())
+					for (auto& Obj : *Pair.second->Get_GameObject())
 					{
-						const bool bSelected = pSelectedObject == obj;
+						const _bool bSelected = pSelectedObject == Obj;
 						if (bSelected)
 						{
 							ImGui::SetItemDefaultFocus();
 							bFound = true;
 						}
-
-						if (ImGui::Selectable(typeid(*obj).name(), bSelected))
+						if (ImGui::Selectable(typeid(*Obj).name(), bSelected))
 						{
-							pSelectedObject = obj;
+							pSelectedObject = Obj;
 							bFound = true;
 						}
 					}
