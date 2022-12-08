@@ -16,6 +16,9 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 	if(FAILED(CLevel::Initialize()))
 	return E_FAIL;
 
+	// if (FAILED(Ready_Layer_Loading(L"Layer_Loading", eNextLevelID)))
+	// 	return E_FAIL;
+
 	m_eNextLevelID = eNextLevelID;
 
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevelID);
@@ -72,6 +75,26 @@ HRESULT CLevel_Loading::Render()
 	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText().c_str());
 
 	return S_OK;
+}
+
+HRESULT CLevel_Loading::Ready_Layer_Loading(const wstring& wstrLayerTag, LEVEL eNextLevlID)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+	if (LEVEL_LOGO == eNextLevlID)
+	{
+		if (FAILED(pGameInstance->Clone_GameObject(LEVEL_LOADING, wstrLayerTag, L"Prototype_Component_FirstLoadingTexture")))
+			return E_FAIL;
+	}
+	if (LEVEL_GAMEPLAY == eNextLevlID)
+	{
+		if (FAILED(pGameInstance->Clone_GameObject(LEVEL_LOADING, wstrLayerTag, L"Prototype_Component_SecondLoadingTexture")))
+			return E_FAIL;
+	}
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+
 }
 
 CLevel_Loading* CLevel_Loading::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID)

@@ -265,6 +265,14 @@ HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const wstring& pLayer
 	return m_pObject_Manager->Clone_GameObject(iLevelIndex, pLayerTag, pPrototypeTag, pArg);
 }
 
+HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag,
+	_float4x4 matWorld, void* pArg)
+{
+	NULL_CHECK_RETURN(m_pObject_Manager, E_FAIL);
+
+	return m_pObject_Manager->Clone_GameObject(iLevelIndex, wstrLayerTag, wstrPrototypeTag,matWorld, pArg);
+}
+
 map<const wstring, CComponent*>* CGameInstance::Get_PrototypeComponents()
 {
 	NULL_CHECK_RETURN(m_pComponent_Manager, nullptr);

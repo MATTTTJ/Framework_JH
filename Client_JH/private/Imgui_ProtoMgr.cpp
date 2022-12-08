@@ -29,6 +29,9 @@ HRESULT CImgui_ProtoMgr::Initialize(void* pArg)
 	m_mapProtoObjects = CGameInstance::GetInstance()->Get_Prototypes();
 	m_iProtoObjCnt = (_uint)m_mapProtoObjects->size();
 
+	m_mapLayers = CGameInstance::GetInstance()->Get_Layers(m_iCurLevel);
+	m_iLayerCnt = (_uint)m_mapLayers->size();
+
 	return S_OK;
 }
 
@@ -39,13 +42,14 @@ void CImgui_ProtoMgr::Imgui_RenderWindow()
 	ImGui::BeginTabBar("Prototype Manager");
 	Component_Editor();
 	GameObject_Editor();
+	CloneObject_Editor();
 	ImGui::EndTabBar();
 }
 
 void CImgui_ProtoMgr::Component_Editor()
 {
-	static _int		iSelectLevel = LEVEL_PUBLIC;
-	static _int		iSelectComponent = -1;
+	static _int	iSelectLevel = LEVEL_PUBLIC;
+	static _int	iSelectComponent = -1;
 	static _bool	bAddPrototype = false;
 	static _bool	bSave = false;
 	static _bool	bLoad = false;
@@ -117,7 +121,7 @@ void CImgui_ProtoMgr::Component_Editor()
 
 			/* For Shader */
 			static _int	iSelectDeclaration = 0;
-			char*			szDeclarationType[4] = { "VTXTEX", "VTXNORTEX", "VTXMODEL", "VTXANIMMODEL" };
+			char*		szDeclarationType[4] = { "VTXTEX", "VTXNORTEX", "VTXMODEL", "VTXANIMMODEL" };
 			static _int	iNumElements = 0;
 
 			/* For Texture */
@@ -288,7 +292,7 @@ void CImgui_ProtoMgr::Component_Editor()
 					CGameUtils::ctwc(szFilePath, wszFilePath);
 
 					if (iSelectDeclaration == 0)
-						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration,VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements));
+						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements));
 					else if (iSelectDeclaration == 1)
 						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements));
 					else if (iSelectDeclaration == 2)
@@ -350,38 +354,38 @@ void CImgui_ProtoMgr::Component_Editor()
 		}
 
 		static char	szSaveFileName[MAX_PATH] = "";
-		if(bSave)
+		if (bSave)
 		{
 			iSelectComponent = -1;
 
-			static _uint iSaveLevel = 3;
+			static _uint	iSaveLevel = 3;
 
 			ImGui::Separator();
 
 			IMGUI_LEFT_LABEL(ImGui::Combo, "Save Level", (_int*)&iSaveLevel, m_pLevelName, LEVEL_END + 1);
-			IMGUI_LEFT_LABEL(ImGui::InputText, "File Name", szSaveFileName,	MAX_PATH);
+			IMGUI_LEFT_LABEL(ImGui::InputText, "File Name", szSaveFileName, MAX_PATH);
 
 			if (ImGui::Button("Confirm"))
-				ImGuiFileDialog::Instance()->OpenDialog("Select Folder", "Select Folder", ".json", "../Bin/Save Data", 0, nullptr, ImGuiFileDialogFlags_Modal);
+				ImGuiFileDialog::Instance()->OpenDialog("Select Folder", "Select Folder", ".json", "../Bin/Save Data", ".", 0, nullptr, ImGuiFileDialogFlags_Modal);
 
 			ImGui::SameLine();
-			if(ImGui::Button("Cancel"))
+			if (ImGui::Button("Cancel"))
 			{
 				bSave = false;
 				strcpy_s(szSaveFileName, "");
 			}
 
-			if(ImGuiFileDialog::Instance()->Display("Select Folder"))
+			if (ImGuiFileDialog::Instance()->Display("Select Folder"))
 			{
-				if(ImGuiFileDialog::Instance()->IsOk())
+				if (ImGuiFileDialog::Instance()->IsOk())
 				{
 					for (size_t i = 0; i < m_mapProtoComponenets[iSelectLevel].size(); ++i)
 						Safe_Delete_Array(ppProtoComponentTag[i]);
 					Safe_Delete_Array(ppProtoComponentTag);
 
 					bSave = false;
-					
-					Json	jLevel;
+
+					Json jLevel;
 
 					string		strLevelName = m_pLevelName[iSaveLevel];
 					_tchar		wszLevelName[128] = L"";
@@ -394,14 +398,14 @@ void CImgui_ProtoMgr::Component_Editor()
 					{
 						COMPONENTTYPE eType = CheckComponentType(Pair.second);
 
-						string strComponentTag = CGameUtils::wstrTostr(Pair.first);
+						string	strComponentTag = CGameUtils::wstrTostr(Pair.first);
 						string strFilePath = CGameUtils::wstrTostr(Pair.second->Get_FilePath());
 
 						if (eType == COM_RENDERER)
 						{
 							jCom["Type"] = "Renderer";
 							jCom["Tag"] = strComponentTag;
-							jCom["FilePath"] = strFilePath;
+							jCom["File Path"] = strFilePath;
 							jCom["Texture Count"] = 0;
 							jCom["Vertex Declaration"] = "None";
 							jCom["Vertex Elements Count"] = 0;
@@ -411,7 +415,7 @@ void CImgui_ProtoMgr::Component_Editor()
 						{
 							jCom["Type"] = "VIBuffer";
 							jCom["Tag"] = strComponentTag;
-							jCom["FilePath"] = strFilePath;
+							jCom["File Path"] = strFilePath;
 							jCom["Texture Count"] = 0;
 							jCom["Vertex Declaration"] = "None";
 							jCom["Vertex Elements Count"] = 0;
@@ -420,12 +424,12 @@ void CImgui_ProtoMgr::Component_Editor()
 						else if (eType == COM_SHADER)
 						{
 							CShader::DECLARATIONTYPE	eDeclarationType = dynamic_cast<CShader*>(Pair.second)->Get_DeclarationType();
-							if (CShader::DECLARATION_END == eDeclarationType)
+							if (eDeclarationType == CShader::DECLARATION_END)
 								continue;
 
 							jCom["Type"] = "Shader";
 							jCom["Tag"] = strComponentTag;
-							jCom["FilePath"] = strFilePath;
+							jCom["File Path"] = strFilePath;
 							jCom["Texture Count"] = 0;
 
 							if (eDeclarationType == CShader::DECLARATION_VTXTEX)
@@ -437,14 +441,14 @@ void CImgui_ProtoMgr::Component_Editor()
 							else if (eDeclarationType == CShader::DECLARATION_VTXANIMMODEL)
 								jCom["Vertex Declaration"] = "Vtx_AnimModel";
 
-							jCom["Vertex Elements Count"] = dynamic_cast<CShader*>(Pair.second)->Get_ElmentsCnt();
+							jCom["Vertex Elements Count"] = dynamic_cast<CShader*>(Pair.second)->Get_ElementsCnt();
 							jCom["Model Type"] = "None";
 						}
 						else if (eType == COM_TRANSFORM)
 						{
 							jCom["Type"] = "Transform";
 							jCom["Tag"] = strComponentTag;
-							jCom["FilePath"] = strFilePath;
+							jCom["File Path"] = strFilePath;
 							jCom["Texture Count"] = 0;
 							jCom["Vertex Declaration"] = "None";
 							jCom["Vertex Elements Count"] = 0;
@@ -454,7 +458,7 @@ void CImgui_ProtoMgr::Component_Editor()
 						{
 							jCom["Type"] = "Texture";
 							jCom["Tag"] = strComponentTag;
-							jCom["FilePath"] = strFilePath;
+							jCom["File Path"] = strFilePath;
 							jCom["Texture Count"] = dynamic_cast<CTexture*>(Pair.second)->Get_TextureCnt();
 							jCom["Vertex Declaration"] = "None";
 							jCom["Vertex Elements Count"] = 0;
@@ -462,13 +466,13 @@ void CImgui_ProtoMgr::Component_Editor()
 						}
 						else if (eType == COM_MODEL)
 						{
-							CModel::MODELTYPE	eModelType = dynamic_cast<CModel*>(Pair.second)->Get_ModelType();
-							if (CModel::MODELTYPE_END == eModelType)
+							CModel::MODELTYPE		eModelType = dynamic_cast<CModel*>(Pair.second)->Get_ModelType();
+							if (eModelType == CModel::MODELTYPE_END)
 								continue;
 
-							jCom["Type"] = "Texture";
+							jCom["Type"] = "Model";
 							jCom["Tag"] = strComponentTag;
-							jCom["FilePath"] = strFilePath;
+							jCom["File Path"] = strFilePath;
 							jCom["Texture Count"] = 0;
 							jCom["Vertex Declaration"] = "None";
 							jCom["Vertex Elements Count"] = 0;
@@ -479,11 +483,11 @@ void CImgui_ProtoMgr::Component_Editor()
 								jCom["Model Type"] = "Anim";
 						}
 
-						jLevel["Components"].push_back(jCom); // 레벨마다 컴포넌트를 저장하는 방식
+						jLevel["Components"].push_back(jCom);
 					}
 
-					string strFolderDirectory = ImGuiFileDialog::Instance()->GetCurrentPath();
-					char szDash[128] = "\\";
+					string	strFolderDirectory = ImGuiFileDialog::Instance()->GetCurrentPath();
+					char	szDash[128] = "\\";
 					strcat_s(szDash, szSaveFileName);
 					strFolderDirectory += string(szDash);
 					strFolderDirectory += ".json";
@@ -498,7 +502,7 @@ void CImgui_ProtoMgr::Component_Editor()
 					ImGui::EndTabItem();
 					return;
 				}
-				if(!ImGuiFileDialog::Instance()->IsOk())
+				if (!ImGuiFileDialog::Instance()->IsOk())
 				{
 					bSave = false;
 					ImGuiFileDialog::Instance()->Close();
@@ -510,16 +514,16 @@ void CImgui_ProtoMgr::Component_Editor()
 		{
 			iSelectComponent = -1;
 
-			if(ImGuiFileDialog::Instance()->IsOk())
+			if (ImGuiFileDialog::Instance()->IsOk())
 			{
-				for(size_t i = 0; i< m_mapProtoComponenets[iSelectLevel].size(); ++i)
+				for (size_t i = 0; i < m_mapProtoComponenets[iSelectLevel].size(); ++i)
 					Safe_Delete_Array(ppProtoComponentTag[i]);
 				Safe_Delete_Array(ppProtoComponentTag);
 
 				bLoad = false;
 
-				string	strFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
-				Json	jLevel;
+				string		strFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
+				Json		jLevel;
 
 				ifstream	file(strFilePath.c_str());
 				file >> jLevel;
@@ -528,17 +532,17 @@ void CImgui_ProtoMgr::Component_Editor()
 				string	strLevel = jLevel["Level"];
 				_uint	iLevelIndex = 1000;
 
-				for(_uint i =0; i < LEVEL_END + 1; ++i)
+				for (_uint i = 0; i < LEVEL_END + 1; ++i)
 				{
-					if(!strcmp(strLevel.c_str(), m_pLevelName[i]))
+					if (!strcmp(strLevel.c_str(), m_pLevelName[i]))
 					{
 						iLevelIndex = i;
 						break;
 					}
 				}
 
-				// 툴은 동적이기 때문에 Level_Public 쪽은 건들지 않아줌
-				if (iLevelIndex = 1000 || iLevelIndex == m_iCurLevel || iLevelIndex == LEVEL_PUBLIC)
+				/* 툴은 동적이기 때문에 Level_Public 쪽은 건들지 않아줌. */
+				if (iLevelIndex == 1000 || iLevelIndex == m_iCurLevel || iLevelIndex == LEVEL_PUBLIC)
 				{
 					ImGuiFileDialog::Instance()->Close();
 					ImGui::EndTabItem();
@@ -549,21 +553,21 @@ void CImgui_ProtoMgr::Component_Editor()
 					Safe_Release(Pair.second);
 				m_mapProtoComponenets[iLevelIndex].clear();
 
-				for(auto& Com : jLevel["Components"])
+				for (auto& Com : jLevel["Components"])
 				{
-					string strComponentType = "", strComponentTag = "";
+					string		strComponentType = "", strComponentTag = "";
 					wstring	wstrComponentTag = L"";
 
 					Com["Type"].get_to<string>(strComponentType);
 					Com["Tag"].get_to<string>(strComponentTag);
 					wstrComponentTag.assign(strComponentTag.begin(), strComponentTag.end());
 
-					if(strComponentType == "Renderer")
+					if (strComponentType == "Renderer")
 					{
 						CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CRenderer::Create(m_pDevice, m_pContext));
 						continue;
 					}
-					else if(strComponentType == "VIBuffer")
+					else if (strComponentType == "VIBuffer")
 					{
 						CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CVIBuffer_Rect::Create(m_pDevice, m_pContext));
 						continue;
@@ -602,6 +606,15 @@ void CImgui_ProtoMgr::Component_Editor()
 					}
 					else if (strComponentType == "Texture")
 					{
+						string		strFilePath = "";
+						wstring		wstrFilePath = L"";
+						_uint		iTextureCount = 0;
+
+						Com["File Path"].get_to<string>(strFilePath);
+						wstrFilePath.assign(strFilePath.begin(), strFilePath.end());
+						Com["Texture Count"].get_to<_uint>(iTextureCount);
+
+						CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CTexture::Create(m_pDevice, m_pContext, wstrFilePath, iTextureCount));
 						continue;
 					}
 					else if (strComponentType == "Model")
@@ -635,7 +648,7 @@ void CImgui_ProtoMgr::Component_Editor()
 				ImGuiFileDialog::Instance()->Close();
 			}
 		}
-		
+
 		if (iSelectComponent != -1)
 		{
 			ImGui::Separator();
@@ -699,13 +712,13 @@ void CImgui_ProtoMgr::Component_Editor()
 
 void CImgui_ProtoMgr::GameObject_Editor()
 {
-	_int iSelectObject = 1000;
+	_int	iSelectObject = 1000;
 	if (ImGui::BeginTabItem("GameObject"))
 	{
 		m_iProtoObjCnt = (_uint)m_mapProtoObjects->size();
 		ImGui::BulletText("Prototype GameObject List");
 
-		char**		ppProtoObjTag = new char*[m_iProtoObjCnt];
+		char**			ppProtoObjTag = new char*[m_iProtoObjCnt];
 		_uint i = 0;
 		for (auto Pair : *m_mapProtoObjects)
 		{
@@ -714,104 +727,216 @@ void CImgui_ProtoMgr::GameObject_Editor()
 			++i;
 		}
 
-		ImGui::ListBox("  ", &iSelectObject, ppProtoObjTag, (_int)m_iProtoObjCnt);
+		ImGui::ListBox(" ", &iSelectObject, ppProtoObjTag, (_int)m_iProtoObjCnt);
+
+		static _bool	bSave = false;
+		if (ImGui::Button("Save"))
+			bSave = true;
+		ImGui::SameLine();
+		if (ImGui::Button("Load"))
+		{
+			if (bSave)
+				bSave = false;
+
+			ImGuiFileDialog::Instance()->OpenDialog("Load Json File", "Select Json File", ".json", "../Bin/Save Data", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+		}
 
 		ImGui::Separator();
-		ImGui::BulletText("Add Prototype GameObject");
 
-		static char szPrototypeTag[MAX_PATH] = "";
-		char*** ppComponentTag = nullptr;
-		_uint	iComponentCnt[COMPONENTTYPE_END];
-		SortComponentByType(ppComponentTag, iComponentCnt);
-		static _int iSelectRender = 0, iSelectVIBuffer = 0, iSelectShader = 0, iSelectTransform = 0, iSelectModel = 0;
-
-		static _int iTextureComCnt = 0;
-		static _int iLastTextureComCnt = iTextureComCnt;
-
-		if (nullptr == m_iSelectTextureCom)
-			m_iSelectTextureCom = new _int[iTextureComCnt];
-
-		if (iTextureComCnt != iLastTextureComCnt)
+		if (bSave)
 		{
-			_int* iTemp = new _int[iTextureComCnt];
-			ZeroMemory(iTemp, sizeof(_int) * iTextureComCnt);
+			ImGui::BulletText("Save Prototype Objects");
 
-			if (iTextureComCnt < iLastTextureComCnt)
-				memcpy(iTemp, m_iSelectTextureCom, sizeof(_int) * iTextureComCnt);
-			else
-				memcpy(iTemp, m_iSelectTextureCom, sizeof(_int)* iLastTextureComCnt);
+			static	char	szSaveFileName[MAX_PATH] = "";
+			ImGui::InputText("File Name", szSaveFileName, MAX_PATH);
 
-			Safe_Delete_Array(m_iSelectTextureCom);
+			if (ImGui::Button("Confirm"))
+				ImGuiFileDialog::Instance()->OpenDialog("Select Save Folder", "Select Save Folder", ".json", "../Bin/Save Data", ".", 0, nullptr, ImGuiFileDialogFlags_Modal);
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel"))
+			{
+				bSave = false;
+				strcpy_s(szSaveFileName, "");
+			}
+			if (ImGuiFileDialog::Instance()->Display("Select Save Folder"))
+			{
+				if (ImGuiFileDialog::Instance()->IsOk())
+				{
+					string		strSaveDirectory = ImGuiFileDialog::Instance()->GetCurrentPath();
+					char	szDash[128] = "\\";
+					strcat_s(szDash, szSaveFileName);
+					strSaveDirectory += string(szDash);
+					strSaveDirectory += ".json";
 
-			m_iSelectTextureCom = iTemp;
-			iLastTextureComCnt = iTextureComCnt;
+					Json	jPrototypeObjects;
+					Json	jObject;
+					Json	jComponents;
+
+					for (auto& Pair : *m_mapProtoObjects)
+					{
+						CCustomObject*	pObject = dynamic_cast<CCustomObject*>(Pair.second);
+						// 일단은 CustomGameObject만 저장 해보기.
+						if (pObject != nullptr)
+						{
+							char	szPrototypeGameObjectTag[MAX_PATH] = "";
+							CGameUtils::wc2c(Pair.first.c_str(), szPrototypeGameObjectTag);
+							jObject["Prototype Object Tag"] = szPrototypeGameObjectTag;
+
+							_uint	iTextureComCount = pObject->Get_TextureComCount();
+							jObject["Texture Component Count"] = iTextureComCount;
+
+							vector<pair<_uint, wstring>>	vecComponentInfo = pObject->Get_PrototypeSaveData();
+							for (auto PairCom : vecComponentInfo)
+							{
+								char	szPrototypeComponentTag[MAX_PATH] = "";
+								CGameUtils::wc2c(PairCom.second.c_str(), szPrototypeComponentTag);
+								jComponents["Level"] = PairCom.first;
+								jComponents["Component Tag"] = szPrototypeComponentTag;
+								jObject["Components"].push_back(jComponents);
+							}
+
+							jPrototypeObjects["Objects"].push_back(jObject);
+						}
+					}
+
+					ofstream		file(strSaveDirectory.c_str());
+					file << jPrototypeObjects;
+					file.close();
+
+					bSave = false;
+					strcpy_s(szSaveFileName, "");
+					ImGuiFileDialog::Instance()->Close();
+
+					for (size_t i = 0; i < m_iProtoObjCnt; ++i)
+						Safe_Delete_Array(ppProtoObjTag[i]);
+					Safe_Delete_Array(ppProtoObjTag);
+
+					ImGui::EndTabItem();
+
+					return;
+				}
+				if (!ImGuiFileDialog::Instance()->IsOk())
+				{
+					bSave = false;
+					strcpy_s(szSaveFileName, "");
+					ImGuiFileDialog::Instance()->Close();
+				}
+			}
 		}
 
-
-		ImGui::BulletText("Object Tag");
-		IMGUI_LEFT_LABEL(ImGui::InputText, "Object Tag", szPrototypeTag, sizeof(char) * MAX_PATH);
-
-
-		ImGui::NewLine();
-		ImGui::BulletText("Select Component");
-
-		ImGui::Combo("Renderer", &iSelectRender, ppComponentTag[COM_RENDERER], iComponentCnt[COM_RENDERER]);
-		ImGui::Combo("VIBuffer", &iSelectVIBuffer, ppComponentTag[COM_VIBUFFER], iComponentCnt[COM_VIBUFFER]);
-		ImGui::Combo("Shader", &iSelectShader, ppComponentTag[COM_SHADER], iComponentCnt[COM_SHADER]);
-		ImGui::Combo("Transform", &iSelectTransform, ppComponentTag[COM_TRANSFORM], iComponentCnt[COM_TRANSFORM]);
-		ImGui::InputInt("Texture Component Count", &iTextureComCnt, 1, 0);
-		for (_int i = 0; i < iTextureComCnt; ++i)
+		if (ImGuiFileDialog::Instance()->Display("Load Json File"))
 		{
-			char	szTextureLabel[32] = "";
-			sprintf(szTextureLabel, "Texture%d", i);
-			const char*	pTextureLabel = szTextureLabel;
-			ImGui::Combo(pTextureLabel, &m_iSelectTextureCom[i], ppComponentTag[COM_TEXTURE], iComponentCnt[COM_TEXTURE]);
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				for (size_t i = 0; i < m_iProtoObjCnt; ++i)
+					Safe_Delete_Array(ppProtoObjTag[i]);
+				Safe_Delete_Array(ppProtoObjTag);
+
+				string		strLoadFile = ImGuiFileDialog::Instance()->GetFilePathName();
+
+				Json	jPrototypeObjects;
+
+				ifstream	file(strLoadFile.c_str());
+				file >> jPrototypeObjects;
+				file.close();
+
+				for (auto jObj : jPrototypeObjects["Objects"])
+				{
+					string		strObjectTag;
+					wstring	wstrObjectTag;
+					_uint		iTextureComCount = 1000;
+					vector<pair<_uint, wstring>>	vecComponentInfo;
+
+					jObj["Prototype Object Tag"].get_to<string>(strObjectTag);
+					wstrObjectTag.assign(strObjectTag.begin(), strObjectTag.end());
+					jObj["Texture Component Count"].get_to<_uint>(iTextureComCount);
+
+					for (auto jCom : jObj["Components"])
+					{
+						_uint		iComponentLevelIndex = 1000;
+						string		strComponentTag = "";
+						wstring	wstrComponentTag = L"";
+
+						jCom["Level"].get_to<_uint>(iComponentLevelIndex);
+						jCom["Component Tag"].get_to<string>(strComponentTag);
+						wstrComponentTag.assign(strComponentTag.begin(), strComponentTag.end());
+
+						vecComponentInfo.push_back(pair<_uint, wstring>(iComponentLevelIndex, wstrComponentTag));
+					}
+
+					CGameInstance::GetInstance()->Add_Prototype(wstrObjectTag, CCustomObject::Create(m_pDevice, m_pContext, vecComponentInfo));
+				}
+				ImGuiFileDialog::Instance()->Close();
+
+				ImGui::EndTabItem();
+
+				return;
+			}
+			if (!ImGuiFileDialog::Instance()->IsOk())
+				ImGuiFileDialog::Instance()->Close();
 		}
-		ImGui::Combo("Model", &iSelectModel, ppComponentTag[COM_MODEL], iComponentCnt[COM_MODEL]);
 
-		if (ImGui::Button("Create"))
+		if (!bSave && !ImGuiFileDialog::Instance()->Display("Load Json File"))
 		{
-			vector<pair<_uint, wstring>>	vecPrototypeInfo;
-			vecPrototypeInfo.reserve(10);
+			ImGui::BulletText("Add Prototype GameObject");
 
-			_tchar		wszComponentTag[MAX_PATH] = L"";
-			_uint		iPrototypeLevel = 0;
-			pair<_uint, wstring>		MyPair;
-			CGameUtils::ctwc(ppComponentTag[COM_RENDERER][iSelectRender], wszComponentTag);
-			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
-			if (iPrototypeLevel != 1000)
+			static char	szPrototypeTag[MAX_PATH] = "";
+			char***		ppComponentTag = nullptr;
+			_uint			iComponentCnt[COMPONENTTYPE_END];
+			SortComponentByType(ppComponentTag, iComponentCnt);
+			static _int	iSelectRender = 0, iSelectVIBuffer = 0, iSelectShader = 0, iSelectTransform = 0, iSelectModel = 0;
+
+			static _int	iTextureComCnt = 0;
+			static _int	iLastTextureComCnt = iTextureComCnt;
+
+			if (m_iSelectTextureCom == nullptr)
+				m_iSelectTextureCom = new _int[iTextureComCnt];
+
+			if (iTextureComCnt != iLastTextureComCnt)
 			{
-				MyPair.first = iPrototypeLevel;
-				MyPair.second = wstring(wszComponentTag);
-				vecPrototypeInfo.push_back(MyPair);
+				_int*		iTemp = new _int[iTextureComCnt];
+				ZeroMemory(iTemp, sizeof(_int) * iTextureComCnt);
+
+				if (iTextureComCnt < iLastTextureComCnt)
+					memcpy(iTemp, m_iSelectTextureCom, sizeof(_int) * iTextureComCnt);
+				else
+					memcpy(iTemp, m_iSelectTextureCom, sizeof(_int) * iLastTextureComCnt);
+				Safe_Delete_Array(m_iSelectTextureCom);
+
+				m_iSelectTextureCom = iTemp;
+				iLastTextureComCnt = iTextureComCnt;
 			}
-			CGameUtils::ctwc(ppComponentTag[COM_VIBUFFER][iSelectVIBuffer], wszComponentTag);
-			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
-			if (iPrototypeLevel != 1000)
-			{
-				MyPair.first = iPrototypeLevel;
-				MyPair.second = wstring(wszComponentTag);
-				vecPrototypeInfo.push_back(MyPair);
-			}
-			CGameUtils::ctwc(ppComponentTag[COM_SHADER][iSelectShader], wszComponentTag);
-			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
-			if (iPrototypeLevel != 1000)
-			{
-				MyPair.first = iPrototypeLevel;
-				MyPair.second = wstring(wszComponentTag);
-				vecPrototypeInfo.push_back(MyPair);
-			}
-			CGameUtils::ctwc(ppComponentTag[COM_TRANSFORM][iSelectTransform], wszComponentTag);
-			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
-			if (iPrototypeLevel != 1000)
-			{
-				MyPair.first = iPrototypeLevel;
-				MyPair.second = wstring(wszComponentTag);
-				vecPrototypeInfo.push_back(MyPair);
-			}
+
+			ImGui::BulletText("Object Tag");
+			IMGUI_LEFT_LABEL(ImGui::InputText, "Object Tag", szPrototypeTag, sizeof(char) * MAX_PATH);
+
+
+			ImGui::NewLine();
+			ImGui::BulletText("Select Component");
+
+			ImGui::Combo("Renderer", &iSelectRender, ppComponentTag[COM_RENDERER], iComponentCnt[COM_RENDERER]);
+			ImGui::Combo("VIBuffer", &iSelectVIBuffer, ppComponentTag[COM_VIBUFFER], iComponentCnt[COM_VIBUFFER]);
+			ImGui::Combo("Shader", &iSelectShader, ppComponentTag[COM_SHADER], iComponentCnt[COM_SHADER]);
+			ImGui::Combo("Transform", &iSelectTransform, ppComponentTag[COM_TRANSFORM], iComponentCnt[COM_TRANSFORM]);
+			ImGui::InputInt("Texture Component Count", &iTextureComCnt, 1, 0);
 			for (_int i = 0; i < iTextureComCnt; ++i)
 			{
-				CGameUtils::ctwc(ppComponentTag[COM_TEXTURE][m_iSelectTextureCom[i]], wszComponentTag);
+				char	szTextureLabel[32] = "";
+				sprintf(szTextureLabel, "Texture%d", i);
+				const char*	pTextureLabel = szTextureLabel;
+				ImGui::Combo(pTextureLabel, &m_iSelectTextureCom[i], ppComponentTag[COM_TEXTURE], iComponentCnt[COM_TEXTURE]);
+			}
+			ImGui::Combo("Model", &iSelectModel, ppComponentTag[COM_MODEL], iComponentCnt[COM_MODEL]);
+
+			if (ImGui::Button("Create"))
+			{
+				vector<pair<_uint, wstring>>	vecPrototypeInfo;
+				vecPrototypeInfo.reserve(10);
+
+				_tchar		wszComponentTag[MAX_PATH] = L"";
+				_uint		iPrototypeLevel = 0;
+				pair<_uint, wstring>		MyPair;
+				CGameUtils::ctwc(ppComponentTag[COM_RENDERER][iSelectRender], wszComponentTag);
 				iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
 				if (iPrototypeLevel != 1000)
 				{
@@ -819,22 +944,93 @@ void CImgui_ProtoMgr::GameObject_Editor()
 					MyPair.second = wstring(wszComponentTag);
 					vecPrototypeInfo.push_back(MyPair);
 				}
+				CGameUtils::ctwc(ppComponentTag[COM_VIBUFFER][iSelectVIBuffer], wszComponentTag);
+				iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+				if (iPrototypeLevel != 1000)
+				{
+					MyPair.first = iPrototypeLevel;
+					MyPair.second = wstring(wszComponentTag);
+					vecPrototypeInfo.push_back(MyPair);
+				}
+				CGameUtils::ctwc(ppComponentTag[COM_SHADER][iSelectShader], wszComponentTag);
+				iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+				if (iPrototypeLevel != 1000)
+				{
+					MyPair.first = iPrototypeLevel;
+					MyPair.second = wstring(wszComponentTag);
+					vecPrototypeInfo.push_back(MyPair);
+				}
+				CGameUtils::ctwc(ppComponentTag[COM_TRANSFORM][iSelectTransform], wszComponentTag);
+				iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+				if (iPrototypeLevel != 1000)
+				{
+					MyPair.first = iPrototypeLevel;
+					MyPair.second = wstring(wszComponentTag);
+					vecPrototypeInfo.push_back(MyPair);
+				}
+				for (_int i = 0; i < iTextureComCnt; ++i)
+				{
+					CGameUtils::ctwc(ppComponentTag[COM_TEXTURE][m_iSelectTextureCom[i]], wszComponentTag);
+					iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+					if (iPrototypeLevel != 1000)
+					{
+						MyPair.first = iPrototypeLevel;
+						MyPair.second = wstring(wszComponentTag);
+						vecPrototypeInfo.push_back(MyPair);
+					}
+				}
+				CGameUtils::ctwc(ppComponentTag[COM_MODEL][iSelectModel], wszComponentTag);
+				iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+				if (iPrototypeLevel != 1000)
+				{
+					MyPair.first = iPrototypeLevel;
+					MyPair.second = wstring(wszComponentTag);
+					vecPrototypeInfo.push_back(MyPair);
+				}
+
+				_tchar		wszPrototypeTag[MAX_PATH] = L"";
+				CGameUtils::ctwc(szPrototypeTag, wszPrototypeTag);
+				CGameInstance::GetInstance()->Add_Prototype(wszPrototypeTag, CCustomObject::Create(m_pDevice, m_pContext, vecPrototypeInfo, iTextureComCnt));
+
+				vecPrototypeInfo.clear();
+
+				for (size_t i = 0; i < m_iProtoObjCnt; ++i)
+					Safe_Delete_Array(ppProtoObjTag[i]);
+				Safe_Delete_Array(ppProtoObjTag);
+
+				for (_uint i = 0; i < (_uint)COMPONENTTYPE_END; ++i)
+				{
+					for (_uint j = 0; j < iComponentCnt[i]; ++j)
+						Safe_Delete_Array(ppComponentTag[i][j]);
+					Safe_Delete_Array(ppComponentTag[i]);
+				}
+				Safe_Delete_Array(ppComponentTag);
+
+				strcpy_s(szPrototypeTag, "");
+				iSelectRender = 0;
+				iSelectVIBuffer = 0;
+				iSelectShader = 0;
+				iSelectTransform = 0;
+				iSelectModel = 0;
+				iTextureComCnt = 0;
+				iLastTextureComCnt = iTextureComCnt;
+
+				ImGui::EndTabItem();
+
+				return;
 			}
-			CGameUtils::ctwc(ppComponentTag[COM_MODEL][iSelectModel], wszComponentTag);
-			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
-			if (iPrototypeLevel != 1000)
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel"))
 			{
-				MyPair.first = iPrototypeLevel;
-				MyPair.second = wstring(wszComponentTag);
-				vecPrototypeInfo.push_back(MyPair);
+				strcpy_s(szPrototypeTag, "");
+				iSelectRender = 0;
+				iSelectVIBuffer = 0;
+				iSelectShader = 0;
+				iSelectTransform = 0;
+				iSelectModel = 0;
+				iTextureComCnt = 0;
+				iLastTextureComCnt = iTextureComCnt;
 			}
-
-			_tchar		wszPrototypeTag[MAX_PATH] = L"";
-			CGameUtils::ctwc(szPrototypeTag, wszPrototypeTag);
-			CGameInstance::GetInstance()->Add_Prototype(wszPrototypeTag, CCustomObject::Create(m_pDevice, m_pContext, vecPrototypeInfo, iTextureComCnt));
-
-			vecPrototypeInfo.clear();
-
 			for (size_t i = 0; i < m_iProtoObjCnt; ++i)
 				Safe_Delete_Array(ppProtoObjTag[i]);
 			Safe_Delete_Array(ppProtoObjTag);
@@ -846,46 +1042,266 @@ void CImgui_ProtoMgr::GameObject_Editor()
 				Safe_Delete_Array(ppComponentTag[i]);
 			}
 			Safe_Delete_Array(ppComponentTag);
-
-			strcpy_s(szPrototypeTag, "");
-			iSelectRender = 0;
-			iSelectVIBuffer = 0;
-			iSelectShader = 0;
-			iSelectTransform = 0;
-			iSelectModel = 0;
-			iTextureComCnt = 0;
-			iLastTextureComCnt = iTextureComCnt;
-
-			ImGui::EndTabItem();
-
-			return;
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
+		else
 		{
-			strcpy_s(szPrototypeTag, "");
-			iSelectRender = 0;
-			iSelectVIBuffer = 0;
-			iSelectShader = 0;
-			iSelectTransform = 0;
-			iSelectModel = 0;
-			iTextureComCnt = 0;
-			iLastTextureComCnt = iTextureComCnt;
+			for (size_t i = 0; i < m_iProtoObjCnt; ++i)
+				Safe_Delete_Array(ppProtoObjTag[i]);
+			Safe_Delete_Array(ppProtoObjTag);
 		}
-
-		for (size_t i = 0; i < m_iProtoObjCnt; ++i)
-			Safe_Delete_Array(ppProtoObjTag[i]);
-		Safe_Delete_Array(ppProtoObjTag);
-
-		for (_uint i = 0; i < (_uint)COMPONENTTYPE_END; ++i)
-		{
-			for (_uint j = 0; j < iComponentCnt[i]; ++j)
-				Safe_Delete_Array(ppComponentTag[i][j]);
-			Safe_Delete_Array(ppComponentTag[i]);
-		}
-		Safe_Delete_Array(ppComponentTag);
 
 		ImGui::EndTabItem();
+	}
+}
+
+void CImgui_ProtoMgr::CloneObject_Editor()
+{
+	m_mapLayers = CGameInstance::GetInstance()->Get_Layers(m_iCurLevel);
+	m_iLayerCnt = (_uint)m_mapLayers->size();
+
+	static _uint		iSelectLayer = 0;
+	static _int			iSelectObject = -1;
+	static _bool		bSave = false;
+
+	if(ImGui::BeginTabItem("CloneObject"))
+	{
+		if(m_iLayerCnt == 0)
+		{
+			ImGui::EndTabItem();
+			return;
+		}
+
+		char** ppLayerTag = new char*[m_iLayerCnt];
+		_uint i = 0;
+		for(auto Pair : *m_mapLayers)
+		{
+			ppLayerTag[i] = new char[Pair.first.length() + 1];
+			CGameUtils::wc2c(Pair.first.c_str(), ppLayerTag[i++]);
+		}
+
+		ImGui::BulletText("Current Level : %s", m_pLevelName[m_iCurLevel]);
+		ImGui::BulletText("CloneObject List");
+		ImGui::Combo("##", (_int*)&iSelectLayer, ppLayerTag, (_int)m_iLayerCnt);
+
+		string	strSelectLayerTag = ppLayerTag[iSelectLayer];
+		wstring wstrSelectLayerTag = L"";
+		wstrSelectLayerTag.assign(strSelectLayerTag.begin(), strSelectLayerTag.end());
+
+		list<class CGameObject*>*	CloneObjectList = CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, wstrSelectLayerTag);
+		char**		ppCloneObjectTag = new char*[CloneObjectList->size()];
+
+		CGameObject*		pCloneObject = nullptr;
+		_uint				j = 0;
+		for(auto& Obj : *CloneObjectList)
+		{
+			wstring wstrPrototypeGameObjectTag = Obj->Get_PrototypeGameObjectTag();
+			string	strPrototypeGameObjectTag = "";
+			strPrototypeGameObjectTag.assign(wstrPrototypeGameObjectTag.begin(), wstrPrototypeGameObjectTag.end());
+
+			ppCloneObjectTag[j] = new char[strPrototypeGameObjectTag.length() + 1];
+			strcpy_s(ppCloneObjectTag[j], strPrototypeGameObjectTag.length() + 1, strPrototypeGameObjectTag.c_str());
+
+			if (j++ == iSelectObject)
+				pCloneObject = Obj;
+		}
+
+		ImGui::BulletText("CloneObjects List");
+		ImGui::ListBox("##", &iSelectObject, ppCloneObjectTag, (_int)CloneObjectList->size());
+
+		if (ImGui::Button("Save"))
+			bSave = true;
+		ImGui::SameLine();
+		if(ImGui::Button("Load"))
+		{
+			if (bSave)
+				bSave = false;
+
+			ImGuiFileDialog::Instance()->OpenDialog("Load Layer", "Select Layer Json", ".json", "../Bin/Save Data", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+		}
+
+		if(bSave)
+		{
+			static char szSaveFileName[MAX_PATH] = "";
+			ImGui::Separator();
+			ImGui::InputText("File Name", szSaveFileName, MAX_PATH);
+
+			if (ImGui::Button("Confirm"))
+				ImGuiFileDialog::Instance()->OpenDialog("Save Layer", "Select Folder Directory", ".json", "../Bin/Save Data", ".", 0, nullptr, ImGuiFileDialogFlags_Modal);
+
+			ImGui::SameLine();
+			if(ImGui::Button("Cancel"))
+			{
+				strcpy_s(szSaveFileName, "");
+				bSave = false;
+			}
+
+			if (ImGuiFileDialog::Instance()->Display("Save Layer"))
+			{
+				if (ImGuiFileDialog::Instance()->IsOk())
+				{
+					string strSaveFileDirectory = ImGuiFileDialog::Instance()->GetCurrentPath();
+					char	szDash[128] = "\\";
+					strcat_s(szDash, szSaveFileName);
+					strSaveFileDirectory += string(szDash);
+					strSaveFileDirectory += ".json";
+
+					Json jLayers;
+					Json jLayer;
+					Json jCloneObj;
+
+					jLayers["Level"] = m_pLevelName[m_iCurLevel];
+
+					for(auto& Pair : *m_mapLayers)
+					{
+						list<CGameObject*>* CloneObjects = CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, Pair.first);
+						if (CloneObjects->size() == 0 || CloneObjects == nullptr)
+							continue;
+
+						string	strLayerTag = "";
+						strLayerTag.assign(Pair.first.begin(), Pair.first.end());
+						jLayer["Layer Tag"] = strLayerTag;
+
+						for(auto& Obj : *CloneObjects)
+						{
+							// 클론 오브젝트 저장 내용 : 원본 오브젝트 태그, 클론 오브젝트의 월드 행렬
+							string	strPrototypeObjTag = "";
+							strPrototypeObjTag.assign(Obj->Get_PrototypeGameObjectTag().begin(), Obj->Get_PrototypeGameObjectTag().end());
+							jCloneObj["Prototype GameObject Tag"] = strPrototypeObjTag;
+
+							_float4x4		WorldMatrix = Obj->Get_WorldFloat4x4();
+							for(_uint i =0; i< 16; ++i)
+							{
+								_float	fElement = 0.f;
+								memcpy(&fElement, ((_float*)&WorldMatrix) + i, sizeof(_float));
+								jCloneObj["Transform State"].push_back(fElement);
+							}
+							jLayer["Clone Objects"].push_back(jCloneObj);
+							jCloneObj.clear();
+						}
+						jLayers["Layers"].push_back(jLayer);
+						jLayer.clear();
+					}
+
+					ofstream	file(strSaveFileDirectory.c_str());
+					file << jLayers;
+					file.close();
+
+					strcpy_s(szSaveFileName, "");
+					ImGuiFileDialog::Instance()->Close();
+				}
+				if (!ImGuiFileDialog::Instance()->IsOk())
+					ImGuiFileDialog::Instance()->Close();
+			}
+		}
+		if(ImGuiFileDialog::Instance()->Display("Load Layer"))
+		{
+			if(ImGuiFileDialog::Instance()->IsOk())
+			{
+				for (size_t i = 0; i < CloneObjectList->size(); ++i)
+					Safe_Delete_Array(ppCloneObjectTag[i]);
+				Safe_Delete_Array(ppCloneObjectTag);
+
+				for (_uint i = 0; i < m_iLayerCnt; ++i)
+					Safe_Delete_Array(ppLayerTag[i]);
+				Safe_Delete_Array(ppLayerTag);
+					
+				string	strFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
+
+				CGameInstance*	pGameInstance = CGameInstance::GetInstance();
+				Safe_AddRef(pGameInstance);
+				pGameInstance->Clear_Level(m_iCurLevel);
+
+				Json	jLayers;
+
+				ifstream	file(strFilePath.c_str());
+				file >> jLayers;
+				file.close();
+
+				for(auto jLayer : jLayers["Layers"])
+				{
+					string	strLayerTag = "";
+					wstring	wstrLayerTag = L"";
+					jLayer["Layer Tag"].get_to<string>(strLayerTag);
+					wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
+
+					for(auto jCloneObj : jLayer["Clone Objects"])
+					{
+						string	strPrototypeObjTag = "";
+						wstring wstrPrototypeObjTag = L"";
+						jCloneObj["Prototype GameObject Tag"].get_to<string>(strPrototypeObjTag);
+						wstrPrototypeObjTag.assign(strPrototypeObjTag.begin(), strPrototypeObjTag.end());
+
+						_float4x4	matWorld;
+						XMStoreFloat4x4(&matWorld, XMMatrixIdentity());
+
+						_uint k = 0;
+						for(_float fElement : jCloneObj["Transform State"])
+							memcpy(((_float*)&matWorld) + (k++), &fElement, sizeof(_float));
+
+						pGameInstance->Clone_GameObject(m_iCurLevel, wstrLayerTag, wstrPrototypeObjTag, matWorld);
+					}
+				}
+				Safe_Release(pGameInstance);
+
+				ImGuiFileDialog::Instance()->Close();
+
+				ImGui::EndTabItem();
+
+				return;
+			}
+			if (!ImGuiFileDialog::Instance()->IsOk())
+				ImGuiFileDialog::Instance()->Close();
+		}
+
+		if(!bSave && !ImGuiFileDialog::Instance()->Display("Load Layer") && pCloneObject != nullptr)
+		{
+			ImGui::Separator();
+
+			wstring wstrPrototypeGameObjectTag = pCloneObject->Get_PrototypeGameObjectTag();
+			string	strPrototypeGameObjectTag = "";
+			strPrototypeGameObjectTag.assign(wstrPrototypeGameObjectTag.begin(), wstrPrototypeGameObjectTag.end());
+
+			ImGui::BulletText("Prototype GameObject Tag : %s", strPrototypeGameObjectTag.c_str());
+
+			if(ImGui::Button("Move to"))
+			{
+				
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Delete"))
+			{
+				for (size_t i = 0; i < CloneObjectList->size(); ++i)
+					Safe_Delete_Array(ppCloneObjectTag[i]);
+				Safe_Delete_Array(ppCloneObjectTag);
+
+				for (_uint i = 0; i < m_iLayerCnt; ++i)
+					Safe_Delete_Array(ppLayerTag[i]);
+				Safe_Delete_Array(ppLayerTag);
+
+				auto iter = CloneObjectList->begin();
+				for (_uint i = 0; i < iSelectObject; ++i)
+					iter++;
+
+				Safe_Release(*iter);
+				CloneObjectList->erase(iter);
+
+				iSelectObject = -1;
+
+				ImGui::EndTabItem();
+
+				return;				
+			}
+		}
+		for (size_t i = 0; i < CloneObjectList->size(); ++i)
+			Safe_Delete_Array(ppCloneObjectTag[i]);
+		Safe_Delete_Array(ppCloneObjectTag);
+
+		for (_uint i = 0; i < m_iLayerCnt; ++i)
+			Safe_Delete_Array(ppLayerTag[i]);
+		Safe_Delete_Array(ppLayerTag);
+
+		ImGui::EndTabItem();
+
 	}
 
 }

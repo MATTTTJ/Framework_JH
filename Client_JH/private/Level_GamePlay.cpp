@@ -19,10 +19,10 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
 		return E_FAIL;
-
+	
 	if (FAILED(Ready_Layer_Camera(L"Layer_Camera")))
 		return E_FAIL;
-
+	
 	if (FAILED(Ready_Layer_Player(L"Layer_Player")))
 		return E_FAIL;
 
@@ -77,7 +77,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring wstrLayerTag)
 
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Terrain"), E_FAIL);
 
-	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_ForkLift"), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_ForkLift"), E_FAIL);
 
 
 	RELEASE_INSTANCE(CGameInstance);

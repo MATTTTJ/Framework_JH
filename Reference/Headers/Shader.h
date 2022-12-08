@@ -15,7 +15,7 @@ protected:
 
 public:
 	const DECLARATIONTYPE&		Get_DeclarationType() const { return m_eType; }
-	const _uint&				Get_ElmentsCnt() const { return m_iElementCnt; }
+	const _uint&				Get_ElementsCnt() const { return m_iElementCnt; }
 public:
 	virtual HRESULT Initialize_Prototype(const wstring& wstrShaderFilePath, DECLARATIONTYPE eType, const D3D11_INPUT_ELEMENT_DESC* pElements, const _uint iNumElements);
 	virtual HRESULT Initialize_Clone(void* pArg) override;

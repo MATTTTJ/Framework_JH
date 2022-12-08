@@ -17,6 +17,9 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	HRESULT		Ready_Layer_Loading(const wstring& wstrLayerTag, LEVEL eNextLevlID);
+
+private:
 	class CLoader*	m_pLoader = nullptr;
 	LEVEL			m_eNextLevelID = LEVEL_END;
 

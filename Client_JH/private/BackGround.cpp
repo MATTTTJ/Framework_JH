@@ -107,6 +107,8 @@ HRESULT CBackGround::SetUp_Components()
 
 
 
+
+
 	return S_OK;
 }
 

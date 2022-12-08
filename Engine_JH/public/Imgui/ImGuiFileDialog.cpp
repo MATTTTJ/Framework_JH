@@ -2586,7 +2586,8 @@ namespace IGFD
 #ifdef _IGFD_UNIX_
 			if (puFsRoot != result)
 #endif // _IGFD_UNIX_
-				result += std::string(1u, PATH_SEP);
+				result.append("\\");
+			// result += std::string(1u, PATH_SEP);
 
 			result += filename;
 		}

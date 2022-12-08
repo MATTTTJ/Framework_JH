@@ -26,20 +26,20 @@ HRESULT CTexture::Initialize_Prototype(const wstring wstrTextureFilePath, _uint 
 
 	for (_uint i = 0; i < m_iNumTextures; ++i)
 	{
-		_tchar	szTexturePath[MAX_PATH] = TEXT("");
+		_tchar	szTexturePath[MAX_PATH] = L"";
 
 		wsprintf(szTexturePath, wstrTextureFilePath.c_str(), i);
 
 		/* 문자열 분해하기. */
-		_tchar			szExt[MAX_PATH] = TEXT("");
+		_tchar			szExt[MAX_PATH] = L"";
 
 		_wsplitpath_s(szTexturePath, nullptr, 0, nullptr, 0, nullptr, 0, szExt, MAX_PATH);
 
 		HRESULT		hr = 0;
 
-		if (!lstrcmp(szExt, TEXT(".tga")))
+		if (!lstrcmp(szExt, L".tga"))
 			return E_FAIL;
-		else if (!lstrcmp(szExt, TEXT(".dds")))
+		else if (!lstrcmp(szExt, L".dds"))
 			hr = DirectX::CreateDDSTextureFromFile(m_pDevice, szTexturePath, nullptr, &m_pTextures[i]);
 		else //png
 			hr = DirectX::CreateWICTextureFromFile(m_pDevice, szTexturePath, nullptr, &m_pTextures[i]);

@@ -1,9 +1,6 @@
 #pragma once
 #include "Component.h"
 
-/* 객체의 월드 스페이스 상에서의 상태를 저장해준다.(m_WorldMatrix) */
-/* 상태변환을 위한 인터페이스를 제공해준다.(Go_Straight, Turn, Chase, LookAt) */
-
 BEGIN(Engine)
 
 class ENGINE_DLL CTransform final : public CComponent
@@ -15,10 +12,7 @@ public:
 
 	typedef struct tagTransformDesc
 	{
-		/* 초당 움직여야하는 속도. */
 		float		fSpeedPerSec;
-
-		/* 초당 회전해야하는 속도. */
 		float		fRotationPerSec;
 	}TRANSFORMDESC;
 
@@ -31,13 +25,14 @@ public:
 	const _matrix		Get_WorldMatrix_Inverse() const {	return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)); }
 	const _matrix		Get_WorldMatrix() const {	return XMLoadFloat4x4(&m_WorldMatrix);	}
 	const _float4x4&	Get_WorldFloat4x4() const {	return m_WorldMatrix; }
-	_vector&		Get_State(STATE eState) const {	return XMLoadFloat4x4(&m_WorldMatrix).r[eState]; }
-	_float3		Get_Scaled() const {
+	_vector&			Get_State(STATE eState) const {	return XMLoadFloat4x4(&m_WorldMatrix).r[eState]; }
+	_float3				Get_Scaled() const {
 		return _float3(XMVectorGetX(XMVector3Length(Get_State(STATE_RIGHT))),
 			XMVectorGetX(XMVector3Length(Get_State(STATE_UP))),
 			XMVectorGetX(XMVector3Length(Get_State(STATE_LOOK))));
 	}
-	void		Set_State(STATE eState, _fvector vState) {
+	void				Set_WorldMatrix(_float4x4 WorldMatrix) { m_WorldMatrix = WorldMatrix; }
+	void				Set_State(STATE eState, _fvector vState) {
 		_float4		vTmp;
 		XMStoreFloat4(&vTmp, vState);
 		memcpy(&m_WorldMatrix.m[eState][0], &vTmp, sizeof vTmp);

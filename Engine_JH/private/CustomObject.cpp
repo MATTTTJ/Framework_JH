@@ -30,6 +30,29 @@ CCustomObject::CCustomObject(const CCustomObject& rhs)
 {
 }
 
+vector<pair<_uint, wstring>> CCustomObject::Get_PrototypeSaveData()
+{
+	vector<pair<_uint, wstring>>		vecPrototypeInfo;
+
+	if (m_iRendererComLevel != 1000)
+		vecPrototypeInfo.push_back(pair<_uint, wstring>(m_iRendererComLevel, m_wstrRendererComTag));
+	if (m_iVIBufferComLevel != 1000)
+		vecPrototypeInfo.push_back(pair<_uint, wstring>(m_iVIBufferComLevel, m_wstrVIBufferComTag));
+	if (m_iShaderComLevel != 1000)
+		vecPrototypeInfo.push_back(pair<_uint, wstring>(m_iShaderComLevel, m_wstrShaderComTag));
+	if (m_iTransformComLevel != 1000)
+		vecPrototypeInfo.push_back(pair<_uint, wstring>(m_iTransformComLevel, m_wstrProtoTransformComTag));
+	if (m_iTextureComLevel != 1000)
+		vecPrototypeInfo.push_back(pair<_uint, wstring>(m_iTextureComLevel, *m_wstrTextureComTag));
+	if (m_iModelComLevel != 1000)
+		vecPrototypeInfo.push_back(pair<_uint, wstring>(m_iModelComLevel, m_wstrModelComTag));
+
+	return vecPrototypeInfo;
+
+}
+
+
+
 HRESULT CCustomObject::Initialize_Prototype(const vector<pair<_uint, wstring>>& vecPrototypeInfo, _uint iNumTextureCom)
 {
 	m_iNumTextureCom = iNumTextureCom;

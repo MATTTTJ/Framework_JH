@@ -65,6 +65,10 @@ HRESULT CLoader::Loading_For_Logo()
 		CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Default%d.jpg", 2))))
 		return E_FAIL;
 
+
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOADING, L"Prototype_Component_FirstLoadingTexture", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Loading/Loading%d.png", 0)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOADING, L"Prototype_Component_SecondLoadingTexture", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Loading/Loading%d.png", 1)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOADING, L"Prototype_Component_ThirdLoadingTexture", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Loading/Loading%d.png", 2)), E_FAIL);
 	m_wstrLoadingText = L"버퍼를 로딩중입니다.";
 
 	m_wstrLoadingText = L"모델을 로딩중입니다.";

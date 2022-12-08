@@ -20,6 +20,8 @@ public:
 	const _bool&		Get_HasModel() { return m_bHasModel; }
 	const _float4x4&	Get_WorldFloat4x4() const { return m_pTransformCom->Get_WorldFloat4x4(); }
 	const wstring&		Get_PrototypeGameObjectTag() { return m_wstrPrototypeGameObjectTag; }
+	void				Set_WorldMatrix(_float4x4 WorldMatrix) { if (m_pTransformCom != nullptr)		m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
+
 	public:
 	static const wstring		m_wstrTransformComTag;
 
