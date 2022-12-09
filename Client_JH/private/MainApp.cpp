@@ -80,9 +80,9 @@ HRESULT CMainApp::Resize_BackBuffer()
 
 HRESULT CMainApp::Start_Level(LEVEL eLevelID)
 {
-	if (LEVEL_LOADING == eLevelID ||
-		nullptr == m_pGameInstance)
+	if (LEVEL_LOADING == eLevelID || nullptr == m_pGameInstance)
 		return E_FAIL;
+
 	FAILED_CHECK_RETURN(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eLevelID)), E_FAIL);
 
 	return S_OK;

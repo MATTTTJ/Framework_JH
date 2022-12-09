@@ -36,6 +36,9 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 void CLevel_GamePlay::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
+
+	// 여기서 오픈레벨 구현해야함
+
 }
 
 HRESULT CLevel_GamePlay::Render()
@@ -76,7 +79,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring wstrLayerTag)
 
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Terrain"), E_FAIL);
 
-	// FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_ForkLift"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_ForkLift"), E_FAIL);
 
 
 	RELEASE_INSTANCE(CGameInstance);

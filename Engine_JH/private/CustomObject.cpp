@@ -1,11 +1,6 @@
 #include "..\public\CustomObject.h"
-
 #include "GameInstance.h"
 #include "GameUtils.h"
-#include "Model.h"
-#include "Renderer.h"
-#include "Shader.h"
-#include "VIBuffer.h"
 
 CCustomObject::CCustomObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice,pContext)
@@ -48,10 +43,7 @@ vector<pair<_uint, wstring>> CCustomObject::Get_PrototypeSaveData()
 		vecPrototypeInfo.push_back(pair<_uint, wstring>(m_iModelComLevel, m_wstrModelComTag));
 
 	return vecPrototypeInfo;
-
 }
-
-
 
 HRESULT CCustomObject::Initialize_Prototype(const vector<pair<_uint, wstring>>& vecPrototypeInfo, _uint iNumTextureCom)
 {
@@ -62,7 +54,6 @@ HRESULT CCustomObject::Initialize_Prototype(const vector<pair<_uint, wstring>>& 
 	_uint iTextureComIndex = 0;
 
 	COMPONENTTYPE eType = COMPONENTTYPE_END;
-
 	for(_uint i =0; i<vecPrototypeInfo.size(); ++i)
 	{
 		eType = CGameUtils::CheckComponentTypeFromTag(vecPrototypeInfo[i].second);
@@ -120,9 +111,6 @@ HRESULT CCustomObject::Initialize_Clone(const wstring& wstrPrototypeTag, void* p
 	
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
-	if (m_pModelCom != nullptr)
-		m_bHasModel = true;
-
 	return S_OK;
 }
 
@@ -154,9 +142,9 @@ HRESULT CCustomObject::Render()
 		for(_uint i =0; i<iNumMeshes; ++i)
 		{
 			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-			// m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
-			m_pModelCom->Render(m_pShaderCom, i);
+			m_pModelCom->Render(m_pShaderCom, i,L"g_matBones");
 		}
 	}
 

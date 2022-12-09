@@ -109,7 +109,7 @@ void CMesh::SetUp_MeshBones(CModel* pModel)
 	if(0 == m_iNumMeshBones)
 	{
 		CBone* pBone = pModel->Get_BonePtr(m_strName);
-		NULL_CHECK_RETURN(pBone, );
+		if (pBone == nullptr) return;
 
 		m_iNumMeshBones = 1;
 		m_vecMeshBones.push_back(pBone);

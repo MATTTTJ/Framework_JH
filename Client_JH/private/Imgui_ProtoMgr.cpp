@@ -42,7 +42,7 @@ void CImgui_ProtoMgr::Imgui_RenderWindow()
 	ImGui::BeginTabBar("Prototype Manager");
 	Component_Editor();
 	GameObject_Editor();
-	// CloneObject_Editor();
+	CloneObject_Editor();
 	ImGui::EndTabBar();
 }
 

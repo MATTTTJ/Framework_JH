@@ -9,7 +9,7 @@ public:
 
 	virtual HRESULT					Initialize(void* pArg) override;
 	virtual void					Imgui_RenderWindow() override;
-
+	
 private:
 	ID3D11Device*					m_pDevice;
 	ID3D11DeviceContext*			m_pContext;

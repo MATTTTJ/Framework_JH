@@ -28,7 +28,7 @@ private:
 	CShader*				m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
-
+	CTexture*				m_pTextureCom = nullptr;
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();

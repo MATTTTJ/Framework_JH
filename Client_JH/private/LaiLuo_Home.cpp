@@ -51,7 +51,6 @@ void CLaiLuo_Home::Tick(_double TimeDelta)
 
 	m_pModelCom->Play_Animation(TimeDelta);
 
-	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CLaiLuo_Home::Late_Tick(_double TimeDelta)
