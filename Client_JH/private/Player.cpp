@@ -14,6 +14,38 @@ CPlayer::CPlayer(const CPlayer & rhs)
 
 }
 
+_matrix CPlayer::Get_BoneMatrix(const string& strBoneName)
+{
+	if (nullptr == m_pModelCom)
+		return XMMatrixIdentity();
+
+	return m_pModelCom->Get_BoneMatrix(strBoneName);
+}
+
+_matrix CPlayer::Get_OffsetMatrix(const string& strBoneName)
+{
+	if (nullptr == m_pModelCom)
+		return XMMatrixIdentity();
+
+	return m_pModelCom->Get_OffsetMatrix(strBoneName);
+}
+
+_matrix CPlayer::Get_PivotMatrix()
+{
+	if (nullptr == m_pModelCom)
+		return XMMatrixIdentity();
+
+	return m_pModelCom->Get_PivotMatrix();
+}
+
+_vector CPlayer::Get_TransformState(CTransform::STATE eState)
+{
+	if (m_pModelCom == nullptr)
+		return XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	return m_pTransformCom->Get_State(eState);
+}
+
 HRESULT CPlayer::Initialize_Prototype()
 {
 	m_bHasModel = true;

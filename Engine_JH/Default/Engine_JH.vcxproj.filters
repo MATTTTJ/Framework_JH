@@ -115,6 +115,12 @@
     <Filter Include="01. Utility\02. GameObject\CustoumObject">
       <UniqueIdentifier>{f0d15428-c786-4890-9692-4f123a9b365e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\08. Collider">
+      <UniqueIdentifier>{3ba625b9-2f71-48e8-ae37-6beb14b828b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\08. Collider\DebugDraw">
+      <UniqueIdentifier>{ecde7d41-0dbf-49c3-8fe1-399a03f33314}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -301,6 +307,12 @@
     <ClInclude Include="..\public\CustomObject.h">
       <Filter>01. Utility\02. GameObject\CustoumObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Collider.h">
+      <Filter>01. Utility\03. Components\08. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DebugDraw.h">
+      <Filter>01. Utility\03. Components\08. Collider\DebugDraw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -455,6 +467,12 @@
     </ClCompile>
     <ClCompile Include="..\private\CustomObject.cpp">
       <Filter>01. Utility\02. GameObject\CustoumObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DebugDraw.cpp">
+      <Filter>01. Utility\03. Components\08. Collider\DebugDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Collider.cpp">
+      <Filter>01. Utility\03. Components\08. Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

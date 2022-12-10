@@ -33,6 +33,22 @@ CModel::CModel(const CModel & rhs)
 	}
 }
 
+_matrix CModel::Get_BoneMatrix(const string& strBoneName)
+{
+	CBone*	pBone = Get_BonePtr(strBoneName);
+	NULL_CHECK_RETURN(pBone, XMMatrixIdentity());
+
+	return pBone->Get_CombindMatrix();
+}
+
+_matrix CModel::Get_OffsetMatrix(const string& strBoneName)
+{
+	CBone* pBone = Get_BonePtr(strBoneName);
+	NULL_CHECK_RETURN(pBone, XMMatrixIdentity());
+
+	return pBone->Get_OffsetMatrix();
+}
+
 CBone* CModel::Get_BonePtr(const string& strBoneName)
 {
 	auto iter = find_if(m_vecBones.begin(),m_vecBones.end(),[&](CBone* pBone)->_bool {
