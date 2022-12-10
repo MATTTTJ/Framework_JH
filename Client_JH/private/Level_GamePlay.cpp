@@ -58,7 +58,7 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	LIGHTDESC			LightDesc;
 	ZeroMemory(&LightDesc, sizeof(LightDesc));
 
-	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
+	LightDesc.eType = LIGHTDESC::LIGHT_DIRECTIONAL;
 	LightDesc.isEnable = true;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 1.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);

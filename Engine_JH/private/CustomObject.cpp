@@ -71,7 +71,6 @@ HRESULT CCustomObject::Initialize_Prototype(const vector<pair<_uint, wstring>>& 
 			m_iVIBufferComLevel = vecPrototypeInfo[i].first;
 			m_wstrVIBufferComTag = vecPrototypeInfo[i].second;
 		}
-	
 		else if (eType == COM_SHADER)
 		{
 			m_iShaderComLevel = vecPrototypeInfo[i].first;
@@ -95,6 +94,7 @@ HRESULT CCustomObject::Initialize_Prototype(const vector<pair<_uint, wstring>>& 
 			m_wstrModelComTag = vecPrototypeInfo[i].second;
 		}
 	}
+
 	return S_OK;
 }
 
@@ -118,8 +118,13 @@ void CCustomObject::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	if (nullptr != m_pModelCom)
+	if (nullptr != m_pModelCom) 
+	{
+		if (m_pModelCom->Get_ModelType() == CModel::MODEL_NONANIM) 
+			return;
+
 		m_pModelCom->Play_Animation(dTimeDelta);
+	}
 }
 
 void CCustomObject::Late_Tick(_double TimeDelta)
@@ -144,7 +149,7 @@ HRESULT CCustomObject::Render()
 			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
-			m_pModelCom->Render(m_pShaderCom, i,L"g_matBones");
+			m_pModelCom->Render(m_pShaderCom, i,L"g_BoneMatrices");
 		}
 	}
 
@@ -155,7 +160,6 @@ HRESULT CCustomObject::Render()
 	}
 
 	return S_OK;
-
 }
 
 HRESULT CCustomObject::SetUp_Component()
@@ -179,7 +183,6 @@ HRESULT CCustomObject::SetUp_Component()
 		FAILED_CHECK_RETURN(__super::Add_Component(m_iModelComLevel, m_wstrModelComTag, L"Com_Model", (CComponent**)&m_pModelCom), E_FAIL);
 
 	return S_OK;
-
 }
 
 HRESULT CCustomObject::SetUp_ShaderResource()
