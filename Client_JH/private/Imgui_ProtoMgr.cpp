@@ -104,7 +104,7 @@ void CImgui_ProtoMgr::Component_Editor()
 			iSelectComponent = -1;
 			static	COMPONENTTYPE	eComponentType = COM_RENDERER;
 			static	COMPONENTTYPE	eLastComponentType = eComponentType;
-			char*	szTypeName[COMPONENTTYPE_END] = { "Renderer", "VIBuffer", "Shader", "Transform", "Texture", "Model" };
+			char*	szTypeName[COMPONENTTYPE_END] = { "Renderer", "VIBuffer", "Shader", "Transform", "Texture", "Model", "Collider" };
 			static _uint	iTargetLevel = 3;
 			static _uint	iLastTargetLevel = iTargetLevel;
 
@@ -131,6 +131,10 @@ void CImgui_ProtoMgr::Component_Editor()
 			static CModel::MODELTYPE		eModelType = CModel::MODEL_NONANIM;
 			char*			szModelType[2] = { "Non-Animation", "Animation" };
 
+			/* For Collider */
+			static CCollider::COLLIDERTYPE	eColliderType = CCollider::COLLIDERTYPE_END;
+			char*			szColliderType[3] = { "Sphere", "AABB", "OBB" };
+
 			if (iTargetLevel != iLastTargetLevel || eComponentType != eLastComponentType)
 			{
 				iLastTargetLevel = iTargetLevel;
@@ -147,11 +151,11 @@ void CImgui_ProtoMgr::Component_Editor()
 			switch (eComponentType)
 			{
 			case COM_RENDERER:
-				ImGui::Text("There is no Options for this Comopnent Type.");
+				ImGui::Text("There is no Options for this Component Type.");
 				break;
 
 			case COM_VIBUFFER:
-				ImGui::Text("There is no Options for this Comopnent Type.");
+				ImGui::Text("There is no Options for this Component Type.");
 				break;
 
 			case COM_SHADER:
@@ -268,6 +272,11 @@ void CImgui_ProtoMgr::Component_Editor()
 						ImGuiFileDialog::Instance()->Close();
 				}
 				break;
+
+			case COM_COLLIDER:
+				IMGUI_LEFT_LABEL(ImGui::InputText, "Component Tag", szPrototypeTag, sizeof(char) * MAX_PATH);
+				IMGUI_LEFT_LABEL(ImGui::Combo, "Collider Type", (_int*)&eColliderType, szColliderType, 3);
+				break;
 			}
 
 			if (ImGui::Button("Create"))
@@ -326,6 +335,12 @@ void CImgui_ProtoMgr::Component_Editor()
 
 					break;
 				}
+
+				case COM_COLLIDER:
+					_tchar		wszPrototypeTag[MAX_PATH] = L"";
+					CGameUtils::ctwc(szPrototypeTag, wszPrototypeTag);
+
+					CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CCollider::Create(m_pDevice, m_pContext, eColliderType));
 				}
 				ImGui::EndTabItem();
 
@@ -336,6 +351,7 @@ void CImgui_ProtoMgr::Component_Editor()
 				iNumElements = 0;
 				iTextureCnt = 1;
 				eModelType = CModel::MODEL_NONANIM;
+				eColliderType = CCollider::COLLIDER_SPHERE;
 
 				return;
 			}
@@ -349,6 +365,7 @@ void CImgui_ProtoMgr::Component_Editor()
 				iNumElements = 0;
 				iTextureCnt = 1;
 				eModelType = CModel::MODEL_NONANIM;
+				eColliderType = CCollider::COLLIDER_SPHERE;
 			}
 			ImGui::Separator();
 		}
@@ -410,6 +427,7 @@ void CImgui_ProtoMgr::Component_Editor()
 							jCom["Vertex Declaration"] = "None";
 							jCom["Vertex Elements Count"] = 0;
 							jCom["Model Type"] = "None";
+							jCom["Collider Type"] = "None";
 						}
 						else if (eType == COM_VIBUFFER)
 						{
@@ -420,6 +438,7 @@ void CImgui_ProtoMgr::Component_Editor()
 							jCom["Vertex Declaration"] = "None";
 							jCom["Vertex Elements Count"] = 0;
 							jCom["Model Type"] = "None";
+							jCom["Collider Type"] = "None";
 						}
 						else if (eType == COM_SHADER)
 						{
@@ -443,6 +462,7 @@ void CImgui_ProtoMgr::Component_Editor()
 
 							jCom["Vertex Elements Count"] = dynamic_cast<CShader*>(Pair.second)->Get_ElementsCnt();
 							jCom["Model Type"] = "None";
+							jCom["Collider Type"] = "None";
 						}
 						else if (eType == COM_TRANSFORM)
 						{
@@ -453,6 +473,7 @@ void CImgui_ProtoMgr::Component_Editor()
 							jCom["Vertex Declaration"] = "None";
 							jCom["Vertex Elements Count"] = 0;
 							jCom["Model Type"] = "None";
+							jCom["Collider Type"] = "None";
 						}
 						else if (eType == COM_TEXTURE)
 						{
@@ -463,6 +484,7 @@ void CImgui_ProtoMgr::Component_Editor()
 							jCom["Vertex Declaration"] = "None";
 							jCom["Vertex Elements Count"] = 0;
 							jCom["Model Type"] = "None";
+							jCom["Collider Type"] = "None";
 						}
 						else if (eType == COM_MODEL)
 						{
@@ -481,6 +503,30 @@ void CImgui_ProtoMgr::Component_Editor()
 								jCom["Model Type"] = "NonAnim";
 							else if (eModelType == CModel::MODEL_ANIM)
 								jCom["Model Type"] = "Anim";
+
+							jCom["Collider Type"] = "None";
+
+						}
+						else if (eType == COM_COLLIDER)
+						{
+							CCollider::COLLIDERTYPE		eColliderType = dynamic_cast<CCollider*>(Pair.second)->Get_ColliderType();
+							if (eColliderType == CCollider::COLLIDERTYPE_END)
+								continue;
+
+							jCom["Type"] = "Collider";
+							jCom["Tag"] = strComponentTag;
+							jCom["File Path"] = strFilePath;
+							jCom["Textrue Count"] = 0;
+							jCom["Vertex Declaration"] = "None";
+							jCom["Vertex Elements Count"] = 0;
+							jCom["Model Type"] = "None";
+
+							if (eColliderType == CCollider::COLLIDER_SPHERE)
+								jCom["Collider Type"] = "Sphere";
+							else if (eColliderType == CCollider::COLLIDER_AABB)
+								jCom["Collider Type"] = "AABB";
+							else if (eColliderType == CCollider::COLLIDER_OBB)
+								jCom["Collider Type"] = "OBB";
 						}
 
 						jLevel["Components"].push_back(jCom);
@@ -634,6 +680,24 @@ void CImgui_ProtoMgr::Component_Editor()
 						else
 							continue;
 					}
+					else if(strComponentType == "Collider")
+					{
+						string		strFilePath = "";
+						string		strColliderType = "";
+						wstring		wstrColliderType = L"";
+
+						Com["Collider Type"].get_to<string>(strFilePath);
+						wstrColliderType.assign(strColliderType.begin(), strColliderType.end());
+
+						if (strColliderType == "Sphere")
+							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CCollider::Create(m_pDevice, m_pContext, CCollider::COLLIDER_SPHERE));
+						else if (strColliderType == "AABB")
+							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CCollider::Create(m_pDevice, m_pContext, CCollider::COLLIDER_AABB));
+						else if (strColliderType == "OBB")
+							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CCollider::Create(m_pDevice, m_pContext, CCollider::COLLIDER_OBB));
+						else
+							continue;
+					}
 				}
 
 				jLevel.clear();
@@ -695,6 +759,10 @@ void CImgui_ProtoMgr::Component_Editor()
 
 			case COM_MODEL:
 				ImGui::Text("I am %d", COM_MODEL);
+				break;
+
+			case COM_COLLIDER:
+				ImGui::Text("I am %d", COM_COLLIDER);
 				break;
 
 			case COMPONENTTYPE_END:
@@ -884,7 +952,7 @@ void CImgui_ProtoMgr::GameObject_Editor()
 			char***		ppComponentTag = nullptr;
 			_uint			iComponentCnt[COMPONENTTYPE_END];
 			SortComponentByType(ppComponentTag, iComponentCnt);
-			static _int	iSelectRender = 0, iSelectVIBuffer = 0, iSelectShader = 0, iSelectTransform = 0, iSelectModel = 0;
+			static _int	iSelectRender = 0, iSelectVIBuffer = 0, iSelectShader = 0, iSelectTransform = 0, iSelectModel = 0, iSelectCollider = 0;
 
 			static _int	iTextureComCnt = 0;
 			static _int	iLastTextureComCnt = iTextureComCnt;
@@ -927,7 +995,7 @@ void CImgui_ProtoMgr::GameObject_Editor()
 				ImGui::Combo(pTextureLabel, &m_iSelectTextureCom[i], ppComponentTag[COM_TEXTURE], iComponentCnt[COM_TEXTURE]);
 			}
 			ImGui::Combo("Model", &iSelectModel, ppComponentTag[COM_MODEL], iComponentCnt[COM_MODEL]);
-
+			ImGui::Combo("Collider", &iSelectCollider, ppComponentTag[COM_COLLIDER], iComponentCnt[COM_COLLIDER]);
 			if (ImGui::Button("Create"))
 			{
 				vector<pair<_uint, wstring>>	vecPrototypeInfo;
@@ -982,6 +1050,14 @@ void CImgui_ProtoMgr::GameObject_Editor()
 				CGameUtils::ctwc(ppComponentTag[COM_MODEL][iSelectModel], wszComponentTag);
 				iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
 				if (iPrototypeLevel != 1000)
+				{
+					MyPair.first = iPrototypeLevel;
+					MyPair.second = wstring(wszComponentTag);
+					vecPrototypeInfo.push_back(MyPair);
+				}
+				CGameUtils::ctwc(ppComponentTag[COM_COLLIDER][iSelectCollider], wszComponentTag);
+				iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+				if(iPrototypeLevel != 1000)
 				{
 					MyPair.first = iPrototypeLevel;
 					MyPair.second = wstring(wszComponentTag);
@@ -1336,6 +1412,8 @@ COMPONENTTYPE CImgui_ProtoMgr::CheckComponentType(_int iSelectLevel, const char*
 		return COM_TEXTURE;
 	if (dynamic_cast<CModel*>(pComponent))
 		return COM_MODEL;
+	if (dynamic_cast<CCollider*>(pComponent))
+		return COM_COLLIDER;
 
 	return COMPONENTTYPE_END;
 }
@@ -1356,6 +1434,8 @@ COMPONENTTYPE CImgui_ProtoMgr::CheckComponentType(CComponent* pComponent)
 		return COM_TEXTURE;
 	if (dynamic_cast<CModel*>(pComponent))
 		return COM_MODEL;
+	if (dynamic_cast<CCollider*>(pComponent))
+		return COM_COLLIDER;
 
 	return COMPONENTTYPE_END;
 }
@@ -1365,7 +1445,7 @@ void CImgui_ProtoMgr::SortComponentByType(char***& ppComponentTag, _uint* pCompo
 	if (ppComponentTag != nullptr)
 		return;
 
-	_uint ComponentCnt[COMPONENTTYPE_END] = { 1, 1, 1, 1, 1, 1 };
+	_uint ComponentCnt[COMPONENTTYPE_END] = { 1, 1, 1, 1, 1, 1, 1 };
 
 	for (_uint i = 0; i < LEVEL_END + 1; ++i)
 	{
@@ -1399,7 +1479,12 @@ void CImgui_ProtoMgr::SortComponentByType(char***& ppComponentTag, _uint* pCompo
 				continue;
 			}
 			if (dynamic_cast<CModel*>(Pair.second))
+			{
 				ComponentCnt[COM_MODEL]++;
+				continue;
+			}
+			if (dynamic_cast<CCollider*>(Pair.second))
+				ComponentCnt[COM_COLLIDER]++;
 		}
 	}
 
@@ -1417,7 +1502,7 @@ void CImgui_ProtoMgr::SortComponentByType(char***& ppComponentTag, _uint* pCompo
 	}
 
 	char	szPrototypeTag[MAX_PATH] = "";
-	_uint	ComCnt[COMPONENTTYPE_END] = { 1, 1, 1, 1, 1, 1 };
+	_uint	ComCnt[COMPONENTTYPE_END] = { 1, 1, 1, 1, 1, 1, 1 };
 
 	for (_uint i = 0; i < LEVEL_END + 1; ++i)
 	{
@@ -1463,6 +1548,12 @@ void CImgui_ProtoMgr::SortComponentByType(char***& ppComponentTag, _uint* pCompo
 			{
 				ZeroMemory(ppComponentTag[COM_MODEL][ComCnt[COM_MODEL]], 64);
 				sprintf_s(ppComponentTag[COM_MODEL][ComCnt[COM_MODEL]++], iLength, szPrototypeTag);
+				continue;
+			}
+			if(dynamic_cast<CCollider*>(Pair.second))
+			{
+				ZeroMemory(ppComponentTag[COM_COLLIDER][ComCnt[COM_COLLIDER]], 64);
+				sprintf_s(ppComponentTag[COM_COLLIDER][ComCnt[COM_COLLIDER]++], iLength, szPrototypeTag);
 			}
 		}
 	}

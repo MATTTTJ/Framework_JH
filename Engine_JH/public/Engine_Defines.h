@@ -28,7 +28,7 @@ using namespace DirectX;
 using namespace Assimp;
 
 #include <cassert>
-
+#include <functional>
 #include <vector>
 #include <list>
 #include <map>

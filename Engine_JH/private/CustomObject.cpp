@@ -15,6 +15,7 @@ CCustomObject::CCustomObject(const CCustomObject& rhs)
 	, m_iTransformComLevel(rhs.m_iTransformComLevel)
 	, m_iTextureComLevel(rhs.m_iTextureComLevel)
 	, m_iModelComLevel(rhs.m_iModelComLevel)
+	, m_iColliderComLevel(rhs.m_iColliderComLevel)
 	, m_wstrRendererComTag(rhs.m_wstrRendererComTag)
 	, m_wstrVIBufferComTag(rhs.m_wstrVIBufferComTag)
 	, m_wstrShaderComTag(rhs.m_wstrShaderComTag)
@@ -22,6 +23,7 @@ CCustomObject::CCustomObject(const CCustomObject& rhs)
 	, m_iNumTextureCom(rhs.m_iNumTextureCom)
 	, m_wstrTextureComTag(rhs.m_wstrTextureComTag)
 	, m_wstrModelComTag(rhs.m_wstrModelComTag)
+	, m_wstrColliderComTag(rhs.m_wstrColliderComTag)
 {
 }
 
@@ -41,6 +43,8 @@ vector<pair<_uint, wstring>> CCustomObject::Get_PrototypeSaveData()
 		vecPrototypeInfo.push_back(pair<_uint, wstring>(m_iTextureComLevel, *m_wstrTextureComTag));
 	if (m_iModelComLevel != 1000)
 		vecPrototypeInfo.push_back(pair<_uint, wstring>(m_iModelComLevel, m_wstrModelComTag));
+	if (m_iColliderComLevel != 1000)
+		vecPrototypeInfo.push_back(pair<_uint, wstring>(m_iColliderComLevel, m_wstrColliderComTag));
 
 	return vecPrototypeInfo;
 }
@@ -93,6 +97,11 @@ HRESULT CCustomObject::Initialize_Prototype(const vector<pair<_uint, wstring>>& 
 			m_bHasModel = true;
 			m_wstrModelComTag = vecPrototypeInfo[i].second;
 		}
+		else if (eType == COM_COLLIDER)
+		{
+			m_iColliderComLevel = vecPrototypeInfo[i].first;
+			m_wstrColliderComTag = vecPrototypeInfo[i].second;
+		}
 	}
 
 	return S_OK;
@@ -122,8 +131,12 @@ void CCustomObject::Tick(_double dTimeDelta)
 	{
 		if (m_pModelCom->Get_ModelType() == CModel::MODEL_NONANIM) 
 			return;
-
 		m_pModelCom->Play_Animation(dTimeDelta);
+	}
+
+	if(nullptr != m_pColliderCom)
+	{
+		m_pColliderCom->Update(XMLoadFloat4x4(&m_pTransformCom->Get_WorldFloat4x4()));
 	}
 }
 
@@ -159,6 +172,15 @@ HRESULT CCustomObject::Render()
 		m_pVIBufferCom->Render();
 	}
 
+#ifdef _DEBUG
+	if(nullptr != m_pColliderCom)
+	{
+		m_pColliderCom->Render();
+	}
+#endif
+
+
+
 	return S_OK;
 }
 
@@ -181,6 +203,16 @@ HRESULT CCustomObject::SetUp_Component()
 	}
 	if (m_wstrModelComTag != L"")
 		FAILED_CHECK_RETURN(__super::Add_Component(m_iModelComLevel, m_wstrModelComTag, L"Com_Model", (CComponent**)&m_pModelCom), E_FAIL);
+
+	CCollider::COLLIDERDESC		ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(1.f, 1.f, 1.f);
+	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
+
+	if(m_wstrColliderComTag != L"")
+	{
+		FAILED_CHECK_RETURN(__super::Add_Component(m_iColliderComLevel, m_wstrColliderComTag, L"Com_Collider", (CComponent**)&m_pColliderCom, &ColliderDesc), E_FAIL);
+	}
 
 	return S_OK;
 }

@@ -98,6 +98,11 @@ COMPONENTTYPE CGameUtils::CheckComponentTypeFromTag(const wstring & wstrComponen
 			eType = COM_MODEL;
 			break;
 		}
+		if (wstrTemp == L"Collider")
+		{
+			eType = COM_COLLIDER;
+			break;
+		}
 	}
 
 	return eType;

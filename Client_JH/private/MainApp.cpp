@@ -41,8 +41,7 @@ void CMainApp::Tick(_double TimeDelta)
 
 HRESULT CMainApp::Render()
 {
-	if (nullptr == m_pGameInstance ||
-		nullptr == m_pRenderer)
+	if (nullptr == m_pGameInstance ||	nullptr == m_pRenderer)
 		return E_FAIL;
 
 	m_pGameInstance->Render_ImGui();

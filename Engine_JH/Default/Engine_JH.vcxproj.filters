@@ -301,9 +301,6 @@
     <ClInclude Include="..\public\Channel.h">
       <Filter>01. Utility\03. Components\06. Model\Animation\Channel</Filter>
     </ClInclude>
-    <ClInclude Include="Engine_Enum.h">
-      <Filter>99.Defines</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\CustomObject.h">
       <Filter>01. Utility\02. GameObject\CustoumObject</Filter>
     </ClInclude>
@@ -312,6 +309,9 @@
     </ClInclude>
     <ClInclude Include="..\public\DebugDraw.h">
       <Filter>01. Utility\03. Components\08. Collider\DebugDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Engine_Enum.h">
+      <Filter>99.Defines</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
