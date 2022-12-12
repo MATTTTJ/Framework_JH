@@ -22,6 +22,7 @@ CModel::CModel(const CModel & rhs)
 	, m_iNumBones(rhs.m_iNumBones)
 	, m_iNumAnimation(rhs.m_iNumAnimation)
 	, m_iCurrentAnimIndex(rhs.m_iCurrentAnimIndex)
+	, m_dwBeginBoneData(rhs.m_dwBeginBoneData)
 {
 	for (auto& pMesh : rhs.m_vecMeshes)
 		m_vecMeshes.push_back(dynamic_cast<CMesh*>(pMesh->Clone()));
@@ -31,6 +32,12 @@ CModel::CModel(const CModel & rhs)
 		for(_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(Material.pTexture[i]);
 	}
+
+	m_wstrFilePath = rhs.m_wstrFilePath;
+}
+
+HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
+{
 }
 
 _matrix CModel::Get_BoneMatrix(const string& strBoneName)
@@ -72,30 +79,54 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePat
 	m_wstrFilePath = wstring(wszModelFilePath);
 	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
 
-	_uint			iFlag = 0;
+	_tchar			wszExt[32] = L"";
+	_wsplitpath_s(m_wstrFilePath.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, wszExt, 32);
 
-	if (MODEL_NONANIM == eType)
-		iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
-	else
-		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
+	if (!lstrcmp(wszExt, L".fbx"))
+	{
 
-	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
-	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
+		_uint			iFlag = 0;
 
-	FAILED_CHECK_RETURN(Ready_MeshContainers(), E_FAIL)
-	FAILED_CHECK_RETURN(Ready_Materials(pModelFilePath), E_FAIL)
+		if (MODEL_NONANIM == eType)
+			iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
+		else
+			iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
+
+		m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
+		NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
+
+		FAILED_CHECK_RETURN(Ready_MeshContainers(), E_FAIL)
+			FAILED_CHECK_RETURN(Ready_Materials(pModelFilePath), E_FAIL)
+	}
+	else if (!lstrcmp(wszExt, L".model"))
+		FAILED_CHECK_RETURN(Load_MeshMaterial(m_wstrFilePath), E_FAIL);
 
 	return S_OK;
 }
 
 HRESULT CModel::Initialize_Clone(void * pArg)
 {
-	FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode, nullptr), E_FAIL);
+	_tchar	wszExt[32] = L"";
+	_wsplitpath_s(m_wstrFilePath.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, wszExt, 32);
 
-	for(auto& pMesh : m_vecMeshes)
-		pMesh->SetUp_MeshBones(this);
+	if (!lstrcmp(wszExt, L".fbx"))
+	{
+		FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode, nullptr), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Animation(), E_FAIL);
+		for (auto& pMesh : m_vecMeshes)
+			pMesh->SetUp_MeshBones(this);
+
+		FAILED_CHECK_RETURN(Ready_Animation(), E_FAIL);
+	}
+	else if (!lstrcmp(wszExt, L".model"))
+	{
+		DWORD	dwByte = m_dwBeginBoneData;
+		HANDLE	hFile = CreateFileW(m_wstrFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+		FAILED_CHECK_RETURN(Load_BoneAnimation(hFile, dwByte), E_FAIL);
+
+		CloseHandle(hFile);
+	}
 
 	return S_OK;
 }
@@ -199,13 +230,32 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrB
 
 HRESULT CModel::Ready_Bones(aiNode* pAINode, CBone* pParent)
 {
-	CBone*	pBone = CBone::Create(pAINode, pParent);
+	CBone*	pBone = CBone::Create(pAINode, pParent, pAINode->mNumChildren);
 	NULL_CHECK_RETURN(pBone, E_FAIL)
 
 	m_vecBones.push_back(pBone);
 
 	for(_uint i =0; i < pAINode->mNumChildren; ++i)
 		Ready_Bones(pAINode->mChildren[i], pBone);
+
+	return S_OK;
+}
+
+HRESULT CModel::Ready_Bones(HANDLE& hFile, DWORD& dwByte, CBone* pParent)
+{
+	NULL_CHECK_RETURN(pParent, E_FAIL);
+
+	_uint iNumChild = pParent->Get_NumChild();
+	while(iNumChild--)
+	{
+		CBone*		pBone = CBone::Create(nullptr, pParent, 0);
+		NULL_CHECK_RETURN(pBone, E_FAIL);
+
+		pBone->Load_Bone(hFile, dwByte);
+		m_vecBones.push_back(pBone);
+
+		FAILED_CHECK_RETURN(Ready_Bones(hFile, dwByte, pBone), E_FAIL);
+	}
 
 	return S_OK;
 }
@@ -289,6 +339,97 @@ HRESULT CModel::Ready_Animation()
 		NULL_CHECK_RETURN(pAnim, E_FAIL)
 
 		m_vecAnimations.push_back(pAnim);
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Load_MeshMaterial(const wstring& wstrModelFilePath)
+{
+	DWORD		dwByte = 0;
+	HANDLE		hFile = CreateFileW(wstrModelFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,0);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+		return E_FAIL;
+
+	// Meshes
+	ReadFile(hFile, &m_iNumMeshes, sizeof(_uint), &dwByte, nullptr);
+	m_vecMeshes.reserve(m_iNumMeshes);
+
+	for(_uint i =0; i< m_iNumMeshes; ++i)
+	{
+		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext, m_eType, nullptr, this);
+		NULL_CHECK_RETURN(pMesh, E_FAIL);
+
+		pMesh->Load_Mesh(hFile, dwByte);
+
+		m_vecMeshes.push_back(pMesh);
+	}
+
+	// Materials
+	ReadFile(hFile, &m_iNumMaterials, sizeof(_uint), &dwByte, nullptr);
+	m_vecMaterials.reserve(m_iNumMaterials);
+
+	for(_uint i = 0; i<m_iNumMaterials; ++i)
+	{
+		MODELMATERIAL		tMaterial;
+		ZeroMemory(&tMaterial, sizeof(MODELMATERIAL));
+
+		for(_uint j =0; j <AI_TEXTURE_TYPE_MAX; ++j)
+		{
+			_uint iTemp = AI_TEXTURE_TYPE_MAX;
+			ReadFile(hFile, &iTemp, sizeof(_uint), &dwByte, nullptr);
+
+			if (iTemp == AI_TEXTURE_TYPE_MAX)
+				continue;
+
+			_uint iFilePathLength = 0;
+			ReadFile(hFile, &iFilePathLength, sizeof(_uint), &dwByte, nullptr);
+
+			_tchar* pFilePath = new _tchar[iFilePathLength];
+			ReadFile(hFile, &pFilePath, sizeof(_tchar) * iFilePathLength, &dwByte, nullptr);
+
+			tMaterial.pTexture[j] = CTexture::Create(m_pDevice, m_pContext, wstring(pFilePath));
+			NULL_CHECK_RETURN(tMaterial.pTexture[j], E_FAIL);
+
+			Safe_Delete_Array(pFilePath);
+		}
+		m_vecMaterials.push_back(tMaterial);
+	}
+	ReadFile(hFile, &m_dwBeginBoneData, sizeof(DWORD), &dwByte, nullptr);
+
+	CloseHandle(hFile);
+
+	return S_OK;
+}
+
+HRESULT CModel::Load_BoneAnimation(HANDLE& hFile, DWORD& dwByte)
+{
+	// Bone
+	ReadFile(hFile, &m_iNumBones, sizeof(_uint), &dwByte, nullptr);
+	m_vecBones.reserve(m_iNumBones);
+
+	CBone*		pRootBone = CBone::Create(nullptr, nullptr, 0);
+	pRootBone->Load_Bone(hFile, dwByte);
+	m_vecBones.push_back(pRootBone);
+
+	FAILED_CHECK_RETURN(Ready_Bones(hFile, dwByte, pRootBone), E_FAIL);
+
+	// Setup Mesh Bones
+	for (auto& pMesh : m_vecMeshes)
+		pMesh->SetUp_MeshBones(hFile, dwByte, this);
+
+	// Animations
+	ReadFile(hFile, &m_iNumAnimation, sizeof(_uint), &dwByte, nullptr);
+	m_vecAnimations.reserve(m_iNumAnimation);
+
+	for(_uint i = 0; i< m_iNumAnimation; ++i)
+	{
+		CAnimation* pAnimation = CAnimation::Create(nullptr, this);
+		NULL_CHECK_RETURN(pAnimation, E_FAIL);
+		FAILED_CHECK_RETURN(pAnimation->Load_Animation(hFile, dwByte), E_FAIL);
+
+		m_vecAnimations.push_back(pAnimation);
 	}
 
 	return S_OK;

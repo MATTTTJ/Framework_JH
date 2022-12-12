@@ -7,6 +7,14 @@ CAnimation::CAnimation()
 {
 }
 
+HRESULT CAnimation::Save_Animation(HANDLE& hFile, DWORD& dwByte)
+{
+}
+
+HRESULT CAnimation::Load_Animation(HANDLE& hFile, DWORD& dwByte)
+{
+}
+
 HRESULT CAnimation::Initialize(aiAnimation* pAIAnimation, CModel* pModel)
 {
 	m_strName = pAIAnimation->mName.data;

@@ -4,6 +4,18 @@ CBone::CBone()
 {
 }
 
+HRESULT CBone::Save_Bone(HANDLE& hFile, DWORD& dwByte)
+{
+}
+
+HRESULT CBone::Save_BoneName(HANDLE& hFile, DWORD& dwByte)
+{
+}
+
+HRESULT CBone::Load_Bone(HANDLE& hFile, DWORD& dwByte)
+{
+}
+
 HRESULT CBone::Initialize(aiNode* pAINode, CBone* pParent)
 {
 	m_strName = pAINode->mName.data;

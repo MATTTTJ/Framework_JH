@@ -10,10 +10,16 @@ private:
 	virtual ~CChannel() = default;
 
 public:
+	HRESULT				Save_Channel(HANDLE& hFile, DWORD& dwByte);
+	HRESULT				Load_Channel(HANDLE& hFile, DWORD& dwByte);
+
+public:
 	HRESULT				Initialize(aiNodeAnim* pAIChannel, class CModel* pModel);
 	void				Update_TransformMatrix(_double dPlayTime);
 	void				Reset_KeyFrameIndex() { m_iCurrentKeyframeIndex = 0; }
 private:
+	class CModel*		m_pModel = nullptr;
+
 	string				m_strName = "";
 	class CBone*		m_pBone = nullptr;
 

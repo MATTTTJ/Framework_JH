@@ -13,14 +13,15 @@ public:
 	virtual ~CModel() = default;
 
 public:
-	const MODELTYPE&		Get_ModelType() { return m_eType; }
-	_uint		Get_NumMeshes() const {	return m_iNumMeshes; }
-	_uint		Get_NumAnimation() const { return m_iNumAnimation; }
-	_matrix		Get_PivotMatrix() const { return XMLoadFloat4x4(&m_PivotMatrix); }
-	_matrix		Get_BoneMatrix(const string& strBoneName);
-	_matrix		Get_OffsetMatrix(const string& strBoneName);
-	void		Set_CurAnimIndex(_uint AnimIndex) { m_iCurrentAnimIndex = AnimIndex; }
-	class	CBone*	Get_BonePtr(const string& strBoneName);
+	HRESULT						Save_Model(const char* pSaveFileDirectory);
+	const MODELTYPE&			Get_ModelType() { return m_eType; }
+	_uint						Get_NumMeshes() const {	return m_iNumMeshes; }
+	_uint						Get_NumAnimation() const { return m_iNumAnimation; }
+	_matrix						Get_PivotMatrix() const { return XMLoadFloat4x4(&m_PivotMatrix); }
+	_matrix						Get_BoneMatrix(const string& strBoneName);
+	_matrix						Get_OffsetMatrix(const string& strBoneName);
+	void						Set_CurAnimIndex(_uint AnimIndex) { m_iCurrentAnimIndex = AnimIndex; }
+	class	CBone*				Get_BonePtr(const string& strBoneName);
 
 public:
 	virtual HRESULT				Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix PivotMatrix);
@@ -31,13 +32,11 @@ public:
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);
 	HRESULT						Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrBoneConstantName = L"");
 
-public:
+private:
 	const aiScene*				m_pAIScene = nullptr;
 	Importer					m_Importer;
 	MODELTYPE					m_eType = MODELTYPE_END;
 
-public:
-	// 하나의 모델은 교체가 가능한 여러개의 메시로 구성되어있다. 
 	_uint						m_iNumMeshes = 0;
 	vector<class CMesh*>		m_vecMeshes;
 

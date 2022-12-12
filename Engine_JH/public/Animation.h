@@ -9,9 +9,15 @@ public:
 	virtual ~CAnimation() = default;
 
 public:
+	HRESULT			Save_Animation(HANDLE& hFile, DWORD& dwByte);
+	HRESULT			Load_Animation(HANDLE& hFile, DWORD& dwByte);
+
+public:
 	HRESULT			Initialize(aiAnimation* pAIAnimation, class CModel* pModel);
 	void			Update_Bones(_double TimeDelta);
 private:
+	class CModel*				m_pModel = nullptr;
+
 	string						m_strName = "";
 	_double						m_Duration = 0.0; // 애니메이션의 길이
 	_double						m_dTIckPerSecond; // 애니메이션이 재생되는 속도 (높을수록 빠름)
