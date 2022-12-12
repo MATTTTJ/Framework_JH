@@ -47,7 +47,7 @@ void CLaiLuo_Home::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	
-		m_pModelCom->Set_CurAnimIndex(1);
+	m_pModelCom->Set_CurAnimIndex(0);
 
 	m_pModelCom->Play_Animation(TimeDelta);
 

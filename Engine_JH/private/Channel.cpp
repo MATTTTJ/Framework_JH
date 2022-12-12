@@ -72,10 +72,10 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 	// 마지막 키프레임 데이터를 남겨두기위한 작업
 	if(dPlayTime >= m_vecKeyframes.back().dTime)
 	{
-		vScale =	XMLoadFloat3(&m_vecKeyframes.back().vScale);
-		vRotation = XMLoadFloat4(&m_vecKeyframes.back().vRotation);
-		vPosition = XMLoadFloat3(&m_vecKeyframes.back().vPosition);
-		vPosition = XMVectorSetW(vPosition, 1.f);
+		m_vLastScale = vScale =	XMLoadFloat3(&m_vecKeyframes.back().vScale);
+		m_vLastRotation = vRotation = XMLoadFloat4(&m_vecKeyframes.back().vRotation);
+		m_vLastPosition = vPosition = XMLoadFloat3(&m_vecKeyframes.back().vPosition);
+		m_vLastPosition = vPosition = XMVectorSetW(vPosition, 1.f);
 	}
 	else
 	{
@@ -100,6 +100,77 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 
 	m_pBone->Set_TransformMatrix(TransformMatrix);
 }
+
+_bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* LastChannel, CChannel* CurChannel, _bool bFinish)
+{
+	_vector vScale;
+	_vector vRotation;
+	_vector vPosition;
+	_matrix TransformMatrix;
+
+	if(-1 == m_iLerpFrameIndex) // 절대 나올 수 없는 인덱스 값인 음수로 초기화 
+	{
+		while(dPlayTime >= m_vecKeyframes[m_iLerpFrameIndex + 1].dTime)
+		{
+			m_iLerpFrameIndex++;
+
+			if((_int)m_iNumKeyframes <= m_iLerpFrameIndex +1)
+			{
+				m_iLerpFrameIndex -= 1;
+				break;
+			}
+		}
+	}
+
+	_uint iSour = 0;
+
+	if(bFinish)
+	{
+		iSour = m_iNumKeyframes - 1;
+	}
+	else
+	{
+		iSour = m_iLerpFrameIndex;
+	}
+
+	_uint iDest = 0;
+
+	if (LastChannel->m_vecKeyframes.size() <= iSour)
+		iSour = (_uint)LastChannel->m_vecKeyframes.size() - 1;
+
+	m_dLerpRatio += 0.1;
+
+	_vector	vLastScale, vCurScale;
+	_vector vLastRotation, vCurRotation;
+	_vector vLastPosition, vCurPosition;
+
+	vLastScale = XMLoadFloat3(&LastChannel->m_vecKeyframes[iSour].vScale);
+	vCurScale = XMLoadFloat3(&CurChannel->m_vecKeyframes[iDest].vScale);
+
+	vLastRotation = XMLoadFloat4(&LastChannel->m_vecKeyframes[iSour].vRotation);
+	vCurRotation = XMLoadFloat4(&CurChannel->m_vecKeyframes[iDest].vRotation);
+
+	vLastPosition = XMLoadFloat3(&LastChannel->m_vecKeyframes[iSour].vPosition);
+	vCurPosition = XMLoadFloat3(&CurChannel->m_vecKeyframes[iDest].vPosition);
+
+	vScale = XMVectorLerp(vLastScale, vCurScale, static_cast<_float>(m_dLerpRatio));
+	vRotation = XMQuaternionSlerp(vLastRotation, vCurRotation, static_cast<_float>(m_dLerpRatio));
+	vPosition = XMVectorLerp(vLastPosition, vCurPosition, static_cast<_float>(m_dLerpRatio));
+	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+
+	m_pBone->Set_TransformMatrix(TransformMatrix);
+
+	if (1.f <= m_dLerpRatio)
+	{
+		m_dLerpRatio = 0.0;
+		return true;
+	}
+
+	return false;
+}
+
 
 CChannel* CChannel::Create(aiNodeAnim* pAIChannel, CModel* pModel)
 {

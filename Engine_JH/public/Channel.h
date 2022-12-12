@@ -12,11 +12,15 @@ private:
 public:
 	HRESULT				Save_Channel(HANDLE& hFile, DWORD& dwByte);
 	HRESULT				Load_Channel(HANDLE& hFile, DWORD& dwByte);
-
+	const string&		Get_ChannelName() const { return m_strName; }
 public:
 	HRESULT				Initialize(aiNodeAnim* pAIChannel, class CModel* pModel);
 	void				Update_TransformMatrix(_double dPlayTime);
+	_bool				Update_TransformLerpMatrix(_double dPlayTime, CChannel* LastChannel, CChannel* CurChannel, _bool bFinish = false );
+
 	void				Reset_KeyFrameIndex() { m_iCurrentKeyframeIndex = 0; }
+	void				Reset_LerpIndex() { m_iLerpFrameIndex = -1; }
+
 private:
 	class CModel*		m_pModel = nullptr;
 
@@ -28,7 +32,14 @@ private:
 	typedef vector<KEYFRAME>		KEYFRAMES;
 
 	_uint				m_iCurrentKeyframeIndex = 0; // 현재 키 프레임 인덱스
+	_vector				m_vLastScale;
+	_vector				m_vLastRotation;
+	_vector				m_vLastPosition;
+	_matrix				m_vLastTransformMatrix;
 
+private:
+	_double				m_dLerpRatio = 0.0;
+	_int				m_iLerpFrameIndex = -1;
 
 public:
 	static CChannel*	Create(aiNodeAnim* pAIChannel, class CModel* pModel);

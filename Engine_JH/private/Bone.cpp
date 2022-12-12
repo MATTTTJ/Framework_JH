@@ -6,17 +6,22 @@ CBone::CBone()
 
 HRESULT CBone::Save_Bone(HANDLE& hFile, DWORD& dwByte)
 {
+	return S_OK;
 }
 
 HRESULT CBone::Save_BoneName(HANDLE& hFile, DWORD& dwByte)
 {
+	return S_OK;
+
 }
 
 HRESULT CBone::Load_Bone(HANDLE& hFile, DWORD& dwByte)
 {
+	return S_OK;
+
 }
 
-HRESULT CBone::Initialize(aiNode* pAINode, CBone* pParent)
+HRESULT CBone::Initialize(aiNode* pAINode, CBone* pParent, _uint iNumChild)
 {
 	m_strName = pAINode->mName.data;
 	if (nullptr != pParent)
@@ -47,11 +52,11 @@ void CBone::compute_CombindTransformationMatrix()
 		XMStoreFloat4x4(&m_CombindTransformMatrix, XMLoadFloat4x4(&m_TransformMatrix) * XMLoadFloat4x4(&m_pParent->m_CombindTransformMatrix));
 }
 
-CBone* CBone::Create(aiNode* pAINode, CBone* pParent)
+CBone* CBone::Create(aiNode* pAINode, CBone* pParent, _uint iNumChild)
 {
 	CBone*	pInst = new CBone();
 
-	if(FAILED(pInst->Initialize(pAINode, pParent)))
+	if(FAILED(pInst->Initialize(pAINode, pParent, iNumChild)))
 	{
 		MSG_BOX("Failed to Create : CBone");
 

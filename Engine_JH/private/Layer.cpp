@@ -7,6 +7,22 @@ CLayer::CLayer()
 {
 }
 
+CComponent* CLayer::Get_ComponentPtr(const wstring& pComponentTag, _uint iIndex)
+{
+	if (iIndex >= m_GameObjectList.size())
+		return nullptr;
+
+	auto iter = m_GameObjectList.begin();
+
+	for (_uint i = 0; i < iIndex; ++i)
+		++iter;
+
+	if (iter == m_GameObjectList.end())
+		return nullptr;
+
+	return (*iter)->Find_Component(pComponentTag);
+}
+
 HRESULT CLayer::Initialize()
 {
 	return S_OK;

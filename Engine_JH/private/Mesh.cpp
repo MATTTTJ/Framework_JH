@@ -19,14 +19,17 @@ CMesh::CMesh(const CMesh & rhs)
 
 HRESULT CMesh::Save_Mesh(HANDLE& hFile, DWORD& dwByte)
 {
+	return S_OK;
 }
 
 HRESULT CMesh::Save_MeshBones(HANDLE& hFile, DWORD& dwByte)
 {
+	return S_OK;
 }
 
 HRESULT CMesh::Load_Mesh(HANDLE& hFile, DWORD& dwByte)
 {
+	return S_OK;
 }
 
 HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, CModel* pModel)
@@ -131,6 +134,7 @@ void CMesh::SetUp_MeshBones(CModel* pModel)
 
 HRESULT CMesh::SetUp_MeshBones(HANDLE& hFile, DWORD& dwByte, CModel* pModel)
 {
+	return S_OK;
 }
 
 void CMesh::SetUp_BoneMatrix(_float4x4* pBoneMatrices, _fmatrix PivotMatrix)

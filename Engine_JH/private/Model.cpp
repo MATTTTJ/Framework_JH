@@ -38,6 +38,8 @@ CModel::CModel(const CModel & rhs)
 
 HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 {
+	return S_OK;
+
 }
 
 _matrix CModel::Get_BoneMatrix(const string& strBoneName)
@@ -66,6 +68,23 @@ CBone* CModel::Get_BonePtr(const string& strBoneName)
 		return nullptr;
 
 	return *iter;
+}
+
+void CModel::Set_CurAnimIndex(_uint AnimIndex)
+{
+	if (0 > AnimIndex || m_iNumAnimation <= AnimIndex || m_iCurrentAnimIndex == AnimIndex)
+		return;
+
+	
+	m_iLastAnimIndex = m_iCurrentAnimIndex;
+	m_iCurrentAnimIndex = AnimIndex;
+
+	if (m_iLastAnimIndex != m_iCurrentAnimIndex)
+	{
+		m_bIsAnimChange = true;
+	}
+	else
+		m_bIsAnimChange = false;
 }
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix PivotMatrix)
@@ -171,13 +190,26 @@ void CModel::Imgui_RenderProperty()
 	}
 }
 
-void CModel::Play_Animation(_double TimeDelta)
+void CModel::Play_Animation(_double TimeDelta, _bool bFinish)
 {
 	if (MODEL_NONANIM == m_eType)
 		return;
 
-	// 현재 애니메이션에 맞는 뼈들의 TransformMatrix를 갱신한다.
-	m_vecAnimations[m_iCurrentAnimIndex]->Update_Bones(TimeDelta);
+	if (m_bIsAnimChange)
+		m_bIsAnimChange = m_vecAnimations[m_iCurrentAnimIndex]->Update_Lerp(TimeDelta, m_vecAnimations[m_iLastAnimIndex], bFinish);
+	else
+		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_Bones(TimeDelta);
+	
+	// if(m_iLastAnimIndex != m_iCurrentAnimIndex)
+	// {
+	// 	// m_vecAnimations[m_iLastAnimIndex]->
+	// 	m_vecAnimations[m_iCurrentAnimIndex]->Update_Bones(TimeDelta);
+	// }
+	// else
+	// {// 현재 애니메이션에 맞는 뼈들의 TransformMatrix를 갱신한다.
+	// 	m_vecAnimations[m_iCurrentAnimIndex]->Update_Bones(TimeDelta);
+	// }
+
 
 	for (auto& pBone : m_vecBones)
 	{

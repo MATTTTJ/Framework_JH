@@ -5,6 +5,7 @@
 #include "ForkLift.h"
 #include "Home.h"
 #include "LaiLuo_Home.h"
+#include "Monster.h"
 #include "Player.h"
 #include "Terrain.h"
 
@@ -127,6 +128,20 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Terrain/Height.bmp"))))
 		return E_FAIL;
 
+	m_wstrLoadingText = L"콜라이더를 로딩중입니다.";
+	/* For.Prototype_Component_Collider_AABB*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_AABB",
+		CCollider::Create(m_pDevice, m_pContext, CCollider::COLLIDER_AABB))))
+		return E_FAIL;
+	/* For.Prototype_Component_Collider_OBB*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_OBB",
+		CCollider::Create(m_pDevice, m_pContext, CCollider::COLLIDER_OBB))))
+		return E_FAIL;
+	/* For.Prototype_Component_Collider_SPHERE*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE",
+		CCollider::Create(m_pDevice, m_pContext, CCollider::COLLIDER_SPHERE))))
+		return E_FAIL;
+
 	m_wstrLoadingText = L"모델을 로딩중입니다. ";
 
 	_matrix PivotMatrix = XMMatrixIdentity();
@@ -193,7 +208,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Terrain", CTerrain::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player", CPlayer::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_ForkLift", CForkLift::Create(m_pDevice, m_pContext)), E_FAIL);
-
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Monster", CMonster::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Home", CHome::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_LaiHome", CLaiLuo_Home::Create(m_pDevice, m_pContext)), E_FAIL);
 

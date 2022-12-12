@@ -68,12 +68,12 @@ HRESULT CLevel_MapEditor::Ready_Light()
 
 HRESULT CLevel_MapEditor::Ready_Layer_Background(const wstring wstrLayerTag)
 {
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+	// CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	// if (FAILED(pGameInstance->Clone_GameObject(LEVEL_MAPEDITOR, wstrLayerTag, L"Prototype_GameObject_Terrain")))
 	// 	return E_FAIL;
 
-	RELEASE_INSTANCE(CGameInstance);
+	// RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
