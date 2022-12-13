@@ -70,7 +70,7 @@ public:
 	HRESULT						Load_BoneAnimation(HANDLE& hFile, DWORD& dwByte);
 public:
 	static	CModel*				Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eType, const char* pModelFilePath, _fmatrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f)));
-	virtual CComponent*			Clone(void* pArg) override;
+	virtual CComponent*			Clone(void* pArg = nullptr) override;
 	virtual void				Free() override;
 };
 

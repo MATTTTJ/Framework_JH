@@ -176,6 +176,7 @@
     <ClInclude Include="..\public\Home_Deco.h" />
     <ClInclude Include="..\public\Imgui_LevelSwitcher.h" />
     <ClInclude Include="..\public\Imgui_MapEditor.h" />
+    <ClInclude Include="..\public\Imgui_ModelSave.h" />
     <ClInclude Include="..\public\Imgui_ProtoMgr.h" />
     <ClInclude Include="..\public\LaiLuo_Home.h" />
     <ClInclude Include="..\public\Level_GamePlay.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="..\private\Home_Deco.cpp" />
     <ClCompile Include="..\private\Imgui_LevelSwitcher.cpp" />
     <ClCompile Include="..\private\Imgui_MapEditor.cpp" />
+    <ClCompile Include="..\private\Imgui_ModelSave.cpp" />
     <ClCompile Include="..\private\Imgui_ProtoMgr.cpp" />
     <ClCompile Include="..\private\LaiLuo_Home.cpp" />
     <ClCompile Include="..\private\Level_GamePlay.cpp" />

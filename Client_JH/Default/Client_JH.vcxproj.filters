@@ -82,6 +82,9 @@
     <Filter Include="02. GameObjects\00. LobbyObject\Deco">
       <UniqueIdentifier>{594493c1-5914-488d-8a59-e28b64f4f40a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Tool\ModelSave">
+      <UniqueIdentifier>{68986fdd-7af9-4209-8432-30d140a53543}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -156,6 +159,9 @@
     <ClInclude Include="..\public\LaiLuo_Home.h">
       <Filter>02. GameObjects\00. LobbyObject\LaiLuo_Home</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Imgui_ModelSave.h">
+      <Filter>96. Tool\ModelSave</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -220,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="..\private\LaiLuo_Home.cpp">
       <Filter>02. GameObjects\00. LobbyObject\LaiLuo_Home</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Imgui_ModelSave.cpp">
+      <Filter>96. Tool\ModelSave</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

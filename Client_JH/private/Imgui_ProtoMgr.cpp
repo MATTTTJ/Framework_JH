@@ -254,7 +254,7 @@ void CImgui_ProtoMgr::Component_Editor()
 				IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "File Path", "Input Path here or Choose from FildDialog.", szFilePath, sizeof(char) * MAX_PATH);
 				ImGui::SameLine();
 				if (ImGui::SmallButton("Open"))
-					ImGuiFileDialog::Instance()->OpenDialog("Choose Model", "Choose Model", ".fbx,.blend", "../Bin/Resources/Meshes", ".fbx", 1, nullptr, ImGuiFileDialogFlags_Modal);
+					ImGuiFileDialog::Instance()->OpenDialog("Choose Model", "Choose Model", ".fbx,.model", "../Bin/Resources/Meshes", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
 
 				if (ImGuiFileDialog::Instance()->Display("Choose Model"))
 				{

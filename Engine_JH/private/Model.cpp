@@ -38,6 +38,93 @@ CModel::CModel(const CModel & rhs)
 
 HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 {
+	_tchar	wszSaveFileDirectory[MAX_PATH] = L"";
+	CGameUtils::ctwc(pSaveFileDirectory, wszSaveFileDirectory);
+
+	DWORD	dwByte = 0;
+	HANDLE	hFile = CreateFileW(wszSaveFileDirectory, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+		return E_FAIL;
+
+	// Meshes
+	WriteFile(hFile, &m_iNumMeshes, sizeof(_uint), &dwByte, nullptr);
+
+	for(auto& pMesh : m_vecMeshes)
+	{
+		if(FAILED(pMesh->Save_Mesh(hFile,dwByte)))
+		{
+			MSG_BOX("Failed to Save : Mesh");
+			CloseHandle(hFile);
+			return E_FAIL;
+		}
+	}
+
+	// Materials
+	if (m_iNumMaterials == 0)
+		return E_FAIL;
+
+	WriteFile(hFile, &m_iNumMaterials, sizeof(_uint), &dwByte, nullptr);
+
+	for(auto& tMaterial : m_vecMaterials)
+	{
+		for(_uint i = 0; i< AI_TEXTURE_TYPE_MAX; ++i)
+		{
+			if(tMaterial.pTexture[i] == nullptr)
+			{
+				_uint	iTemp = AI_TEXTURE_TYPE_MAX;
+				WriteFile(hFile, &iTemp, sizeof(_uint), &dwByte, nullptr);
+			}
+			else
+			{
+				WriteFile(hFile, &i, sizeof(_uint), &dwByte, nullptr);
+
+				const _tchar*	wszFilePath = tMaterial.pTexture[i]->Get_FilePath().c_str();
+				_uint			iFilepathLength = (_uint)tMaterial.pTexture[i]->Get_FilePath().length() + 1;
+
+				WriteFile(hFile, &iFilepathLength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, wszFilePath, sizeof(_tchar) * iFilepathLength, &dwByte, nullptr);
+			}
+		}
+	}
+
+	// TODO : 파일 위치 포인터 받아서 저장하기
+
+	// m_dwBeginBoneData = fgetpos(fFile);
+
+	// Bones
+	WriteFile(hFile, &m_dwBeginBoneData, sizeof(DWORD), &dwByte, nullptr);
+
+	WriteFile(hFile, &m_iNumBones, sizeof(_uint), &dwByte, nullptr);
+	for(auto& pBone : m_vecBones)
+	{
+		if(FAILED(pBone->Save_Bone(hFile, dwByte)))
+		{
+			MSG_BOX("Failed to Save : Bone");
+			CloseHandle(hFile);
+			return E_FAIL;
+		}
+	}
+
+	// Mesh Bones
+	for (auto& pMesh : m_vecMeshes)
+		pMesh->Save_MeshBones(hFile, dwByte);
+
+	// Animations
+	WriteFile(hFile, &m_iNumAnimation, sizeof(_uint), &dwByte, nullptr);
+
+	for(auto& pAnimation : m_vecAnimations)
+	{
+		if(FAILED(pAnimation->Save_Animation(hFile, dwByte)))
+		{
+			MSG_BOX("Failed to Save : Animation");
+			CloseHandle(hFile);
+			return E_FAIL;
+		}
+	}
+
+	CloseHandle(hFile);
+
 	return S_OK;
 
 }
@@ -515,5 +602,8 @@ void CModel::Free()
 		Safe_Release(pAnimation);
 	m_vecAnimations.clear();
 
-	m_Importer.FreeScene();
+	if (m_pAIScene)
+	{
+		m_Importer.FreeScene();
+	}
 }
