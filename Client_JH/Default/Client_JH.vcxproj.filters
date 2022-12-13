@@ -85,6 +85,9 @@
     <Filter Include="96. Tool\ModelSave">
       <UniqueIdentifier>{68986fdd-7af9-4209-8432-30d140a53543}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Weapon">
+      <UniqueIdentifier>{0c5cb2fb-2da5-4edd-8604-66fdb313efcf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -162,6 +165,9 @@
     <ClInclude Include="..\public\Imgui_ModelSave.h">
       <Filter>96. Tool\ModelSave</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Weapon.h">
+      <Filter>02. GameObjects\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -229,6 +235,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Imgui_ModelSave.cpp">
       <Filter>96. Tool\ModelSave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon.cpp">
+      <Filter>02. GameObjects\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

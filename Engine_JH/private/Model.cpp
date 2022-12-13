@@ -325,7 +325,7 @@ HRESULT CModel::Bind_Material(CShader* pShader, _uint iMeshIndex, aiTextureType 
 	return S_OK;
 }
 
-HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrBoneConstantName)
+HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrBoneConstantName, _uint iPassIndex)
 {	 
 	NULL_CHECK_RETURN(pShader, E_FAIL);
 
@@ -341,7 +341,8 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrB
 		}
 	}
 	
-	pShader->Begin(0);
+	pShader->Begin(iPassIndex);
+
 	m_vecMeshes[iMeshIndex]->Render();
 
 	return S_OK;

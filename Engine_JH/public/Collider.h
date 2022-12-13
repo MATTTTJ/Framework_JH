@@ -25,7 +25,7 @@ public:
 	{
 		_float3			vCenter;
 		_float3			vCenterAxis[3];
-		_float3			vAlignAxi3[3];
+		_float3			vAlignAxis[3];
 	}OBBDESC;
 
 public:

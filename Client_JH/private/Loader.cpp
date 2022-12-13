@@ -8,6 +8,7 @@
 #include "Monster.h"
 #include "Player.h"
 #include "Terrain.h"
+#include "Weapon.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -211,6 +212,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Monster", CMonster::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Home", CHome::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_LaiHome", CLaiLuo_Home::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Weapon",CWeapon::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	m_wstrLoadingText = L"·Îµù³¡. ";
 

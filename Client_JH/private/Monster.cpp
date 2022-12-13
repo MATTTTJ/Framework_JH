@@ -57,7 +57,7 @@ void CMonster::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
 
-	// Collision_ToPlayer();
+	Collision_ToPlayer();
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -181,11 +181,11 @@ void CMonster::Collision_ToPlayer()
 {
 	CGameInstance*			pGameInstance = GET_INSTANCE(CGameInstance);
 
-	CCollider*		pTargetCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_OBB");
+	CCollider*		pTargetCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_AABB");
 	if (nullptr == pTargetCollider)
 		return;
 
-	m_pColliderCom[COLLTYPE_OBB]->Collision_OBB(pTargetCollider);
+	m_pColliderCom[COLLTYPE_AABB]->Collision_AABB(pTargetCollider);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

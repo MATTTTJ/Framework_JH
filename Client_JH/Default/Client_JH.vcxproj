@@ -188,6 +188,7 @@
     <ClInclude Include="..\public\Monster.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\Terrain.h" />
+    <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="Client_JH.h" />
     <ClInclude Include="Imgui_Setting.h" />
     <ClInclude Include="Resource.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="..\private\Monster.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
+    <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="Client_JH.cpp" />
     <ClCompile Include="Imgui_Setting.cpp" />
     <ClCompile Include="stdafx.cpp">

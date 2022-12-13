@@ -5,6 +5,7 @@
 BEGIN(Engine)
 class CShader;
 class CRenderer;
+class CCollider;
 class CModel;
 END
 
@@ -12,6 +13,8 @@ BEGIN(Client)
 
 class CPlayer final : public CGameObject
 {
+	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDERTYPE_END };
+
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayer(const CPlayer& rhs);
@@ -35,10 +38,16 @@ private:
 	CShader*				m_pShaderCom	= nullptr;
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
+	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
+
+private:
+	vector<CGameObject*>	m_vecPlayerParts;
 
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();
+
+	HRESULT					Ready_Parts();
 
 public:
 	static	CPlayer*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -177,15 +177,86 @@ _bool CCollider::Collision_OBB(CCollider* pTargetCollider)
 		COLLIDER_OBB != pTargetCollider->m_eType)
 		return false;
 
+	m_bIsColl = true;
+
 	OBBDESC		OBBDesc[2];
 
 	OBBDesc[0] = Compute_OBBDesc();
 	OBBDesc[1] = pTargetCollider->Compute_OBBDesc();
 
+	/* 0 : 두 박스의 센터를 잇는 벡터를 투영시킨 길이.  */
+	/* 1 : 첫번째 박스의 CenterAxis세개를 투영시킨 길이의 합.  */
+	/* 2 : 두번째 박스의 CenterAxis세개를 투영시킨 길이의 합.  */
+	_float			fDistance[3];
 
+	for (_uint i = 0; i < 2; ++i)
+	{
+		for (_uint j = 0; j < 3; ++j)
+		{
+			fDistance[0] = fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenter) - XMLoadFloat3(&OBBDesc[0].vCenter),
+				XMLoadFloat3(&OBBDesc[i].vAlignAxis[j]))));
 
+			fDistance[1] = fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[0].vCenterAxis[0]),
+				XMLoadFloat3(&OBBDesc[i].vAlignAxis[j])))) +
+				fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[0].vCenterAxis[1]),
+					XMLoadFloat3(&OBBDesc[i].vAlignAxis[j])))) +
+				fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[0].vCenterAxis[2]),
+					XMLoadFloat3(&OBBDesc[i].vAlignAxis[j]))));
 
-	return _bool();
+			fDistance[2] = fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenterAxis[0]),
+				XMLoadFloat3(&OBBDesc[i].vAlignAxis[0])))) +
+				fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenterAxis[1]),
+					XMLoadFloat3(&OBBDesc[i].vAlignAxis[0])))) +
+				fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenterAxis[2]),
+					XMLoadFloat3(&OBBDesc[i].vAlignAxis[0]))));
+
+			if (fDistance[0] > fDistance[1] + fDistance[2])
+			{
+				m_bIsColl = false;
+				return m_bIsColl;
+			}
+		}
+	}
+
+	_vector			vAlignAxis[9];
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		for (_uint j = 0; j < 3; ++j)
+		{
+			_uint		iIndex = i * 3 + j;
+
+			vAlignAxis[iIndex] = XMVector3Cross(XMLoadFloat3(&OBBDesc[0].vAlignAxis[i]), XMLoadFloat3(&OBBDesc[1].vAlignAxis[j]));
+		}
+	}
+
+	for (_uint i = 0; i < 9; ++i)
+	{
+		fDistance[0] = fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenter) - XMLoadFloat3(&OBBDesc[0].vCenter),
+			vAlignAxis[i])));
+
+		fDistance[1] = fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[0].vCenterAxis[0]),
+			vAlignAxis[i]))) +
+			fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[0].vCenterAxis[1]),
+				vAlignAxis[i]))) +
+			fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[0].vCenterAxis[2]),
+				vAlignAxis[i])));
+
+		fDistance[2] = fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenterAxis[0]),
+			vAlignAxis[i]))) +
+			fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenterAxis[1]),
+				vAlignAxis[i]))) +
+			fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenterAxis[2]),
+				vAlignAxis[i])));
+
+		if (fDistance[0] > fDistance[1] + fDistance[2])
+		{
+			m_bIsColl = false;
+			return m_bIsColl;
+		}
+	}
+
+	return m_bIsColl;
 }
 
 #ifdef _DEBUG
@@ -263,6 +334,13 @@ CCollider::OBBDESC CCollider::Compute_OBBDesc()
 
 	m_pOBB->GetCorners(vCorner);
 
+	XMStoreFloat3(&OBBDesc.vCenterAxis[0], (XMLoadFloat3(&vCorner[2]) - XMLoadFloat3(&vCorner[3])) * 0.5f);
+	XMStoreFloat3(&OBBDesc.vCenterAxis[1], (XMLoadFloat3(&vCorner[2]) - XMLoadFloat3(&vCorner[1])) * 0.5f);
+	XMStoreFloat3(&OBBDesc.vCenterAxis[2], (XMLoadFloat3(&vCorner[2]) - XMLoadFloat3(&vCorner[6])) * 0.5f);
+
+	XMStoreFloat3(&OBBDesc.vAlignAxis[0], XMVector3Normalize(XMLoadFloat3(&OBBDesc.vCenterAxis[0])));
+	XMStoreFloat3(&OBBDesc.vAlignAxis[1], XMVector3Normalize(XMLoadFloat3(&OBBDesc.vCenterAxis[1])));
+	XMStoreFloat3(&OBBDesc.vAlignAxis[2], XMVector3Normalize(XMLoadFloat3(&OBBDesc.vCenterAxis[2])));
 
 	return OBBDesc;
 }

@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "..\public\Player.h"
 #include "GameInstance.h"
-
+#include "Weapon.h"
+#include "Bone.h"
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -68,6 +69,7 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 	// m_pModelCom->Set_CurAnimIndex(rand() % 20);
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f));
+	FAILED_CHECK_RETURN(Ready_Parts(), E_FAIL);
 
 	m_pModelCom->Set_CurAnimIndex(3);
 
@@ -104,12 +106,31 @@ void CPlayer::Tick(_double TimeDelta)
 
 	m_pModelCom->Play_Animation(TimeDelta);
 
+	for (_uint i = 0; i < m_vecPlayerParts.size(); ++i)
+	{
+		m_vecPlayerParts[i]->Tick(TimeDelta);
+	}
+
+	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
+	{
+		m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
+	}
+
 	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CPlayer::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
+
+	_uint iNumParts = 0;
+
+	iNumParts = (_uint)m_vecPlayerParts.size();
+
+	for (_uint i = 0; i < iNumParts; ++i)
+	{
+		m_vecPlayerParts[i]->Late_Tick(TimeDelta);
+	}
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -130,6 +151,15 @@ HRESULT CPlayer::Render()
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
 	}
 
+#ifdef _DEBUG
+	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
+	{
+		if (nullptr != m_pColliderCom[i])
+			m_pColliderCom[i]->Render();
+	}
+
+#endif
+
 	return S_OK;
 }
 
@@ -144,9 +174,31 @@ HRESULT CPlayer::SetUp_Components()
 		(CComponent**)&m_pShaderCom), E_FAIL);
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fiona", L"Com_Model",
-	(CComponent**)&m_pModelCom)))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fiona", L"Com_Model",
+		(CComponent**)&m_pModelCom), E_FAIL);
+
+	CCollider::COLLIDERDESC			ColliderDesc;
+
+	/* For.Com_AABB */
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(0.7f, 1.5f, 0.7f);
+	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_AABB", L"Com_AABB", (CComponent**)&m_pColliderCom[COLLIDER_AABB], &ColliderDesc), E_FAIL);
+	
+
+	/* For.Com_OBB */
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(1.0f, 1.0f, 1.0f);
+	ColliderDesc.vRotation = _float3(0.f, XMConvertToRadians(45.0f), 0.f);
+	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_OBB", L"Com_OBB", (CComponent**)&m_pColliderCom[COLLIDER_OBB], &ColliderDesc), E_FAIL);
+
+	/* For.Com_SPHERE */
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(0.7f, 0.7f, 0.7f);
+	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLIDER_SPHERE], &ColliderDesc), E_FAIL);
 
 	return S_OK;
 }
@@ -165,17 +217,34 @@ HRESULT CPlayer::SetUp_ShaderResources()
 
 	/* For.Lights */
 	const LIGHTDESC* pLightDesc = pGameInstance->Get_LightDesc(0);
-	if (nullptr == pLightDesc)
-		return E_FAIL;
-
-	//if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
-	//	return E_FAIL;
+	NULL_CHECK_RETURN(pLightDesc, E_FAIL);
 
 	RELEASE_INSTANCE(CGameInstance);
 
+	return S_OK;
+}
 
+HRESULT CPlayer::Ready_Parts()
+{
+	CGameObject*		pPartObject = nullptr;
 
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
+	CWeapon::WEAPONDESC	Weapondesc;
+	ZeroMemory(&Weapondesc, sizeof(CWeapon::WEAPONDESC));
+
+	Weapondesc.PivotMatrix = m_pModelCom->Get_PivotFloat4x4();
+	Weapondesc.pSocket = m_pModelCom->Get_BonePtr("SWORD");
+	Weapondesc.pTargetTransform = m_pTransformCom;
+	Safe_AddRef(Weapondesc.pSocket);
+	Safe_AddRef(m_pTransformCom);
+
+	pPartObject = pGameInstance->Clone_GameObject(L"Prototype_GameObject_Weapon", &Weapondesc);
+	NULL_CHECK_RETURN(pPartObject, E_FAIL);
+
+	m_vecPlayerParts.push_back(pPartObject);
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
@@ -207,6 +276,12 @@ CGameObject * CPlayer::Clone(const wstring& wstrPrototypeTag, void * pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+
+	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
+		Safe_Release(m_pColliderCom[i]);
+
+	for (auto& pPart : m_vecPlayerParts)
+		Safe_Release(pPart);
 
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);

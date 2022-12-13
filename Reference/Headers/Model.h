@@ -18,6 +18,7 @@ public:
 	_uint						Get_NumMeshes() const {	return m_iNumMeshes; }
 	_uint						Get_NumAnimation() const { return m_iNumAnimation; }
 	_matrix						Get_PivotMatrix() const { return XMLoadFloat4x4(&m_PivotMatrix); }
+	_float4x4					Get_PivotFloat4x4() const { return m_PivotMatrix; }
 	_matrix						Get_BoneMatrix(const string& strBoneName);
 	_matrix						Get_OffsetMatrix(const string& strBoneName);
 	class	CBone*				Get_BonePtr(const string& strBoneName);
@@ -31,7 +32,7 @@ public:
 public:
 	void						Play_Animation(_double TimeDelta, _bool bFinish = false);
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);
-	HRESULT						Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrBoneConstantName = L"");
+	HRESULT						Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrBoneConstantName = L"", _uint iPassIndex = 0);
 
 private:
 	const aiScene*				m_pAIScene = nullptr;

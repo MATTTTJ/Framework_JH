@@ -22,15 +22,16 @@ public:
 	list<class CGameObject*>*				Get_CloneObjectList(_uint iLevelIndex, const wstring& wstrLayerTag) { return Find_Layer(iLevelIndex, wstrLayerTag)->Get_GameObject(); }
 
 public:
-	HRESULT Reserve_Manager(_uint iNumLevels);
-	HRESULT Clear(_uint iLevelIndex);
+	HRESULT			Reserve_Manager(_uint iNumLevels);
+	HRESULT			Clear(_uint iLevelIndex);
 public:
-	HRESULT	Add_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
-	HRESULT Add_Prototype(const wstring& pPrototypeTag, class CGameObject* pPrototype);
-	HRESULT Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
-	HRESULT Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, _float4x4 WorldMatrix, void* pArg = nullptr);
-	void	Tick(_double TimeDelta);
-	void	Late_Tick(_double TimeDelta);
+	HRESULT			Add_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
+	HRESULT			Add_Prototype(const wstring& pPrototypeTag, class CGameObject* pPrototype);
+	HRESULT			Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
+	HRESULT			Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, _float4x4 WorldMatrix, void* pArg = nullptr);
+	CGameObject*	Clone_GameObject(const wstring& wstrPrototypeTag, void* pArg = nullptr);
+	void			Tick(_double TimeDelta);
+	void			Late_Tick(_double TimeDelta);
 
 public:
 	void Imgui_ProtoViewer(OUT const _tchar*& szSelectedProto);

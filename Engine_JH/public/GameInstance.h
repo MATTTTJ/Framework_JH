@@ -56,7 +56,9 @@ public: /* For.Object_Manager */
 	HRESULT				Add_Layer(const _uint iLevelIndex, const wstring& wstrLayerTag);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void* pArg = nullptr);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, _float4x4 matWorld, void* pArg = nullptr);
+	CGameObject*		Clone_GameObject(const wstring& wstrPrototypeTag, void* pArg = nullptr);
 	class CComponent*	Get_ComponentPtr(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrComponentTag, _uint iIndex = 0);
+	
 public: /* For.Component_Manager */
 	map<const wstring, class CComponent*>* Get_PrototypeComponents();
 	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, class CComponent* pPrototype);
