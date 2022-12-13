@@ -34,7 +34,7 @@ HRESULT CDynamic_Camera::Initialize_Clone(const wstring& wstrPrototypeTag, void 
 		CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 		CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 	}
-	FAILED_CHECK_RETURN(CCamera::Initialize_Clone(wstrPrototypeTag, &CameraDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &CameraDesc), E_FAIL);
 
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
@@ -44,41 +44,39 @@ HRESULT CDynamic_Camera::Initialize_Clone(const wstring& wstrPrototypeTag, void 
 
 void CDynamic_Camera::Tick(_double TimeDelta)
 {
+	if (!m_bRender)
+		return;
+
 	if (GetKeyState('W') & 0x8000)
 	{
 		m_pTransformCom->Go_Straight(TimeDelta);
 	}
-
 	if (GetKeyState('S') & 0x8000)
 	{
 		m_pTransformCom->Go_Backward(TimeDelta);
 	}
-
-
 	if (GetKeyState('A') & 0x8000)
 	{
 		m_pTransformCom->Go_Left(TimeDelta);
 	}
-
 	if (GetKeyState('D') & 0x8000)
 	{
 		m_pTransformCom->Go_Right(TimeDelta);
 	}
-
 	m_pTransformCom->Speed_Up(GetKeyState(VK_LSHIFT) & 0x8000);
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (pGameInstance->Get_DIMouseState(CInput_Device::DIM_RB))
+	if (pGameInstance->Get_DIMouseState(DIM_RB))
 	{
 		_long			MouseMove = 0;
 	
-		if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_X))
+		if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_X))
 		{
 			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
 		}
 	
-		if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_Y))
+		if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_Y))
 		{
 			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
 		}
@@ -91,13 +89,17 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 
 void CDynamic_Camera::Late_Tick(_double TimeDelta)
 {
+	if (false == m_bRender)
+		return;
+
 	__super::Late_Tick(TimeDelta);
-
-
 }
 
 HRESULT CDynamic_Camera::Render()
 {
+	if (false == m_bRender)
+		return E_FAIL;
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 

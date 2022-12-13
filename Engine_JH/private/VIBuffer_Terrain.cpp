@@ -48,12 +48,12 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	m_iNumVertexBuffers = 1;
 	m_iStride = sizeof(VTXNORTEX);
 
-	m_iNumPrimitives = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2;
+	m_iNumPrimitive = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2;
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_iIndicesSizePerPrimitive = sizeof(FACEINDICES32);
 	m_iNumIndicesPerPrimitive = 3;
-	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitives;
+	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitive;
 
 #pragma region VERTEX_BUFFER
 	m_pVertices = new VTXNORTEX[m_iNumVertices];
@@ -81,8 +81,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 
 
 #pragma region INDEX_BUFFER
-	FACEINDICES32*		pIndices = new FACEINDICES32[m_iNumPrimitives];
-	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitives);
+	FACEINDICES32*		pIndices = new FACEINDICES32[m_iNumPrimitive];
+	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
 	_uint		iNumFaces = 0;
 
@@ -134,31 +134,31 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 #pragma endregion
 
 
-	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
+	ZeroMemory(&m_tBufferDesc, sizeof m_tBufferDesc);
 
-	m_BufferDesc.ByteWidth = m_iStride * m_iNumVertices;
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_BufferDesc.StructureByteStride = m_iStride;
-	m_BufferDesc.CPUAccessFlags = 0;
-	m_BufferDesc.MiscFlags = 0;
+	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = m_iStride;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
 
-	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
-	m_SubResourceData.pSysMem = m_pVertices;
+	ZeroMemory(&m_tSubResourceData, sizeof m_tSubResourceData);
+	m_tSubResourceData.pSysMem = m_pVertices;
 
 	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
 
-	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
+	ZeroMemory(&m_tBufferDesc, sizeof m_tBufferDesc);
 
-	m_BufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitives;
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	m_BufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	m_BufferDesc.StructureByteStride = 0;
-	m_BufferDesc.CPUAccessFlags = 0;
-	m_BufferDesc.MiscFlags = 0;
+	m_tBufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitive;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = 0;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
 
-	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
-	m_SubResourceData.pSysMem = pIndices;
+	ZeroMemory(&m_tSubResourceData, sizeof m_tSubResourceData);
+	m_tSubResourceData.pSysMem = pIndices;
 
 	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL);
 
@@ -167,9 +167,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Terrain::Initialize_Clone(void * pArg)
+HRESULT CVIBuffer_Terrain::Initialize_Clone(class CGameObject* pOwner, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(pOwner, pArg), E_FAIL);
 
 	return S_OK;
 }
@@ -288,11 +288,11 @@ CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device * pDevice, ID3D11Devi
 	return pInstance;
 }
 
-CComponent * CVIBuffer_Terrain::Clone(void * pArg)
+CComponent * CVIBuffer_Terrain::Clone(class CGameObject* pOwner, void * pArg)
 {
 	CVIBuffer_Terrain*		pInstance = new CVIBuffer_Terrain(*this);
 
-	if (FAILED(pInstance->Initialize_Clone(pArg)))
+	if (FAILED(pInstance->Initialize_Clone(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned : CVIBuffer_Terrain");
 		Safe_Release(pInstance);

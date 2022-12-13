@@ -38,7 +38,7 @@ public:
 	virtual void			Imgui_RenderProperty() {}
 
 protected:
-	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppOut, void* pArg = nullptr);
+	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppOut, class CGameObject* pOwner, void* pArg = nullptr);
 
 protected:
 	ID3D11Device*			m_pDevice = nullptr;
@@ -57,7 +57,7 @@ public:
 
 public:
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) = 0;
-	virtual void			Free() override;
+	virtual void			Free();
 };
 
 END

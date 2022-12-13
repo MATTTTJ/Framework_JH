@@ -11,21 +11,21 @@ public:
 	virtual ~CVIBuffer() = default;
 
 	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize_Clone(void* pArg);
+	virtual HRESULT Initialize_Clone(class CGameObject* pOwner, void* pArg);
 	virtual HRESULT	Render();
 
 protected:
 	// 할당하고자하는 버퍼의 속성을 정의한다. 
-	D3D11_BUFFER_DESC			m_BufferDesc; 
+	D3D11_BUFFER_DESC			m_tBufferDesc; 
 	// 할당시에 채워넣고자하는 데이터들 
-	D3D11_SUBRESOURCE_DATA		m_SubResourceData;
+	D3D11_SUBRESOURCE_DATA		m_tSubResourceData;
 
 	// 정점하나의 바이트 크기
 	_uint						m_iStride = 0;
 	// 정점의 갯수
 	_uint						m_iNumVertices = 0;
 	// 그리고자하는 도형의 갯수
-	_uint						m_iNumPrimitives = 0;
+	_uint						m_iNumPrimitive = 0;
 	// 도형을 그릴 때 인덱스의 사이즈
 	_uint						m_iIndicesSizePerPrimitive = 0;
 	// 도형을 그릴 때 인덱스의 갯수
@@ -51,7 +51,7 @@ protected:
 
 
 public:
-	virtual CComponent* Clone(void* pArg) = 0;
+	virtual CComponent* Clone(class CGameObject* pOwner, void* pArg) = 0;
 	virtual void Free() override;
 };
 

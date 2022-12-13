@@ -14,7 +14,7 @@ protected:
 
 public:
 	virtual HRESULT Initialize_Prototype(const _tchar* pHeightMapFilePath);
-	virtual HRESULT Initialize_Clone(void* pArg);
+	virtual HRESULT Initialize_Clone(class CGameObject* pOwner, void* pArg) override;
 
 
 public:
@@ -33,7 +33,7 @@ private:
 	
 public:
 	static CVIBuffer_Terrain*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pHeightMapFilePath);
-	virtual CComponent*			Clone(void* pArg = nullptr);
+	virtual CComponent*			Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void				Free() override;
 };
 

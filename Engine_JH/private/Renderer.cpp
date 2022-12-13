@@ -39,9 +39,9 @@ HRESULT CRenderer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CRenderer::Initialize_Clone(void* pArg)
+HRESULT CRenderer::Initialize_Clone(CGameObject* pOwner, void* pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(pOwner,pArg), E_FAIL);
 
 	return S_OK;
 }
@@ -137,7 +137,7 @@ CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	return pInst;
 }
 
-CComponent* CRenderer::Clone(void* pArg)
+CComponent* CRenderer::Clone(CGameObject* pOwner, void* pArg)
 {
 	AddRef();
 

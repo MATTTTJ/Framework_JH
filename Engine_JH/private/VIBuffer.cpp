@@ -12,7 +12,7 @@ CVIBuffer::CVIBuffer(const CVIBuffer & rhs)
 	, m_pIB(rhs.m_pIB)
 	, m_iNumVertices(rhs.m_iNumVertices)
 	, m_iStride(rhs.m_iStride)
-	, m_iNumPrimitives(rhs.m_iNumPrimitives)
+	, m_iNumPrimitive(rhs.m_iNumPrimitive)
 	, m_iIndicesSizePerPrimitive(rhs.m_iIndicesSizePerPrimitive)
 	, m_iNumIndicesPerPrimitive(rhs.m_iNumIndicesPerPrimitive)
 	, m_iNumVertexBuffers(rhs.m_iNumVertexBuffers)
@@ -31,9 +31,9 @@ HRESULT CVIBuffer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer::Initialize_Clone(void * pArg)
+HRESULT CVIBuffer::Initialize_Clone(class CGameObject* pOwner, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(pOwner, pArg), E_FAIL);
 
 	return S_OK;
 }
@@ -75,7 +75,7 @@ HRESULT CVIBuffer::Create_VertexBuffer()
 	if (nullptr != m_pVB)
 		return E_FAIL;
 
-	return m_pDevice->CreateBuffer(&m_BufferDesc, &m_SubResourceData, &m_pVB);
+	return m_pDevice->CreateBuffer(&m_tBufferDesc, &m_tSubResourceData, &m_pVB);
 }
 
 HRESULT CVIBuffer::Create_IndexBuffer()
@@ -83,7 +83,7 @@ HRESULT CVIBuffer::Create_IndexBuffer()
 	if (nullptr != m_pIB)
 		return E_FAIL;
 
-	return m_pDevice->CreateBuffer(&m_BufferDesc, &m_SubResourceData, &m_pIB);
+	return m_pDevice->CreateBuffer(&m_tBufferDesc, &m_tSubResourceData, &m_pIB);
 }
 
 void CVIBuffer::Free()

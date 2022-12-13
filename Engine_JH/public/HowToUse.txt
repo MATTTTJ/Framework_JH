@@ -1,0 +1,25 @@
+ * FSM의 노드(상태)와 트랜지션(상태변경조건)을 정의하는 빌더 패턴 클래스.
+ * 빌더패턴?  복잡한 객체를 생성하는 클래스(CFSMComponentBuilder)와 표현하는 클래스CFSMComponent)를 분리하여,
+ * 동일한 절차에서도 서로 다른 표현을 생성하는 방법을 제공한다. 자세한건 구글링
+ *
+ * 사용예시
+ * 	CFSMComponentBuilder builder = CFSMComponentBuilder() // 빌더 생성
+	.InitState(TEXT("Idle"))											 // 최초 시작 노드의 이름
+	.AddState(TEXT("Idle"))											 // Idle 상태노드 정의 시작
+		.OnStart(this, &CBackGround::Idle_OnStart)				 // Idle 상태 시작할 때 CBackGround::Idle_OnStart함수 실행(상태당 하나의 함수 정의, 생략가능)
+		.Tick(this, &CBackGround::Idle_Tick)						 // Idle 상태 유지 될 때 프레임마다 CBackGround::Idle_Tick함수 실행(상태당 하나의 함수 정의, 생략가능)
+		.OnExit(this, &CBackGround::Idle_OnExit)					 // Idle 상태에서 다른 상태로 이동할 때 실행하는 함수 정의(상태당 하나의 함수 정의, 생략가능)
+		.Transition(TEXT("Walk"), FSM_TRANSITION(TEXT("Idle To Walk KeyInput"), this, &CBackGround::Idle2Walk_KeyInput))
+																		 // Idle에서 Walk로 전이하는 조건 정의, CBackGround::Predic_Idle2Walk함수 실행결과
+																		 // true면 Walk로 전이한다. 이하 반복
+		.Transition(TEXT("Walk"), FSM_TRANSITION(TEXT("Idle To Walk Pushed"), this, &CBackGround::Idle2Walk_Pushed))
+																		 // 다수 transition정의 가능
+	.AddState(TEXT("Walk"))										 // Walk상태 노드 정의 시작
+		.Transition(TEXT("Idle"), FSM_TRANSITION(L"Walk To Idle", this, &CBackGround::Predic_Walk2Idle))
+	.Build();															 // 모든 상태를 만들면 Build()함수로 최종 Builder를 만든다.(종료함수)
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_FSM"), TEXT("Com_FSM"),
+		(CComponent**)&m_pFSM, &builder)))					 // 만들어진 CFSMComponentBuilder의 포인터를 pArg로 넘겨준다.
+																		 // 이렇게 넘겨진 클래스는 "이동" 되므로 다시 사용할 수 없다.
+
+  위 예시는 멤버함수를 사용하지만 람다 및 함수 포인터도 인자로 사용가능

@@ -27,7 +27,7 @@ public:
 
 public:
 	virtual HRESULT				Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix PivotMatrix);
-	virtual HRESULT				Initialize_Clone(void* pArg);
+	virtual HRESULT				Initialize_Clone(class CGameObject* pOwner, void* pArg);
 	virtual void				Imgui_RenderProperty() override;
 public:
 	void						Play_Animation(_double TimeDelta, _bool bFinish = false);
@@ -36,7 +36,7 @@ public:
 
 private:
 	const aiScene*				m_pAIScene = nullptr;
-	Importer					m_Importer;
+	Assimp::Importer					m_Importer;
 	MODELTYPE					m_eType = MODELTYPE_END;
 	_float4x4					m_PivotMatrix;
 
@@ -71,7 +71,7 @@ public:
 	HRESULT						Load_BoneAnimation(HANDLE& hFile, DWORD& dwByte);
 public:
 	static	CModel*				Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eType, const char* pModelFilePath, _fmatrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f)));
-	virtual CComponent*			Clone(void* pArg = nullptr) override;
+	virtual CComponent*			Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void				Free() override;
 };
 

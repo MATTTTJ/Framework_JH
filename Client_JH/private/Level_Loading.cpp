@@ -42,7 +42,7 @@ void CLevel_Loading::Late_Tick(_double TimeDelta)
 
 	if (m_pLoader->IsFinished() == true)
 	{
-		if (pGameInstance->Get_DIMouseState(CInput_Device::DIM_RB))
+		if (pGameInstance->Get_DIMouseState(DIM_RB))
 		{
 			CLevel*		pLevel = nullptr;
 

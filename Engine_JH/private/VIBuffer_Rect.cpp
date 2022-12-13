@@ -19,22 +19,22 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	m_iNumVertexBuffers = 1;
 	m_iStride = sizeof(VTXTEX);
 	m_iNumVertices = 4;				// 사각형 하나에 정점 4개 필요 
-	m_iNumPrimitives = 2;			// 삼각형 두개로 사각형 표현
+	m_iNumPrimitive = 2;			// 삼각형 두개로 사각형 표현
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	m_eIndexFormat = DXGI_FORMAT_R16_UINT;
 	m_iIndicesSizePerPrimitive = sizeof(FACEINDICES16);
 	m_iNumIndicesPerPrimitive = 3; // 삼각형 하나 만드는데 필요한 인덱스
-	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitives;
+	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitive;
 
 #pragma region VERTEX_BUFFER
-	ZeroMemory(&m_BufferDesc, sizeof(m_BufferDesc));
+	ZeroMemory(&m_tBufferDesc, sizeof(m_tBufferDesc));
 
-	m_BufferDesc.ByteWidth	= m_iStride * m_iNumVertices;
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_BufferDesc.StructureByteStride = m_iStride;
-	m_BufferDesc.CPUAccessFlags = 0;
-	m_BufferDesc.MiscFlags = 0;
+	m_tBufferDesc.ByteWidth	= m_iStride * m_iNumVertices;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = m_iStride;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
 
 	VTXTEX*		pVertices = new VTXTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXTEX));
@@ -51,9 +51,9 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	pVertices[3].vPosition = _float3(-0.5f, -0.5f, 0.5f);
 	pVertices[3].vTexUV = _float2(0.0f, 1.f);
 
-	ZeroMemory(&m_SubResourceData, sizeof(m_SubResourceData));
+	ZeroMemory(&m_tSubResourceData, sizeof(m_tSubResourceData));
 
-	m_SubResourceData.pSysMem = pVertices;
+	m_tSubResourceData.pSysMem = pVertices;
 
 	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
 
@@ -63,19 +63,19 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 
 #pragma region INDEX_BUFFER
 
-	ZeroMemory(&m_BufferDesc, sizeof(m_BufferDesc));
+	ZeroMemory(&m_tBufferDesc, sizeof(m_tBufferDesc));
 
-	m_BufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitives;
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	m_BufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	m_BufferDesc.StructureByteStride = 0;
-	m_BufferDesc.CPUAccessFlags = 0;
-	m_BufferDesc.MiscFlags = 0;
+	m_tBufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitive;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = 0;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
 
-	FACEINDICES16*		pIndices = new FACEINDICES16[m_iNumPrimitives];
+	FACEINDICES16*		pIndices = new FACEINDICES16[m_iNumPrimitive];
 
 	// 도형의 갯수 * 인덱스 크기 곱한 만큼 초기화
-	ZeroMemory(pIndices, sizeof(FACEINDICES16) * m_iNumPrimitives); 
+	ZeroMemory(pIndices, sizeof(FACEINDICES16) * m_iNumPrimitive); 
 
 	pIndices[0]._0 = 0;
 	pIndices[0]._1 = 1;
@@ -85,8 +85,8 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	pIndices[1]._1 = 2;
 	pIndices[1]._2 = 3;
 
-	ZeroMemory(&m_SubResourceData, sizeof(m_SubResourceData));
-	m_SubResourceData.pSysMem = pIndices;
+	ZeroMemory(&m_tSubResourceData, sizeof(m_tSubResourceData));
+	m_tSubResourceData.pSysMem = pIndices;
 
 	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL);
 
@@ -98,9 +98,9 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 
 }
 
-HRESULT CVIBuffer_Rect::Initialize_Clone(void* pArg)
+HRESULT CVIBuffer_Rect::Initialize_Clone(class CGameObject* pOwner, void* pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(pOwner, pArg), E_FAIL);
 
 	return S_OK;
 }
@@ -118,11 +118,11 @@ CVIBuffer_Rect* CVIBuffer_Rect::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInst;
 }
 
-CComponent* CVIBuffer_Rect::Clone(void* pArg)
+CComponent* CVIBuffer_Rect::Clone(class CGameObject* pOwner, void* pArg)
 {
 	CVIBuffer_Rect*		pInstance = new CVIBuffer_Rect(*this);
 
-	if (FAILED(pInstance->Initialize_Clone(pArg)))
+	if (FAILED(pInstance->Initialize_Clone(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Cloned : CVIBuffer_Rect");
 		Safe_Release(pInstance);

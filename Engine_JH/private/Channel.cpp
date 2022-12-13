@@ -8,9 +8,60 @@ CChannel::CChannel()
 {
 }
 
+HRESULT CChannel::Save_Channel(HANDLE& hFile, DWORD& dwByte)
+{
+	_uint			iNameLength = (_uint)m_strName.length() + 1;
+	const char*	pName = m_strName.c_str();
+	WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+	WriteFile(hFile, pName, sizeof(char) * iNameLength, &dwByte, nullptr);
+
+	WriteFile(hFile, &m_iNumKeyframes, sizeof(_uint), &dwByte, nullptr);
+
+	for (auto& tKeyFrame : m_vecKeyframes)
+		WriteFile(hFile, &tKeyFrame, sizeof(KEYFRAME), &dwByte, nullptr);
+
+	return S_OK;
+}
+
+HRESULT CChannel::Load_Channel(HANDLE& hFile, DWORD& dwByte)
+{
+	_uint			iNameLength = 0;
+	ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+
+	char*			pName = new char[iNameLength];
+	ReadFile(hFile, pName, sizeof(char) * iNameLength, &dwByte, nullptr);
+
+	m_strName = pName;
+
+	m_pBone = m_pModel->Get_BonePtr(m_strName);
+	Safe_AddRef(m_pBone);
+
+	Safe_Delete_Array(pName);
+
+	ReadFile(hFile, &m_iNumKeyframes, sizeof(_uint), &dwByte, nullptr);
+	m_vecKeyframes.reserve(m_iNumKeyframes);
+
+	for (_uint i = 0; i < m_iNumKeyframes; ++i)
+	{
+		KEYFRAME		tKeyFrame;
+		ZeroMemory(&tKeyFrame, sizeof(KEYFRAME));
+
+		ReadFile(hFile, &tKeyFrame, sizeof(KEYFRAME), &dwByte, nullptr);
+
+		m_vecKeyframes.push_back(tKeyFrame);
+	}
+
+	return S_OK;
+}
+
 // 특정 애니메이션에서 사용되는 뼈들을 관리함
 HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel, CModel* pModel)
 {
+	m_pModel = pModel;
+
+	if (pAIChannel == nullptr)
+		return S_OK;
+
 	m_strName = pAIChannel->mNodeName.data;
 
 	m_pBone = pModel->Get_BonePtr(m_strName); // 모델에서 보관하는 뼈와 채널에서 불러온 뼈의 이름이 같은 경우 주소를 넘겨준다.

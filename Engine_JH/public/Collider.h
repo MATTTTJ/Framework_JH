@@ -39,16 +39,16 @@ public:
 
 public:
 	virtual HRESULT			Initialize_Prototype(COLLIDERTYPE eType);
-	virtual HRESULT			Initialize_Clone(void* pArg) override;
+	virtual HRESULT			Initialize_Clone(class CGameObject* pOwner, void* pArg) override;
 
 public:
 	void					Update(_fmatrix TransformMatrix);
 
 public:
-	_bool					Collision(class CCollider* pTargetCollider);
-	_bool					Collision_AABB(class CCollider* pTargetCollider);
-	_bool					Collision_OBB(class CCollider* pTargetCollider);
-
+	_bool					Collision(CCollider* pTargetCollider);
+	class CGameObject*		CollisionReturnObj(CCollider* pTargetCollider);
+	_bool					Collision_AABB(CCollider* pTargetCollider);
+	_bool					Collision_OBB(CCollider* pTargetCollider);
 
 #ifdef _DEBUG
 public:
@@ -85,7 +85,7 @@ private:
 
 public:
 	static CCollider*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, COLLIDERTYPE eType);
-	virtual CComponent* Clone(void* pArg = nullptr) override;
+	virtual CComponent* Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void		Free() override;
 };
 

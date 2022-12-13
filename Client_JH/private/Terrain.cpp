@@ -38,7 +38,7 @@ void CTerrain::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if(pGameInstance->Get_DIMouseState(CInput_Device::DIM_LB))
+	if(pGameInstance->Get_DIMouseState(DIM_LB))
 	{
 		 m_vPos = Picking_Terrain();
 	}
@@ -77,27 +77,22 @@ _float4 CTerrain::Picking_Terrain()
 HRESULT CTerrain::SetUp_Components()
 {
 	/* For.Com_Renderer */
-	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",	(CComponent**)&m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",	(CComponent**)&m_pRendererCom, this), E_FAIL);
 
 	/* For.Com_Shader */
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxNorTex",L"Com_Shader",
-		(CComponent**)&m_pShaderCom), E_FAIL);				  
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxNorTex",L"Com_Shader",(CComponent**)&m_pShaderCom, this), E_FAIL);				  
 															  
 	/* For.Com_VIBuffer */									  
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Terrain",L"Com_VIBuffer",
-		(CComponent**)&m_pVIBufferCom), E_FAIL);			  
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Terrain",L"Com_VIBuffer",	(CComponent**)&m_pVIBufferCom, this), E_FAIL);			  
 															  
 	/* For.Com_Texture */									  
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Terrain", L"Com_Texture",
-		(CComponent**)&m_pTextureCom[TYPE_DIFFUSE]), E_FAIL); 
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Terrain", L"Com_Texture", (CComponent**)&m_pTextureCom[TYPE_DIFFUSE], this), E_FAIL); 
 															  
 	/* For.Com_Brush*/										  
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Brush", L"Com_Brush",
-		(CComponent**)&m_pTextureCom[TYPE_BRUSH]), E_FAIL);	   
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Brush", L"Com_Brush", (CComponent**)&m_pTextureCom[TYPE_BRUSH], this), E_FAIL);	   
 															   
 	/* For.Com_Filter */									   
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Filter", L"Com_Filter",
-		(CComponent**)&m_pTextureCom[TYPE_FILTER]), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Filter", L"Com_Filter", (CComponent**)&m_pTextureCom[TYPE_FILTER], this), E_FAIL);
 
 	return S_OK;
 }

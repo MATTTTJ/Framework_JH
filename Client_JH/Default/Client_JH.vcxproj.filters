@@ -88,6 +88,9 @@
     <Filter Include="02. GameObjects\Weapon">
       <UniqueIdentifier>{0c5cb2fb-2da5-4edd-8604-66fdb313efcf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\StaticCamera">
+      <UniqueIdentifier>{3b5815cb-323e-46e7-b108-b53d641a90ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -168,6 +171,9 @@
     <ClInclude Include="..\public\Weapon.h">
       <Filter>02. GameObjects\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Static_Camera.h">
+      <Filter>02. GameObjects\StaticCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -238,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Weapon.cpp">
       <Filter>02. GameObjects\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Static_Camera.cpp">
+      <Filter>02. GameObjects\StaticCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,29 @@
 
 BEGIN(Engine)
 
+class ENGINE_DLL CContext_LockGuard
+{
+public:
+	CContext_LockGuard(mutex& ContextMtx)
+		: m_ContextMtx(ContextMtx)
+	{
+		m_ContextMtx.lock();
+	}
+
+	~CContext_LockGuard()
+	{
+		m_ContextMtx.unlock();
+	}
+
+
+private:
+	mutex&	m_ContextMtx;
+};
+
+
+
+
+
 class CGraphic_Device :public CBase
 {
 	DECLARE_SINGLETON(CGraphic_Device)
@@ -10,6 +33,9 @@ class CGraphic_Device :public CBase
 public:
 	CGraphic_Device();
 	virtual ~CGraphic_Device() = default;
+
+public:
+	mutex&		GetContextMtx() { return m_ContextMtx; }
 
 public:
 	HRESULT		Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE Winmode,
@@ -31,13 +57,16 @@ private:
 
 	ID3D11RenderTargetView*	m_pBackBufferRTV = nullptr;
 	ID3D11DepthStencilView*	m_pDepthStencilView = nullptr;
-	D3D11_VIEWPORT			m_pViewPort; 
+	D3D11_VIEWPORT			m_pViewPort;
+	mutex								m_ContextMtx;
+
 private:
 	HRESULT		Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMode,
 		_uint iWinCX, _uint iWINCY);
 	HRESULT		Ready_BackBufferRenderTargetView();
 	HRESULT		Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint iWinCY);
 
+	
 public:
 	virtual void Free() override;
 };

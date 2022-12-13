@@ -8,8 +8,7 @@ CGraphic_Device::CGraphic_Device()
 {
 }
 
-HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE Winmode, _uint iWinCX, _uint iWinCY,
-	ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut)
+HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE Winmode, _uint iWinCX, _uint iWinCY,	ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut)
 {
 	_uint		iFlag = 0;
 
@@ -18,8 +17,7 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE W
 #endif
 	D3D_FEATURE_LEVEL			FeatureLV;
 
-	if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0,
-		iFlag, nullptr, 0, D3D11_SDK_VERSION, &m_pDevice, &FeatureLV, &m_pDeviceContext)))
+	if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0,	iFlag, nullptr, 0, D3D11_SDK_VERSION, &m_pDevice, &FeatureLV, &m_pDeviceContext)))
 		return E_FAIL;
 
 	if (FAILED(Ready_SwapChain(hWnd, Winmode, iWinCX, iWinCY)))
@@ -31,8 +29,7 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE W
 	if (FAILED(Ready_DepthStencilRenderTargetView(iWinCX, iWinCY)))
 		return E_FAIL;
 
-	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV,
-		m_pDepthStencilView);
+	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
 
 	D3D11_VIEWPORT			ViewPortDesc;
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));

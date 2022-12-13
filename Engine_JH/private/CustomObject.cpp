@@ -116,7 +116,7 @@ HRESULT CCustomObject::Initialize_Clone(const wstring& wstrPrototypeTag, void* p
 		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
 
 	if (m_wstrProtoTransformComTag != L"")
-		FAILED_CHECK_RETURN(Add_Component(m_iTransformComLevel, m_wstrProtoTransformComTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom, &GameObjectDesc.TransformDesc), E_FAIL);
+		FAILED_CHECK_RETURN(Add_Component(m_iTransformComLevel, m_wstrProtoTransformComTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom,this, &GameObjectDesc.TransformDesc), E_FAIL);
 	
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
@@ -187,22 +187,22 @@ HRESULT CCustomObject::Render()
 HRESULT CCustomObject::SetUp_Component()
 {
 	if (m_wstrRendererComTag != L"")
-		FAILED_CHECK_RETURN(__super::Add_Component(m_iRendererComLevel, m_wstrRendererComTag, L"Com_Renderer", (CComponent**)&m_pRendererCom), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Add_Component(m_iRendererComLevel, m_wstrRendererComTag, L"Com_Renderer", (CComponent**)&m_pRendererCom,this), E_FAIL);
 	if (m_wstrVIBufferComTag != L"")
-		FAILED_CHECK_RETURN(__super::Add_Component(m_iVIBufferComLevel, m_wstrVIBufferComTag, L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Add_Component(m_iVIBufferComLevel, m_wstrVIBufferComTag, L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom, this), E_FAIL);
 	if (m_wstrShaderComTag != L"")
-		FAILED_CHECK_RETURN(__super::Add_Component(m_iShaderComLevel, m_wstrShaderComTag, L"Com_Shader", (CComponent**)&m_pShaderCom), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Add_Component(m_iShaderComLevel, m_wstrShaderComTag, L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
 	if (m_wstrTextureComTag != nullptr)
 	{
 		for (_uint i = 0; i < m_iNumTextureCom; ++i)
 		{
 			_tchar		wszCloneTextureComTag[MAX_PATH] = L"";
 			wsprintf(wszCloneTextureComTag, L"Com_Texture%d", i);
-			FAILED_CHECK_RETURN(__super::Add_Component(m_iTextureComLevel, m_wstrTextureComTag[i], wstring(wszCloneTextureComTag), (CComponent**)&m_pTextureCom[i]), E_FAIL);
+			FAILED_CHECK_RETURN(__super::Add_Component(m_iTextureComLevel, m_wstrTextureComTag[i], wstring(wszCloneTextureComTag), (CComponent**)&m_pTextureCom[i], this), E_FAIL);
 		}
 	}
 	if (m_wstrModelComTag != L"")
-		FAILED_CHECK_RETURN(__super::Add_Component(m_iModelComLevel, m_wstrModelComTag, L"Com_Model", (CComponent**)&m_pModelCom), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Add_Component(m_iModelComLevel, m_wstrModelComTag, L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
 
 	CCollider::COLLIDERDESC		ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
@@ -211,7 +211,7 @@ HRESULT CCustomObject::SetUp_Component()
 
 	if(m_wstrColliderComTag != L"")
 	{
-		FAILED_CHECK_RETURN(__super::Add_Component(m_iColliderComLevel, m_wstrColliderComTag, L"Com_Collider", (CComponent**)&m_pColliderCom, &ColliderDesc), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Add_Component(m_iColliderComLevel, m_wstrColliderComTag, L"Com_Collider", (CComponent**)&m_pColliderCom,this, &ColliderDesc), E_FAIL);
 	}
 
 	return S_OK;

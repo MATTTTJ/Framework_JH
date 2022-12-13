@@ -84,25 +84,41 @@ void CPlayer::Tick(_double TimeDelta)
 	if (pGameInstance->Get_DIKeyState(DIK_DOWN))
 	{
 		m_pTransformCom->Go_Backward(TimeDelta);
+		m_pModelCom->Set_CurAnimIndex(21);
+
 	}
 
 	if (pGameInstance->Get_DIKeyState(DIK_LEFT))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
+		m_pModelCom->Set_CurAnimIndex(23);
+
 	}
 
 	if (pGameInstance->Get_DIKeyState(DIK_RIGHT))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+		m_pModelCom->Set_CurAnimIndex(24);
+
 	}
 
 	if (pGameInstance->Get_DIKeyState(DIK_UP))
 	{
 		m_pTransformCom->Go_Straight(TimeDelta);
-		m_pModelCom->Set_CurAnimIndex(4);
+		m_pModelCom->Set_CurAnimIndex(22);
+	}
+	if (pGameInstance->Get_DIKeyState(DIK_R))
+	{
+		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pModelCom->Set_CurAnimIndex(12);
+	}
+
+	if (pGameInstance->Get_DIMouseState(DIM_LB))
+	{
+		m_pModelCom->Set_CurAnimIndex(11);
 	}
 	else
-		m_pModelCom->Set_CurAnimIndex(3);
+		m_pModelCom->Set_CurAnimIndex(25);
 
 	m_pModelCom->Play_Animation(TimeDelta);
 
@@ -166,16 +182,13 @@ HRESULT CPlayer::Render()
 HRESULT CPlayer::SetUp_Components()
 {
 	/* For.Com_Renderer */
-	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",
-		(CComponent**)&m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",	(CComponent**)&m_pRendererCom, this), E_FAIL);
 
 	/* For.Com_Shader */
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxAnimModel", L"Com_Shader",
-		(CComponent**)&m_pShaderCom), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxAnimModel", L"Com_Shader",	(CComponent**)&m_pShaderCom, this), E_FAIL);
 
 	/* For.Com_Model */
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fiona", L"Com_Model",
-		(CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LaiLuo", L"Com_Model",(CComponent**)&m_pModelCom, this), E_FAIL);
 
 	CCollider::COLLIDERDESC			ColliderDesc;
 
@@ -183,22 +196,20 @@ HRESULT CPlayer::SetUp_Components()
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(0.7f, 1.5f, 0.7f);
 	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
-
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_AABB", L"Com_AABB", (CComponent**)&m_pColliderCom[COLLIDER_AABB], &ColliderDesc), E_FAIL);
-	
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_AABB", L"Com_AABB", (CComponent**)&m_pColliderCom[COLLIDER_AABB], this, &ColliderDesc), E_FAIL);
 
 	/* For.Com_OBB */
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(1.0f, 1.0f, 1.0f);
 	ColliderDesc.vRotation = _float3(0.f, XMConvertToRadians(45.0f), 0.f);
 	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_OBB", L"Com_OBB", (CComponent**)&m_pColliderCom[COLLIDER_OBB], &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_OBB", L"Com_OBB", (CComponent**)&m_pColliderCom[COLLIDER_OBB], this, &ColliderDesc), E_FAIL);
 
 	/* For.Com_SPHERE */
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(0.7f, 0.7f, 0.7f);
 	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLIDER_SPHERE], &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLIDER_SPHERE], this, &ColliderDesc), E_FAIL);
 
 	return S_OK;
 }
@@ -234,7 +245,7 @@ HRESULT CPlayer::Ready_Parts()
 	ZeroMemory(&Weapondesc, sizeof(CWeapon::WEAPONDESC));
 
 	Weapondesc.PivotMatrix = m_pModelCom->Get_PivotFloat4x4();
-	Weapondesc.pSocket = m_pModelCom->Get_BonePtr("SWORD");
+	Weapondesc.pSocket = m_pModelCom->Get_BonePtr("Bone038");
 	Weapondesc.pTargetTransform = m_pTransformCom;
 	Safe_AddRef(Weapondesc.pSocket);
 	Safe_AddRef(m_pTransformCom);

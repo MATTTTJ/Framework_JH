@@ -24,8 +24,8 @@ private:
 	class CModel*				m_pModel = nullptr;
 
 	string						m_strName = "";
-	_double						m_Duration = 0.0; // 애니메이션의 길이
-	_double						m_dTIckPerSecond; // 애니메이션이 재생되는 속도 (높을수록 빠름)
+	_double						m_dDuration = 0.0; // 애니메이션의 길이
+	_double						m_dTickPerSecond; // 애니메이션이 재생되는 속도 (높을수록 빠름)
 	_double						m_dPlayTime = 0.0; // 애니메이션이 재생된 시간을 저장
 	_bool						m_bIsFinished = false;
 	_bool						m_bIsLooping = false;

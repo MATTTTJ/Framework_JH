@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "Dynamic_Camera.h"
+#include "Static_Camera.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -113,9 +114,8 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-	/* For.Prototype_GameObject_Camera_Dynamic */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Camera_Dynamic", CDynamic_Camera::Create(m_pDevice, m_pContext)), E_FAIL);
-	
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Camera_Static", CStatic_Camera::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	return S_OK;
 }

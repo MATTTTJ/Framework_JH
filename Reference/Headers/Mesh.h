@@ -21,7 +21,7 @@ public:
 
 public:
 	virtual HRESULT			Initialize_Prototype(CModel::MODELTYPE eTYPE, aiMesh* pAIMesh, CModel* pModel);
-	virtual HRESULT			Initialize_Clone(void* pArg) override;
+	virtual HRESULT			Initialize_Clone(class CGameObject* pOwner, void* pArg) override;
 
 public:
 	void					SetUp_MeshBones(class CModel* pModel);
@@ -50,8 +50,8 @@ private:
 
 public:
 	static CMesh*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,CModel::MODELTYPE eType, aiMesh* pAIMesh, CModel* pModel);
-	virtual CComponent*		Clone(void* pArg = nullptr) override;
-	virtual void			Free();
+	virtual CComponent*		Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
+	virtual void			Free() override;
 
 };
 

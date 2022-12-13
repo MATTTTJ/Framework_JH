@@ -66,22 +66,9 @@ HRESULT CHome_Deco::Render()
 
 HRESULT CHome_Deco::SetUp_Components()
 {
-	/* For.Com_Renderer */
-	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",
-		(CComponent**)&m_pRendererCom), E_FAIL);
-
-
-
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxModel", L"Com_Shader",
-		(CComponent**)&m_pShaderCom), E_FAIL);
-
-	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_ForkLift", L"Com_Model",
-		(CComponent**)&m_pModelCom)))
-		return E_FAIL;
-
-
-
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",	(CComponent**)&m_pRendererCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxModel", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_ForkLift", L"Com_Model",	(CComponent**)&m_pModelCom, this), E_FAIL);
 
 	return S_OK;
 }

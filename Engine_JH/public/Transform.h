@@ -44,7 +44,7 @@ public:
 
 public:
 	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize_Clone(void* pArg);
+	virtual HRESULT Initialize_Clone(class CGameObject* pOwner, void* pArg) override;
 	virtual void	Imgui_RenderProperty() override;
 
 	HRESULT Bind_ShaderResource(class CShader* pShaderCom, const wstring& pConstantName);
@@ -69,7 +69,7 @@ private:
 
 public:
 	static CTransform* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CComponent* Clone(void* pArg = nullptr) override;
+	virtual CComponent* Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void Free() override;
 
 };

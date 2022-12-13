@@ -152,7 +152,7 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 			}*/
 			ImGui::ListBox("Clone Model List", &iSelectCloneObject, ppCloneTags, (_int)CloneObjectList->size());
 
-			if (CGameInstance::GetInstance()->Mouse_Down(CInput_Device::DIM_RB))
+			if (CGameInstance::GetInstance()->Mouse_Down(DIM_RB))
 				iSelectCloneObject = -1;
 
 			if (iSelectCloneObject != -1)

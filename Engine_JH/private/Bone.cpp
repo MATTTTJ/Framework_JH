@@ -6,29 +6,62 @@ CBone::CBone()
 
 HRESULT CBone::Save_Bone(HANDLE& hFile, DWORD& dwByte)
 {
+	_uint			iNameLength = (_uint)m_strName.length() + 1;
+	const char*	pName = m_strName.c_str();
+	WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+	WriteFile(hFile, pName, sizeof(char) * iNameLength, &dwByte, nullptr);
+
+	WriteFile(hFile, &m_OffsetMatrix, sizeof(_float4x4), &dwByte, nullptr);
+	WriteFile(hFile, &m_TransformMatrix, sizeof(_float4x4), &dwByte, nullptr);
+	WriteFile(hFile, &m_iNumChild, sizeof(_uint), &dwByte, nullptr);
+
 	return S_OK;
 }
 
 HRESULT CBone::Save_BoneName(HANDLE& hFile, DWORD& dwByte)
 {
-	return S_OK;
+	_uint			iNameLength = (_uint)m_strName.length() + 1;
+	const char*	pName = m_strName.c_str();
+	WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+	WriteFile(hFile, pName, sizeof(char) * iNameLength, &dwByte, nullptr);
 
+	return S_OK;
 }
 
 HRESULT CBone::Load_Bone(HANDLE& hFile, DWORD& dwByte)
 {
-	return S_OK;
+	_uint			iNameLength = 0;
+	ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
 
+	char*			pName = new char[iNameLength];
+	ReadFile(hFile, pName, sizeof(char) * iNameLength, &dwByte, nullptr);
+
+	m_strName = pName;
+
+	Safe_Delete_Array(pName);
+
+	ReadFile(hFile, &m_OffsetMatrix, sizeof(_float4x4), &dwByte, nullptr);
+	ReadFile(hFile, &m_TransformMatrix, sizeof(_float4x4), &dwByte, nullptr);
+	ReadFile(hFile, &m_iNumChild, sizeof(_uint), &dwByte, nullptr);
+
+	return S_OK;
 }
 
 HRESULT CBone::Initialize(aiNode* pAINode, CBone* pParent, _uint iNumChild)
 {
-	m_strName = pAINode->mName.data;
+
 	if (nullptr != pParent)
 	{
 		m_pParent = pParent;
 		Safe_AddRef(m_pParent);
 	}
+
+	if (pAINode == nullptr)
+		return S_OK;
+
+	m_strName = pAINode->mName.data;
+
+	m_iNumChild = iNumChild;
 
 	XMStoreFloat4x4(&m_OffsetMatrix, XMMatrixIdentity());
 	// 이 트랜스폼 행렬은 전치된 상태로 저장되어있기때문에, 다시 전치해주어야한다. 

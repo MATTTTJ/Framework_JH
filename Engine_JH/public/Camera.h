@@ -15,6 +15,9 @@ public:
 	CCamera(const CCamera& rhs);
 	virtual ~CCamera() = default;
 
+public:
+	_bool&					Get_RenderState() { return m_bRender; }
+
 	virtual HRESULT			Initialize_Prototype();
 	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void			Tick(_double TimeDelta);
@@ -26,6 +29,8 @@ private:
 	class CPipeLine*		m_pPipeLine = nullptr;
 	CAMERADESC				m_CameraDesc;
 
+protected:
+	_bool					m_bRender = false;
 public:
 
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) = 0;

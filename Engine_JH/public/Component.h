@@ -11,11 +11,12 @@ protected:
 	virtual ~CComponent() = default;
 
 public:
+	class CGameObject*			Get_Owner() const { return m_pOwner; }
 	const wstring&				Get_FilePath() const { return m_wstrFilePath; }
 
 public:
 	virtual HRESULT				Initialize_Prototype();
-	virtual HRESULT				Initialize_Clone(void* pArg);
+	virtual HRESULT				Initialize_Clone(class CGameObject* pOwner, void* pArg);
 
 	virtual void				Imgui_RenderProperty() {}
 
@@ -23,11 +24,14 @@ public:
 protected:
 	ID3D11Device*				m_pDevice = nullptr;
 	ID3D11DeviceContext*		m_pContext = nullptr;
+
+	class CGameObject*			m_pOwner;
+	wstring						m_wstrFilePath = L"";
+
 	_bool						m_bIsCloned;
 
-	wstring						m_wstrFilePath = L"";
 public:
-	virtual CComponent*			Clone(void* pArg = nullptr) = 0;
+	virtual CComponent*			Clone(class CGameObject* pOwner, void* pArg = nullptr) = 0;
 	virtual void				Free() override;
 };
 

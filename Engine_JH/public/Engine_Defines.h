@@ -25,7 +25,7 @@ using namespace DirectX;
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
-using namespace Assimp;
+// using namespace Assimp;
 
 #include <cassert>
 #include <functional>
@@ -34,6 +34,8 @@ using namespace Assimp;
 #include <map>
 #include <unordered_map>
 #include <algorithm>
+#include <mutex>
+#include <atomic>
 using namespace std;
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))

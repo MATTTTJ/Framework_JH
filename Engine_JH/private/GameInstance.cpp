@@ -143,35 +143,35 @@ _byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)
 	return m_pInput_Device->Get_DIKeyState(byKeyID);
 }
 
-_byte CGameInstance::Get_DIMouseState(CInput_Device::MOUSEKEYSTATE byMouseID)
+_byte CGameInstance::Get_DIMouseState(MOUSEKEYSTATE byMouseID)
 {
 	NULL_CHECK_RETURN(m_pInput_Device, 0);
 
 	return m_pInput_Device->Get_DIMouseState(byMouseID);
 }
 
-_long CGameInstance::Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMoveState)
+_long CGameInstance::Get_DIMouseMove(MOUSEMOVESTATE eMoveState)
 {
 	NULL_CHECK_RETURN(m_pInput_Device, 0);
 
 	return m_pInput_Device->Get_DIMouseMove(eMoveState);
 }
 
-_bool CGameInstance::Mouse_Down(CInput_Device::MOUSEKEYSTATE MouseButton)
+_bool CGameInstance::Mouse_Down(MOUSEKEYSTATE MouseButton)
 {
 	NULL_CHECK_RETURN(m_pInput_Device, false);
 
 	return m_pInput_Device->Mouse_Down(MouseButton);
 }
 
-_bool CGameInstance::Mouse_Up(CInput_Device::MOUSEKEYSTATE MouseButton)
+_bool CGameInstance::Mouse_Up(MOUSEKEYSTATE MouseButton)
 {
 	NULL_CHECK_RETURN(m_pInput_Device, false);
 
 	return m_pInput_Device->Mouse_Up(MouseButton);
 }
 
-_bool CGameInstance::Mouse_DoubleClick(CInput_Device::MOUSEKEYSTATE MouseButton)
+_bool CGameInstance::Mouse_DoubleClick(MOUSEKEYSTATE MouseButton)
 {
 	NULL_CHECK_RETURN(m_pInput_Device, false);
 
@@ -299,11 +299,11 @@ HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring& pPrototyp
 	return m_pComponent_Manager->Add_Prototype(iLevelIndex, pPrototypeTag, pPrototype);
 }
 
-CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, void * pArg)
+CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, CGameObject* pOwner, void * pArg)
 {
 	NULL_CHECK_RETURN(m_pComponent_Manager, nullptr);
 
-	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
+	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag,pOwner, pArg);
 }
 
 _matrix CGameInstance::Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eState)

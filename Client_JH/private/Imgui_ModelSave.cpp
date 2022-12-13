@@ -13,7 +13,7 @@ CImgui_ModelSave::CImgui_ModelSave(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 HRESULT CImgui_ModelSave::Initialize(void* pArg)
 {
-	m_szWindowName = "Model Save";
+	m_szWindowName = "FBX -> Model";
 
 	return S_OK;
 }
@@ -51,7 +51,7 @@ void CImgui_ModelSave::Imgui_RenderWindow()
 	if(ImGui::Button("Confirm"))
 	{
 		m_pModel = CModel::Create(m_pDevice, m_pContext, eModelType, szModelFilePath);
-		m_pCloneModel = dynamic_cast<CModel*>(m_pModel->Clone());
+		m_pCloneModel = dynamic_cast<CModel*>(m_pModel->Clone(nullptr));
 		sprintf_s(szModelFilePath, "");
 		eModelType = CModel::MODELTYPE_END;
 	}

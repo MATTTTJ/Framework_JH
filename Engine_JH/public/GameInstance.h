@@ -7,6 +7,9 @@
 #include "Input_Device.h"
 #include "Component_Manager.h"
 #include "PipeLine.h"
+#include "Graphic_Device.h"
+
+#define CONTEXT_LOCK CContext_LockGuard _CtxLock_(CGraphic_Device::GetInstance()->GetContexMtx());
 
 BEGIN(Engine)
 
@@ -36,11 +39,11 @@ public: /* For.Graphic_Device */
 	D3D11_VIEWPORT	    Get_ViewPort();
 public: /* For.Input_Device */
 	_byte				Get_DIKeyState(_ubyte byKeyID);
-	_byte				Get_DIMouseState(CInput_Device::MOUSEKEYSTATE byMouseID);
-	_long				Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMoveState);
-	_bool				Mouse_Down(CInput_Device::MOUSEKEYSTATE MouseButton);
-	_bool				Mouse_Up(CInput_Device::MOUSEKEYSTATE MouseButton);
-	_bool				Mouse_DoubleClick(CInput_Device::MOUSEKEYSTATE MouseButton);
+	_byte				Get_DIMouseState(MOUSEKEYSTATE byMouseID);
+	_long				Get_DIMouseMove(MOUSEMOVESTATE eMoveState);
+	_bool				Mouse_Down(MOUSEKEYSTATE MouseButton);
+	_bool				Mouse_Up(MOUSEKEYSTATE MouseButton);
+	_bool				Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);
 	_bool				Key_Down(_ubyte byKeyID);
 	_bool				Key_Up(_ubyte byKeyID);
 	void				Reset_EveryKey();
@@ -62,7 +65,7 @@ public: /* For.Object_Manager */
 public: /* For.Component_Manager */
 	map<const wstring, class CComponent*>* Get_PrototypeComponents();
 	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& pPrototypeTag, class CComponent* pPrototype);
-	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, void* pArg = nullptr);
+	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& pPrototypeTag, class CGameObject* pOwner, void* pArg = nullptr);
 
 public:/* For.PipeLine*/
 	_matrix				Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eState);

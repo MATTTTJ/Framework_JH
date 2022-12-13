@@ -1,6 +1,7 @@
 #include "..\public\Collider.h"
 #include "DebugDraw.h"
 #include "PipeLine.h"
+#include "GameObject.h"
 
 CCollider::CCollider(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -45,8 +46,10 @@ HRESULT CCollider::Initialize_Prototype(COLLIDERTYPE eType)
 	return S_OK;
 }
 
-HRESULT CCollider::Initialize_Clone(void * pArg)
+HRESULT CCollider::Initialize_Clone(CGameObject* pOwner, void * pArg)
 {
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(pOwner, pArg), E_FAIL);
+
 	COLLIDERDESC		ColliderDesc;
 	memcpy(&ColliderDesc, pArg, sizeof(COLLIDERDESC));
 
@@ -137,6 +140,56 @@ _bool CCollider::Collision(CCollider* pTargetCollider)
 	return m_bIsColl;
 
 }
+
+CGameObject* CCollider::CollisionReturnObj(CCollider* pTargetCollider)
+{
+	m_bIsColl = false;
+	CGameObject*		pTarget = nullptr;
+
+	switch(m_eType)
+	{
+	case COLLIDER_AABB:
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB && 
+			m_pAABB->Intersects(*pTargetCollider->m_pAABB))
+			pTarget = pTargetCollider->Get_Owner();
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB &&
+			m_pAABB->Intersects(*pTargetCollider->m_pOBB))
+			pTarget = pTargetCollider->Get_Owner();
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE &&
+			m_pAABB->Intersects(*pTargetCollider->m_pSphere))
+			pTarget = pTargetCollider->Get_Owner();
+		break;
+
+	case COLLIDER_OBB:
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB &&
+			m_pOBB->Intersects(*pTargetCollider->m_pAABB))
+			pTarget = pTargetCollider->Get_Owner();
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB &&
+			m_pOBB->Intersects(*pTargetCollider->m_pOBB))
+			pTarget = pTargetCollider->Get_Owner();
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE &&
+			m_pOBB->Intersects(*pTargetCollider->m_pSphere))
+			pTarget = pTargetCollider->Get_Owner();
+		break;
+	case COLLIDER_SPHERE:
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB &&
+			m_pSphere->Intersects(*pTargetCollider->m_pAABB))
+			pTarget = pTargetCollider->Get_Owner();
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB &&
+			m_pSphere->Intersects(*pTargetCollider->m_pOBB))
+			pTarget = pTargetCollider->Get_Owner();
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE &&
+			m_pSphere->Intersects(*pTargetCollider->m_pSphere))
+			pTarget = pTargetCollider->Get_Owner();
+		break;
+	}
+
+	if (pTarget != nullptr)
+		m_bIsColl = true;
+
+	return pTarget;
+}
+
 
 _bool CCollider::Collision_AABB(CCollider* pTargetCollider)
 {
@@ -358,11 +411,11 @@ CCollider * CCollider::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pCon
 	return pInstance;
 }
 
-CComponent * CCollider::Clone(void * pArg)
+CComponent * CCollider::Clone(CGameObject* pOwner, void * pArg)
 {
 	CCollider*		pInstance = new CCollider(*this);
 
-	if (FAILED(pInstance->Initialize_Clone(pArg)))
+	if (FAILED(pInstance->Initialize_Clone(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Created : CCollider");
 		Safe_Release(pInstance);
@@ -373,6 +426,8 @@ CComponent * CCollider::Clone(void * pArg)
 void CCollider::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pOwner);
 
 	Safe_Delete(m_pAABB_Original);
 	Safe_Delete(m_pAABB);

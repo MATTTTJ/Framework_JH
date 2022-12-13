@@ -1,5 +1,4 @@
 #include "GameObject.h"
-
 #include "GameInstance.h"
 #include "GameUtils.h"
 
@@ -38,7 +37,7 @@ HRESULT CGameObject::Initialize_Clone(const wstring& wstrPrototypeTag, void* pAr
 	if (nullptr != pArg)
 		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
 
-	FAILED_CHECK_RETURN(Add_Component(CGameInstance::Get_StaticLevelIndex(),CGameInstance::m_wstrPrototypeTransformTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom, &GameObjectDesc.TransformDesc), E_FAIL)
+	FAILED_CHECK_RETURN(Add_Component(CGameInstance::Get_StaticLevelIndex(),CGameInstance::m_wstrPrototypeTransformTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom, this, &GameObjectDesc.TransformDesc), E_FAIL)
 
 	return S_OK;
 }
@@ -69,7 +68,7 @@ void CGameObject::Imgui_RenderComponentProperties()
 }
 
 
-HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag,	CComponent** ppOut, void* pArg)
+HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag,	CComponent** ppOut, CGameObject* pOwner, void* pArg)
 {
 
 	if (nullptr != Find_Component(wstrComponentTag))
@@ -78,11 +77,10 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& wstrPrototy
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	CComponent*	pComponent = pGameInstance->Clone_Component(iLevelIndex, wstrPrototypeTag, pArg);
+	CComponent*	pComponent = pGameInstance->Clone_Component(iLevelIndex, wstrPrototypeTag, pOwner, pArg);
 	NULL_CHECK_RETURN(pComponent, E_FAIL)
 
 	m_Components.emplace(wstrComponentTag, pComponent);
-
 	Safe_AddRef(pComponent);
 
 	*ppOut = pComponent;
