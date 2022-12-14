@@ -124,6 +124,12 @@
     <Filter Include="01. Utility\03. Components\09. StateMachine">
       <UniqueIdentifier>{e5551bed-fc75-42f9-aef1-396b306dab86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\09. Navigation">
+      <UniqueIdentifier>{1c9bb6b7-7e62-47e9-8268-8d0a45360698}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\09. Navigation\Cell">
+      <UniqueIdentifier>{2dc93e9c-2952-4277-9aa0-2325a866e213}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -319,6 +325,12 @@
     <ClInclude Include="..\public\StateMachine.h">
       <Filter>01. Utility\03. Components\09. StateMachine</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Navigation.h">
+      <Filter>01. Utility\03. Components\09. Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Cell.h">
+      <Filter>01. Utility\03. Components\09. Navigation\Cell</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -482,6 +494,12 @@
     </ClCompile>
     <ClCompile Include="..\private\StateMachine.cpp">
       <Filter>01. Utility\03. Components\09. StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Navigation.cpp">
+      <Filter>01. Utility\03. Components\09. Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Cell.cpp">
+      <Filter>01. Utility\03. Components\09. Navigation\Cell</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

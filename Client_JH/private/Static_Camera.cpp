@@ -53,34 +53,33 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 
 	__super::Tick(dTimeDelta);
 
-	_uint iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
-
-	if (m_pOwner == nullptr)
-		m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->front();
-	else
+	if (GetAsyncKeyState('Y'))
 	{
-		if(CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->empty())
-		{
-			m_pOwner = nullptr;
-			return;
-		}
+		m_bFix = !m_bFix;
+	}
 
-		_matrix	OwnerWorldMatrix = XMLoadFloat4x4(&m_pOwner->Get_WorldFloat4x4());
-		_matrix	TargetBoneMatrix = dynamic_cast<CPlayer*>(m_pOwner)->Get_BoneMatrix("LookRoot");
-		_matrix PivotMatrix = dynamic_cast<CPlayer*>(m_pOwner)->Get_PivotMatrix();
+	if (m_vCameraLook.w == -1)
+	{
+		XMStoreFloat4(&m_vCameraLook, dynamic_cast<CTransform*>(CGameInstance::GetInstance()->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_Transform"))->Get_State(CTransform::STATE_LOOK));
+	}
 
-		_float4x4	CombindMatrix;
-		XMStoreFloat4x4(&CombindMatrix, TargetBoneMatrix * PivotMatrix * OwnerWorldMatrix);
+	_int TurnX = 0, TurnY = 0;
 
-		_float4x4 CameraMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(CombindMatrix._41, CombindMatrix._42, CombindMatrix._43, 1.f));
+	if(TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
+	{
+		_matrix matRotation = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f),
+			XMConvertToRadians(90.f) *  0.1f * (_float)dTimeDelta * TurnX);
+		XMStoreFloat4(&m_vCameraLook, XMVector4Transform(XMLoadFloat4(&m_vCameraLook), matRotation));
+		XMStoreFloat4(&m_vCameraLook, XMVector3Normalize(XMLoadFloat4(&m_vCameraLook)));
+	}
+	if (TurnY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
+	{
+		m_fCamHeight += (_float)TurnY / 100.f;
 
-		_long		MouseMove = 0;
-		if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
-			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta* MouseMove * 0.1f);
-		if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
-			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1f);
-
+		if (m_fCamHeight >= 1.f)
+			m_fCamHeight = 1.f;
+		else if (m_fCamHeight <= -1.f)
+			m_fCamHeight = -1.f;
 	}
 }
 
@@ -88,8 +87,13 @@ void CStatic_Camera::Late_Tick(_double dTimeDelta)
 {
 	if (!m_bRender)
 		return;
-
 	__super::Late_Tick(dTimeDelta);
+
+	if(false != m_bFix)
+	{
+		Mouse_Fix();
+	}
+
 }
 
 HRESULT CStatic_Camera::Render()
@@ -100,6 +104,49 @@ HRESULT CStatic_Camera::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	return S_OK;
+}
+
+void CStatic_Camera::Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _double dTimeDelta)
+{
+	if (!m_bRender)
+		return;
+
+	
+
+	_vector vPlayerPos = PlayerPos;
+	_vector vLook = XMLoadFloat4(&m_vCameraLook);
+
+	
+	_uint iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
+
+	if (m_pOwner == nullptr)
+		m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->front();
+	else
+	{
+		if (CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->empty())
+		{
+			m_pOwner = nullptr;
+			return;
+		}
+
+		vLook = XMVector3Normalize(vLook) * -5.f;
+
+		// 여기 값 갖고 놀면 카메라 위치 조절 가능함
+		_vector vCamPos = vPlayerPos + (vLook + XMVectorSet(0.f, 4.f + m_fCamHeight, 0.f, 0.f));
+
+		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vCamPos);
+
+		m_pTransformCom->LookAt(vPlayerPos + XMVectorSet(0.f, 2.5f, 0.f, 0.f));
+
+	}
+}
+
+void CStatic_Camera::Mouse_Fix()
+{
+	POINT	pt{ g_iWinSizeX >> 1 , g_iWinSizeY >> 1 };
+
+	ClientToScreen(g_hWnd, &pt);
+	SetCursorPos(pt.x, pt.y);
 }
 
 HRESULT CStatic_Camera::SetUp_Component()

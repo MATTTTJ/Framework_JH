@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "Imgui_ModelSave.h"
 #include "..\public\Imgui_ModelSave.h"
 #include "Component_Manager.h"
 
@@ -22,20 +21,18 @@ void CImgui_ModelSave::Imgui_RenderWindow()
 {
 	static char	szModelFilePath[MAX_PATH] = "";
 	static CModel::MODELTYPE		eModelType = CModel::MODELTYPE_END;
-	char*		szModelTypes[CModel::MODELTYPE_END] = { "Non-Animation", "Animation" };
+	char*	szModelTypes[CModel::MODELTYPE_END] = { "Non-Animation", "Animation" };
 
-	IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "File Path", "Input Path here or Choose From FileDialog", szModelFilePath, sizeof(char)* MAX_PATH);
+	IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "File Path", "Input Path here or Choose from FileDialog", szModelFilePath, sizeof(char) * MAX_PATH);
 	ImGui::SameLine();
-	if(ImGui::Button("Open"))
-	{
+	if (ImGui::Button("Open"))
 		ImGuiFileDialog::Instance()->OpenDialog("Choose FBX", "Select FBX Model File", ".fbx", "../Bin/Resources/Meshes", ".fbx", 1, nullptr, ImGuiFileDialogFlags_Modal);
-	}
 
 	IMGUI_LEFT_LABEL(ImGui::Combo, "Model Type", (_int*)&eModelType, szModelTypes, (_int)CModel::MODELTYPE_END);
 
 	if (ImGuiFileDialog::Instance()->Display("Choose FBX"))
 	{
-		if(ImGuiFileDialog::Instance()->IsOk())
+		if (ImGuiFileDialog::Instance()->IsOk())
 		{
 			char	szRelativePath[MAX_PATH] = "";
 			char	szDirectoryPath[MAX_PATH] = "";
@@ -48,7 +45,8 @@ void CImgui_ModelSave::Imgui_RenderWindow()
 		if (!ImGuiFileDialog::Instance()->IsOk())
 			ImGuiFileDialog::Instance()->Close();
 	}
-	if(ImGui::Button("Confirm"))
+
+	if (ImGui::Button("Confirm"))
 	{
 		m_pModel = CModel::Create(m_pDevice, m_pContext, eModelType, szModelFilePath);
 		m_pCloneModel = dynamic_cast<CModel*>(m_pModel->Clone(nullptr));
@@ -56,28 +54,27 @@ void CImgui_ModelSave::Imgui_RenderWindow()
 		eModelType = CModel::MODELTYPE_END;
 	}
 	ImGui::SameLine();
-	if(ImGui::Button("Reset"))
+	if (ImGui::Button("Reset"))
 	{
 		sprintf_s(szModelFilePath, "");
 		eModelType = CModel::MODELTYPE_END;
 	}
 
-	if(m_pModel != nullptr && m_pCloneModel != nullptr)
+	if (m_pModel != nullptr && m_pCloneModel != nullptr)
 	{
-		static char szFileName[MAX_PATH] = "";
+		static char	szFileName[MAX_PATH] = "";
 
 		ImGui::Separator();
 		if (ImGui::CollapsingHeader("Model Information"))
-		{
 			m_pModel->Imgui_RenderProperty();
-		}
+
 		ImGui::Separator();
 		IMGUI_LEFT_LABEL(ImGui::InputText, "Save File Name", szFileName, MAX_PATH);
 
 		if (ImGui::Button("Save by Binary"))
 			ImGuiFileDialog::Instance()->OpenDialog("Select Folder", "Select Save Directory", ".model", "../Bin/Resources/Meshes", ".", 0, nullptr, ImGuiFileDialogFlags_Modal);
 		ImGui::SameLine();
-		if(ImGui::Button("Discard This Model"))
+		if (ImGui::Button("Discard This Model"))
 		{
 			sprintf_s(szFileName, "");
 
@@ -86,12 +83,12 @@ void CImgui_ModelSave::Imgui_RenderWindow()
 			return;
 		}
 
-		if(ImGuiFileDialog::Instance()->Display("Select Folder"))
+		if (ImGuiFileDialog::Instance()->Display("Select Folder"))
 		{
-			if(ImGuiFileDialog::Instance()->IsOk())
+			if (ImGuiFileDialog::Instance()->IsOk())
 			{
-				char szRelativePath[MAX_PATH] = "";
-				char szDirectoryPath[MAX_PATH] = "";
+				char	szRelativePath[MAX_PATH] = "";
+				char	szDirectoryPath[MAX_PATH] = "";
 				GetCurrentDirectoryA(MAX_PATH, szDirectoryPath);
 				PathRelativePathToA(szRelativePath, szDirectoryPath, FILE_ATTRIBUTE_DIRECTORY, ImGuiFileDialog::Instance()->GetCurrentPath().c_str(), FILE_ATTRIBUTE_DIRECTORY);
 				strcat_s(szRelativePath, "\\");
@@ -107,6 +104,7 @@ void CImgui_ModelSave::Imgui_RenderWindow()
 				ImGuiFileDialog::Instance()->Close();
 		}
 	}
+
 }
 
 CImgui_ModelSave* CImgui_ModelSave::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)

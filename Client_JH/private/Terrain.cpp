@@ -40,7 +40,7 @@ void CTerrain::Tick(_double TimeDelta)
 
 	if(pGameInstance->Get_DIMouseState(DIM_LB))
 	{
-		 m_vPos = Picking_Terrain();
+		 // m_vPos = Picking_Terrain();
 	}
 	// ImGui::Begin("Test");
 	// ImGui::Text("%f / %f ", m_vPos.x, m_vPos.z);

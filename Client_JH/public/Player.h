@@ -30,7 +30,7 @@ public:
 public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
-	virtual void			Tick(_double TimeDelta) override;
+	virtual void			Tick(_double dTimeDelta) override;
 	virtual void			Late_Tick(_double TimeDelta) override;
 	virtual HRESULT			Render() override;
 

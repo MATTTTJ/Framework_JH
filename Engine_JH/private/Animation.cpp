@@ -88,14 +88,19 @@ HRESULT CAnimation::Initialize(aiAnimation* pAIAnimation, CModel* pModel)
 	return S_OK;
 }
 
-_bool CAnimation::Update_Bones(_double dTimeDelta)
+_bool CAnimation::Update_Bones(_double dTimeDelta, _double AnimSpeed)
 {
 	if (false == m_bIsLooping && true == m_bIsFinished)
 	{
 		return false;;
 	}
 
-	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
+	if(false == m_bIsLerpEnd)
+	{
+		m_dPlayTime += dTimeDelta * m_dTickPerSecond * AnimSpeed;
+	}
+
+	m_dPlayTime += m_dTickPerSecond * dTimeDelta * AnimSpeed;
 
 	if (m_dPlayTime >= m_dDuration)
 	{
@@ -120,19 +125,10 @@ _bool CAnimation::Update_Bones(_double dTimeDelta)
 		m_bIsFinished = false;
 	}
 
-	// for(_uint i =0; i < m_iNumChannels; ++i)
-	// {
-	// 	if (true == m_bIsFinished)
-	// 		m_vecChannels[i]->Reset_KeyFrameIndex();
-	//
-	// 	// 애니메이션을 재생할 때 필요한 특정 뼈들을 순회하면서 상태 행렬을 업데이트해준다. 
-	// 	m_vecChannels[i]->Update_TransformMatrix(m_dPlayTime);
-	// }
-
 	return false;
 }
 
-_bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation* pBefore, _bool bFinish)
+_bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation* pNextAnim, _double LerpSpeed, _bool bFinish)
 {
 	if (m_bIsLerpEnd)
 	{
@@ -149,13 +145,13 @@ _bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation* pBefore, _bool bFi
 	}
 	else
 	{
-		for (auto iter : m_vecChannels)
+		for (auto Current : m_vecChannels)
 		{
-			for (auto Before : pBefore->m_vecChannels)
+			for (auto Next : pNextAnim->m_vecChannels)
 			{
-				if (iter->Get_ChannelName() == Before->Get_ChannelName())
+				if (Current->Get_ChannelName() == Next->Get_ChannelName())
 				{
-					m_bIsLerpEnd = iter->Update_TransformLerpMatrix(m_dPlayTime, Before, iter, bFinish);
+					m_bIsLerpEnd = Current->Update_TransformLerpMatrix(m_dPlayTime, Current, Next, LerpSpeed, bFinish);
 					break;
 				}
 			}

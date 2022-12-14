@@ -47,7 +47,7 @@ void CMonster::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	m_pModelCom->Play_Animation(TimeDelta);
+	m_pModelCom->Play_Animation(TimeDelta, 0.1,1.0);
 
 	for (_uint i = 0; i < COLLTYPE_END; ++i)
 		m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());

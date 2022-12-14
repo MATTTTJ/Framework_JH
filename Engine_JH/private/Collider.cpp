@@ -427,7 +427,7 @@ void CCollider::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pOwner);
+	// Safe_Release(m_pOwner);
 
 	Safe_Delete(m_pAABB_Original);
 	Safe_Delete(m_pAABB);

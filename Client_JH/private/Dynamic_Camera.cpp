@@ -99,16 +99,13 @@ HRESULT CDynamic_Camera::Render()
 {
 	if (false == m_bRender)
 		return E_FAIL;
-
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
+	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+	
 	return S_OK;
 }
 
 HRESULT CDynamic_Camera::SetUp_Components()
 {
-
 	return S_OK;
 }
 

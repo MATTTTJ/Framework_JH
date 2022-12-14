@@ -165,8 +165,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 		return E_FAIL;
 
 	// PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	PivotMatrix = XMMatrixIdentity();
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LaiLuo",
-		CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Lailuo/Lai_Test.model", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Test.model", PivotMatrix))))
 		return E_FAIL;
 
 	// PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));

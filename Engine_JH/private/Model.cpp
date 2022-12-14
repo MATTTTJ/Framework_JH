@@ -70,16 +70,9 @@ void CModel::Set_CurAnimIndex(_uint AnimIndex)
 	if (0 > AnimIndex || m_iNumAnimation <= AnimIndex || m_iCurrentAnimIndex == AnimIndex)
 		return;
 
-	
-	m_iLastAnimIndex = m_iCurrentAnimIndex;
-	m_iCurrentAnimIndex = AnimIndex;
+	m_iNextAnimIndex = AnimIndex;
 
-	if (m_iLastAnimIndex != m_iCurrentAnimIndex)
-	{
-		m_bIsAnimChange = true;
-	}
-	else
-		m_bIsAnimChange = false;
+	m_bIsAnimChange = true;
 }
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix PivotMatrix)
@@ -192,25 +185,20 @@ void CModel::Imgui_RenderProperty()
 	}
 }
 
-void CModel::Play_Animation(_double TimeDelta, _bool bFinish)
+void CModel::Play_Animation(_double TimeDelta, _double LerpSpeed, _double AnimSpeed, _bool bFinish)
 {
 	if (MODEL_NONANIM == m_eType)
 		return;
 
 	if (m_bIsAnimChange)
-		m_bIsAnimChange = m_vecAnimations[m_iCurrentAnimIndex]->Update_Lerp(TimeDelta, m_vecAnimations[m_iLastAnimIndex], bFinish);
+	{
+		m_bIsAnimChange = m_vecAnimations[m_iCurrentAnimIndex]->Update_Lerp(TimeDelta, m_vecAnimations[m_iNextAnimIndex], LerpSpeed, bFinish);
+
+		if (false == m_bIsAnimChange)
+			m_iCurrentAnimIndex = m_iNextAnimIndex;
+	}
 	else
 		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_Bones(TimeDelta);
-	
-	// if(m_iLastAnimIndex != m_iCurrentAnimIndex)
-	// {
-	// 	// m_vecAnimations[m_iLastAnimIndex]->
-	// 	m_vecAnimations[m_iCurrentAnimIndex]->Update_Bones(TimeDelta);
-	// }
-	// else
-	// {// 현재 애니메이션에 맞는 뼈들의 TransformMatrix를 갱신한다.
-	// 	m_vecAnimations[m_iCurrentAnimIndex]->Update_Bones(TimeDelta);
-	// }
 
 
 	for (auto& pBone : m_vecBones)
@@ -256,7 +244,8 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrB
 			pShader->Set_MatrixArray(wstrBoneConstantName, BoneMatrices, 256);
 		}
 	}
-	
+
+
 	pShader->Begin(iPassIndex);
 
 	m_vecMeshes[iMeshIndex]->Render();
@@ -348,7 +337,7 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 			strcat_s(szTexturePath, szTextureFileName);
 			strcat_s(szTexturePath, szExt);
 
-			_tchar			szFullPath[MAX_PATH] = TEXT("");
+			_tchar			szFullPath[MAX_PATH] = L"";
 
 			MultiByteToWideChar(CP_ACP, 0, szTexturePath, (_int)strlen(szTexturePath), szFullPath, MAX_PATH);
 

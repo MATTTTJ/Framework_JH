@@ -140,11 +140,16 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 		_double	dRatio = (dPlayTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime)
 			/ (m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime);
 		// 위 비율은 키 프레임 사이의 데이터 변경 값을 보간해주기 위한 비율이다.
-		
+
 		vScale = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vScale), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vScale), (_float)dRatio);
 		vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex].vRotation), XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vRotation), (_float)dRatio);
 		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition), (_float)dRatio);
 		vPosition = XMVectorSetW(vPosition, 1.f);
+
+		if("104_Teammate" == m_strName)
+		{
+			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		}
 	}
 	// 백터들을 받아서 행렬로 만들어주는 함수. 2번째 인자는 기준점인데 원점이 들어간다.
 	TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
@@ -152,7 +157,7 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 	m_pBone->Set_TransformMatrix(TransformMatrix);
 }
 
-_bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* LastChannel, CChannel* CurChannel, _bool bFinish)
+_bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* CurrentChannel, CChannel* NextChannel,_double LerpSpeed, _bool bFinish)
 {
 	_vector vScale;
 	_vector vRotation;
@@ -161,7 +166,7 @@ _bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* LastChan
 
 	if(-1 == m_iLerpFrameIndex) // 절대 나올 수 없는 인덱스 값인 음수로 초기화 
 	{
-		while(dPlayTime >= m_vecKeyframes[m_iLerpFrameIndex + 1].dTime)
+		while(dPlayTime >= CurrentChannel->m_vecKeyframes[m_iLerpFrameIndex + 1].dTime)
 		{
 			m_iLerpFrameIndex++;
 
@@ -186,28 +191,33 @@ _bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* LastChan
 
 	_uint iDest = 0;
 
-	if (LastChannel->m_vecKeyframes.size() <= iSour)
-		iSour = (_uint)LastChannel->m_vecKeyframes.size() - 1;
+	if (CurrentChannel->m_vecKeyframes.size() <= iSour)
+		iSour = (_uint)CurrentChannel->m_vecKeyframes.size() - 1;
 
-	m_dLerpRatio += 0.1;
+	m_dLerpRatio += LerpSpeed;
 
 	_vector	vLastScale, vCurScale;
 	_vector vLastRotation, vCurRotation;
 	_vector vLastPosition, vCurPosition;
 
-	vLastScale = XMLoadFloat3(&LastChannel->m_vecKeyframes[iSour].vScale);
-	vCurScale = XMLoadFloat3(&CurChannel->m_vecKeyframes[iDest].vScale);
+	vLastScale = XMLoadFloat3(&CurrentChannel->m_vecKeyframes[iSour].vScale);
+	vCurScale = XMLoadFloat3(&NextChannel->m_vecKeyframes[iDest].vScale);
 
-	vLastRotation = XMLoadFloat4(&LastChannel->m_vecKeyframes[iSour].vRotation);
-	vCurRotation = XMLoadFloat4(&CurChannel->m_vecKeyframes[iDest].vRotation);
+	vLastRotation = XMLoadFloat4(&CurrentChannel->m_vecKeyframes[iSour].vRotation);
+	vCurRotation = XMLoadFloat4(&NextChannel->m_vecKeyframes[iDest].vRotation);
 
-	vLastPosition = XMLoadFloat3(&LastChannel->m_vecKeyframes[iSour].vPosition);
-	vCurPosition = XMLoadFloat3(&CurChannel->m_vecKeyframes[iDest].vPosition);
+	vLastPosition = XMLoadFloat3(&CurrentChannel->m_vecKeyframes[iSour].vPosition);
+	vCurPosition = XMLoadFloat3(&NextChannel->m_vecKeyframes[iDest].vPosition);
 
 	vScale = XMVectorLerp(vLastScale, vCurScale, static_cast<_float>(m_dLerpRatio));
 	vRotation = XMQuaternionSlerp(vLastRotation, vCurRotation, static_cast<_float>(m_dLerpRatio));
 	vPosition = XMVectorLerp(vLastPosition, vCurPosition, static_cast<_float>(m_dLerpRatio));
 	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	if ("104_Teammate" == m_strName)
+	{
+		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	}
 
 	TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 
@@ -216,6 +226,7 @@ _bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* LastChan
 	if (1.f <= m_dLerpRatio)
 	{
 		m_dLerpRatio = 0.0;
+		m_iLerpFrameIndex = -1;
 		return true;
 	}
 

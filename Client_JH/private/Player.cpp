@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "Weapon.h"
 #include "Bone.h"
+#include "Static_Camera.h"
+
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -68,48 +70,61 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 	// m_pModelCom->Set_CurAnimIndex(rand() % 20);
-	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f));
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-1.4452f, -0.42242f, -1.11702f, 1.f));
 	FAILED_CHECK_RETURN(Ready_Parts(), E_FAIL);
 
-	m_pModelCom->Set_CurAnimIndex(3);
+	// m_pModelCom->Set_CurAnimIndex(3);
 
 	return S_OK;
 }
 
-void CPlayer::Tick(_double TimeDelta)
+void CPlayer::Tick(_double dTimeDelta)
 {
-	__super::Tick(TimeDelta);
+	__super::Tick(dTimeDelta);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_long		MouseMove = 0;
+	
+	// if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_X))
+	// {
+	// 	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
+	// }
+	//
+	// if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_Y))
+	// {
+	// 	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1f);
+	// }
+
 	if (pGameInstance->Get_DIKeyState(DIK_DOWN))
 	{
-		m_pTransformCom->Go_Backward(TimeDelta);
+		m_pTransformCom->Go_Backward(dTimeDelta);
 		m_pModelCom->Set_CurAnimIndex(21);
 
 	}
 
 	if (pGameInstance->Get_DIKeyState(DIK_LEFT))
 	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * -1.f);
 		m_pModelCom->Set_CurAnimIndex(23);
 
 	}
 
 	if (pGameInstance->Get_DIKeyState(DIK_RIGHT))
 	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta);
 		m_pModelCom->Set_CurAnimIndex(24);
 
 	}
 
 	if (pGameInstance->Get_DIKeyState(DIK_UP))
 	{
-		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pTransformCom->Go_Straight(dTimeDelta);
 		m_pModelCom->Set_CurAnimIndex(22);
 	}
 	if (pGameInstance->Get_DIKeyState(DIK_R))
 	{
-		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pTransformCom->Go_Straight(dTimeDelta);
 		m_pModelCom->Set_CurAnimIndex(12);
 	}
 
@@ -120,17 +135,33 @@ void CPlayer::Tick(_double TimeDelta)
 	else
 		m_pModelCom->Set_CurAnimIndex(25);
 
-	m_pModelCom->Play_Animation(TimeDelta);
+	m_pModelCom->Play_Animation(dTimeDelta, 0.1, 1.0);
 
 	for (_uint i = 0; i < m_vecPlayerParts.size(); ++i)
 	{
-		m_vecPlayerParts[i]->Tick(TimeDelta);
+		m_vecPlayerParts[i]->Tick(dTimeDelta);
 	}
 
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 	{
 		m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
 	}
+
+
+	_float4   fCamLook =
+		*dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->
+			back())->Get_CamLook();
+
+	_vector		vCamLook = XMLoadFloat4(&fCamLook);
+	_vector		vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	_vector		vLookat = vPos + vCamLook;
+
+	m_pTransformCom->LookAt(vLookat);
+
+	dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->
+		back())->Camera_Update(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 
+			m_pTransformCom->Get_State(CTransform::STATE_LOOK), 
+			dTimeDelta);
 
 	RELEASE_INSTANCE(CGameInstance);
 }
