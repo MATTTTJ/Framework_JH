@@ -16,8 +16,9 @@ public:
 public:
 	virtual HRESULT Initialize_Prototype(const wstring wstrTextureFilePath, _uint iNumTextures);
 	virtual HRESULT Initialize_Clone(class CGameObject* pOwner, void* pArg) override;
+	void Imgui_RenderProperty() override;
 
-public:
+
 	HRESULT	Bind_ShaderResource(class CShader* pShaderCom, const wstring pConstantName, _uint iTextureIndex = 0);
 	HRESULT	Bind_ShaderResources(class CShader* pShaderCom, const wstring pConstantName);
 

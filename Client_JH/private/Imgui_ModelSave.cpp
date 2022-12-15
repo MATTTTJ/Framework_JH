@@ -104,7 +104,6 @@ void CImgui_ModelSave::Imgui_RenderWindow()
 				ImGuiFileDialog::Instance()->Close();
 		}
 	}
-
 }
 
 CImgui_ModelSave* CImgui_ModelSave::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)

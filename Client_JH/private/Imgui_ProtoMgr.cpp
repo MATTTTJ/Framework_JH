@@ -132,7 +132,7 @@ void CImgui_ProtoMgr::Component_Editor()
 			char*			szModelType[2] = { "Non-Animation", "Animation" };
 
 			/* For Collider */
-			static CCollider::COLLIDERTYPE	eColliderType = CCollider::COLLIDERTYPE_END;
+			static CCollider::COLLIDERTYPE	eColliderType = CCollider::COLLIDER_SPHERE;
 			char*			szColliderType[3] = { "Sphere", "AABB", "OBB" };
 
 			if (iTargetLevel != iLastTargetLevel || eComponentType != eLastComponentType)
@@ -151,11 +151,11 @@ void CImgui_ProtoMgr::Component_Editor()
 			switch (eComponentType)
 			{
 			case COM_RENDERER:
-				ImGui::Text("There is no Options for this Component Type.");
+				ImGui::Text("There is no Options for this Comopnent Type.");
 				break;
 
 			case COM_VIBUFFER:
-				ImGui::Text("There is no Options for this Component Type.");
+				ImGui::Text("There is no Options for this Comopnent Type.");
 				break;
 
 			case COM_SHADER:
@@ -163,7 +163,7 @@ void CImgui_ProtoMgr::Component_Editor()
 				IMGUI_LEFT_LABEL(ImGui::InputText, "Component Tag", szPrototypeTag, sizeof(char) * MAX_PATH);
 
 				/* Input File Path */
-				IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "File Path", "Input Path here or Choose from FildDialog.", szFilePath, sizeof(char) * MAX_PATH);
+				IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "File Path", "Input Path here or Choose from FileDialog.", szFilePath, sizeof(char) * MAX_PATH);
 				ImGui::SameLine();
 				if (ImGui::SmallButton("Open"))
 					ImGuiFileDialog::Instance()->OpenDialog("Choose HLSL", "Choose .hlsl", ".hlsl", "../Bin/ShaderFiles", ".hlsl", 1, nullptr, ImGuiFileDialogFlags_Modal);
@@ -341,6 +341,7 @@ void CImgui_ProtoMgr::Component_Editor()
 					CGameUtils::ctwc(szPrototypeTag, wszPrototypeTag);
 
 					CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CCollider::Create(m_pDevice, m_pContext, eColliderType));
+					break;
 				}
 				ImGui::EndTabItem();
 
@@ -505,19 +506,18 @@ void CImgui_ProtoMgr::Component_Editor()
 								jCom["Model Type"] = "Anim";
 
 							jCom["Collider Type"] = "None";
-
 						}
 						else if (eType == COM_COLLIDER)
 						{
-							CCollider::COLLIDERTYPE		eColliderType = dynamic_cast<CCollider*>(Pair.second)->Get_ColliderType();
+							CCollider::COLLIDERTYPE	eColliderType = dynamic_cast<CCollider*>(Pair.second)->Get_ColliderType();
 							if (eColliderType == CCollider::COLLIDERTYPE_END)
 								continue;
 
 							jCom["Type"] = "Collider";
 							jCom["Tag"] = strComponentTag;
 							jCom["File Path"] = strFilePath;
-							jCom["Textrue Count"] = 0;
-							jCom["Vertex Declaration"] = "None";
+							jCom["Texture Count"] = 0;
+							jCom["Vectex Declaration"] = "None";
 							jCom["Vertex Elements Count"] = 0;
 							jCom["Model Type"] = "None";
 
@@ -680,13 +680,12 @@ void CImgui_ProtoMgr::Component_Editor()
 						else
 							continue;
 					}
-					else if(strComponentType == "Collider")
+					else if (strComponentType == "Collider")
 					{
-						string		strFilePath = "";
 						string		strColliderType = "";
-						wstring		wstrColliderType = L"";
+						wstring	wstrColliderType = L"";
 
-						Com["Collider Type"].get_to<string>(strFilePath);
+						Com["Collider Type"].get_to<string>(strColliderType);
 						wstrColliderType.assign(strColliderType.begin(), strColliderType.end());
 
 						if (strColliderType == "Sphere")
@@ -996,6 +995,7 @@ void CImgui_ProtoMgr::GameObject_Editor()
 			}
 			ImGui::Combo("Model", &iSelectModel, ppComponentTag[COM_MODEL], iComponentCnt[COM_MODEL]);
 			ImGui::Combo("Collider", &iSelectCollider, ppComponentTag[COM_COLLIDER], iComponentCnt[COM_COLLIDER]);
+
 			if (ImGui::Button("Create"))
 			{
 				vector<pair<_uint, wstring>>	vecPrototypeInfo;
@@ -1057,7 +1057,7 @@ void CImgui_ProtoMgr::GameObject_Editor()
 				}
 				CGameUtils::ctwc(ppComponentTag[COM_COLLIDER][iSelectCollider], wszComponentTag);
 				iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
-				if(iPrototypeLevel != 1000)
+				if (iPrototypeLevel != 1000)
 				{
 					MyPair.first = iPrototypeLevel;
 					MyPair.second = wstring(wszComponentTag);

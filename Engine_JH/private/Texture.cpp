@@ -61,6 +61,56 @@ HRESULT CTexture::Initialize_Clone(CGameObject* pOwner, void * pArg)
 	return S_OK;
 }
 
+void CTexture::Imgui_RenderProperty()
+{
+	static _uint	iSelectedIndex = 0;
+	for (_uint i = 0; i < m_iNumTextures; ++i)
+	{
+		if (ImGui::ImageButton(m_pTextures[i], ImVec2(50.f, 50.f)))
+		{
+			iSelectedIndex = i;
+			ImGuiFileDialog::Instance()->OpenDialog("Choose Texture", "Choose Texture", ".png,.dds,.tga,.jpg,.jpeg", "../Bin/Resources", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+		}
+		ImGui::SameLine();
+	}
+
+	if (ImGuiFileDialog::Instance()->Display("Choose Texture"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			_ulong dwRefCnt = Safe_Release(m_pTextures[iSelectedIndex]);
+
+			for (_ulong i = 0; i < dwRefCnt - 1; ++i)
+				Safe_Release(m_pTextures[iSelectedIndex]);
+
+			string		strFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
+			wstring	wstrFilePath;
+			wstrFilePath.assign(strFilePath.begin(), strFilePath.end());
+
+			_tchar		szExt[MAX_PATH] = L"";
+			_wsplitpath_s(wstrFilePath.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, szExt, MAX_PATH);
+
+			HRESULT	hr = 0;
+			if (!lstrcmp(szExt, L".tga"))
+				hr = E_FAIL;
+			else if (!lstrcmp(szExt, L".dds"))
+				hr = DirectX::CreateDDSTextureFromFile(m_pDevice, wstrFilePath.c_str(), nullptr, &m_pTextures[iSelectedIndex]);
+			else
+				hr = DirectX::CreateWICTextureFromFile(m_pDevice, wstrFilePath.c_str(), nullptr, &m_pTextures[iSelectedIndex]);
+
+			for (_ulong i = 0; i < dwRefCnt - 1; ++i)
+				Safe_AddRef(m_pTextures[iSelectedIndex]);
+
+			ImGuiFileDialog::Instance()->Close();
+		}
+		if (!ImGuiFileDialog::Instance()->IsOk())
+		{
+			ImGuiFileDialog::Instance()->Close();
+		}
+	}
+	ImGui::NewLine();
+}
+
 HRESULT CTexture::Bind_ShaderResources(CShader * pShaderCom, const wstring pConstantName)
 {
 	return pShaderCom->Set_ShaderResourceViewArray(pConstantName, m_pTextures, m_iNumTextures);

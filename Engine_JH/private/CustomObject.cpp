@@ -110,6 +110,9 @@ HRESULT CCustomObject::Initialize_Prototype(const vector<pair<_uint, wstring>>& 
 
 HRESULT CCustomObject::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
+
+	m_wstrPrototypeGameObjectTag = wstrPrototypeTag;
+
 	GAMEOBJECTDESC		GameObjectDesc;
 	ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
 
@@ -273,13 +276,18 @@ void CCustomObject::Free()
 			Safe_Release(m_pVIBufferCom);
 		if (m_pShaderCom != nullptr)
 			Safe_Release(m_pShaderCom);
-		if (m_pModelCom != nullptr)
-			Safe_Release(m_pModelCom);
+
 		if (m_pTextureCom != nullptr)
 		{
 			for (_uint i = 0; i < m_iNumTextureCom; ++i)
 				Safe_Release(m_pTextureCom[i]);
 		}
+
+		if (m_pModelCom != nullptr)
+			Safe_Release(m_pModelCom);
+
+		if (m_pColliderCom != nullptr)
+			Safe_Release(m_pColliderCom);
 		
 	}
 }

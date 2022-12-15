@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\public\Mesh.h"
-
+#include "Model.h"
 #include "Bone.h"
 
 CMesh::CMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -15,6 +15,7 @@ CMesh::CMesh(const CMesh & rhs)
 	, m_strName(rhs.m_strName)
 	, m_iMaterialIndex(rhs.m_iMaterialIndex)
 	, m_iNumMeshBones(rhs.m_iNumMeshBones)
+	, m_pNonAnimVertices(rhs.m_pNonAnimVertices)
 	, m_pAnimVertices(rhs.m_pAnimVertices)
 	, m_pIndices(rhs.m_pIndices)
 {
@@ -22,13 +23,13 @@ CMesh::CMesh(const CMesh & rhs)
 
 HRESULT CMesh::Save_Mesh(HANDLE& hFile, DWORD& dwByte)
 {
-	if (CModel::MODELTYPE_END == m_eType)
+	if (m_eType == CModel::MODELTYPE_END)
 		return E_FAIL;
 
-	_uint		iNameLength = (_uint)m_strName.length() + 1;
+	_uint			iNameLength = (_uint)m_strName.length() + 1;
 	const char*	pName = m_strName.c_str();
 	WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-	WriteFile(hFile, pName, sizeof(char)* iNameLength, &dwByte, nullptr);
+	WriteFile(hFile, pName, sizeof(char) * iNameLength, &dwByte, nullptr);
 
 	WriteFile(hFile, &m_eType, sizeof(m_eType), &dwByte, nullptr);
 	WriteFile(hFile, &m_iMaterialIndex, sizeof(_uint), &dwByte, nullptr);
@@ -37,12 +38,12 @@ HRESULT CMesh::Save_Mesh(HANDLE& hFile, DWORD& dwByte)
 	WriteFile(hFile, &m_iNumMeshBones, sizeof(_uint), &dwByte, nullptr);
 	WriteFile(hFile, &m_iStride, sizeof(_uint), &dwByte, nullptr);
 
-	if(CModel::MODEL_NONANIM == m_eType)
+	if (m_eType == CModel::MODEL_NONANIM)
 	{
 		for (_uint i = 0; i < m_iNumVertices; ++i)
 			WriteFile(hFile, &m_pNonAnimVertices[i], sizeof(VTXMODEL), &dwByte, nullptr);
 	}
-	else if (CModel::MODEL_ANIM == m_eType)
+	else if (m_eType == CModel::MODEL_ANIM)
 	{
 		for (_uint i = 0; i < m_iNumVertices; ++i)
 			WriteFile(hFile, &m_pAnimVertices[i], sizeof(VTXANIMMODEL), &dwByte, nullptr);
@@ -64,11 +65,12 @@ HRESULT CMesh::Save_MeshBones(HANDLE& hFile, DWORD& dwByte)
 
 HRESULT CMesh::Load_Mesh(HANDLE& hFile, DWORD& dwByte)
 {
-	if (CModel::MODELTYPE_END == m_eType)
+	if (m_eType == CModel::MODELTYPE_END)
 		return E_FAIL;
-	_uint		iNameLength = 0;
+
+	_uint			iNameLength = 0;
 	ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
-	char*		pName = new char[iNameLength];
+	char*			pName = new char[iNameLength];
 	ReadFile(hFile, pName, sizeof(char) * iNameLength, &dwByte, nullptr);
 
 	m_strName = pName;
@@ -88,7 +90,7 @@ HRESULT CMesh::Load_Mesh(HANDLE& hFile, DWORD& dwByte)
 	m_iNumIndicesPerPrimitive = 3;
 	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitive;
 
-	if(CModel::MODEL_NONANIM == m_eType)
+	if (m_eType == CModel::MODEL_NONANIM)
 	{
 		m_pNonAnimVertices = new VTXMODEL[m_iNumVertices];
 
@@ -98,7 +100,7 @@ HRESULT CMesh::Load_Mesh(HANDLE& hFile, DWORD& dwByte)
 		ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 		m_tSubResourceData.pSysMem = m_pNonAnimVertices;
 	}
-	else if (CModel::MODEL_ANIM == m_eType)
+	else if (m_eType == CModel::MODEL_ANIM)
 	{
 		m_pAnimVertices = new VTXANIMMODEL[m_iNumVertices];
 
@@ -108,6 +110,7 @@ HRESULT CMesh::Load_Mesh(HANDLE& hFile, DWORD& dwByte)
 		ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 		m_tSubResourceData.pSysMem = m_pAnimVertices;
 	}
+
 	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
 	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -135,7 +138,8 @@ HRESULT CMesh::Load_Mesh(HANDLE& hFile, DWORD& dwByte)
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_tSubResourceData.pSysMem = m_pIndices;
 
-	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL);
+	if (FAILED(__super::Create_IndexBuffer()))
+		return E_FAIL;
 
 	return S_OK;
 }

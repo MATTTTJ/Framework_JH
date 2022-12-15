@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Bone.h"
 #include "Animation.h"
+#include "GameInstance.h"
 #include "GameUtils.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -142,7 +143,7 @@ HRESULT CModel::Initialize_Clone(CGameObject* pOwner, void * pArg)
 		HANDLE	hFile = CreateFileW(m_wstrFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 		SetFilePointer(hFile, m_dwBeginBoneData, nullptr, FILE_BEGIN);
 
-		DWORD Temp = 0;
+		DWORD	Temp = 0;
 		ReadFile(hFile, &Temp, sizeof(DWORD), &dwByte, nullptr);
 
 		FAILED_CHECK_RETURN(Load_BoneAnimation(hFile, dwByte), E_FAIL);
@@ -150,6 +151,8 @@ HRESULT CModel::Initialize_Clone(CGameObject* pOwner, void * pArg)
 		CloseHandle(hFile);
 	}
 
+	if (m_eType == MODEL_ANIM && m_pOwner != nullptr)
+		CGameInstance::GetInstance()->Add_AnimObject(m_pOwner);
 	return S_OK;
 }
 
@@ -419,7 +422,7 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 
 		for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; ++j)
 		{
-			aiString			strTexturePath;
+			aiString		strTexturePath;
 
 			if (FAILED(pAIMaterial->GetTexture(aiTextureType(j), 0, &strTexturePath)))
 				continue;
@@ -430,11 +433,12 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 			strcat_s(szTexturePath, szTextureFileName);
 			strcat_s(szTexturePath, szExt);
 
-			_tchar			szFullPath[MAX_PATH] = L"";
+			_tchar		szFullPath[MAX_PATH] = L"";
 
 			MultiByteToWideChar(CP_ACP, 0, szTexturePath, (_int)strlen(szTexturePath), szFullPath, MAX_PATH);
 
 			ModelMaterial.pTexture[j] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
+
 			NULL_CHECK_RETURN(ModelMaterial.pTexture[j], E_FAIL);
 		}
 
@@ -464,17 +468,17 @@ HRESULT CModel::Ready_Animation()
 
 HRESULT CModel::Load_MeshMaterial(const wstring& wstrModelFilePath)
 {
-	DWORD		dwByte = 0;
-	HANDLE		hFile = CreateFileW(wstrModelFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,0);
+	DWORD	dwByte = 0;
+	HANDLE	hFile = CreateFileW(wstrModelFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 	if (hFile == INVALID_HANDLE_VALUE)
 		return E_FAIL;
 
-	// Meshes
+	/* Meshes */
 	ReadFile(hFile, &m_iNumMeshes, sizeof(_uint), &dwByte, nullptr);
 	m_vecMeshes.reserve(m_iNumMeshes);
 
-	for(_uint i =0; i< m_iNumMeshes; ++i)
+	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
 		CMesh*		pMesh = CMesh::Create(m_pDevice, m_pContext, m_eType, nullptr, this);
 		NULL_CHECK_RETURN(pMesh, E_FAIL);
@@ -484,27 +488,27 @@ HRESULT CModel::Load_MeshMaterial(const wstring& wstrModelFilePath)
 		m_vecMeshes.push_back(pMesh);
 	}
 
-	// Materials
+	/* Materials */
 	ReadFile(hFile, &m_iNumMaterials, sizeof(_uint), &dwByte, nullptr);
 	m_vecMaterials.reserve(m_iNumMaterials);
 
-	for(_uint i = 0; i < m_iNumMaterials; ++i)
+	for (_uint i = 0; i < m_iNumMaterials; ++i)
 	{
 		MODELMATERIAL		tMaterial;
 		ZeroMemory(&tMaterial, sizeof(MODELMATERIAL));
 
-		for(_uint j = 0; j < AI_TEXTURE_TYPE_MAX; ++j)
+		for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; ++j)
 		{
-			_uint iTemp = AI_TEXTURE_TYPE_MAX;
+			_uint		iTemp = AI_TEXTURE_TYPE_MAX;
 			ReadFile(hFile, &iTemp, sizeof(_uint), &dwByte, nullptr);
 
 			if (iTemp == AI_TEXTURE_TYPE_MAX)
 				continue;
 
-			_uint iFilePathLength = 0;
+			_uint		iFilePathLength = 0;
 			ReadFile(hFile, &iFilePathLength, sizeof(_uint), &dwByte, nullptr);
 
-			_tchar* pFilePath = new _tchar[iFilePathLength];
+			_tchar	*	pFilePath = new _tchar[iFilePathLength];
 			ReadFile(hFile, pFilePath, sizeof(_tchar) * iFilePathLength, &dwByte, nullptr);
 
 			tMaterial.pTexture[j] = CTexture::Create(m_pDevice, m_pContext, wstring(pFilePath));
@@ -512,8 +516,10 @@ HRESULT CModel::Load_MeshMaterial(const wstring& wstrModelFilePath)
 
 			Safe_Delete_Array(pFilePath);
 		}
+
 		m_vecMaterials.push_back(tMaterial);
 	}
+
 	ReadFile(hFile, &m_dwBeginBoneData, sizeof(DWORD), &dwByte, nullptr);
 
 	CloseHandle(hFile);
@@ -524,7 +530,7 @@ HRESULT CModel::Load_MeshMaterial(const wstring& wstrModelFilePath)
 
 HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 {
-	_tchar	wszSaveFileDirectory[MAX_PATH] = L"";
+	_tchar		wszSaveFileDirectory[MAX_PATH] = L"";
 	CGameUtils::ctwc(pSaveFileDirectory, wszSaveFileDirectory);
 
 	DWORD	dwByte = 0;
@@ -533,7 +539,7 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 	if (hFile == INVALID_HANDLE_VALUE)
 		return E_FAIL;
 
-	// Meshes
+	/* Meshes */
 	WriteFile(hFile, &m_iNumMeshes, sizeof(_uint), &dwByte, nullptr);
 
 	for (auto& pMesh : m_vecMeshes)
@@ -546,7 +552,7 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 		}
 	}
 
-	// Materials
+	/* Materials*/
 	if (m_iNumMaterials == 0)
 		return E_FAIL;
 
@@ -554,11 +560,11 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 
 	for (auto& tMaterial : m_vecMaterials)
 	{
-		for (_uint i = 0; i< AI_TEXTURE_TYPE_MAX; ++i)
+		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
 		{
 			if (tMaterial.pTexture[i] == nullptr)
 			{
-				_uint	iTemp = AI_TEXTURE_TYPE_MAX;
+				_uint		iTemp = AI_TEXTURE_TYPE_MAX;
 				WriteFile(hFile, &iTemp, sizeof(_uint), &dwByte, nullptr);
 			}
 			else
@@ -566,18 +572,18 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 				WriteFile(hFile, &i, sizeof(_uint), &dwByte, nullptr);
 
 				const _tchar*	wszFilePath = tMaterial.pTexture[i]->Get_FilePath().c_str();
-				_uint			iFilepathLength = (_uint)tMaterial.pTexture[i]->Get_FilePath().length() + 1;
+				_uint				iFilePathLength = (_uint)tMaterial.pTexture[i]->Get_FilePath().length() + 1;
 
-				WriteFile(hFile, &iFilepathLength, sizeof(_uint), &dwByte, nullptr);
-				WriteFile(hFile, wszFilePath, sizeof(_tchar) * iFilepathLength, &dwByte, nullptr);
+				WriteFile(hFile, &iFilePathLength, sizeof(_uint), &dwByte, nullptr);
+				WriteFile(hFile, wszFilePath, sizeof(_tchar) * iFilePathLength, &dwByte, nullptr);
 			}
 		}
 	}
 
-	// TODO : 파일 위치 포인터 받아서 저장하기
+	/* 파일 위치 포인터 받아서 저장하기 */
 	m_dwBeginBoneData = SetFilePointer(hFile, 0, nullptr, FILE_CURRENT);
 
-	// Bones
+	/* Bones */
 	WriteFile(hFile, &m_dwBeginBoneData, sizeof(DWORD), &dwByte, nullptr);
 
 	WriteFile(hFile, &m_iNumBones, sizeof(_uint), &dwByte, nullptr);
@@ -591,11 +597,11 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 		}
 	}
 
-	// Mesh Bones
+	/* Mesh Bones */
 	for (auto& pMesh : m_vecMeshes)
 		pMesh->Save_MeshBones(hFile, dwByte);
 
-	// Animations
+	/* Animations */
 	WriteFile(hFile, &m_iNumAnimation, sizeof(_uint), &dwByte, nullptr);
 
 	for (auto& pAnimation : m_vecAnimations)
@@ -614,10 +620,9 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 
 }
 
-
 HRESULT CModel::Load_BoneAnimation(HANDLE& hFile, DWORD& dwByte)
 {
-	// Bone
+	/* Bones */
 	ReadFile(hFile, &m_iNumBones, sizeof(_uint), &dwByte, nullptr);
 	m_vecBones.reserve(m_iNumBones);
 
@@ -627,17 +632,17 @@ HRESULT CModel::Load_BoneAnimation(HANDLE& hFile, DWORD& dwByte)
 
 	FAILED_CHECK_RETURN(Ready_Bones(hFile, dwByte, pRootBone), E_FAIL);
 
-	// Setup Mesh Bones
+	/* SetUp Mesh Bones */
 	for (auto& pMesh : m_vecMeshes)
 		pMesh->SetUp_MeshBones(hFile, dwByte, this);
 
-	// Animations
+	/* Animations */
 	ReadFile(hFile, &m_iNumAnimation, sizeof(_uint), &dwByte, nullptr);
 	m_vecAnimations.reserve(m_iNumAnimation);
 
-	for(_uint i = 0; i< m_iNumAnimation; ++i)
+	for (_uint i = 0; i < m_iNumAnimation; ++i)
 	{
-		CAnimation* pAnimation = CAnimation::Create(nullptr, this);
+		CAnimation*	pAnimation = CAnimation::Create(nullptr, this);
 		NULL_CHECK_RETURN(pAnimation, E_FAIL);
 		FAILED_CHECK_RETURN(pAnimation->Load_Animation(hFile, dwByte), E_FAIL);
 

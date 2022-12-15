@@ -189,7 +189,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* For.Prototype_Component_Shader_VtxModel */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxModel",
-		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxModel.hlsl",CShader::DECLARATION_VTXMODEL, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
+		CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNonAnim.hlsl",CShader::DECLARATION_VTXMODEL, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxAnimModel*/

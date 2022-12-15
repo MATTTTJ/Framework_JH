@@ -37,7 +37,7 @@ private:
 	_uint					m_iTextureComLevel = 1000;
 	_uint					m_iModelComLevel = 1000;
 	_uint					m_iColliderComLevel = 1000;
-
+	
 	wstring					m_wstrRendererComTag = L"";
 	wstring					m_wstrVIBufferComTag = L"";
 	wstring					m_wstrShaderComTag = L"";
