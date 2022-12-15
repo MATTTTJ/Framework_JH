@@ -1,5 +1,4 @@
 #include "..\public\Component_Manager.h"
-#include "Component.h"
 
 IMPLEMENT_SINGLETON(CComponent_Manager)
 

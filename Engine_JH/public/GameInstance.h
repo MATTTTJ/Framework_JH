@@ -51,12 +51,15 @@ public: /* For.Level_Manager */
 	HRESULT				Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	HRESULT				Render_Level();
 	const _uint&		Get_CurLevelIndex();
+
 public: /* For.Object_Manager */
 	map<const wstring, class CGameObject*>*	Get_Prototypes();
 	map<const wstring, class CLayer*>*		Get_Layers(_uint iLevelIndex);
 	list<class CGameObject*>*				Get_CloneObjectList(_uint iLevelIndex, const wstring& szLayerTag);
+	vector<class CGameObject*>*				Get_AnimObject();
 	HRESULT				Add_Prototype(const wstring& pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT				Add_Layer(const _uint iLevelIndex, const wstring& wstrLayerTag);
+	HRESULT				Add_AnimObject(class CGameObject* pAnimObject);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, void* pArg = nullptr);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, _float4x4 matWorld, void* pArg = nullptr);
 	CGameObject*		Clone_GameObject(const wstring& wstrPrototypeTag, void* pArg = nullptr);

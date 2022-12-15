@@ -29,6 +29,7 @@ public:
 	virtual HRESULT				Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix PivotMatrix);
 	virtual HRESULT				Initialize_Clone(class CGameObject* pOwner, void* pArg);
 	virtual void				Imgui_RenderProperty() override;
+	void						Imgui_RenderAnimation();
 public:
 	void						Play_Animation(_double TimeDelta,_double LerpSpeed, _double AnimSpeed, _bool bFinish = false);
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);

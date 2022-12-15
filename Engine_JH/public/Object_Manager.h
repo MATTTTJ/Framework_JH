@@ -20,6 +20,7 @@ public:
 	map<const wstring, class CGameObject*>*	Get_Prototypes() { return &m_mapPrototypes; }
 	map<const wstring, class CLayer*>*		Get_Layers(_uint iLevelIndex) { return &m_pLayers[iLevelIndex]; }
 	list<class CGameObject*>*				Get_CloneObjectList(_uint iLevelIndex, const wstring& wstrLayerTag) { return Find_Layer(iLevelIndex, wstrLayerTag)->Get_GameObject(); }
+	vector<class CGameObject*>*				Get_AnimObjects() { return &m_vecAnimObjects; }
 
 public:
 	HRESULT			Reserve_Manager(_uint iNumLevels);
@@ -27,6 +28,7 @@ public:
 public:
 	HRESULT			Add_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
 	HRESULT			Add_Prototype(const wstring& pPrototypeTag, class CGameObject* pPrototype);
+	HRESULT			Add_AnimObject(class CGameObject* pAnimObject);
 	HRESULT			Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 	HRESULT			Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, _float4x4 WorldMatrix, void* pArg = nullptr);
 	CGameObject*	Clone_GameObject(const wstring& wstrPrototypeTag, void* pArg = nullptr);
@@ -46,6 +48,9 @@ private: /* For Cloned Objects. */
 	map<const wstring, class CLayer*>*			m_pLayers = nullptr;
 	typedef map<const wstring, class CLayer*>	LAYERS;
 	_uint										m_iNumLevels = 0;
+
+	vector<class CGameObject*>					m_vecAnimObjects;
+	typedef vector<class CGameOBject*>			ANIMOBJECTS;
 
 private:
 	class CGameObject*	Find_Prototype(const wstring& pPrototypeTag);

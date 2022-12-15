@@ -57,7 +57,7 @@ HRESULT CGameObject::Render()
 
 void CGameObject::Imgui_RenderComponentProperties()
 {
-	for (const auto& Pair : m_Components)
+	for (const auto& Pair : m_mapComponents)
 	{
 		char szName[MAX_PATH];
 		CGameUtils::wc2c(Pair.first.c_str(), szName);
@@ -80,7 +80,7 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& wstrPrototy
 	CComponent*	pComponent = pGameInstance->Clone_Component(iLevelIndex, wstrPrototypeTag, pOwner, pArg);
 	NULL_CHECK_RETURN(pComponent, E_FAIL)
 
-	m_Components.emplace(wstrComponentTag, pComponent);
+	m_mapComponents.emplace(wstrComponentTag, pComponent);
 	Safe_AddRef(pComponent);
 
 	*ppOut = pComponent;
@@ -90,11 +90,21 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& wstrPrototy
 	return S_OK;
 }
 
+CComponent* CGameObject::Get_Component(const wstring& wstrComponentTag)
+{
+	auto iter = find_if(m_mapComponents.begin(), m_mapComponents.end(), CTag_Finder(wstrComponentTag));
+
+	if (iter == m_mapComponents.end())
+		return nullptr;
+
+	return iter->second;
+}
+
 CComponent* CGameObject::Find_Component(const wstring& wstrComponentTag)
 {
-	auto iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(wstrComponentTag));
+	auto iter = find_if(m_mapComponents.begin(), m_mapComponents.end(), CTag_Finder(wstrComponentTag));
 
-		if (iter == m_Components.end())
+		if (iter == m_mapComponents.end())
 			return nullptr;
 
 	return iter->second;
@@ -105,9 +115,9 @@ void CGameObject::Free()
 	if(m_pTransformCom != nullptr)
 		Safe_Release(m_pTransformCom);
 
-	for (auto& Pair : m_Components)
+	for (auto& Pair : m_mapComponents)
 		Safe_Release(Pair.second);
-	m_Components.clear();
+	m_mapComponents.clear();
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

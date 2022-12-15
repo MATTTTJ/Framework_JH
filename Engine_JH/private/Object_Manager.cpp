@@ -75,6 +75,15 @@ HRESULT CObject_Manager::Add_Prototype(const wstring& pPrototypeTag, CGameObject
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Add_AnimObject(CGameObject* pAnimObject)
+{
+	NULL_CHECK_RETURN(pAnimObject, E_FAIL);
+
+	m_vecAnimObjects.push_back(pAnimObject);
+	Safe_AddRef(pAnimObject);
+	return S_OK;
+}
+
 HRESULT CObject_Manager::Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, void * pArg)
 {
 	CGameObject*		pPrototype = Find_Prototype(wstrPrototypeTag);
@@ -240,6 +249,10 @@ void CObject_Manager::Free()
 
 		m_pLayers[i].clear();
 	}
+	for (auto& pAnimObject : m_vecAnimObjects)
+		Safe_Release(pAnimObject);
+	m_vecAnimObjects.clear();
+
 
 	Safe_Delete_Array(m_pLayers);
 
