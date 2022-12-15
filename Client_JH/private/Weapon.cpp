@@ -29,8 +29,12 @@ HRESULT CWeapon::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) - XMVectorSet(0.f, 0.27f, -0.15f, 0.f));
+	// m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f));
+	// m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
 	m_pTransformCom->Set_Scaled(_float3(0.1f, 0.1f, 0.1f));
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+
+	// m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
 
 	return S_OK;
 }
@@ -44,7 +48,7 @@ void CWeapon::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	_matrix	SocketMatrix = m_WeaponDesc.pSocket->Get_OffsetMatrix() * m_WeaponDesc.pSocket->Get_CombindMatrix() * XMLoadFloat4x4(&m_WeaponDesc.PivotMatrix);
+	_matrix	SocketMatrix = m_WeaponDesc.pSocket->Get_CombindMatrix() ;
 
 	SocketMatrix.r[0] = XMVector3Normalize(SocketMatrix.r[0]);
 	SocketMatrix.r[1] = XMVector3Normalize(SocketMatrix.r[1]);

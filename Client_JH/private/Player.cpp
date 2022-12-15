@@ -273,7 +273,7 @@ HRESULT CPlayer::Ready_Parts()
 	ZeroMemory(&Weapondesc, sizeof(CWeapon::WEAPONDESC));
 
 	Weapondesc.PivotMatrix = m_pModelCom->Get_PivotFloat4x4();
-	Weapondesc.pSocket = m_pModelCom->Get_BonePtr("Bone038");
+	Weapondesc.pSocket = m_pModelCom->Get_BonePtr("Bip001 R Finger12");
 	Weapondesc.pTargetTransform = m_pTransformCom;
 	Safe_AddRef(Weapondesc.pSocket);
 	Safe_AddRef(m_pTransformCom);
