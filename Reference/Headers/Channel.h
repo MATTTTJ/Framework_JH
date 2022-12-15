@@ -17,6 +17,7 @@ public:
 	HRESULT				Initialize(aiNodeAnim* pAIChannel, class CModel* pModel);
 	void				Update_TransformMatrix(_double dPlayTime);
 	_bool				Update_TransformLerpMatrix(_double dPlayTime, CChannel* CurrentChannel, CChannel* NextChannel,_double LerpSpeed, _bool bFinish = false );
+	void				Update_Blend(_double dPlayTime, _float fRatio);
 
 	void				Reset_KeyFrameIndex() { m_iCurrentKeyframeIndex = 0; m_dLerpRatio = 0.0; }
 	void				Reset_LerpIndex() { m_iLerpFrameIndex = -1; }

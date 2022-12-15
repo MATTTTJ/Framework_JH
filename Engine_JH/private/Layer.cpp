@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Layer.h"
 
 #include "GameObject.h"

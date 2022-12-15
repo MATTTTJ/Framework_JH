@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Camera.h"
 #include "GameInstance.h"
 #include "PipeLine.h"

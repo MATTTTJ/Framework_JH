@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Channel.h"
 
 #include "Bone.h"
@@ -119,6 +120,8 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 	_vector vPosition;
 	_matrix TransformMatrix;
 
+	
+
 	// 현재 재생된 시간이 맨 뒤에있는 키 프레임의 시간보다 커지면 (솎아낸 키 프레임)
 	// 마지막 키프레임 데이터를 남겨두기위한 작업
 	if(dPlayTime >= m_vecKeyframes.back().dTime)
@@ -231,6 +234,51 @@ _bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* CurrentC
 	}
 
 	return false;
+}
+
+void CChannel::Update_Blend(_double dPlayTime, _float fRatio)
+{
+	_vector	vBaseScale, vBaseRotation, vBasePosition;
+	_vector	vScale, vRotation, vPosition;
+	_matrix	matTransform = m_pBone->Get_TransformMatrix();
+
+	XMMatrixDecompose(&vBaseScale, &vBaseRotation, &vBasePosition, matTransform);
+
+	if (dPlayTime >= m_vecKeyframes.back().dTime)
+	{
+		vScale = XMLoadFloat3(&m_vecKeyframes.back().vScale);
+		vRotation = XMLoadFloat4(&m_vecKeyframes.back().vRotation);
+		vPosition = XMLoadFloat3(&m_vecKeyframes.back().vPosition);
+		vPosition = XMVectorSetW(vPosition, 1.f);
+	}
+	else
+	{
+		while (dPlayTime >= m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime)
+			++m_iCurrentKeyframeIndex;
+
+		_float fTmp = _float((dPlayTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime)
+			/ (m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime));
+
+		vScale = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vScale), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vScale), fTmp);
+		vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex].vRotation), XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vRotation), fTmp);
+		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition), fTmp);
+		vPosition = XMVectorSetW(vPosition, 1.f);
+
+		if ("104_Teammate" == m_strName)
+		{
+			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		}
+	}
+
+	vScale = XMVectorLerp(vBaseScale, vScale, fRatio);
+	vRotation = XMQuaternionSlerp(vBaseRotation, vRotation, fRatio);
+	vPosition = XMVectorLerp(vBasePosition, vPosition, fRatio);
+	vPosition = XMVectorSetW(vPosition, 1.f);
+
+
+	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+
+	m_pBone->Set_TransformMatrix(matTransform);
 }
 
 

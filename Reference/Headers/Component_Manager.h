@@ -8,6 +8,8 @@
 #include "Transform.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"	
+#include "Navigation.h"
+#include "Component.h"
 
 BEGIN(Engine)
 

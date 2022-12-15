@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Input_Device.h"
 
 IMPLEMENT_SINGLETON(CInput_Device)

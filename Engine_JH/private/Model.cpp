@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Model.h"
 #include "Mesh.h"
 #include "Shader.h"
@@ -21,7 +22,8 @@ CModel::CModel(const CModel & rhs)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_iNumBones(rhs.m_iNumBones)
 	, m_iNumAnimation(rhs.m_iNumAnimation)
-	, m_iCurrentAnimIndex(rhs.m_iCurrentAnimIndex)
+	// , m_bIsAnimFinished(true)
+	, m_iCurAnimIndex(rhs.m_iCurAnimIndex)
 	, m_dwBeginBoneData(rhs.m_dwBeginBoneData)
 {
 	for (auto& pMesh : rhs.m_vecMeshes)
@@ -32,6 +34,7 @@ CModel::CModel(const CModel & rhs)
 		for(_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(Material.pTexture[i]);
 	}
+	m_iLastAnimIndex = 0;
 
 
 }
@@ -67,12 +70,17 @@ CBone* CModel::Get_BonePtr(const string& strBoneName)
 
 void CModel::Set_CurAnimIndex(_uint AnimIndex)
 {
-	if (0 > AnimIndex || m_iNumAnimation <= AnimIndex || m_iCurrentAnimIndex == AnimIndex)
+	if (AnimIndex < 0 || AnimIndex > m_iNumAnimation || AnimIndex == m_iCurAnimIndex)
 		return;
 
-	m_iNextAnimIndex = AnimIndex;
+	m_iLastAnimIndex = m_iCurAnimIndex;
+	m_iCurAnimIndex = AnimIndex;
+	// m_vecAnimations[m_iCurAnimIndex]->Reset_Animation();
 
-	m_bIsAnimChange = true;
+	if (m_iLastAnimIndex != m_iCurAnimIndex)
+		m_fCurAnimChangeTime = 0.f;
+
+	// m_bIsAnimChange = true;
 }
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix PivotMatrix)
@@ -252,22 +260,45 @@ void CModel::Play_Animation(_double TimeDelta, _double LerpSpeed, _double AnimSp
 	if (MODEL_NONANIM == m_eType)
 		return;
 
-	if (m_bIsAnimChange)
-	{
-		m_bIsAnimChange = m_vecAnimations[m_iCurrentAnimIndex]->Update_Lerp(TimeDelta, m_vecAnimations[m_iNextAnimIndex], LerpSpeed, bFinish);
+	m_fAnimChangeTime = 0.1;
 
-		if (false == m_bIsAnimChange)
-			m_iCurrentAnimIndex = m_iNextAnimIndex;
+	if(m_fCurAnimChangeTime < m_fAnimChangeTime)
+	{		
+		m_vecAnimations[m_iLastAnimIndex]->Update_Bones(TimeDelta);
+		m_vecAnimations[m_iCurAnimIndex]->Update_Lerp(0.1, m_fCurAnimChangeTime / m_fAnimChangeTime);
+
+		m_fCurAnimChangeTime += (_float)TimeDelta;
 	}
 	else
-		m_bIsAnimFinished = m_vecAnimations[m_iCurrentAnimIndex]->Update_Bones(TimeDelta);
+	{
+		m_vecAnimations[m_iCurAnimIndex]->Update_Bones(TimeDelta);
+		// m_vecAnimations[m_iLastAnimIndex]->Update_Lerp(0.1, m_fCurAnimChangeTime / m_fAnimChangeTime);
 
+		m_iLastAnimIndex = m_iCurAnimIndex;
+	}
 
 	for (auto& pBone : m_vecBones)
 	{
 		if (nullptr != pBone)
 			pBone->compute_CombindTransformationMatrix();
 	}
+
+	// if (m_bIsAnimChange)
+	// {
+	// 	m_bIsAnimChange = m_vecAnimations[m_iLastAnimIndex]->Update_Lerp(TimeDelta, m_vecAnimations[m_iCurAnimIndex], LerpSpeed, bFinish);
+	//
+	// 	if (false == m_bIsAnimChange)
+	// 		m_iLastAnimIndex = m_iCurAnimIndex;
+	// }
+	// else
+	// 	m_bIsAnimFinished = m_vecAnimations[m_iLastAnimIndex]->Update_Bones(TimeDelta);
+	//
+	//
+	// for (auto& pBone : m_vecBones)
+	// {
+	// 	if (nullptr != pBone)
+	// 		pBone->compute_CombindTransformationMatrix();
+	// }
 }
 
 HRESULT CModel::Bind_Material(CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName)

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Component_Manager.h"
 
 IMPLEMENT_SINGLETON(CComponent_Manager)

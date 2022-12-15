@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Component.h"
 
 CComponent::CComponent(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

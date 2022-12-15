@@ -105,14 +105,12 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	if (pGameInstance->Get_DIKeyState(DIK_LEFT))
 	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * -1.f);
 		m_pModelCom->Set_CurAnimIndex(23);
 
 	}
 
 	if (pGameInstance->Get_DIKeyState(DIK_RIGHT))
 	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta);
 		m_pModelCom->Set_CurAnimIndex(24);
 
 	}
@@ -124,7 +122,6 @@ void CPlayer::Tick(_double dTimeDelta)
 	}
 	if (pGameInstance->Get_DIKeyState(DIK_R))
 	{
-		m_pTransformCom->Go_Straight(dTimeDelta);
 		m_pModelCom->Set_CurAnimIndex(12);
 	}
 

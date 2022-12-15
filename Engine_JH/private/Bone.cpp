@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Bone.h"
 
 CBone::CBone()

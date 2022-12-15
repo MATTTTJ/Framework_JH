@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Transform.h"
 #include "Shader.h"
 #include "GameInstance.h"

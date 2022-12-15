@@ -29,6 +29,7 @@ public:
 	virtual HRESULT				Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix PivotMatrix);
 	virtual HRESULT				Initialize_Clone(class CGameObject* pOwner, void* pArg);
 	virtual void				Imgui_RenderProperty() override;
+	void						Imgui_RenderAnimation();
 public:
 	void						Play_Animation(_double TimeDelta,_double LerpSpeed, _double AnimSpeed, _bool bFinish = false);
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);
@@ -50,8 +51,12 @@ private:
 	_uint						m_iNumBones = 0;
 	vector<class CBone*>		m_vecBones;
 
-	_uint						m_iCurrentAnimIndex = 0;
-	_int						m_iNextAnimIndex = -1;
+	_uint						m_iLastAnimIndex = 0;
+	_int						m_iCurAnimIndex = 0;
+
+	// AnimChange
+	_float						m_fAnimChangeTime = 1.f;
+	_float						m_fCurAnimChangeTime = 1.f;
 
 	_uint						m_iNumAnimation = 0; // 애니메이션의 갯수 
 	vector<class CAnimation*>	m_vecAnimations;

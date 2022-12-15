@@ -15,6 +15,8 @@ public:
 	const _uint&	Get_NumChild() const { return m_iNumChild; }
 	_matrix			Get_OffsetMatrix()	{ return XMLoadFloat4x4(&m_OffsetMatrix); }
 	_matrix			Get_CombindMatrix() { return XMLoadFloat4x4(&m_CombindTransformMatrix);	}
+	_matrix			Get_TransformMatrix() { return XMLoadFloat4x4(&m_TransformMatrix); }
+
 	void			Set_TransformMatrix(_fmatrix TransformMatrix) { XMStoreFloat4x4(&m_TransformMatrix, TransformMatrix); }
 	void			Set_OffsetMatrix(_float4x4 OffsetMatrix) { m_OffsetMatrix = OffsetMatrix; }
 

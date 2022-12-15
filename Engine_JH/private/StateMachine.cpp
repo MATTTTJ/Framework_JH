@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\StateMachine.h"
 #include "GameUtils.h"
 #include <sstream>

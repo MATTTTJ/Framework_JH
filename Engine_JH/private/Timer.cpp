@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Timer.h"
 
 CTimer::CTimer() : m_TimeDelta(0.0)

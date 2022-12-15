@@ -51,8 +51,12 @@ private:
 	_uint						m_iNumBones = 0;
 	vector<class CBone*>		m_vecBones;
 
-	_uint						m_iCurrentAnimIndex = 0;
-	_int						m_iNextAnimIndex = -1;
+	_uint						m_iLastAnimIndex = 0;
+	_int						m_iCurAnimIndex = 0;
+
+	// AnimChange
+	_float						m_fAnimChangeTime = 1.f;
+	_float						m_fCurAnimChangeTime = 1.f;
 
 	_uint						m_iNumAnimation = 0; // 애니메이션의 갯수 
 	vector<class CAnimation*>	m_vecAnimations;

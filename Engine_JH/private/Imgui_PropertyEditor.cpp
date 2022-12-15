@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Imgui_PropertyEditor.h"
 
 #include "GameObject.h"

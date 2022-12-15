@@ -91,6 +91,9 @@
     <Filter Include="02. GameObjects\StaticCamera">
       <UniqueIdentifier>{3b5815cb-323e-46e7-b108-b53d641a90ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Tool\AnimationMgr">
+      <UniqueIdentifier>{f5d3012a-3a8a-45d2-ae12-0d0cb3ebb2eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -174,6 +177,7 @@
     <ClInclude Include="..\public\Static_Camera.h">
       <Filter>02. GameObjects\StaticCamera</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Imgui_AnimationMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -248,6 +252,7 @@
     <ClCompile Include="..\private\Static_Camera.cpp">
       <Filter>02. GameObjects\StaticCamera</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Imgui_AnimationMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

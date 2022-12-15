@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Graphic_Device.h"
 
 IMPLEMENT_SINGLETON(CGraphic_Device)

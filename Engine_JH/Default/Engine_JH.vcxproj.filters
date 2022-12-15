@@ -130,6 +130,9 @@
     <Filter Include="01. Utility\03. Components\09. Navigation\Cell">
       <UniqueIdentifier>{2dc93e9c-2952-4277-9aa0-2325a866e213}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Default">
+      <UniqueIdentifier>{0a527996-72c1-4de1-a541-fa7b55cc7e3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -222,7 +225,6 @@
     <ClInclude Include="..\public\Timer_Manager.h">
       <Filter>00. System\Timer</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="..\public\Light.h">
       <Filter>01. Utility\05. Lights</Filter>
     </ClInclude>
@@ -331,6 +333,12 @@
     <ClInclude Include="..\public\Cell.h">
       <Filter>01. Utility\03. Components\09. Navigation\Cell</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Default</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Default</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -371,9 +379,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Shader.cpp">
       <Filter>01. Utility\03. Components\03. Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine_Struct.cpp">
-      <Filter>99.Defines</Filter>
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Rect.cpp">
       <Filter>01. Utility\03. Components\02. VIBuffer\Rect</Filter>
@@ -501,17 +506,29 @@
     <ClCompile Include="..\private\Cell.cpp">
       <Filter>01. Utility\03. Components\09. Navigation\Cell</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Engine_Struct.cpp">
+      <Filter>99.Defines</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Engine_JH.rc" />
+    <None Include="ClassDiagram.cd">
+      <Filter>Default</Filter>
+    </None>
+    <None Include="ClassDiagram1.cd">
+      <Filter>Default</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\public\HowToUse.txt">
       <Filter>01. Utility\03. Components\09. StateMachine</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Engine_JH.rc">
+      <Filter>Default</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

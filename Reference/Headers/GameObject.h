@@ -11,10 +11,6 @@ public:
 		CTransform::TRANSFORMDESC		TransformDesc;
 	}GAMEOBJECTDESC;
 
-public:
-	class CComponent*		Find_Component(const wstring& pComopnentTag);
-
-
 protected:
 	CGameObject(ID3D11Device*	pDevice, ID3D11DeviceContext* pContext);
 	CGameObject(const CGameObject& rhs);
@@ -25,7 +21,9 @@ public:
 	const _float4x4&		Get_WorldFloat4x4() const { return m_pTransformCom->Get_WorldFloat4x4(); }
 	const wstring&			Get_PrototypeGameObjectTag() { return m_wstrPrototypeGameObjectTag; }
 	void					Set_WorldMatrix(_float4x4 WorldMatrix) { if (m_pTransformCom != nullptr)		m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
-	
+	class CComponent*		Get_Component(const wstring& wstrComponentTag);
+	class CComponent*		Find_Component(const wstring& pComopnentTag);
+
 public:
 	virtual HRESULT			Initialize_Prototype();
 	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg);
@@ -49,7 +47,7 @@ protected:
 	_bool					m_bIsClone = false;
 	wstring					m_wstrPrototypeGameObjectTag = L"";
 
-	map<const wstring, class CComponent*>	m_Components;
+	map<const wstring, class CComponent*>	m_mapComponents;
 	class CTransform*						m_pTransformCom = nullptr;
 
 public:

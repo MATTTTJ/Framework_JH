@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\VIBuffer_Terrain.h"
 
 #include "GameInstance.h"

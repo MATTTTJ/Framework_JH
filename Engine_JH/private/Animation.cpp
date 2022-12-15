@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Animation.h"
 #include "Channel.h"
 
@@ -62,6 +63,14 @@ HRESULT CAnimation::Load_Animation(HANDLE& hFile, DWORD& dwByte)
 	return S_OK;
 }
 
+void CAnimation::Reset_Animation()
+{
+	for (auto& pChannel : m_vecChannels)
+		pChannel->Reset_KeyFrameIndex();
+
+	m_dPlayTime = 0.0;
+}
+
 HRESULT CAnimation::Initialize(aiAnimation* pAIAnimation, CModel* pModel)
 {
 	m_pModel = pModel;
@@ -88,44 +97,36 @@ HRESULT CAnimation::Initialize(aiAnimation* pAIAnimation, CModel* pModel)
 	return S_OK;
 }
 
-_bool CAnimation::Update_Bones(_double dTimeDelta, _double AnimSpeed)
+void CAnimation::Update_Bones(_double dTimeDelta, _double AnimSpeed)
 {
-	if (false == m_bIsLooping && true == m_bIsFinished)
-	{
-		return false;;
-	}
-
-	if(false == m_bIsLerpEnd)
-	{
-		m_dPlayTime += dTimeDelta * m_dTickPerSecond * AnimSpeed;
-	}
+	if (!m_bIsLooping && m_bIsFinished)
+		return;
 
 	m_dPlayTime += m_dTickPerSecond * dTimeDelta * AnimSpeed;
+
+	// if(false == m_bIsLerpEnd)
+	// {
+	// 	m_dPlayTime += dTimeDelta * m_dTickPerSecond * AnimSpeed;
+	// }
 
 	if (m_dPlayTime >= m_dDuration)
 	{
 		m_dPlayTime = 0.0;
 		m_bIsFinished = true;
-		return true;
 	}
 
-	if (m_bIsLooping && m_bIsFinished)
+	for(_uint i =0; i < m_iNumChannels; ++i)
 	{
-		for (auto iter : m_vecChannels)
-			iter->Reset_KeyFrameIndex();
+		if (m_bIsFinished == true)
+			m_vecChannels[i]->Reset_KeyFrameIndex();
+
+		m_vecChannels[i]->Update_TransformMatrix(m_dPlayTime);
 	}
 
-	for (auto iter : m_vecChannels)
-	{
-		iter->Update_TransformMatrix(m_dPlayTime);
-	}
-
-	if (true == m_bIsFinished)
+	if (m_bIsFinished)
 	{
 		m_bIsFinished = false;
 	}
-
-	return false;
 }
 
 _bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation* pNextAnim, _double LerpSpeed, _bool bFinish)
@@ -160,6 +161,31 @@ _bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation* pNextAnim, _double
 		return true;
 	}
 	return true;
+}
+
+void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
+{
+	if (!m_bIsLooping && m_bIsFinished)
+		return;
+
+	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
+
+	if (m_dPlayTime >= m_dDuration)
+	{
+		m_dPlayTime = 0.0;
+		m_bIsFinished = true;
+	}
+
+	for (_uint i = 0; i < m_iNumChannels; ++i)
+	{
+		if (m_bIsFinished == true)
+			m_vecChannels[i]->Reset_KeyFrameIndex();
+
+		m_vecChannels[i]->Update_Blend(m_dPlayTime, fRatio);
+	}
+
+	if (m_bIsFinished)
+		m_bIsFinished = false;
 }
 
 CAnimation* CAnimation::Create(aiAnimation* pAIAnimation, CModel* pModel)

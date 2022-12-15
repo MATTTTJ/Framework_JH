@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Level.h"
 
 CLevel::CLevel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

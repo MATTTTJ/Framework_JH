@@ -1,4 +1,6 @@
+#include "stdafx.h"
 #include "VIBuffer_Rect.h"
+
 
 
 

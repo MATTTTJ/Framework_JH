@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\GameInstance.h"
 #include "Graphic_Device.h"
 #include "Imgui_Manager.h"

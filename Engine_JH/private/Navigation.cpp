@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\public\Navigation.h"
 #include "Cell.h"
 
