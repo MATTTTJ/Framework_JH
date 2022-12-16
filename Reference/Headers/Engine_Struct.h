@@ -12,6 +12,11 @@ namespace Engine
 		HWND			hWnd;
 	}GRAPHIC_DESC;
 
+	typedef struct tagVertexPosition
+	{
+		XMFLOAT3		vPosition;
+	}VTXPOS;
+
 	typedef struct tagVertexPositionTexture
 	{
 		XMFLOAT3		vPosition;
@@ -56,8 +61,11 @@ namespace Engine
 		XMFLOAT3	vPosition;
 	}KEYFRAME;
 
-
-
+	typedef struct ENGINE_DLL tagVertexPosition_Declaration
+	{
+		static const unsigned int		iNumElements = 1;
+		static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
+	}VTXPOS_DECLARATION;
 	
 
 	typedef struct tagVertexPositionNormalTexture

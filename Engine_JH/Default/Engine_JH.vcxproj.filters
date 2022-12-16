@@ -133,6 +133,12 @@
     <Filter Include="Default">
       <UniqueIdentifier>{0a527996-72c1-4de1-a541-fa7b55cc7e3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\02. VIBuffer\Cell">
+      <UniqueIdentifier>{7a95557a-8a1a-467c-89d2-7d809579814b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\09. Navigation\ShaderFiles">
+      <UniqueIdentifier>{8e6b390b-583d-48d6-80cc-342ee4e6a09a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -339,6 +345,9 @@
     <ClInclude Include="resource.h">
       <Filter>Default</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Cell.h">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Cell</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -512,6 +521,9 @@
     <ClCompile Include="..\private\Engine_Struct.cpp">
       <Filter>99.Defines</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Cell.cpp">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Cell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd">
@@ -530,5 +542,10 @@
     <ResourceCompile Include="Engine_JH.rc">
       <Filter>Default</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl">
+      <Filter>01. Utility\03. Components\09. Navigation\ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -118,6 +118,8 @@ void CPlayer::Tick(_double dTimeDelta)
 	if (pGameInstance->Get_DIKeyState(DIK_UP))
 	{
 		m_pTransformCom->Go_Straight(dTimeDelta);
+		// m_pTransformCom->Go_Straight(TimeDelta, m_pNavigationCom);
+
 		m_pModelCom->Set_CurAnimIndex(22);
 	}
 	if (pGameInstance->Get_DIKeyState(DIK_R))

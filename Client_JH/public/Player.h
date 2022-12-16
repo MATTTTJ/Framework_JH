@@ -7,6 +7,7 @@ class CShader;
 class CRenderer;
 class CCollider;
 class CModel;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -39,6 +40,8 @@ private:
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
+
+	CNavigation*			m_pNavigationCom = nullptr;
 
 private:
 	vector<CGameObject*>	m_vecPlayerParts;
