@@ -20,6 +20,7 @@ public:
 
 	_bool			Update_Lerp(_double dTimeDelta, CAnimation* pNextAnim ,_double LerpSpeed, _bool bFinish = false);
 	void			Update_Lerp(_double dTimeDelta, _float fRatio);
+	void			Update_Additive(_double dTimeDelta, _float fRatio);
 
 public:
 	

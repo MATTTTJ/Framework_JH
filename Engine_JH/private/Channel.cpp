@@ -281,6 +281,70 @@ void CChannel::Update_Blend(_double dPlayTime, _float fRatio)
 	m_pBone->Set_TransformMatrix(matTransform);
 }
 
+void CChannel::Update_Additive(_double dPlayTime, _float fRatio)
+{
+	_vector vBaseScale, vBaseRot, vBasePos;
+	XMMatrixDecompose(&vBaseScale, &vBaseRot, &vBasePos, m_pBone->Get_TransformMatrix());
+
+	_vector			vScale;
+	_vector			vRotation;
+	_vector			vPosition;
+
+	/* 현재 재생된 시간이 마지막 키프레임시간보다 커지며.ㄴ */
+	if (dPlayTime >= m_vecKeyframes.back().dTime)
+	{
+		vScale = XMLoadFloat3(&m_vecKeyframes.back().vScale);
+		vRotation = XMLoadFloat4(&m_vecKeyframes.back().vRotation);
+		vPosition = XMLoadFloat3(&m_vecKeyframes.back().vPosition);
+		vPosition = XMVectorSetW(vPosition, 1.f);
+	}
+	else
+	{
+		while (dPlayTime >= m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime)
+		{
+			++m_iCurrentKeyframeIndex;
+		}
+
+		_double			Ratio = (dPlayTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime) /
+			(m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime);
+
+		_vector			vSourScale, vDestScale;
+		_vector			vSourRotation, vDestRotation;
+		_vector			vSourPosition, vDestPosition;
+
+		vSourScale = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vScale);
+		vSourRotation = XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex].vRotation);
+		vSourPosition = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition);
+
+		vDestScale = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vScale);
+		vDestRotation = XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vRotation);
+		vDestPosition = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition);
+
+		vScale = XMVectorLerp(vSourScale, vDestScale, Ratio);
+		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, Ratio);
+		vPosition = XMVectorLerp(vSourPosition, vDestPosition, Ratio);
+		vPosition = XMVectorSetW(vPosition, 1.f);
+
+		if ("104_Teammate" == m_strName)
+		{
+			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		}
+	}
+
+
+	vScale = XMVectorLerp(vBaseScale, vScale, fRatio);
+	vRotation = XMQuaternionSlerp(vBaseRot, vRotation, fRatio);
+	vRotation = XMQuaternionSlerp(XMQuaternionIdentity(), vRotation, fRatio);
+	vRotation = XMQuaternionMultiply(vBaseRot, vRotation);
+
+	vPosition = XMVectorLerp(vBasePos, vPosition, fRatio);
+	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	_matrix TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+
+	m_pBone->Set_TransformMatrix(TransformMatrix);
+}
+
 
 CChannel* CChannel::Create(aiNodeAnim* pAIChannel, CModel* pModel)
 {

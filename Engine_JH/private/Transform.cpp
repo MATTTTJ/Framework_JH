@@ -213,24 +213,24 @@ HRESULT CTransform::Bind_ShaderResource(CShader* pShaderCom, const wstring&  pCo
 	return pShaderCom->Set_Matrix(pConstantName, &m_WorldMatrix);
 }
 
-void CTransform::Go_Straight(_double TimeDelta, CNavigation* pNaviCom)
-{
-	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
-	_vector	vLook = Get_State(CTransform::STATE_LOOK);
+// void CTransform::Go_Straight(_double TimeDelta, CNavigation* pNaviCom)
+// {
+// 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
+// 	_vector	vLook = Get_State(CTransform::STATE_LOOK);
+//
+// 	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
+// 	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * TimeDelta;
+//
+// 	if (nullptr == pNaviCom)
+// 		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+//
+// 	else
+// 	{
+// 		if (true == pNaviCom->IsMove_OnNavigation(vPosition))
+// 			Set_State(CTransform::STATE_TRANSLATION, vPosition);
+// 	}
+// }
 
-	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
-	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * TimeDelta;
-
-	if (nullptr == pNaviCom)
-		Set_State(CTransform::STATE_TRANSLATION, vPosition);
-
-	else
-	{
-		if (true == pNaviCom->IsMove_OnNavigation(vPosition))
-			Set_State(CTransform::STATE_TRANSLATION, vPosition);
-	}
-}
-}
 
 CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {

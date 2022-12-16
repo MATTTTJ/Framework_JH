@@ -72,7 +72,7 @@ void CImgui_ModelSave::Imgui_RenderWindow()
 		IMGUI_LEFT_LABEL(ImGui::InputText, "Save File Name", szFileName, MAX_PATH);
 
 		if (ImGui::Button("Save by Binary"))
-			ImGuiFileDialog::Instance()->OpenDialog("Select Folder", "Select Save Directory", ".model", "../Bin/Resources/Meshes", ".", 0, nullptr, ImGuiFileDialogFlags_Modal);
+			ImGuiFileDialog::Instance()->OpenDialog("Select Model Save Folder", "Select Save Directory", ".model", "../Bin/Resources/Meshes", ".", 0, nullptr, ImGuiFileDialogFlags_Modal);
 		ImGui::SameLine();
 		if (ImGui::Button("Discard This Model"))
 		{
@@ -83,7 +83,7 @@ void CImgui_ModelSave::Imgui_RenderWindow()
 			return;
 		}
 
-		if (ImGuiFileDialog::Instance()->Display("Select Folder"))
+		if (ImGuiFileDialog::Instance()->Display("Select Model Save Folder"))
 		{
 			if (ImGuiFileDialog::Instance()->IsOk())
 			{

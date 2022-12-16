@@ -84,6 +84,18 @@ void CModel::Set_CurAnimIndex(_uint AnimIndex)
 	// m_bIsAnimChange = true;
 }
 
+void CModel::Set_BlendAnimIndex(_uint BlendAnimIndex)
+{
+	if (BlendAnimIndex < 0 || BlendAnimIndex == m_iCurBlendIndex)
+		return;
+
+	m_iLastBlendIndex = m_iCurBlendIndex;
+	m_iCurBlendIndex = BlendAnimIndex;
+	if (m_iLastBlendIndex != m_iCurBlendIndex)
+		m_fCurAnimBlendingTime = 0.f;
+
+}
+
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix PivotMatrix)
 {
 	if (eType == MODELTYPE_END)
@@ -269,14 +281,18 @@ void CModel::Play_Animation(_double TimeDelta, _double LerpSpeed, _double AnimSp
 	{		
 		m_vecAnimations[m_iLastAnimIndex]->Update_Bones(TimeDelta);
 		m_vecAnimations[m_iCurAnimIndex]->Update_Lerp(0.1, m_fCurAnimChangeTime / m_fAnimChangeTime);
-
 		m_fCurAnimChangeTime += (_float)TimeDelta;
+
 	}
+	// if(m_fCurAnimBlendingTime < m_fAnimBlendingTime && m_iCurBlendIndex == 0 )
+	// {
+	// 	m_vecAnimations[m_iCurAnimIndex]->Update_Bones(TimeDelta);
+	// 	m_vecAnimations[m_iCurBlendIndex]->Update_Additive(0.1, m_fCurAnimBlendingTime / m_fAnimBlendingTime);
+	// 	m_fCurAnimBlendingTime += (_float)TimeDelta;
+	// }
 	else
 	{
 		m_vecAnimations[m_iCurAnimIndex]->Update_Bones(TimeDelta);
-		// m_vecAnimations[m_iLastAnimIndex]->Update_Lerp(0.1, m_fCurAnimChangeTime / m_fAnimChangeTime);
-
 		m_iLastAnimIndex = m_iCurAnimIndex;
 	}
 

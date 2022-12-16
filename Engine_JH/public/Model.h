@@ -23,7 +23,7 @@ public:
 	_matrix						Get_OffsetMatrix(const string& strBoneName);
 	class	CBone*				Get_BonePtr(const string& strBoneName);
 	void						Set_CurAnimIndex(_uint AnimIndex);
-
+	void						Set_BlendAnimIndex(_uint BlendAnimIndex);
 
 public:
 	virtual HRESULT				Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix PivotMatrix);
@@ -53,7 +53,10 @@ private:
 
 	_uint						m_iLastAnimIndex = 0;
 	_int						m_iCurAnimIndex = 0;
-
+	_int						m_iLastBlendIndex = 0;
+	_int						m_iCurBlendIndex = 0;
+	_float						m_fAnimBlendingTime = 1.f;
+	_float						m_fCurAnimBlendingTime = 1.f;
 	// AnimChange
 	_float						m_fAnimChangeTime = 1.f;
 	_float						m_fCurAnimChangeTime = 1.f;

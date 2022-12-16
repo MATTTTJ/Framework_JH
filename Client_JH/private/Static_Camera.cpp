@@ -76,10 +76,10 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 	{
 		m_fCamHeight += (_float)TurnY / 100.f;
 
-		if (m_fCamHeight >= 1.2f)
-			m_fCamHeight = 1.2f;
-		else if (m_fCamHeight <= -1.2f)
-			m_fCamHeight = -1.2f;
+		if (m_fCamHeight >= 1.f)
+			m_fCamHeight = 1.f;
+		else if (m_fCamHeight <= -1.f)
+			m_fCamHeight = -1.f;
 	}
 }
 
@@ -88,11 +88,12 @@ void CStatic_Camera::Late_Tick(_double dTimeDelta)
 	if (!m_bRender)
 		return;
 	__super::Late_Tick(dTimeDelta);
-	
+
 	if(false != m_bFix)
 	{
 		Mouse_Fix();
 	}
+
 }
 
 HRESULT CStatic_Camera::Render()

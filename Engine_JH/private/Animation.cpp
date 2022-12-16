@@ -182,6 +182,35 @@ void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
 			m_vecChannels[i]->Reset_KeyFrameIndex();
 
 		m_vecChannels[i]->Update_Blend(m_dPlayTime, fRatio);
+		// m_vecChannels[i]->Update_Additive(m_dPlayTime, fRatio);
+
+	}
+
+	if (m_bIsFinished)
+		m_bIsFinished = false;
+}
+
+void CAnimation::Update_Additive(_double dTimeDelta, _float fRatio)
+{
+	if (!m_bIsLooping && m_bIsFinished)
+		return;
+
+	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
+
+	if (m_dPlayTime >= m_dDuration)
+	{
+		m_dPlayTime = 0.0;
+		m_bIsFinished = true;
+	}
+
+	for (_uint i = 0; i < m_iNumChannels; ++i)
+	{
+		if (m_bIsFinished == true)
+			m_vecChannels[i]->Reset_KeyFrameIndex();
+
+		m_vecChannels[i]->Update_Additive(m_dPlayTime, fRatio);
+
+
 	}
 
 	if (m_bIsFinished)

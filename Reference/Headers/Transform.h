@@ -50,6 +50,7 @@ public:
 	HRESULT Bind_ShaderResource(class CShader* pShaderCom, const wstring& pConstantName);
 
 public:
+	// void Go_Straight(_double TimeDelta, class CNavigation* pNaviCom = nullptr);
 	void Go_Straight(_double TimeDelta);
 	void Go_Backward(_double TimeDelta);
 	void Go_Left(_double TimeDelta);

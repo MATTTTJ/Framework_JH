@@ -127,14 +127,16 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_pModelCom->Set_CurAnimIndex(12);
 	}
 
-	if (pGameInstance->Get_DIMouseState(DIM_LB))
-	{
-		m_pModelCom->Set_CurAnimIndex(11);
-	}
+
 	else
 		m_pModelCom->Set_CurAnimIndex(25);
 
 	m_pModelCom->Play_Animation(dTimeDelta, 0.1, 1.0);
+
+	if (pGameInstance->Get_DIMouseState(DIM_LB))
+	{
+		m_pModelCom->Set_CurAnimIndex(11);
+	}
 
 	for (_uint i = 0; i < m_vecPlayerParts.size(); ++i)
 	{
