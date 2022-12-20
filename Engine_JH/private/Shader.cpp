@@ -2,6 +2,7 @@
 #include "..\public\Shader.h"
 
 #include "GameUtils.h"
+#include "GameInstance.h"
 
 CShader::CShader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -92,6 +93,8 @@ HRESULT CShader::Begin(_uint iPassIndex)
 	ID3DX11EffectPass*	pPass = pTechnique->GetPassByIndex(iPassIndex);
 	NULL_CHECK_RETURN(pPass, E_FAIL);
 
+
+	CONTEXT_LOCK
 	pPass->Apply(0, m_pContext);
 
 	m_pContext->IASetInputLayout(m_InputLayouts[iPassIndex]);

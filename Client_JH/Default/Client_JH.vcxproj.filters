@@ -94,6 +94,9 @@
     <Filter Include="96. Tool\AnimationMgr">
       <UniqueIdentifier>{f5d3012a-3a8a-45d2-ae12-0d0cb3ebb2eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Sky">
+      <UniqueIdentifier>{748ea821-7f4a-4f50-85b9-72872af6f3c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -178,6 +181,12 @@
       <Filter>02. GameObjects\StaticCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Imgui_AnimationMgr.h" />
+    <ClInclude Include="..\public\Sky.h">
+      <Filter>02. GameObjects\Sky</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Client_Defines.h">
+      <Filter>97. ShaderFiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -253,6 +262,9 @@
       <Filter>02. GameObjects\StaticCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Imgui_AnimationMgr.cpp" />
+    <ClCompile Include="..\private\Sky.cpp">
+      <Filter>02. GameObjects\Sky</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">
@@ -283,6 +295,9 @@
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNonAnim.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

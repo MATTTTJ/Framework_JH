@@ -84,16 +84,26 @@ _bool CNavigation::IsMove_OnNavigation(_fvector vTargetPos)
 		// 나간 방향으로 이웃이 있다면
 		if(-1 != iNeighborIndex)
 		{
-			// m_tNaviDesc.iCurrentIndex = 이웃의 인덱스
-			m_tNaviDesc.iCurrentIndex = iNeighborIndex;
-			return true;
+			while(true)
+			{
+				if( -1 == iNeighborIndex)
+				{
+					return false;
+				}
+
+				if(true == m_vecCells[iNeighborIndex]->IsIn(vTargetPos, &iNeighborIndex))
+				{
+					// m_tNaviDesc.iCurrentIndex = 이웃의 인덱스
+					m_tNaviDesc.iCurrentIndex = iNeighborIndex;
+					return true;
+				}
+			}
 		}
 		else // 나간 방향으로 이웃이 없었다면 
 		{
 			return false;
 		}
 	}
-
 }
 #ifdef _DEBUG
 HRESULT CNavigation::Render()

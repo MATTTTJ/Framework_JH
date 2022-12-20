@@ -1,3 +1,6 @@
+#include "Shader_Client_Defines.h"
+
+
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 vector			g_vCamPosition;
@@ -21,22 +24,6 @@ texture2D		g_BrushTexture;
 vector			g_vBrushPos;
 float			g_fBrushRange = 5.f;
 texture2D		g_FilterTexture;
-
-sampler LinearSampler = sampler_state
-{
-	filter = min_mag_mip_linear;
-	AddressU = wrap;
-	AddressV = wrap;
-};
-
-sampler PointSampler = sampler_state
-{
-	filter = min_mag_mip_Point;
-	AddressU = wrap;
-	AddressV = wrap;
-};
-
-
 
 /* 샘플링 해오는 함수 */
 /* dx9 : tex2D(DefaultSampler, In.vTexUV);*/
@@ -142,6 +129,8 @@ technique11 DefaultTechnique
 {
 	pass Terrain
 	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;

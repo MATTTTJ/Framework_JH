@@ -76,7 +76,7 @@ void CModel::Set_CurAnimIndex(_uint AnimIndex)
 
 	m_iLastAnimIndex = m_iCurAnimIndex;
 	m_iCurAnimIndex = AnimIndex;
-	// m_vecAnimations[m_iCurAnimIndex]->Reset_Animation();
+	m_vecAnimations[m_iCurAnimIndex]->Reset_Animation();
 
 	if (m_iLastAnimIndex != m_iCurAnimIndex)
 		m_fCurAnimChangeTime = 0.f;

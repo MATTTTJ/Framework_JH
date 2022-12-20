@@ -139,6 +139,12 @@
     <Filter Include="01. Utility\03. Components\09. Navigation\ShaderFiles">
       <UniqueIdentifier>{8e6b390b-583d-48d6-80cc-342ee4e6a09a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\02. VIBuffer\Sphere">
+      <UniqueIdentifier>{dffc99e1-eae4-44d0-ba0b-23bb0653670a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\02. VIBuffer\Cube">
+      <UniqueIdentifier>{2922711c-0e41-4e0c-b982-c51b170295bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -348,6 +354,9 @@
     <ClInclude Include="..\public\VIBuffer_Cell.h">
       <Filter>01. Utility\03. Components\02. VIBuffer\Cell</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Cube.h">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Cube</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -523,6 +532,9 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Cell.cpp">
       <Filter>01. Utility\03. Components\02. VIBuffer\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Cube.cpp">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Cube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

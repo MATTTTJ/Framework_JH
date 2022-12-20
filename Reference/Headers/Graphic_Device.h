@@ -35,7 +35,7 @@ public:
 	virtual ~CGraphic_Device() = default;
 
 public:
-	mutex&		GetContextMtx() { return m_ContextMtx; }
+	mutex&		GetContexMtx() { return m_ContextMtx; }
 
 public:
 	HRESULT		Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE Winmode,
@@ -45,6 +45,7 @@ public:
 	HRESULT		Clear_DepthStencil_View();
 	HRESULT		Present();
 	HRESULT		Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen, _bool bNeedUpdate);
+
 
 public:
 	D3D11_VIEWPORT		Get_ViewPort() {

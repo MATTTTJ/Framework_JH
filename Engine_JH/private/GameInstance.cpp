@@ -111,6 +111,8 @@ HRESULT CGameInstance::Clear_Graphic_Device(const _float4 * pColor)
 {
 	NULL_CHECK_RETURN(m_pGraphic_Device, E_FAIL);
 
+	CONTEXT_LOCK
+
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Clear_BackBuffer_View(*pColor), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGraphic_Device->Clear_DepthStencil_View(), E_FAIL);
 
