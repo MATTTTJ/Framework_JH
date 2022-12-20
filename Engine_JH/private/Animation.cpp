@@ -104,11 +104,6 @@ void CAnimation::Update_Bones(_double dTimeDelta, _double AnimSpeed)
 
 	m_dPlayTime += m_dTickPerSecond * dTimeDelta * AnimSpeed;
 
-	// if(false == m_bIsLerpEnd)
-	// {
-	// 	m_dPlayTime += dTimeDelta * m_dTickPerSecond * AnimSpeed;
-	// }
-
 	if (m_dPlayTime >= m_dDuration)
 	{
 		m_dPlayTime = 0.0;

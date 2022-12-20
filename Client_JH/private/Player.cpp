@@ -69,6 +69,8 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
+
+
 	// m_pModelCom->Set_CurAnimIndex(rand() % 20);
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-1.4452f, -0.42242f, -1.11702f, 1.f));
 	// FAILED_CHECK_RETURN(Ready_Parts(), E_FAIL);
@@ -86,6 +88,23 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	_long		MouseMove = 0;
 
+	if (pGameInstance->Get_DIKeyState(DIK_1))
+	{
+		m_pModelCom = m_pWeaponModelCom[WEAPON_DEFAULT];
+	}
+	if (pGameInstance->Get_DIKeyState(DIK_2))
+	{
+		m_pModelCom = m_pWeaponModelCom[WEAPON_FLAMEBULLET];
+	}
+	if (pGameInstance->Get_DIKeyState(DIK_3))
+	{
+		m_pModelCom = m_pWeaponModelCom[WEAPON_FIREDRAGON];
+	}
+	if (pGameInstance->Get_DIKeyState(DIK_4))
+	{
+		m_pModelCom = m_pWeaponModelCom[WEAPON_POISON];
+	}
+
 	if (pGameInstance->Get_DIKeyState(DIK_DOWN))
 	{
 		m_pTransformCom->Go_Backward(dTimeDelta);
@@ -98,6 +117,7 @@ void CPlayer::Tick(_double dTimeDelta)
 	if (pGameInstance->Get_DIKeyState(DIK_R))
 	{
 		m_pModelCom->Set_CurAnimIndex(1);
+		
 	}
 	if (pGameInstance->Get_DIMouseState(DIM_LB))
 	{
@@ -120,10 +140,7 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
 	}
 
-	
-
-	_float4   fCamLook =
-		*dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->
+	_float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->
 			back())->Get_CamLook();
 
 	_vector		vCamLook = XMLoadFloat4(&fCamLook);
@@ -190,7 +207,12 @@ HRESULT CPlayer::SetUp_Components()
 {
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",	(CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxAnimModel", L"Com_Shader",	(CComponent**)&m_pShaderCom, this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_PersonalLai", L"Com_Model",(CComponent**)&m_pModelCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Default_Pistol", L"Com_Default_Pistol_Model",(CComponent**)&m_pWeaponModelCom[WEAPON_DEFAULT], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fire_Dragon", L"Com_Fire_Dragon_Model", (CComponent**)&m_pWeaponModelCom[WEAPON_FIREDRAGON], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", L"Com_Flame_Bullet_Model", (CComponent**)&m_pWeaponModelCom[WEAPON_FLAMEBULLET], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Poison", L"Com_Poison_Model", (CComponent**)&m_pWeaponModelCom[WEAPON_POISON], this), E_FAIL);
+
+	m_pModelCom = m_pWeaponModelCom[WEAPON_DEFAULT];
 
 	CCollider::COLLIDERDESC			ColliderDesc;
 

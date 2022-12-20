@@ -16,6 +16,13 @@ class CPlayer final : public CGameObject
 {
 	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDERTYPE_END };
 
+	enum WEAPONTYPE { WEAPON_DEFAULT, WEAPON_FLAMEBULLET, WEAPON_FIREDRAGON, WEAPON_POISON, WEAPON_END };
+
+	typedef struct tagWeaponType
+	{
+		CModel*		m_pWeaponModel =  nullptr;
+
+	};
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayer(const CPlayer& rhs);
@@ -40,6 +47,9 @@ private:
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
+
+	CModel*					m_pWeaponModelCom[WEAPON_END] = { nullptr };
+
 
 	CNavigation*			m_pNavigationCom = nullptr;
 
