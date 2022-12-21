@@ -111,6 +111,7 @@ private:
 	//State : Changer
 private:
 	_bool		KeyInput_None(void);
+	_bool		KeyInput_R(void);
 	_bool		KeyInput_W(void);
 	_bool		KeyInput_A(void);
 	_bool		KeyInput_S(void);
@@ -131,10 +132,10 @@ private:
 
 private:
 	class CPlayer*		m_pPlayer;
-
+	
 public:
 	static CPlayer_State*	Create(class CPlayer* pPlayer);
-	virtual void Free() override;
+	virtual void Free();
 
 
 };

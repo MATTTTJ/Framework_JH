@@ -97,10 +97,10 @@ HRESULT CAnimation::Initialize(aiAnimation* pAIAnimation, CModel* pModel)
 	return S_OK;
 }
 
-void CAnimation::Update_Bones(_double dTimeDelta, _double AnimSpeed)
+_bool CAnimation::Update_Bones(_double dTimeDelta, _double AnimSpeed)
 {
 	if (!m_bIsLooping && m_bIsFinished)
-		return;
+		return false;
 
 	m_dPlayTime += m_dTickPerSecond * dTimeDelta * AnimSpeed;
 
@@ -108,6 +108,7 @@ void CAnimation::Update_Bones(_double dTimeDelta, _double AnimSpeed)
 	{
 		m_dPlayTime = 0.0;
 		m_bIsFinished = true;
+		return true;
 	}
 
 	for(_uint i =0; i < m_iNumChannels; ++i)

@@ -9,6 +9,8 @@ class CRenderer;
 class CCollider;
 class CModel;
 class CNavigation;
+class CAnimation;
+class CState;
 END
 
 BEGIN(Client)
@@ -74,24 +76,27 @@ private:
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
-
+	
 	CModel*					m_pWeaponModelCom[WEAPON_END] = { nullptr };
-
+	CAnimation*				m_pAnimCom = nullptr;
 	WEAPONDESC				m_tWeaponDesc[WEAPON_END];
 	wstring					m_wstrCurWeaponName = L"";
 
-
 	CNavigation*			m_pNavigationCom = nullptr;
 
-
 	_uint					m_iPoisonAttCnt = 0;
+
+	_bool					m_bIsAnimaFinished = false;
+
 private:
 	vector<CGameObject*>	m_vecPlayerParts;
+	CState*					m_pState = nullptr;
+	class CPlayer_State*	m_pPlayerState = nullptr;
 
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();
-
+	HRESULT					SetUp_State();
 	HRESULT					Ready_Parts();
 
 public:

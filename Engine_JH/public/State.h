@@ -15,7 +15,7 @@ private:
 
 	typedef struct tagChanger
 	{
-		const wstring						wstrNextState = L"";
+		wstring						wstrNextState = L"";
 		std::function<_bool(void)>			Changer_Func = nullptr;
 	}CHANGER;
 

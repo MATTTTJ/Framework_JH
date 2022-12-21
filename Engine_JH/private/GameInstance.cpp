@@ -195,6 +195,13 @@ _bool CGameInstance::Key_Up(_ubyte byKeyID)
 	return m_pInput_Device->Key_Up(byKeyID);
 }
 
+_bool CGameInstance::Key_Pressing(_ubyte byKeyID)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, false);
+
+	return m_pInput_Device->Key_Pressing(byKeyID);
+}
+
 void CGameInstance::Reset_EveryKey()
 {
 	NULL_CHECK_RETURN(m_pInput_Device,);

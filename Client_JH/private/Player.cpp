@@ -4,6 +4,7 @@
 #include "Weapon.h"
 #include "Bone.h"
 #include "Static_Camera.h"
+#include "State.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -72,7 +73,7 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
-
+	FAILED_CHECK_RETURN(SetUp_State(), E_FAIL);
 
 	// m_pModelCom->Set_CurAnimIndex(rand() % 20);
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-1.4452f, -0.42242f, -1.11702f, 1.f));
@@ -86,6 +87,9 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	if (nullptr != m_pState)
+		m_pState->Tick(dTimeDelta);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -116,19 +120,19 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_wstrCurWeaponName = L"";
 		m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_POISON].m_wstrWeaponName;
 	}
-	if (pGameInstance->Get_DIKeyState(DIK_DOWN))
-	{
-		m_pTransformCom->Go_Backward(dTimeDelta);
-	}
-
-	if (pGameInstance->Get_DIKeyState(DIK_UP))
-	{
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	}
-	if (pGameInstance->Get_DIKeyState(DIK_R))
-	{
-		m_pModelCom->Set_CurAnimIndex(1);
-	}
+	// if (pGameInstance->Get_DIKeyState(DIK_DOWN))
+	// {
+	// 	m_pTransformCom->Go_Backward(dTimeDelta);
+	// }
+	//
+	// if (pGameInstance->Get_DIKeyState(DIK_UP))
+	// {
+	// 	m_pTransformCom->Go_Straight(dTimeDelta);
+	// }
+	// if (pGameInstance->Get_DIKeyState(DIK_R))
+	// {
+	// 	m_pModelCom->Set_CurAnimIndex(1);
+	// }
 	if (pGameInstance->Get_DIMouseState(DIM_LB) & 0x80)
 	{
 		if(m_wstrCurWeaponName == L"WEAPON_DEFAULT")
@@ -248,6 +252,7 @@ HRESULT CPlayer::SetUp_Components()
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", L"Com_Flame_Bullet_Model", (CComponent**)&m_tWeaponDesc[WEAPON_FLAMEBULLET].m_pWeaponModelCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Poison", L"Com_Poison_Model", (CComponent**)&m_tWeaponDesc[WEAPON_POISON].m_pWeaponModelCom, this), E_FAIL);
 
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_State", L"Com_State", (CComponent**)&m_pState, this), E_FAIL);
 
 
 	m_pModelCom = m_tWeaponDesc[WEAPON_DEFAULT].m_pWeaponModelCom;
@@ -294,6 +299,14 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	NULL_CHECK_RETURN(pLightDesc, E_FAIL);
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CPlayer::SetUp_State()
+{
+	m_pPlayerState = CPlayer_State::Create(this);
+	NULL_CHECK_RETURN(m_pPlayerState, E_FAIL);
 
 	return S_OK;
 }
@@ -356,9 +369,12 @@ void CPlayer::Free()
 
 	for (auto& pPart : m_vecPlayerParts)
 		Safe_Release(pPart);
-
+	Safe_Release(m_pState);
+	Safe_Release(m_pPlayerState);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 
+	// for (_uint i = 0; i < WEAPON_END; ++i)
+	// 	Safe_Release(m_tWeaponDesc[i].m_pWeaponModelCom);
 }

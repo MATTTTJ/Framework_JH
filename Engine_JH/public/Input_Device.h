@@ -16,7 +16,7 @@ private:
 	virtual ~CInput_Device() = default;
 
 public:
-	_byte		Get_DIKeyState(_ubyte byKeyID) { return m_byKeyState[byKeyID]; }
+	_byte		Get_DIKeyState(_ubyte byKeyID) { return m_byKeyState[byKeyID]; m_bLastInput = byKeyID; }
 	_byte		Get_DIMouseState(MOUSEKEYSTATE byMouseID)
 	{
 		return m_MouseState.rgbButtons[byMouseID];
@@ -43,7 +43,7 @@ private:
 	LPDIRECTINPUTDEVICE8		m_pKeyBoard;
 	LPDIRECTINPUTDEVICE8		m_pMouse;
 	LPDIRECTINPUT8				m_pInputSDK;
-
+	_ubyte			m_bLastInput;
 	_byte			m_byKeyState[256];
 	DIMOUSESTATE	m_MouseState;
 	_bool			m_bKeyState[256];

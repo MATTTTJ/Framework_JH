@@ -46,6 +46,7 @@ public: /* For.Input_Device */
 	_bool				Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);
 	_bool				Key_Down(_ubyte byKeyID);
 	_bool				Key_Up(_ubyte byKeyID);
+	_bool				Key_Pressing(_ubyte byKeyID);
 	void				Reset_EveryKey();
 public: /* For.Level_Manager */
 	HRESULT				Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
