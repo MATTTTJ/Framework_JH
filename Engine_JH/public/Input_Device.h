@@ -30,6 +30,7 @@ public:
 	_bool		Mouse_Down(MOUSEKEYSTATE MouseButton);
 	_bool		Mouse_Up(MOUSEKEYSTATE MouseButton);
 	_bool		Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);
+	_bool		Key_Pressing(_ubyte byKeyID);
 	_bool		Key_Down(_ubyte byKeyID);
 	_bool		Key_Up(_ubyte byKeyID);
 	void		Reset_EveryKey();

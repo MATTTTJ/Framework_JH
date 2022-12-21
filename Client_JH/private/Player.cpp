@@ -8,13 +8,16 @@
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
-
+	
 }
 
 CPlayer::CPlayer(const CPlayer & rhs)
 	: CGameObject(rhs)
 {
-
+	m_tWeaponDesc[WEAPON_DEFAULT].m_wstrWeaponName = L"WEAPON_DEFAULT";
+	m_tWeaponDesc[WEAPON_FLAMEBULLET].m_wstrWeaponName = L"WEAPON_FLAMEBULLET";
+	m_tWeaponDesc[WEAPON_FIREDRAGON].m_wstrWeaponName = L"WEAPON_FIREDRAGON";
+	m_tWeaponDesc[WEAPON_POISON].m_wstrWeaponName = L"WEAPON_POISON";
 }
 
 _matrix CPlayer::Get_BoneMatrix(const string& strBoneName)
@@ -90,21 +93,29 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	if (pGameInstance->Get_DIKeyState(DIK_1))
 	{
-		m_pModelCom = m_pWeaponModelCom[WEAPON_DEFAULT];
+		// m_pModelCom = m_pWeaponModelCom[WEAPON_DEFAULT];
+		m_pModelCom = m_tWeaponDesc[WEAPON_DEFAULT].m_pWeaponModelCom;
+		m_wstrCurWeaponName = L"";
+		m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_DEFAULT].m_wstrWeaponName;
 	}
 	if (pGameInstance->Get_DIKeyState(DIK_2))
 	{
-		m_pModelCom = m_pWeaponModelCom[WEAPON_FLAMEBULLET];
+		m_pModelCom = m_tWeaponDesc[WEAPON_FLAMEBULLET].m_pWeaponModelCom;
+		m_wstrCurWeaponName = L"";
+		m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_FLAMEBULLET].m_wstrWeaponName;
 	}
 	if (pGameInstance->Get_DIKeyState(DIK_3))
 	{
-		m_pModelCom = m_pWeaponModelCom[WEAPON_FIREDRAGON];
+		m_pModelCom = m_tWeaponDesc[WEAPON_FIREDRAGON].m_pWeaponModelCom;
+		m_wstrCurWeaponName = L"";
+		m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_FIREDRAGON].m_wstrWeaponName;
 	}
 	if (pGameInstance->Get_DIKeyState(DIK_4))
 	{
-		m_pModelCom = m_pWeaponModelCom[WEAPON_POISON];
+		m_pModelCom = m_tWeaponDesc[WEAPON_POISON].m_pWeaponModelCom;
+		m_wstrCurWeaponName = L"";
+		m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_POISON].m_wstrWeaponName;
 	}
-
 	if (pGameInstance->Get_DIKeyState(DIK_DOWN))
 	{
 		m_pTransformCom->Go_Backward(dTimeDelta);
@@ -117,31 +128,56 @@ void CPlayer::Tick(_double dTimeDelta)
 	if (pGameInstance->Get_DIKeyState(DIK_R))
 	{
 		m_pModelCom->Set_CurAnimIndex(1);
-		
 	}
-	if (pGameInstance->Get_DIMouseState(DIM_LB))
+	if (pGameInstance->Get_DIMouseState(DIM_LB) & 0x80)
 	{
-		m_pModelCom->Set_CurAnimIndex(2);
+		if(m_wstrCurWeaponName == L"WEAPON_DEFAULT")
+		{
+			m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
+		}
+		else if(m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
+		{
+			m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_FIRE);
+		}
+		else if (m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
+		{
+			m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_FIRE);
+		}
+		else if (m_wstrCurWeaponName == L"WEAPON_POISON")
+		{
+			if (m_iPoisonAttCnt == 2)
+				m_iPoisonAttCnt = 0;
+
+			m_pModelCom->Set_CurAnimIndex(POISON_FIRE_A + m_iPoisonAttCnt);
+			m_iPoisonAttCnt++;
+		}
 	}
 	else
-		m_pModelCom->Set_CurAnimIndex(0);
+	{
+		if (m_wstrCurWeaponName == L"WEAPON_DEFAULT")
+		{
+			m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_IDLE);
+		}
+		else if (m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
+		{
+			m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_IDLE);
+		}
+		else if (m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
+		{
+			m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_IDLE);
+		}
+		else if (m_wstrCurWeaponName == L"WEAPON_POISON")
+			m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
+	}
 
 	m_pModelCom->Play_Animation(dTimeDelta, 0.1, 1.0);
-
-	
-
-	// for (_uint i = 0; i < m_vecPlayerParts.size(); ++i)
-	// {
-	// 	m_vecPlayerParts[i]->Tick(dTimeDelta);
-	// }
 
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 	{
 		m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
 	}
 
-	_float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->
-			back())->Get_CamLook();
+	_float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->back())->Get_CamLook();
 
 	_vector		vCamLook = XMLoadFloat4(&fCamLook);
 	_vector		vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
@@ -207,13 +243,16 @@ HRESULT CPlayer::SetUp_Components()
 {
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",	(CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxAnimModel", L"Com_Shader",	(CComponent**)&m_pShaderCom, this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Default_Pistol", L"Com_Default_Pistol_Model",(CComponent**)&m_pWeaponModelCom[WEAPON_DEFAULT], this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fire_Dragon", L"Com_Fire_Dragon_Model", (CComponent**)&m_pWeaponModelCom[WEAPON_FIREDRAGON], this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", L"Com_Flame_Bullet_Model", (CComponent**)&m_pWeaponModelCom[WEAPON_FLAMEBULLET], this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Poison", L"Com_Poison_Model", (CComponent**)&m_pWeaponModelCom[WEAPON_POISON], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Default_Pistol", L"Com_Default_Pistol_Model", (CComponent**)&m_tWeaponDesc[WEAPON_DEFAULT].m_pWeaponModelCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fire_Dragon", L"Com_Fire_Dragon_Model", (CComponent**)&m_tWeaponDesc[WEAPON_FIREDRAGON].m_pWeaponModelCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", L"Com_Flame_Bullet_Model", (CComponent**)&m_tWeaponDesc[WEAPON_FLAMEBULLET].m_pWeaponModelCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Poison", L"Com_Poison_Model", (CComponent**)&m_tWeaponDesc[WEAPON_POISON].m_pWeaponModelCom, this), E_FAIL);
 
-	m_pModelCom = m_pWeaponModelCom[WEAPON_DEFAULT];
 
+
+	m_pModelCom = m_tWeaponDesc[WEAPON_DEFAULT].m_pWeaponModelCom;
+	m_wstrCurWeaponName = L"";
+	m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_DEFAULT].m_wstrWeaponName;
 	CCollider::COLLIDERDESC			ColliderDesc;
 
 	/* For.Com_AABB */

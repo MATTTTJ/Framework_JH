@@ -36,6 +36,14 @@ _bool CInput_Device::Mouse_DoubleClick(MOUSEKEYSTATE MouseButton)
 	return _bool();
 }
 
+_bool CInput_Device::Key_Pressing(_ubyte byKeyID)
+{
+	if (m_bKeyState[byKeyID] && (Get_DIKeyState(byKeyID)))
+		return true;
+
+	return false;
+}
+
 _bool CInput_Device::Key_Down(_ubyte byKeyID)
 {
 	if (!m_bKeyState[byKeyID] && (Get_DIKeyState(byKeyID) & 0x80))

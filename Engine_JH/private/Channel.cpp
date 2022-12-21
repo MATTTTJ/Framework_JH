@@ -154,27 +154,10 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 		}
 		if("Bip001 Footsteps001" == m_strName)
 		{
-			// CBone* dest = m_pModel->Get_BonePtr("Bip001 Prop1");
-			// if (dest == nullptr)
-			// 	return;
-			// _matrix tmp = dest->Get_TransformMatrix();
-			// _vector vS, vR, vP;
-			// XMMatrixDecompose(&vS, &vR, &vP, tmp);
-			// vPosition = vP ;
 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 
 		}
-		// if ("Bip001" == m_strName)
-		// {
-		// 	CBone*	dest = m_pModel->Get_BonePtr("Bip001001");
-		// 	if (dest == nullptr)
-		// 		return;
-		// 	_matrix tmp = dest->Get_TransformMatrix();
-		//
-		// 	_vector vS, vR, vP;
-		// 	XMMatrixDecompose(&vS, &vR, &vP, tmp);
-		// 	vPosition = vP;
-		// }
+	
 	}
 	// 백터들을 받아서 행렬로 만들어주는 함수. 2번째 인자는 기준점인데 원점이 들어간다.
 	TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
@@ -242,36 +225,9 @@ _bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* CurrentC
 	{
 		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	}
-	// if ("Bip001 Footsteps" == m_strName)
-	// {
-	// 	CBone*	dest = m_pModel->Get_BonePtr("Bip001 Footsteps001");
-	// 	if (dest == nullptr)
-	// 		return true;
-	//
-	// 	_matrix tmp = dest->Get_TransformMatrix();
-	//
-	// 	_vector vS, vR, vP;
-	// 	XMMatrixDecompose(&vS, &vR, &vP, tmp);
-	// 	vPosition = vP;
-	// }
-	// if ("1205_Bone001" == m_strName)
-	// {
-	// 	CBone* dest = m_pModel->Get_BonePtr("Bip001 R Finger11");
-	// 	if (dest == nullptr)
-	// 		return true;
-	// 	_matrix tmp = dest->Get_TransformMatrix();
-	// 	_vector vS, vR, vP;
-	// 	XMMatrixDecompose(&vS, &vR, &vP, tmp);
-	// 	vPosition = vP;
-	// }
+
 	if ("Bip001 Footsteps001" == m_strName)
 	{
-		// CBone* dest = m_pModel->Get_BonePtr("Bip001 Prop1");
-		// if (dest == nullptr)
-		// 	return true;
-		// _matrix tmp = dest->Get_TransformMatrix();
-		// _vector vS, vR, vP;
-		// XMMatrixDecompose(&vS, &vR, &vP, tmp);
 		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 		return true;
 	}
@@ -321,14 +277,6 @@ void CChannel::Update_Blend(_double dPlayTime, _float fRatio)
 		{
 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 		}
-		// if ("Bip001 Footsteps" == m_strName)
-		// {
-		// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		// }
-		// if ("Bip001 Footsteps.001" == m_strName)
-		// {
-		// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		// }
 	}
 
 	vScale = XMVectorLerp(vBaseScale, vScale, fRatio);

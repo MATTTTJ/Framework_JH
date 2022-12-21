@@ -189,6 +189,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Monster.h" />
     <ClInclude Include="..\public\Player.h" />
+    <ClInclude Include="..\public\Player_State.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Static_Camera.h" />
     <ClInclude Include="..\public\Terrain.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
+    <ClCompile Include="..\private\Player_State.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Static_Camera.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />

@@ -97,6 +97,9 @@
     <Filter Include="02. GameObjects\Sky">
       <UniqueIdentifier>{748ea821-7f4a-4f50-85b9-72872af6f3c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Player\State">
+      <UniqueIdentifier>{08f17e07-94ac-464b-841c-faea7650b009}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -187,6 +190,9 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Client_Defines.h">
       <Filter>97. ShaderFiles</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Player_State.h">
+      <Filter>02. GameObjects\Player\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -264,6 +270,9 @@
     <ClCompile Include="..\private\Imgui_AnimationMgr.cpp" />
     <ClCompile Include="..\private\Sky.cpp">
       <Filter>02. GameObjects\Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_State.cpp">
+      <Filter>02. GameObjects\Player\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

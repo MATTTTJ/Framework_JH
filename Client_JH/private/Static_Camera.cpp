@@ -145,7 +145,8 @@ void CStatic_Camera::Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _dou
 
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vCamPos);
 
-		m_pTransformCom->LookAt(vPlayerPos + PlayerLook * 2.2);
+		m_pTransformCom->LookAt(vPlayerPos + PlayerLook * 2.2f);
+
 		// m_pTransformCom->LookAt(vPlayerPos + XMVectorSet(CombindMatrix._41, CombindMatrix._42, CombindMatrix._43, CombindMatrix._44));
 
 		// _float CurTurnX = 0.f, LastTurnX = 0.f;
@@ -166,7 +167,7 @@ void CStatic_Camera::Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _dou
 
 void CStatic_Camera::Mouse_Fix()
 {
-	POINT	pt{ g_iWinSizeX >> 1 , g_iWinSizeY >> 1 };
+	POINT	pt{ (LONG)g_iWinSizeX >> 1 , (LONG)g_iWinSizeY >> 1 };
 
 	ClientToScreen(g_hWnd, &pt);
 	SetCursorPos(pt.x, pt.y);

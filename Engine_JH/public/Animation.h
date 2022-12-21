@@ -12,6 +12,7 @@ public:
 	HRESULT			Save_Animation(HANDLE& hFile, DWORD& dwByte);
 	HRESULT			Load_Animation(HANDLE& hFile, DWORD& dwByte);
 	string&			Get_AnimationName() { return m_strName; }
+	_bool&			Get_AnimFinish(void) { return m_bIsFinished; }
 	void			Reset_Animation();
 public:
 	HRESULT			Initialize(aiAnimation* pAIAnimation, class CModel* pModel);
