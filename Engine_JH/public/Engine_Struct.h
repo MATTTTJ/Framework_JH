@@ -12,16 +12,6 @@ namespace Engine
 		HWND			hWnd;
 	}GRAPHIC_DESC;
 
-	typedef struct tagVertexPosition
-	{
-		XMFLOAT3		vPosition;
-	}VTXPOS;
-
-	typedef struct tagVertexPositionTexture
-	{
-		XMFLOAT3		vPosition;
-		XMFLOAT2		vTexUV;
-	}VTXTEX;
 
 	typedef struct tagFaceIndices16
 	{
@@ -61,12 +51,35 @@ namespace Engine
 		XMFLOAT3	vPosition;
 	}KEYFRAME;
 
-	typedef struct ENGINE_DLL tagVertexPosition_Declaration
+	typedef struct tagModelMaterial
 	{
-		static const unsigned int		iNumElements = 1;
-		static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
-	}VTXPOS_DECLARATION;
-	
+		class CTexture*		pTexture[AI_TEXTURE_TYPE_MAX];
+	}MODELMATERIAL;
+
+	typedef struct tagVertexPositionTexture
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT2		vTexUV;
+	}VTXTEX;
+
+	typedef struct tagVertexPosition
+	{
+		XMFLOAT3		vPosition;
+	}VTXPOS;
+
+	typedef struct tagVertexPoint
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT2		vPSize;
+	}VTXPOINT;
+
+	typedef struct tagVertexMatrix
+	{
+		XMFLOAT4			vRight;
+		XMFLOAT4			vUp;
+		XMFLOAT4			vLook;
+		XMFLOAT4			vPosition;
+	}VTXMATRIX;
 
 	typedef struct tagVertexPositionNormalTexture
 	{
@@ -99,10 +112,12 @@ namespace Engine
 		XMFLOAT4		vBlendWeight;
 	}VTXANIMMODEL;
 
-	typedef struct tagModelMaterial
+	
+	typedef struct ENGINE_DLL tagVertexPosition_Declaration
 	{
-		class CTexture*		pTexture[AI_TEXTURE_TYPE_MAX];
-	}MODELMATERIAL;
+		static const unsigned int		iNumElements = 1;
+		static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
+	}VTXPOS_DECLARATION;
 
 	typedef struct ENGINE_DLL tagVertexPositionTexture_Declaration
 	{
@@ -134,9 +149,19 @@ namespace Engine
 		static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXANIMMODEL_DECLARATION;
 
+	typedef struct ENGINE_DLL tagVertexPointInstance_Declaration
+	{
+		static const unsigned int		iNumElements = 6;
+		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
+	}VTXPOINTINSTANCE_DECLARATION;
 
 
-	
+	typedef struct ENGINE_DLL tagVertexRectInstance_Declaration
+	{
+		static const unsigned int		iNumElements = 6;
+		static D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
+	}VTXRECTINSTANCE_DECLARATION;
+
 
 
 

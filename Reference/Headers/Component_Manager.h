@@ -12,6 +12,8 @@
 #include "VIBuffer_Terrain.h"	
 #include "Navigation.h"
 #include "Component.h"
+#include "VIBuffer_Rect_Instancing.h"
+#include "VIBuffer_Point_Instancing.h"
 
 BEGIN(Engine)
 

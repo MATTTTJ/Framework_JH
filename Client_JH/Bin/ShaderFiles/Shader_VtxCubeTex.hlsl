@@ -41,8 +41,7 @@ struct PS_IN
 
 struct PS_OUT
 {
-
-	float4		vColor : SV_TARGET0;
+	float4		vColor : SV_TARGET0;	
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -51,6 +50,8 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 
+
+	
 	return Out;
 }
 
@@ -61,9 +62,8 @@ technique11 DefaultTechnique
 	pass Rect
 	{
 		SetRasterizerState(RS_CW);
-		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
-		/*	SetBlendState();
-		*/
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);		
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);	
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;

@@ -1,6 +1,5 @@
 #include "Shader_Client_Defines.h"
 
-
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 vector			g_vCamPosition;
@@ -24,6 +23,8 @@ texture2D		g_BrushTexture;
 vector			g_vBrushPos;
 float			g_fBrushRange = 5.f;
 texture2D		g_FilterTexture;
+
+
 
 /* 샘플링 해오는 함수 */
 /* dx9 : tex2D(DefaultSampler, In.vTexUV);*/
@@ -117,7 +118,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	/* 두 벡터 : 빛의 반사벡터, 정점을 바라보는 시선벡터 */
 	float		fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f,
-		normalize(vLook))), 10.f);
+		normalize(vLook))), 30.f);
 
 	Out.vColor = vDiffuse * saturate(fShade + (g_vLightAmbient * g_vMtrlAmbient))
 		+ fSpecular * (g_vLightSpecular * g_vMtrlSpecular);
@@ -131,6 +132,8 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;

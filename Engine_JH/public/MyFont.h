@@ -1,21 +1,31 @@
-// #pragma once
-// #include "Base.h"
-//
-// BEGIN(Engine)
-//
-// class CMyFont final :	public CBase
-// {
-// private:
-// 	explicit CMyFont(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-// 	virtual ~CMyFont() = default;
-//
-// public:
-// 	HRESULT		Ready_Font(const _tchar* pFontType, const _uint& iWidth, const _uint& iHeight, const _uint& iWeight);
-// 	void		Render_Font(const _tchar* pString, const _float2* pPos, const _float4 Color);
-//
-// private:
-// 	ID3D11Device*				m_pDevice;
-// 	ID3D11DeviceContext*		m_pContext;
-// };
-//
-// END
+#pragma once
+#include "Base.h"
+
+BEGIN(Engine)
+
+class CMyFont final :	public CBase
+{
+private:
+	CMyFont(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual ~CMyFont() = default;
+
+public:
+
+	HRESULT					Initialize(const _tchar* pFontFilePath);
+	HRESULT					Render(const _tchar* pText, const _float2& vPosition, _float fRadian, _float2 vScale, _fvector vColor);
+
+private:
+	ID3D11Device*			m_pDevice = nullptr;
+	ID3D11DeviceContext*	m_pContext = nullptr;
+
+private:
+	SpriteFont*				m_pFont = nullptr;
+	SpriteBatch*			m_pBatch = nullptr;
+
+public:
+	static CMyFont*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontFilePath);
+	void					Free() override;
+
+};
+
+END

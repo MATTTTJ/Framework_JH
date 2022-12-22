@@ -1,6 +1,5 @@
 #include "Shader_Client_Defines.h"
 
-
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix			g_SocketMatrix;
 
@@ -56,7 +55,7 @@ VS_OUT VS_MAIN_SOCKET(VS_IN In)
 	vector		vNormal = mul(float4(In.vNormal, 0.f), g_WorldMatrix);
 	vNormal = mul(vNormal, g_SocketMatrix);
 
-	Out.vPosition = mul(vPosition, matVP);
+	Out.vPosition = mul(vPosition, matVP); 
 	Out.vNormal = normalize(vNormal);
 	Out.vTexUV = In.vTexUV;
 	Out.vTangent = (vector)0.f;
@@ -84,6 +83,35 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
+	Out.vColor.a = Out.vColor.a * 0.5f;
+
+	float Lx = 0;
+	float Ly = 0;
+
+	for (int y = -1; y <= 1; ++y)
+	{
+		for (int x = -1; x <= 1; ++x)
+		{
+			float2 offset = float2(x, y) * float2(1 / 1280.f, 1 / 720.f);
+			float3 tex = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + offset).rgb;
+			float luminance = dot(tex, float3(0.3, 0.59, 0.11));
+
+			Lx += luminance * Kx[y + 1][x + 1];
+			Ly += luminance * Ky[y + 1][x + 1];
+		}
+	}
+	float L = sqrt((Lx*Lx) + (Ly*Ly));
+
+	if (L < 0.03)
+	{
+		Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	}
+	else
+	{
+		Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.3f;
+	}
+
+
 	return Out;
 }
 
@@ -93,6 +121,8 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;
@@ -104,6 +134,8 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
 		VertexShader = compile vs_5_0 VS_MAIN_SOCKET();
 		GeometryShader = NULL;
 		HullShader = NULL;

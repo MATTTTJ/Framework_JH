@@ -151,6 +151,15 @@
     <Filter Include="01. Utility\03. Components\09. StateMachine\KKB">
       <UniqueIdentifier>{70dd10de-16d3-47d7-ad65-5ba6e45dc1b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\02. VIBuffer\Instancing">
+      <UniqueIdentifier>{862e5f4b-bae2-4d39-80bd-ed7efe50cc51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\02. VIBuffer\Instancing\Point">
+      <UniqueIdentifier>{cf958a6a-72e5-4304-b4a8-e6848e438f24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\02. VIBuffer\Instancing\Rect">
+      <UniqueIdentifier>{08de8d1f-b50e-4058-a232-bf28280271f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -366,6 +375,15 @@
     <ClInclude Include="..\public\State.h">
       <Filter>01. Utility\03. Components\09. StateMachine\KKB</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Instancing.h">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Instancing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Point_Instancing.h">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Instancing\Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Rect_Instancing.h">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Instancing\Rect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -547,6 +565,15 @@
     </ClCompile>
     <ClCompile Include="..\private\State.cpp">
       <Filter>01. Utility\03. Components\09. StateMachine\KKB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Point_Instancing.cpp">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Instancing\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Instancing.cpp">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Rect_Instancing.cpp">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Instancing\Rect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

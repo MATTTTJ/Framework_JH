@@ -8,6 +8,7 @@
 #include "Component_Manager.h"
 #include "PipeLine.h"
 #include "Graphic_Device.h"
+#include "FontMgr.h"
 
 #define CONTEXT_LOCK CContext_LockGuard _CtxLock_(CGraphic_Device::GetInstance()->GetContexMtx());
 
@@ -87,6 +88,10 @@ public: /* For. Light_Manager*/
 	const LIGHTDESC*	Get_LightDesc(_uint iIndex);
 	HRESULT				Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc);
 
+public: /* For. Font_Manager*/
+	HRESULT				Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag, const _tchar* pFontFilePath);
+	HRESULT				Render_Font(const _tchar* pFontTag, const _tchar* pText, const _float2& vPos, _float fRadian, _float2 vScale, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f));
+
 public: // for imgui manager
 	void				Render_ImGui();
 	void				Render_Update_ImGui();
@@ -103,7 +108,7 @@ private:
 	class CPipeLine*				m_pPipeLine = nullptr;
 	class CTimer_Manager*			m_pTimer_Manager = nullptr;
 	class CLight_Manager*			m_pLight_Manager = nullptr;
-
+	class CFontMgr*					m_pFont_Manager = nullptr;
 
 	class CImgui_Manager*			m_pImgui_Manager = nullptr;
 

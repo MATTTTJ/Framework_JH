@@ -7,9 +7,6 @@
     <Filter Include="98. Default">
       <UniqueIdentifier>{b6e3488f-aaca-4d7f-914d-b7822bfef9f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99. Defines">
-      <UniqueIdentifier>{5bd21b18-5ada-4d45-825e-37528605eb57}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Level">
       <UniqueIdentifier>{5ebc6559-3582-494e-9f25-89fe5352db35}</UniqueIdentifier>
     </Filter>
@@ -100,6 +97,12 @@
     <Filter Include="02. GameObjects\Player\State">
       <UniqueIdentifier>{08f17e07-94ac-464b-841c-faea7650b009}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Effect">
+      <UniqueIdentifier>{88b4e1c4-5ec6-4328-9132-cdcc15de5843}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Defines">
+      <UniqueIdentifier>{0b1f912b-dd5d-4e21-a571-b5ebae10fbc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -116,9 +119,6 @@
     </ClInclude>
     <ClInclude Include="..\public\MainApp.h">
       <Filter>00. MainApp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Client_Defines.h">
-      <Filter>99. Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Loader.h">
       <Filter>01. Level\00. Loading\Loader</Filter>
@@ -183,15 +183,23 @@
     <ClInclude Include="..\public\Static_Camera.h">
       <Filter>02. GameObjects\StaticCamera</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Imgui_AnimationMgr.h" />
     <ClInclude Include="..\public\Sky.h">
       <Filter>02. GameObjects\Sky</Filter>
     </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Client_Defines.h">
-      <Filter>97. ShaderFiles</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Player_State.h">
       <Filter>02. GameObjects\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui_AnimationMgr.h">
+      <Filter>96. Tool\AnimationMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Point_Instancing.h">
+      <Filter>02. GameObjects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Client_Defines.h">
+      <Filter>99. Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Client_Defines.h">
+      <Filter>97. ShaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -267,12 +275,17 @@
     <ClCompile Include="..\private\Static_Camera.cpp">
       <Filter>02. GameObjects\StaticCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Imgui_AnimationMgr.cpp" />
     <ClCompile Include="..\private\Sky.cpp">
       <Filter>02. GameObjects\Sky</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player_State.cpp">
       <Filter>02. GameObjects\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Imgui_AnimationMgr.cpp">
+      <Filter>96. Tool\AnimationMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Point_Instancing.cpp">
+      <Filter>02. GameObjects\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -294,19 +307,28 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
-      <Filter>97. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNonAnim.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxRectInstance.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNonAnim.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

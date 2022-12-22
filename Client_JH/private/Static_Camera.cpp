@@ -77,10 +77,10 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 	{
 		m_fCamHeight += (_float)TurnY / 1000.f;
 
-		if (m_fCamHeight >= 0.2f)
-			m_fCamHeight = 0.2f;
-		else if (m_fCamHeight <= -0.2f)
-			m_fCamHeight = -0.2f;
+		if (m_fCamHeight >= 0.1f)
+			m_fCamHeight = 0.1f;
+		else if (m_fCamHeight <= -0.1f)
+			m_fCamHeight = -0.1f;
 	}
 }
 
@@ -112,9 +112,10 @@ void CStatic_Camera::Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _dou
 	if (!m_bRender)
 		return;
 
+	
 
-
-	_vector vPlayerPos = PlayerPos;
+	_vector vPlayerPos = PlayerPos + XMVectorSet(-0.2f,0.f,0.f,0.f);
+	
 	_vector vLook = XMLoadFloat4(&m_vCameraLook);
 
 
@@ -141,7 +142,7 @@ void CStatic_Camera::Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _dou
 		_float4x4	CombindMatrix;
 		XMStoreFloat4x4(&CombindMatrix, TargetBoneMatrix * PivotMatrix * OwnerWorldMatrix);
 
-		_vector vCamPos = XMVectorSet(CombindMatrix._41, CombindMatrix._42, CombindMatrix._43 + m_fCamHeight, CombindMatrix._44);
+		_vector vCamPos = XMVectorSet(CombindMatrix._41, CombindMatrix._42 + m_fCamHeight, CombindMatrix._43, CombindMatrix._44);
 
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vCamPos);
 

@@ -123,6 +123,8 @@ _bool CAnimation::Update_Bones(_double dTimeDelta, _double AnimSpeed)
 	{
 		m_bIsFinished = false;
 	}
+
+	return false;
 }
 
 _bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation* pNextAnim, _double LerpSpeed, _bool bFinish)
