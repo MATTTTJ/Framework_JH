@@ -24,7 +24,7 @@ struct VS_IN
 
 struct VS_OUT
 {
-	float4		vPosition : SV_POSITION;
+	float4		vPosition : SV_POSITION; // SV_POSITION
 	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
 	float4		vTangent : TANGENT;
@@ -59,6 +59,99 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	return Out;
 }
+
+// struct GS_IN
+// {
+// 	float4	vPosition : POSITION;
+// 	float3	vNormal : NORMAL;
+// 	float  EdgeFlag : PSIZE;
+//
+// };
+
+// struct GS_OUT
+// {
+// 	float4 vPosition : VS_POSITION;
+// 	float3 vNormal : NORMAL;
+// 	float  EdgeFlag : PSIZE;
+//
+// };
+//
+// float3 GetNormal(float3 A, float3 B, float C)
+// {
+// 	float3 AB = normalize(B - A);
+// 	float AC = normalize(C - A);
+// 	return normalize(cross(AB, AC));
+// }
+//
+// void CreateVertex(inout TriangleStream<GS_OUT> triStream, float3 pos, float3 normal,
+// 	float edgeFlag = 0)
+// {
+// 	//Step 1. Create a GS_DATA object
+// 	GS_OUT tempData;
+// 	//Step 2. Transform the position using the WVP Matrix and assign it to (GS_DATA
+// 	//object).Position(Keep in mind: float3 -> float4)
+// 		tempData.vPosition = mul(float4(pos, 1), g_WorldMatrix * g_ViewMatrix * g_ProjMatrix);
+// 	//Step 3. Transform the normal using the World Matrix and assign it to (GS_DATA
+// 	//object).Normal(Only Rotation, No translation!)
+// 		tempData.vNormal = mul(normal, (float3x3)g_WorldMatrix);
+// 	//Step 4. Assign texCoord to (GS_DATA object).TexCoord
+// 	tempData.EdgeFlag = edgeFlag;
+// 	//Step 5. Append (GS_DATA object) to the TriangleStream parameter
+// 	//(TriangleStream::Append(...))
+// 		triStream.Append(tempData);
+// }
+//
+// [maxvertexcount(12)]
+// void GS_MAIN(triangleadj VS_OUT vertices[6], inout TriangleStream<GS_OUT> triStream)
+// {
+// 	float4 wp1 = vertices[0].vPosition;
+// 	float4 wp2 = vertices[2].vPosition;
+// 	float4 wp3 = vertices[4].vPosition;
+//
+// 	float3 faceNormal = GetNormal(wp1, wp2, wp3);
+// 	float3 basePoint = float4((wp1 + wp2, wp3));
+// 	float3 viewDirection = normalize(basePoint - g_ViewMatrix[3].xyz);
+// 	viewDirection = normalize(viewDirection);
+//
+// 	float dotView = dot(faceNormal, viewDirection);
+//
+// 	if(dotView < 0)
+// 	{
+// 		for (uint i = 0; i<6; i += 2)
+// 		{
+// 			uint iNextTri = (i + 2) % 6;
+// 			wp1 = vertices[i].vPosition;
+// 			wp2 = vertices[i + 1].vPosition;
+// 			wp3 = vertices[iNextTri].vPosition;
+// 			faceNormal = GetNormal(wp1, wp2, wp3);
+// 			basePoint = float4((wp1 + wp2 + wp3) / 3).xyz;
+// 			viewDirection = normalize(basePoint - g_ViewMatrix[3].xyz);
+// 			dotView = dot(faceNormal, viewDirection);
+// 			if (dotView >= 0)
+// 			{
+// 				for (int v = 0; v < 2; v++)
+// 				{
+// 					float3 wsPos = vertices[i].vPosition + v * vertices[i].vNormal * 2;
+// 					CreateVertex(triStream, wsPos, vertices[i].vNormal, 3);
+// 				}
+// 				for (int v = 0; v < 2; v++)
+// 				{
+// 					float3 wsPos = vertices[iNextTri].vPosition +
+// 						v * vertices[iNextTri].vNormal * 2;
+// 					CreateVertex(triStream, wsPos, vertices[iNextTri].vNormal, 3);
+// 				}
+// 				triStream.RestartStrip();
+//
+// 				CreateVertex(triStream, vertices[0].vPosition, vertices[0].vNormal, 0);
+// 				CreateVertex(triStream, vertices[2].vPosition, vertices[2].vNormal, 0);
+// 				CreateVertex(triStream, vertices[4].vPosition, vertices[4].vNormal, 0);
+// 			}
+// 	}
+//// }
+
+
+
+
 
 struct PS_IN
 {
