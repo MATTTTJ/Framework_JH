@@ -14,8 +14,8 @@ HRESULT CPlayer_State::Initialize(CPlayer* pPlayer)
 
 	FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Walk(), E_FAIL);
-	FAILED_CHECK_RETURN(SetUp_State_Fire(), E_FAIL);
-	FAILED_CHECK_RETURN(SetUp_State_Reload(), E_FAIL);
+	// FAILED_CHECK_RETURN(SetUp_State_Fire(), E_FAIL);
+	// FAILED_CHECK_RETURN(SetUp_State_Reload(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Dash(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Damaged(), E_FAIL);
 
@@ -42,8 +42,8 @@ HRESULT CPlayer_State::SetUp_State_Idle()
 		.Init_Changer(L"STATE::WALK_BL", this, &CPlayer_State::KeyInput_SA)
 		.Init_Changer(L"STATE::WALK_BR", this, &CPlayer_State::KeyInput_SD)
 		.Init_Changer(L"STATE::DASH_F", this, &CPlayer_State::KeyInput_Shift)
-		.Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
-		.Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
+		// .Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
+		// .Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
 
 		.Finish_Setting();
 
@@ -67,7 +67,7 @@ HRESULT CPlayer_State::SetUp_State_Walk()
 		.Init_Changer(L"STATE::WALK_BR", this, &CPlayer_State::KeyInput_SD)
 		.Init_Changer(L"STATE::DASH_F", this, &CPlayer_State::KeyInput_Shift)
 		// .Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
-		.Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
+		// .Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
 		.Init_Changer(L"STATE::IDLE", this, &CPlayer_State::KeyInput_None)
 
 		.Add_State(L"STATE::WALK_B")
@@ -83,7 +83,7 @@ HRESULT CPlayer_State::SetUp_State_Walk()
 		.Init_Changer(L"STATE::WALK_BR", this, &CPlayer_State::KeyInput_SD)
 		.Init_Changer(L"STATE::DASH_B", this, &CPlayer_State::KeyInput_Shift)
 		// .Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
-		.Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
+		// .Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
 		.Init_Changer(L"STATE::IDLE", this, &CPlayer_State::KeyInput_None)
 
 		.Add_State(L"STATE::WALK_L")
@@ -99,7 +99,7 @@ HRESULT CPlayer_State::SetUp_State_Walk()
 		.Init_Changer(L"STATE::WALK_BR", this, &CPlayer_State::KeyInput_SD)
 		.Init_Changer(L"STATE::DASH_L", this, &CPlayer_State::KeyInput_Shift)
 		// .Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
-		.Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
+		// .Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
 		.Init_Changer(L"STATE::IDLE", this, &CPlayer_State::KeyInput_None)
 
 		.Add_State(L"STATE::WALK_R")
@@ -115,7 +115,7 @@ HRESULT CPlayer_State::SetUp_State_Walk()
 		.Init_Changer(L"STATE::WALK_BR", this, &CPlayer_State::KeyInput_SD)
 		.Init_Changer(L"STATE::DASH_R", this, &CPlayer_State::KeyInput_Shift)
 		// .Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
-		.Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
+		// .Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
 		.Init_Changer(L"STATE::IDLE", this, &CPlayer_State::KeyInput_None)
 
 		.Add_State(L"STATE::WALK_FL")
@@ -131,7 +131,7 @@ HRESULT CPlayer_State::SetUp_State_Walk()
 		.Init_Changer(L"STATE::WALK_BR", this, &CPlayer_State::KeyInput_SD)
 		.Init_Changer(L"STATE::DASH_FL", this, &CPlayer_State::KeyInput_Shift)
 		// .Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
-		.Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
+		// .Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
 		.Init_Changer(L"STATE::IDLE", this, &CPlayer_State::KeyInput_None)
 
 		.Add_State(L"STATE::WALK_FR")
@@ -147,7 +147,7 @@ HRESULT CPlayer_State::SetUp_State_Walk()
 		.Init_Changer(L"STATE::WALK_BR", this, &CPlayer_State::KeyInput_SD)
 		.Init_Changer(L"STATE::DASH_FR", this, &CPlayer_State::KeyInput_Shift)
 		// .Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
-		.Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
+		// .Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
 		.Init_Changer(L"STATE::IDLE", this, &CPlayer_State::KeyInput_None)
 
 		.Add_State(L"STATE::WALK_BL")
@@ -163,7 +163,7 @@ HRESULT CPlayer_State::SetUp_State_Walk()
 		.Init_Changer(L"STATE::WALK_BR", this, &CPlayer_State::KeyInput_SD)
 		.Init_Changer(L"STATE::DASH_BL", this, &CPlayer_State::KeyInput_Shift)
 		// .Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
-		.Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
+		// .Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
 		.Init_Changer(L"STATE::IDLE", this, &CPlayer_State::KeyInput_None)
 
 		.Add_State(L"STATE::WALK_BR")
@@ -179,7 +179,7 @@ HRESULT CPlayer_State::SetUp_State_Walk()
 		.Init_Changer(L"STATE::WALK_BL", this, &CPlayer_State::KeyInput_SA)
 		.Init_Changer(L"STATE::DASH_BR", this, &CPlayer_State::KeyInput_Shift)
 		// .Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
-		.Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
+		// .Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
 		.Init_Changer(L"STATE::IDLE", this, &CPlayer_State::KeyInput_None)
 
 		.Finish_Setting();
@@ -358,31 +358,31 @@ HRESULT CPlayer_State::SetUp_State_SelectPage()
 
 void CPlayer_State::Start_Idle(_double TimeDelta)
 {
-	if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_DEFAULT")
-	{
-
-		m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_pWeaponModelCom;
-
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_IDLE);
-	}
-	else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
-	{
-		m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FLAMEBULLET].m_pWeaponModelCom;
-
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_IDLE);
-	}
-	else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
-	{
-		m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FIREDRAGON].m_pWeaponModelCom;
-
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_IDLE);
-	}
-	else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_POISON")
-	{
-		m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_POISON].m_pWeaponModelCom;
-
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
-	}
+	// if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_DEFAULT")
+	// {
+	//
+	// 	m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_pWeaponModelCom;
+	//
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_IDLE);
+	// }
+	// else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
+	// {
+	// 	m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FLAMEBULLET].m_pWeaponModelCom;
+	//
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_IDLE);
+	// }
+	// else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
+	// {
+	// 	m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FIREDRAGON].m_pWeaponModelCom;
+	//
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_IDLE);
+	// }
+	// else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_POISON")
+	// {
+	// 	m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_POISON].m_pWeaponModelCom;
+	//
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
+	// }
 }
 
 void CPlayer_State::Start_Fire(_double TimeDelta)
@@ -816,12 +816,12 @@ _bool CPlayer_State::MouseCharge_LB()
 
 _bool CPlayer_State::isFinish()
 {
-	_bool bResult = m_pPlayer->m_pModelCom->Get_IsAnimFinished();
-	m_pPlayer->m_pModelCom->Reset_IsFinished();
+	// _bool bResult = m_pPlayer->m_pModelCom->Get_IsAnimFinished();
+	// m_pPlayer->m_pModelCom->Reset_IsFinished();
+	//
+	// m_pPlayer->m_bIsAnimaFinished = bResult;
 
-	m_pPlayer->m_bIsAnimaFinished = bResult;
-
-	return bResult;
+	return true;
 }
 
 CPlayer_State* CPlayer_State::Create(CPlayer* pPlayer)

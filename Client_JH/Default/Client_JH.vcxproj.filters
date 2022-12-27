@@ -201,6 +201,9 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Client_Defines.h">
       <Filter>97. ShaderFiles</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Weapon_State.h">
+      <Filter>02. GameObjects\Player\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -286,6 +289,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Point_Instancing.cpp">
       <Filter>02. GameObjects\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon_State.cpp">
+      <Filter>02. GameObjects\Player\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

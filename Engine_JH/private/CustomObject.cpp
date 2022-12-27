@@ -135,7 +135,7 @@ void CCustomObject::Tick(_double dTimeDelta)
 	{
 		if (m_pModelCom->Get_ModelType() == CModel::MODEL_NONANIM) 
 			return;
-		m_pModelCom->Play_Animation(dTimeDelta, 0.1,1.0);
+		m_pModelCom->Play_Animation(dTimeDelta, CModel::LERP_BEGIN);
 	}
 
 	if(nullptr != m_pColliderCom)

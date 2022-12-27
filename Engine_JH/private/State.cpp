@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "..\Public\State.h"
 
+#ifdef _DEBUG
+#define new DBG_NEW 
+#endif
+
 CState::CState(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	:CComponent(pDevice, pDeviceContext)
 {

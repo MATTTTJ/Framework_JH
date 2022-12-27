@@ -3,6 +3,7 @@
 
 #include "Level_Loading.h"
 #include "GameInstance.h"
+#include "Imgui_AnimationMgr.h"
 #include "Imgui_PropertyEditor.h"
 #include "Imgui_LevelSwitcher.h"
 #include "Imgui_MapEditor.h"
@@ -28,7 +29,8 @@ HRESULT CLevel_Logo::Initialize()
 	CGameInstance::GetInstance()->Clear_ImguiObjects();
 	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_Setting::Create());
 	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_ModelSave::Create(m_pDevice,m_pContext));
-	CGameInstance::GetInstance()->Add_ImguiTabObject(CImgui_PropertyEditor::Create());
+	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_AnimationMgr::Create());
+	// CGameInstance::GetInstance()->Add_ImguiTabObject(CImgui_PropertyEditor::Create());
 	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
 	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_MapEditor::Create());
 	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_ProtoMgr::Create(m_pDevice,m_pContext));

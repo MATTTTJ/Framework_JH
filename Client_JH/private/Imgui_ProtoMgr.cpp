@@ -121,7 +121,7 @@ void CImgui_ProtoMgr::Component_Editor()
 
 			/* For Shader */
 			static _int	iSelectDeclaration = 0;
-			char*			szDeclarationType[4] = { "VTXTEX", "VTXNORTEX", "VTXMODEL", "VTXANIMMODEL" };
+			char*			szDeclarationType[5] = { "VTXPOS", "VTXTEX", "VTXNORTEX", "VTXMODEL", "VTXANIMMODEL" };
 			static _int	iNumElements = 0;
 
 			/* For Texture */
@@ -169,15 +169,17 @@ void CImgui_ProtoMgr::Component_Editor()
 					ImGuiFileDialog::Instance()->OpenDialog("Choose HLSL", "Choose .hlsl", ".hlsl", "../Bin/ShaderFiles", ".hlsl", 1, nullptr, ImGuiFileDialogFlags_Modal);
 
 				/* Select Declaration Type */
-				IMGUI_LEFT_LABEL(ImGui::Combo, "Select Declaration", &iSelectDeclaration, szDeclarationType, 4);
+				IMGUI_LEFT_LABEL(ImGui::Combo, "Select Declaration", &iSelectDeclaration, szDeclarationType, 5);
 
 				if (iSelectDeclaration == 0)
-					iNumElements = 2;
+					iNumElements = 1;
 				else if (iSelectDeclaration == 1)
-					iNumElements = 3;
+					iNumElements = 2;
 				else if (iSelectDeclaration == 2)
-					iNumElements = 4;
+					iNumElements = 3;
 				else if (iSelectDeclaration == 3)
+					iNumElements = 4;
+				else if (iSelectDeclaration == 4)
 					iNumElements = 6;
 
 				IMGUI_LEFT_LABEL(ImGui::InputInt, "Elements Count", &iNumElements, 0, 0, ImGuiInputTextFlags_ReadOnly);
@@ -301,12 +303,14 @@ void CImgui_ProtoMgr::Component_Editor()
 					CGameUtils::ctwc(szFilePath, wszFilePath);
 
 					if (iSelectDeclaration == 0)
-						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements));
+						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXPOS_DECLARATION::Elements, VTXPOS_DECLARATION::iNumElements));
 					else if (iSelectDeclaration == 1)
-						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements));
+						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements));
 					else if (iSelectDeclaration == 2)
-						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements));
+						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements));
 					else if (iSelectDeclaration == 3)
+						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements));
+					else if (iSelectDeclaration == 4)
 						CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CShader::Create(m_pDevice, m_pContext, wstring(wszFilePath), (CShader::DECLARATIONTYPE)iSelectDeclaration, VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements));
 
 					break;
@@ -452,7 +456,9 @@ void CImgui_ProtoMgr::Component_Editor()
 							jCom["File Path"] = strFilePath;
 							jCom["Texture Count"] = 0;
 
-							if (eDeclarationType == CShader::DECLARATION_VTXTEX)
+							if (eDeclarationType == CShader::DECLARATION_VTXPOS)
+								jCom["Vertex Declaration"] = "Vtx_Position";
+							else if (eDeclarationType == CShader::DECLARATION_VTXTEX)
 								jCom["Vertex Declaration"] = "Vtx_Texture";
 							else if (eDeclarationType == CShader::DECLARATION_VTXNORTEX)
 								jCom["Vertex Declaration"] = "Vtx_NormalTexture";
@@ -632,7 +638,9 @@ void CImgui_ProtoMgr::Component_Editor()
 						wstrDeclarationType.assign(strDeclarationType.begin(), strDeclarationType.end());
 						Com["Vertex Elements Count"].get_to<_uint>(iVertexElementsCount);
 
-						if (strDeclarationType == "Vtx_Texture")
+						if (strDeclarationType == "Vtx_Position")
+							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXPOS, VTXPOS_DECLARATION::Elements, VTXPOS_DECLARATION::iNumElements));
+						else if (strDeclarationType == "Vtx_Texture")
 							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements));
 						else if (strDeclarationType == "Vtx_NormalTexture")
 							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXNORTEX, VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements));

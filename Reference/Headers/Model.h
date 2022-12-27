@@ -24,7 +24,8 @@ public:
 	class	CBone*				Get_BonePtr(const string& strBoneName);
 	void						Set_CurAnimIndex(_uint AnimIndex);
 	void						Set_BlendAnimIndex(_uint BlendAnimIndex);
-	const _bool&				Get_IsAnimFinished(void) const { return m_bIsAnimFinished; }
+	_bool						Get_AnimationFinish();
+	_float						Get_AnimationProgress();
 	class CAnimation*			Find_Anim(const string& strAnim);
 
 	void						Reset_IsFinished(void) { m_bIsAnimFinished = false; }

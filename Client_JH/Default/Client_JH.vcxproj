@@ -195,6 +195,7 @@
     <ClInclude Include="..\public\Static_Camera.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\Weapon.h" />
+    <ClInclude Include="..\public\Weapon_State.h" />
     <ClInclude Include="Client_JH.h" />
     <ClInclude Include="Imgui_Setting.h" />
     <ClInclude Include="Resource.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="..\private\Static_Camera.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
+    <ClCompile Include="..\private\Weapon_State.cpp" />
     <ClCompile Include="Client_JH.cpp" />
     <ClCompile Include="Imgui_Setting.cpp" />
     <ClCompile Include="stdafx.cpp">

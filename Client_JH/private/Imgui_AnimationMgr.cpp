@@ -4,7 +4,6 @@
 #include "GameObject.h"
 #include "GameUtils.h"
 
-
 CImgui_AnimationMgr::CImgui_AnimationMgr()
 {
 }

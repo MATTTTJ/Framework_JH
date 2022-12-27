@@ -14,6 +14,7 @@
 #include <DirectXTK/Effects.h>
 #include <DirectXTK/SpriteBatch.h>
 #include <DirectXTK/SpriteFont.h>
+#include <DirectXTK/SimpleMath.h>
 #include <d3dcompiler.h>
 #include <TypeInfo.h>
 #include <DirectXCollision.h>
@@ -21,6 +22,7 @@
 #include <dinput.h>
 #include <DirectXMath.h>
 using namespace DirectX;
+using namespace SimpleMath;
 
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>

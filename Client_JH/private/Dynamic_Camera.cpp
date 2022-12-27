@@ -21,6 +21,8 @@ HRESULT CDynamic_Camera::Initialize_Prototype()
 
 HRESULT CDynamic_Camera::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
+	m_bRender = false;
+
 	CCamera::CAMERADESC			CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof CameraDesc);
 

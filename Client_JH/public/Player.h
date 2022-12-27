@@ -2,9 +2,10 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 #include "Player_State.h"
+#include "Weapon_State.h"
 
 BEGIN(Engine)
-class CShader;
+	class CShader;
 class CRenderer;
 class CCollider;
 class CModel;
@@ -57,6 +58,7 @@ private:
 	CPlayer(const CPlayer& rhs);
 	virtual ~CPlayer() = default;
 	friend CPlayer_State;
+	friend CWeapon_State;
 public:
 	_matrix					Get_BoneMatrix(const string& strBoneName);
 	_matrix					Get_OffsetMatrix(const string& strBoneName);
@@ -92,7 +94,7 @@ private:
 	vector<CGameObject*>	m_vecPlayerParts;
 	CState*					m_pState = nullptr;
 	class CPlayer_State*	m_pPlayerState = nullptr;
-
+	class CWeapon_State*	m_pWeaponState = nullptr;
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();

@@ -4,7 +4,6 @@
 
 
 CAnimation::CAnimation()
-	: m_bIsLooping(true)
 {
 }
 

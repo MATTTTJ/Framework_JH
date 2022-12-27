@@ -198,6 +198,81 @@ void CTransform::Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit)
 	}
 }
 
+void CTransform::Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpeed)
+{
+	_float4	vPos = Get_State(CTransform::STATE_TRANSLATION);
+
+	vPos.y += fCurJumpSpeed * (_float)m_TransformDesc.fSpeedPerSec * (_float)dTimeDelta;
+
+	Set_State(CTransform::STATE_TRANSLATION, vPos);
+
+	fCurJumpSpeed -= fGravity;
+}
+
+void CTransform::Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld,
+	DIRECTION eDir)
+{
+	if (fCurDashTickCount < 0.f)
+		return;
+
+	_float4	vPos;
+	XMStoreFloat4(&vPos,Get_State(CTransform::STATE_TRANSLATION));
+	_float4	vLook;
+	XMStoreFloat4(&vLook , Get_State(CTransform::STATE_LOOK));
+	_float3	vScale = Get_Scaled();
+
+	_float4	vDir;
+
+	if (eDir != DIR_END)
+	{
+		switch (eDir)
+		{
+		case DIR_W:
+			vDir = XMVector3Normalize(matCamWorld.r[2]);
+			break;
+
+		case DIR_A:
+			vDir = XMVector3Normalize(matCamWorld.r[0]) * -1.f;
+			break;
+
+		case DIR_S:
+			vDir = XMVector3Normalize(matCamWorld.r[2]) * -1.f;
+			break;
+
+		case DIR_D:
+			vDir = XMVector3Normalize(matCamWorld.r[0]);
+			break;
+
+		case DIR_WA:
+			vDir = XMVector3Normalize(matCamWorld.r[2] + matCamWorld.r[0] * -1.f);
+			break;
+
+		case DIR_WD:
+			vDir = XMVector3Normalize(matCamWorld.r[2] + matCamWorld.r[0]);
+			break;
+
+		case DIR_SA:
+			vDir = XMVector3Normalize(matCamWorld.r[2] * -1.f + matCamWorld.r[0] * -1.f);
+			break;
+
+		case DIR_SD:
+			vDir = XMVector3Normalize(matCamWorld.r[2] * -1.f + matCamWorld.r[0]);
+			break;
+		}
+
+		vLook = XMVector3Normalize(XMVectorSet(vDir.x, 0.f, vDir.z, 0.f)) * vScale.z;
+		_vector	vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
+		_vector	vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
+
+		Set_State(STATE_RIGHT, vRight);
+		Set_State(STATE_UP, vUp);
+		Set_State(STATE_LOOK, vLook);
+	}
+
+	vPos += XMVector3Normalize(vLook) * (_float)dTimeDelta * (_float)m_TransformDesc.fSpeedPerSec * 2.f;
+	Set_State(STATE_TRANSLATION, vPos);
+}
+
 void CTransform::Speed_Up(_bool bKeyState)
 {
 	if (bKeyState)

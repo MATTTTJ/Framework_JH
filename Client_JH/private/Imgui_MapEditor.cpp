@@ -254,6 +254,9 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 					XMStoreFloat4x4(&matProj, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
 
 					ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&matWorld);
+
+					ImGui::Separator();
+					pGameObject->Imgui_RenderComponentProperties();
 				}
 			}
 

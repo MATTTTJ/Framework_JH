@@ -41,6 +41,22 @@ CModel::CModel(const CModel & rhs)
 }
 
 
+CMesh* CModel::Get_Mesh(const string& strMeshName)
+{
+	CMesh*		pFindMesh = nullptr;
+
+	for (auto& pMesh : m_vecMeshes)
+	{
+		if (pMesh->Get_MeshName() == strMeshName)
+		{
+			pFindMesh = pMesh;
+			break;
+		}
+	}
+
+	return pFindMesh;
+}
+
 _matrix CModel::Get_BoneMatrix(const string& strBoneName)
 {
 	CBone*	pBone = Get_BonePtr(strBoneName);
@@ -94,6 +110,16 @@ void CModel::Set_BlendAnimIndex(_uint BlendAnimIndex)
 	if (m_iLastBlendIndex != m_iCurBlendIndex)
 		m_fCurAnimBlendingTime = 0.f;
 
+}
+
+_bool CModel::Get_AnimationFinish()
+{
+	return m_vecAnimations[m_iCurAnimIndex]->Get_AnimFinish();
+}
+
+_float CModel::Get_AnimationProgress()
+{
+	return m_vecAnimations[m_iCurAnimIndex]->Get_AnimationProgress();
 }
 
 CAnimation* CModel::Find_Anim(const string& strAnim)
@@ -243,6 +269,7 @@ void CModel::Imgui_RenderAnimation()
 		if (ImGui::Button("Play"))
 		{
 			Set_CurAnimIndex(iSelectAnimation);
+			m_vecAnimations[iSelectAnimation]->Reset_Animation();
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("ReName"))
@@ -250,10 +277,35 @@ void CModel::Imgui_RenderAnimation()
 			bReName = true;
 		}
 		ImGui::SameLine();
+		if (ImGui::Button("Delete"))
+		{
+			for (_uint i = 0; i < m_iNumAnimation; ++i)
+				Safe_Delete_Array(ppAnimationTag[i]);
+			Safe_Delete_Array(ppAnimationTag);
+
+			auto	iter = m_vecAnimations.begin();
+			for (_int i = 0; i < iSelectAnimation; ++i)
+				++iter;
+
+			Safe_Release(m_vecAnimations[iSelectAnimation]);
+			m_vecAnimations.erase(iter);
+
+			m_iNumAnimation--;
+			iSelectAnimation = -1;
+
+			return;
+		}
+		ImGui::SameLine();
 		if (ImGui::Button("Cancel"))
 		{
 			iSelectAnimation = -1;
 			bReName = false;
+		}
+		if (ImGui::Button("Save"))
+		{
+			string		strFilePath;
+			strFilePath.assign(m_wstrFilePath.begin(), m_wstrFilePath.end());
+			Save_Model(strFilePath.c_str());
 		}
 
 		if (bReName)
@@ -272,15 +324,29 @@ void CModel::Imgui_RenderAnimation()
 				bReName = false;
 			}
 		}
+
+		ImGui::Separator();
+		ImGui::Text("Loop");
+		if (ImGui::RadioButton("Allow", m_vecAnimations[iSelectAnimation]->Get_AnimationLoop()))
+			m_vecAnimations[iSelectAnimation]->Get_AnimationLoop() = !m_vecAnimations[iSelectAnimation]->Get_AnimationLoop();
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Disallow", !m_vecAnimations[iSelectAnimation]->Get_AnimationLoop()))
+			m_vecAnimations[iSelectAnimation]->Get_AnimationLoop() = !m_vecAnimations[iSelectAnimation]->Get_AnimationLoop();
+
+		ImGui::Text("Animation Speed");
+		_double&	dTickPerSecond = m_vecAnimations[iSelectAnimation]->Get_AnimationTickPerSecond();
+		IMGUI_LEFT_LABEL(ImGui::InputDouble, "Input", &dTickPerSecond, 0.5, 1.0);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset"))
+			dTickPerSecond = 25.0;
 	}
 
 	for (_uint i = 0; i < m_iNumAnimation; ++i)
 		Safe_Delete_Array(ppAnimationTag[i]);
 	Safe_Delete_Array(ppAnimationTag);
-
 }
 
-void CModel::Play_Animation(_double TimeDelta, _double LerpSpeed, _double AnimSpeed, _bool bFinish)
+void CModel::Play_Animation(_double TimeDelta, LERPTYPE eType)
 {
 	if (MODEL_NONANIM == m_eType)
 		return;
@@ -290,16 +356,14 @@ void CModel::Play_Animation(_double TimeDelta, _double LerpSpeed, _double AnimSp
 	if(m_fCurAnimChangeTime < m_fAnimChangeTime && m_bIsAnimChange)
 	{		
 		m_vecAnimations[m_iLastAnimIndex]->Update_Bones(TimeDelta);
-		m_vecAnimations[m_iCurAnimIndex]->Update_Lerp(0.1, m_fCurAnimChangeTime / m_fAnimChangeTime);
-		m_fCurAnimChangeTime += (_float)TimeDelta;
 
+		if (eType == LERP_BEGIN)
+			m_vecAnimations[m_iCurAnimIndex]->Update_Lerp(0.0, m_fCurAnimChangeTime / m_fAnimChangeTime);
+		else if (eType == LERP_CONTINUE)
+			m_vecAnimations[m_iCurAnimIndex]->Update_Lerp((_double)m_vecAnimations[m_iLastAnimIndex]->Get_AnimationProgress(), m_fCurAnimChangeTime / m_fAnimChangeTime);
+
+		m_fCurAnimChangeTime += (_float)TimeDelta;
 	}
-	// if(m_fCurAnimBlendingTime < m_fAnimBlendingTime && m_iCurBlendIndex == 0 )
-	// {
-	// 	m_vecAnimations[m_iCurAnimIndex]->Update_Bones(TimeDelta);
-	// 	m_vecAnimations[m_iCurBlendIndex]->Update_Additive(0.1, m_fCurAnimBlendingTime / m_fAnimBlendingTime);
-	// 	m_fCurAnimBlendingTime += (_float)TimeDelta;
-	// }
 	else
 	{
 		m_bIsAnimFinished = m_vecAnimations[m_iCurAnimIndex]->Update_Bones(TimeDelta);
@@ -312,22 +376,6 @@ void CModel::Play_Animation(_double TimeDelta, _double LerpSpeed, _double AnimSp
 			pBone->compute_CombindTransformationMatrix();
 	}
 
-	// if (m_bIsAnimChange)
-	// {
-	// 	m_bIsAnimChange = m_vecAnimations[m_iLastAnimIndex]->Update_Lerp(TimeDelta, m_vecAnimations[m_iCurAnimIndex], LerpSpeed, bFinish);
-	//
-	// 	if (false == m_bIsAnimChange)
-	// 		m_iLastAnimIndex = m_iCurAnimIndex;
-	// }
-	// else
-	// 	m_bIsAnimFinished = m_vecAnimations[m_iLastAnimIndex]->Update_Bones(TimeDelta);
-	//
-	//
-	// for (auto& pBone : m_vecBones)
-	// {
-	// 	if (nullptr != pBone)
-	// 		pBone->compute_CombindTransformationMatrix();
-	// }
 }
 
 HRESULT CModel::Bind_Material(CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName)

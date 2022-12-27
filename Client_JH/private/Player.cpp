@@ -133,46 +133,46 @@ void CPlayer::Tick(_double dTimeDelta)
 	// {
 	// 	m_pModelCom->Set_CurAnimIndex(1);
 	// }
-	if (pGameInstance->Get_DIMouseState(DIM_LB) & 0x80)
-	{
-		if(m_wstrCurWeaponName == L"WEAPON_DEFAULT")
-		{
-			m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
-		}
-		else if(m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
-		{
-			m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_FIRE);
-		}
-		else if (m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
-		{
-			m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_FIRE);
-		}
-		else if (m_wstrCurWeaponName == L"WEAPON_POISON")
-		{
-			if (m_iPoisonAttCnt == 2)
-				m_iPoisonAttCnt = 0;
-
-			m_pModelCom->Set_CurAnimIndex(POISON_FIRE_A + m_iPoisonAttCnt);
-			m_iPoisonAttCnt++;
-		}
-	}
-	else
-	{
-		if (m_wstrCurWeaponName == L"WEAPON_DEFAULT")
-		{
-			m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_IDLE);
-		}
-		else if (m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
-		{
-			m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_IDLE);
-		}
-		else if (m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
-		{
-			m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_IDLE);
-		}
-		else if (m_wstrCurWeaponName == L"WEAPON_POISON")
-			m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
-	}
+	// if (pGameInstance->Get_DIMouseState(DIM_LB) & 0x80)
+	// {
+	// 	if(m_wstrCurWeaponName == L"WEAPON_DEFAULT")
+	// 	{
+	// 		m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
+	// 	}
+	// 	else if(m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
+	// 	{
+	// 		m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_FIRE);
+	// 	}
+	// 	else if (m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
+	// 	{
+	// 		m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_FIRE);
+	// 	}
+	// 	else if (m_wstrCurWeaponName == L"WEAPON_POISON")
+	// 	{
+	// 		if (m_iPoisonAttCnt == 2)
+	// 			m_iPoisonAttCnt = 0;
+	//
+	// 		m_pModelCom->Set_CurAnimIndex(POISON_FIRE_A + m_iPoisonAttCnt);
+	// 		m_iPoisonAttCnt++;
+	// 	}
+	// }
+	// else
+	// {
+	// 	if (m_wstrCurWeaponName == L"WEAPON_DEFAULT")
+	// 	{
+	// 		m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_IDLE);
+	// 	}
+	// 	else if (m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
+	// 	{
+	// 		m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_IDLE);
+	// 	}
+	// 	else if (m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
+	// 	{
+	// 		m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_IDLE);
+	// 	}
+	// 	else if (m_wstrCurWeaponName == L"WEAPON_POISON")
+	// 		m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
+	// }
 
 	m_pModelCom->Play_Animation(dTimeDelta, 0.1, 1.0);
 
@@ -307,7 +307,9 @@ HRESULT CPlayer::SetUp_ShaderResources()
 HRESULT CPlayer::SetUp_State()
 {
 	m_pPlayerState = CPlayer_State::Create(this);
+	m_pWeaponState = CWeapon_State::Create(this);
 	NULL_CHECK_RETURN(m_pPlayerState, E_FAIL);
+	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
 
 	return S_OK;
 }
@@ -370,12 +372,18 @@ void CPlayer::Free()
 
 	for (auto& pPart : m_vecPlayerParts)
 		Safe_Release(pPart);
+
 	Safe_Release(m_pState);
 	Safe_Release(m_pPlayerState);
-	Safe_Release(m_pModelCom);
+	Safe_Release(m_pWeaponState);
+
+	// Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 
-	// for (_uint i = 0; i < WEAPON_END; ++i)
-	// 	Safe_Release(m_tWeaponDesc[i].m_pWeaponModelCom);
+	if (m_bIsClone)
+	{
+		for (_uint i = 0; i < WEAPON_END; ++i)
+			Safe_Release(m_tWeaponDesc[i].m_pWeaponModelCom);
+	}
 }

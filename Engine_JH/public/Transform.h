@@ -10,6 +10,9 @@ public:
 	/* Position : 절대적인 월드공간에서의 위치. */
 	enum STATE { STATE_RIGHT, STATE_UP, STATE_LOOK, STATE_TRANSLATION, STATE_END };
 
+	enum DIRECTION { DIR_W, DIR_A, DIR_S, DIR_D, DIR_WA, DIR_WD, DIR_SA, DIR_SD, DIR_END };
+
+
 	typedef struct tagTransformDesc
 	{
 		float		fSpeedPerSec;
@@ -59,6 +62,9 @@ public:
 	void Rotation(_fvector vAxis, _float fRadian); /* Static */
 	void LookAt(_fvector vTargetPos);
 	void Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit = 0.1f);
+
+	void				Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpeed);
+	void				Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir);
 
 	void Speed_Up(_bool bKeyState);
 public:

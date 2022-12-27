@@ -37,7 +37,7 @@ HRESULT CMonster::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 		return E_FAIL;
 
 	m_pModelCom->Set_CurAnimIndex(rand() % 10);
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(_float(rand() % 10), 0.f, _float(rand() % 10), 1.f));
 
 
 	return S_OK;

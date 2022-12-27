@@ -15,7 +15,7 @@ private:
 
 	typedef struct tagChanger
 	{
-		wstring						wstrNextState = L"";
+		wstring								wstrNextState = L"";
 		std::function<_bool(void)>			Changer_Func = nullptr;
 	}CHANGER;
 
@@ -28,6 +28,9 @@ public:
 	virtual HRESULT	Initialize_Proto(void);
 	virtual HRESULT Initialize_Clone(CGameObject* pOwner, void* pArg = nullptr);
 	void			Tick(_double TimeDelta);
+
+public:
+	const wstring&		Get_CurState() { return m_wstrCurStateName; }
 
 public:
 	CState&	Set_Root(const wstring&	wstrStateName);
@@ -112,7 +115,7 @@ private:
 
 public:
 	static	CState*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CComponent* Clone(CGameObject* pOwner, void* pArg = nullptr);
+	virtual CComponent* Clone(CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void		Free(void);
 };
 
