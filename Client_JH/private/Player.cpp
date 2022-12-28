@@ -29,6 +29,16 @@ CPlayer::CPlayer(const CPlayer & rhs)
 	m_tWeaponDesc[WEAPON_FLAMEBULLET].m_wstrWeaponName = L"WEAPON_FLAMEBULLET";
 	m_tWeaponDesc[WEAPON_FIREDRAGON].m_wstrWeaponName = L"WEAPON_FIREDRAGON";
 	m_tWeaponDesc[WEAPON_POISON].m_wstrWeaponName = L"WEAPON_POISON";
+
+	
+	m_PlayerOption.m_iMaxHp = 100;
+	m_PlayerOption.m_iHp = m_PlayerOption.m_iMaxHp;
+	m_PlayerOption.m_iGold = 0;
+	m_PlayerOption.m_iMaxShieldPoint = 100;
+	m_PlayerOption.m_iShieldPoint = m_PlayerOption.m_iMaxShieldPoint;
+	m_PlayerOption.m_iPistol_BulletCnt = 50;
+	m_PlayerOption.m_iRifle_BulletCnt = 50;
+	m_PlayerOption.m_iInjector_BulletCnt = 50;
 }
 
 _matrix CPlayer::Get_BoneMatrix(const string& strBoneName)
@@ -81,6 +91,8 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	GameObjectDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.f);
 
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
+
+
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 

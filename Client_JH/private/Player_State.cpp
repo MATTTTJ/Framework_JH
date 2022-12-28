@@ -42,8 +42,6 @@ HRESULT CPlayer_State::SetUp_State_Idle()
 		.Init_Changer(L"STATE::WALK_BL", this, &CPlayer_State::KeyInput_SA)
 		.Init_Changer(L"STATE::WALK_BR", this, &CPlayer_State::KeyInput_SD)
 		.Init_Changer(L"STATE::DASH_F", this, &CPlayer_State::KeyInput_Shift)
-		// .Init_Changer(L"STATE::FIRE", this, &CPlayer_State::MouseDown_LB)
-		// .Init_Changer(L"STATE::RELOAD", this, &CPlayer_State::KeyInput_R)
 
 		.Finish_Setting();
 
@@ -387,44 +385,44 @@ void CPlayer_State::Start_Idle(_double TimeDelta)
 
 void CPlayer_State::Start_Fire(_double TimeDelta)
 {
-	if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_DEFAULT")
-	{
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
-	}
-	else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
-	{
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_FIRE);
-	}
-	else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
-	{
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_FIRE);
-	}
-	else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_POISON")
-	{
-		if (m_pPlayer->m_iPoisonAttCnt == 2)
-			m_pPlayer->m_iPoisonAttCnt = 0;
-
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(POISON_FIRE_A + m_pPlayer->m_iPoisonAttCnt);
-		m_pPlayer->m_iPoisonAttCnt++;
-	}
+	// if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_DEFAULT")
+	// {
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
+	// }
+	// else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
+	// {
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_FIRE);
+	// }
+	// else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
+	// {
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_FIRE);
+	// }
+	// else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_POISON")
+	// {
+	// 	if (m_pPlayer->m_iPoisonAttCnt == 2)
+	// 		m_pPlayer->m_iPoisonAttCnt = 0;
+	//
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(POISON_FIRE_A + m_pPlayer->m_iPoisonAttCnt);
+	// 	m_pPlayer->m_iPoisonAttCnt++;
+	// }
 }
 
 void CPlayer_State::Strat_Reload(_double TimeDelta)
 {
-	if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_DEFAULT")
-	{
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_RELOAD);
-	}
-	else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
-	{
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_RELOAD);
-	}
-	else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
-	{
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_RELOAD);
-	}
-	else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_POISON")
-		m_pPlayer->m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
+	// if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_DEFAULT")
+	// {
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_RELOAD);
+	// }
+	// else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
+	// {
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_RELOAD);
+	// }
+	// else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
+	// {
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_RELOAD);
+	// }
+	// else if (m_pPlayer->m_wstrCurWeaponName == L"WEAPON_POISON")
+	// 	m_pPlayer->m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
 }
 
 #pragma region Walk / Dash (Have no Anim)

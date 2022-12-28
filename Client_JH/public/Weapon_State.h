@@ -58,14 +58,14 @@ public:
 	void						Tick(_double dTimeDelta);
 	void						Late_Tick(_double dTimeDelta);
 private:
-	HRESULT						SetUp_State_Idle(void);
+	HRESULT						SetUp_State_Weapon_Idle(void);
 	HRESULT						SetUp_State_Fire(void);
 	HRESULT						SetUp_state_Reload(void);
 	HRESULT						SetUp_State_Throw(void);
 	HRESULT						SetUp_State_Roar(void);
 
 private:
-	void						Start_Idle(_double TimeDelta);
+	void						Start_Weapon_Idle(_double TimeDelta);
 	void						Start_Fire(_double TimeDelta);
 	void						Start_Reload(_double TimeDelta);
 	void						Start_Throw(_double TimeDelta);

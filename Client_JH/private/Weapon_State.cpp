@@ -37,7 +37,7 @@ HRESULT CWeapon_State::Initialize(class CPlayer* pPlayer, CState* pStateMachineC
 
 
 
-	FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
+	FAILED_CHECK_RETURN(SetUp_State_Weapon_Idle(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Fire(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_state_Reload(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Roar(), E_FAIL);
@@ -77,19 +77,37 @@ void CWeapon_State::Tick(_double dTimeDelta)
 		m_pPlayer->m_wstrCurWeaponName = L"";
 		m_pPlayer->m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_POISON].m_wstrWeaponName;
 	}
+
+	if(m_pGameInstance->Get_DIKeyState(DIK_W))
+	{
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	}
+
+	if (m_pGameInstance->Get_DIKeyState(DIK_S))
+	{
+		m_pTransformCom->Go_Backward(dTimeDelta);
+	}
+	if (m_pGameInstance->Get_DIKeyState(DIK_A))
+	{
+		m_pTransformCom->Go_Left(dTimeDelta);
+	}
+	if (m_pGameInstance->Get_DIKeyState(DIK_D))
+	{
+		m_pTransformCom->Go_Right(dTimeDelta);
+	}
 }
 
 void CWeapon_State::Late_Tick(_double dTimeDelta)
 {
 }
 
-HRESULT CWeapon_State::SetUp_State_Idle()
+HRESULT CWeapon_State::SetUp_State_Weapon_Idle()
 {
 	NULL_CHECK_RETURN(m_pPlayer->m_pState, E_FAIL);
 
 	m_pPlayer->m_pState->Set_Root(L"STATE::WEAPON_IDLE")
 		.Add_State(L"STATE::WEAPON_IDLE")
-		.Init_Start(this, &CWeapon_State::Start_Idle)
+		.Init_Start(this, &CWeapon_State::Start_Weapon_Idle)
 		.Init_Tick(this, &CWeapon_State::Tick_Idle)
 		.Init_End(this, &CWeapon_State::End_Common)
 		.Init_Changer(L"STATE::WEAPON_FIRE", this, &CWeapon_State::MouseInput_LB)
@@ -130,7 +148,7 @@ HRESULT CWeapon_State::SetUp_state_Reload()
 		Add_State(L"STATE::WEAPON_RELOAD")
 		.Init_Start(this, &CWeapon_State::Start_Reload)
 		.Init_Tick(this, &CWeapon_State::Tick_Reload)
-		.Init_End(this, &CWeapon_State::End_Common)
+		.Init_End(this, &CWeapon_State::End_Reload)
 		.Init_Changer(L"STATE::WEAPON_IDLE", this, &CWeapon_State::Animation_Finish)
 
 		.Finish_Setting();
@@ -174,7 +192,7 @@ HRESULT CWeapon_State::SetUp_State_Roar()
 	return S_OK;
 }
 
-void CWeapon_State::Start_Idle(_double TimeDelta)
+void CWeapon_State::Start_Weapon_Idle(_double TimeDelta)
 {
 	if (m_pPlayer->m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName)
 	{
@@ -195,7 +213,6 @@ void CWeapon_State::Start_Idle(_double TimeDelta)
 	{
 		m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
 	}
-
 }
 
 void CWeapon_State::Start_Fire(_double TimeDelta)
@@ -272,23 +289,23 @@ void CWeapon_State::Tick_Idle(_double TimeDelta)
 	}
 	else if (m_pPlayer->m_wstrCurWeaponName == m_tWeaponOption[POISON].wstrWeaponName)
 	{
-		// if(m_tWeaponOption[POISON].iCurBullet == 0 && m_pPlayer->m_PlayerOption.Pistol_BulletCnt != 0)
-		// {
-		// 	_int BulletCnt = m_pPlayer->m_PlayerOption.Pistol_BulletCnt;
-		// 	_int NeedBulletCnt = m_tWeaponOption[POISON].iMaxBullet - m_tWeaponOption[POISON].iCurBullet;
-		//
-		// 	if (BulletCnt > NeedBulletCnt)
-		// 	{
-		// 		BulletCnt -= NeedBulletCnt;
-		// 		m_tWeaponOption[POISON].iCurBullet = m_tWeaponOption[POISON].iMaxBullet;
-		// 		m_pPlayer->m_PlayerOption.Pistol_BulletCnt = BulletCnt;
-		// 	}
-		// 	else
-		// 	{
-		// 		m_tWeaponOption[POISON].iCurBullet += BulletCnt;
-		// 		m_pPlayer->m_PlayerOption.Pistol_BulletCnt = 0;
-		// 	}
-		// }
+		if(m_tWeaponOption[POISON].iCurBullet == 0 && m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt != 0)
+		{
+			_int BulletCnt = m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt;
+			_int NeedBulletCnt = m_tWeaponOption[POISON].iMaxBullet - m_tWeaponOption[POISON].iCurBullet;
+		
+			if (BulletCnt > NeedBulletCnt)
+			{
+				BulletCnt -= NeedBulletCnt;
+				m_tWeaponOption[POISON].iCurBullet = m_tWeaponOption[POISON].iMaxBullet;
+				m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt = BulletCnt;
+			}
+			else
+			{
+				m_tWeaponOption[POISON].iCurBullet += BulletCnt;
+				m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt = 0;
+			}
+		}
 		m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
 	}
 }
@@ -319,41 +336,41 @@ void CWeapon_State::End_Reload(_double TimeDelta)
 {
 	if (m_pPlayer->m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName)
 	{
-		if (0 != m_pPlayer->m_PlayerOption.Pistol_BulletCnt)
+		if (0 != m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt)
 		{
-			_int BulletCnt = m_pPlayer->m_PlayerOption.Pistol_BulletCnt;
+			_int BulletCnt = m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt;
 			_int NeedBulletCnt = m_tWeaponOption[DEFAULT_PISTOL].iMaxBullet - m_tWeaponOption[DEFAULT_PISTOL].iCurBullet;
 
 			if (BulletCnt > NeedBulletCnt)
 			{
 				BulletCnt -= NeedBulletCnt;
 				m_tWeaponOption[DEFAULT_PISTOL].iCurBullet = m_tWeaponOption[DEFAULT_PISTOL].iMaxBullet;
-				m_pPlayer->m_PlayerOption.Pistol_BulletCnt = BulletCnt;
+				m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt = BulletCnt;
 			}
 			else
 			{
 				m_tWeaponOption[DEFAULT_PISTOL].iCurBullet += BulletCnt;
-				m_pPlayer->m_PlayerOption.Pistol_BulletCnt = 0;
+				m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt = 0;
 			}
 		}
 	}
 	else if (m_pPlayer->m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName)
 	{
-		if (0 != m_pPlayer->m_PlayerOption.Pistol_BulletCnt)
+		if (0 != m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt)
 		{
-			_int BulletCnt = m_pPlayer->m_PlayerOption.Pistol_BulletCnt;
+			_int BulletCnt = m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt;
 			_int NeedBulletCnt = m_tWeaponOption[FLAME_BULLET].iMaxBullet - m_tWeaponOption[FLAME_BULLET].iCurBullet;
 
 			if (BulletCnt > NeedBulletCnt)
 			{
 				BulletCnt -= NeedBulletCnt;
 				m_tWeaponOption[FLAME_BULLET].iCurBullet = m_tWeaponOption[FLAME_BULLET].iMaxBullet;
-				m_pPlayer->m_PlayerOption.Pistol_BulletCnt = BulletCnt;
+				m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt = BulletCnt;
 			}
 			else
 			{
 				m_tWeaponOption[FLAME_BULLET].iCurBullet += BulletCnt;
-				m_pPlayer->m_PlayerOption.Pistol_BulletCnt = 0;
+				m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt = 0;
 			}
 		}
 	}
@@ -363,21 +380,21 @@ void CWeapon_State::End_Reload(_double TimeDelta)
 	}
 	else if (m_pPlayer->m_wstrCurWeaponName == m_tWeaponOption[POISON].wstrWeaponName)
 	{
-		if (0 != m_pPlayer->m_PlayerOption.Pistol_BulletCnt)
+		if (0 != m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt)
 		{
-			_int BulletCnt = m_pPlayer->m_PlayerOption.Pistol_BulletCnt;
+			_int BulletCnt = m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt;
 			_int NeedBulletCnt = m_tWeaponOption[POISON].iMaxBullet - m_tWeaponOption[POISON].iCurBullet;
 
 			if (BulletCnt > NeedBulletCnt)
 			{
 				BulletCnt -= NeedBulletCnt;
 				m_tWeaponOption[POISON].iCurBullet = m_tWeaponOption[POISON].iMaxBullet;
-				m_pPlayer->m_PlayerOption.Pistol_BulletCnt = BulletCnt;
+				m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt = BulletCnt;
 			}
 			else
 			{
 				m_tWeaponOption[POISON].iCurBullet += BulletCnt;
-				m_pPlayer->m_PlayerOption.Pistol_BulletCnt = 0;
+				m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt = 0;
 			}
 		}
 	}

@@ -64,9 +64,9 @@ class CPlayer final : public CGameObject
 		_uint							m_iMaxShieldPoint;
 		_uint							m_iGold;
 
-		_uint							Pistol_BulletCnt; // DEFAULT, FLAME, POISON 종류 
-		_uint							Injector_BulletCnt; // DRAGON 종류 
-		_uint							Rifle_BulletCnt; // Rifle 종류 
+		_uint							m_iPistol_BulletCnt; // DEFAULT, FLAME, POISON 종류 
+		_uint							m_iInjector_BulletCnt; // DRAGON 종류 
+		_uint							m_iRifle_BulletCnt; // Rifle 종류 
 	}PLAYEROPTION;
 
 private:
