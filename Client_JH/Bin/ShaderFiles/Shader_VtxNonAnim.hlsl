@@ -102,7 +102,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	}
 	float L = sqrt((Lx*Lx) + (Ly*Ly));
 
-	if (L < 0.03)
+	if (L < 0.1)
 	{
 		Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	}
