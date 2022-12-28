@@ -19,8 +19,8 @@ public:
 	void			Reset_Animation();
 public:
 	HRESULT			Initialize(aiAnimation* pAIAnimation, class CModel* pModel);
-	_bool			Update_Bones(_double dTimeDelta, _double AnimSpeed = 1.0);
-	// void			Update_Bones(_double dTimeDelta, _double AnimSpeed = 1.0);
+	// _bool			Update_Bones(_double dTimeDelta, _double AnimSpeed = 1.0);
+	void			Update_Bones(_double dTimeDelta);
 
 	_bool			Update_Lerp(_double dTimeDelta, CAnimation* pNextAnim ,_double LerpSpeed, _bool bFinish = false);
 	void			Update_Lerp(_double dTimeDelta, _float fRatio);

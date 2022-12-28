@@ -7,6 +7,7 @@ class ENGINE_DLL CModel final : public CComponent
 {
 public:
 	enum MODELTYPE { MODEL_NONANIM, MODEL_ANIM, MODELTYPE_END };
+	enum LERPTYPE { LERP_BEGIN, LERP_CONTINUE, LERPTYPE_END };
 public:
 	CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CModel(const CModel& rhs);
@@ -14,6 +15,7 @@ public:
 
 public:
 	HRESULT						Save_Model(const char* pSaveFileDirectory);
+	class CMesh*				Get_Mesh(const string& strMeshName);
 	const MODELTYPE&			Get_ModelType() { return m_eType; }
 	_uint						Get_NumMeshes() const {	return m_iNumMeshes; }
 	_uint						Get_NumAnimation() const { return m_iNumAnimation; }
@@ -26,7 +28,9 @@ public:
 	void						Set_BlendAnimIndex(_uint BlendAnimIndex);
 	_bool						Get_AnimationFinish();
 	_float						Get_AnimationProgress();
+	_uint						Get_LastAnimationIndex() { return m_iLastAnimIndex; }
 	class CAnimation*			Find_Anim(const string& strAnim);
+	void						Reset_Animation();
 
 	void						Reset_IsFinished(void) { m_bIsAnimFinished = false; }
 
@@ -36,7 +40,7 @@ public:
 	virtual void				Imgui_RenderProperty() override;
 	void						Imgui_RenderAnimation();
 public:
-	void						Play_Animation(_double TimeDelta,_double LerpSpeed, _double AnimSpeed, _bool bFinish = false);
+	void						Play_Animation(_double TimeDelta, LERPTYPE eType = LERP_BEGIN);
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);
 	HRESULT						Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrBoneConstantName = L"", _uint iPassIndex = 0);
 
@@ -63,8 +67,8 @@ private:
 	_float						m_fAnimBlendingTime = 1.f;
 	_float						m_fCurAnimBlendingTime = 1.f;
 	// AnimChange
-	_float						m_fAnimChangeTime = 1.f;
-	_float						m_fCurAnimChangeTime = 1.f;
+	_float						m_fAnimChangeTime = 0.05f;
+	_float						m_fCurAnimChangeTime = 0.05f;
 
 	_uint						m_iNumAnimation = 0; // 애니메이션의 갯수 
 	vector<class CAnimation*>	m_vecAnimations;
@@ -88,6 +92,8 @@ public:
 	virtual CComponent*			Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void				Free() override;
 };
+
+
 
 
 END

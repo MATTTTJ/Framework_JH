@@ -8,6 +8,10 @@ CInput_Device::CInput_Device()
 {
 	ZeroMemory(m_byKeyState, sizeof(m_byKeyState));
 	ZeroMemory(&m_MouseState, sizeof(m_MouseState));
+	ZeroMemory(m_bKeyState, sizeof(_bool) * 256);
+	ZeroMemory(m_bPressThisFrame, sizeof(_bool) * 256);
+	ZeroMemory(m_dChargeTime, sizeof(_bool) * 256);
+	ZeroMemory(m_bMouseState, sizeof(_bool) * 3);
 }
 
 _bool CInput_Device::Mouse_Down(MOUSEKEYSTATE MouseButton)
@@ -15,6 +19,7 @@ _bool CInput_Device::Mouse_Down(MOUSEKEYSTATE MouseButton)
 	if(!m_bMouseState[MouseButton] && (m_MouseState.rgbButtons[MouseButton] & 0x80))
 	{
 		m_bMouseState[MouseButton] = true;
+		return true;
 	}
 
 	return false;
@@ -38,20 +43,34 @@ _bool CInput_Device::Mouse_DoubleClick(MOUSEKEYSTATE MouseButton)
 
 _bool CInput_Device::Key_Pressing(_ubyte byKeyID)
 {
-	if ((Get_DIKeyState(byKeyID)) & 0x80)
+	if (Get_DIKeyState(byKeyID) & 0x80)
 	{
-		m_bLastInput = byKeyID;
+		m_bKeyState[byKeyID] = true;
+		m_bPressThisFrame[byKeyID] = true;
 		return true;
 	}
 
 	return false;
 }
 
+_bool CInput_Device::Key_DoubleDown(_ubyte byKeyID)
+{
+	if (!m_bPressThisFrame[byKeyID] && !m_bKeyState[byKeyID] && (Get_DIKeyState(byKeyID) & 0x80))
+		return true;
+
+	return false;
+}
+
 _bool CInput_Device::Key_Down(_ubyte byKeyID)
 {
-	if (!m_bKeyState[byKeyID] && (Get_DIKeyState(byKeyID) & 0x80))
+	if (m_bPressThisFrame[byKeyID])
+		return true;
+
+	if (!m_bPressThisFrame[byKeyID] && !m_bKeyState[byKeyID] && (Get_DIKeyState(byKeyID) & 0x80))
 	{
 		m_bKeyState[byKeyID] = true;
+		m_bPressThisFrame[byKeyID] = true;
+		m_dChargeTime[byKeyID] = 0.0;
 		return true;
 	}
 
@@ -60,16 +79,32 @@ _bool CInput_Device::Key_Down(_ubyte byKeyID)
 
 _bool CInput_Device::Key_Up(_ubyte byKeyID)
 {
+	if (!m_bKeyState[byKeyID] && !(Get_DIKeyState(byKeyID) & 0x80))
+		return true;
+
 	if (m_bKeyState[byKeyID] && !(Get_DIKeyState(byKeyID) & 0x80))
 	{
 		m_bKeyState[byKeyID] = false;
+		m_bPressThisFrame[byKeyID] = false;
 		return true;
 	}
 
 	return false;
 }
 
-void CInput_Device::Reset_EveryKey()
+_bool CInput_Device::Key_Charge(_ubyte byKeyID, _double dTime)
+{
+	if (m_dChargeTime[byKeyID] > dTime)
+	{
+		m_dChargeTime[byKeyID] = 0.0;
+
+		return true;
+	}
+
+	return false;
+}
+
+void CInput_Device::Reset_EveryKey(_double dTimeDelta)
 {
 	/* Reset MouseState */
 	for (int i = 0; i < DIM_END; ++i)
@@ -89,6 +124,13 @@ void CInput_Device::Reset_EveryKey()
 
 		else if (!m_bKeyState[i] && (Get_DIKeyState(i) & 0x80))
 			m_bKeyState[i] = true;
+
+		if (m_bKeyState[i] == true)
+			m_dChargeTime[i] += dTimeDelta;
+		else
+			m_dChargeTime[i] == 0.0;
+
+		m_bPressThisFrame[i] = false;
 	}
 }
 
