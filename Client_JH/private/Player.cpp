@@ -174,7 +174,7 @@ void CPlayer::Tick(_double dTimeDelta)
 	// 		m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
 	// }
 
-	m_pModelCom->Play_Animation(dTimeDelta, 0.1, 1.0);
+	m_pModelCom->Play_Animation(dTimeDelta);
 
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 	{

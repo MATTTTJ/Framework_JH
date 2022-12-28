@@ -12,6 +12,7 @@ public:
 	HRESULT			Save_Animation(HANDLE& hFile, DWORD& dwByte);
 	HRESULT			Load_Animation(HANDLE& hFile, DWORD& dwByte);
 	string&			Get_AnimationName() { return m_strName; }
+	_double&		Get_AnimationTickPerSecond() { return m_dTickPerSecond; }
 	_bool			Get_AnimFinish(void) { return m_bIsFinished; }
 	_bool&			Get_AnimationLoop() { return m_bIsLooping; }
 	_float			Get_AnimationProgress() { return _float(m_dPlayTime / m_dDuration); }

@@ -38,7 +38,7 @@ public:
 	virtual void				Imgui_RenderProperty() override;
 	void						Imgui_RenderAnimation();
 public:
-	void						Play_Animation(_double TimeDelta, LERPTYPE eType);
+	void						Play_Animation(_double TimeDelta, LERPTYPE eType = LERP_BEGIN);
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);
 	HRESULT						Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrBoneConstantName = L"", _uint iPassIndex = 0);
 
