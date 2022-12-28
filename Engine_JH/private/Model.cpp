@@ -23,7 +23,8 @@ CModel::CModel(const CModel & rhs)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_iNumBones(rhs.m_iNumBones)
 	, m_iNumAnimation(rhs.m_iNumAnimation)
-	// , m_bIsAnimFinished(true)
+	, m_bIsAnimFinished(false)
+	, m_iLastAnimIndex(0)
 	, m_iCurAnimIndex(rhs.m_iCurAnimIndex)
 	, m_dwBeginBoneData(rhs.m_dwBeginBoneData)
 {
@@ -35,7 +36,6 @@ CModel::CModel(const CModel & rhs)
 		for(_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(Material.pTexture[i]);
 	}
-	m_iLastAnimIndex = 0;
 
 
 }
@@ -90,16 +90,20 @@ void CModel::Set_CurAnimIndex(_uint AnimIndex)
 	if (AnimIndex < 0 || AnimIndex > m_iNumAnimation || AnimIndex == m_iCurAnimIndex)
 		return;
 
-	m_iLastAnimIndex = m_iCurAnimIndex;
+	// m_iLastAnimIndex = m_iCurAnimIndex;
+
 	m_iCurAnimIndex = AnimIndex;
+
 	m_vecAnimations[m_iCurAnimIndex]->Reset_Animation();
 
 	if (m_iLastAnimIndex != m_iCurAnimIndex)
 		m_fCurAnimChangeTime = 0.f;
-
-	m_bIsAnimChange = true;
 }
 
+void CModel::Reset_Animation()
+{
+	m_vecAnimations[m_iCurAnimIndex]->Reset_Animation();
+}
 void CModel::Set_BlendAnimIndex(_uint BlendAnimIndex)
 {
 	if (BlendAnimIndex < 0 || BlendAnimIndex == m_iCurBlendIndex)
@@ -351,9 +355,7 @@ void CModel::Play_Animation(_double TimeDelta, LERPTYPE eType)
 	if (MODEL_NONANIM == m_eType)
 		return;
 
-	m_fAnimChangeTime = 0.1;
-
-	if(m_fCurAnimChangeTime < m_fAnimChangeTime && m_bIsAnimChange)
+	if(m_fCurAnimChangeTime < m_fAnimChangeTime)
 	{		
 		m_vecAnimations[m_iLastAnimIndex]->Update_Bones(TimeDelta);
 
@@ -366,7 +368,7 @@ void CModel::Play_Animation(_double TimeDelta, LERPTYPE eType)
 	}
 	else
 	{
-		m_bIsAnimFinished = m_vecAnimations[m_iCurAnimIndex]->Update_Bones(TimeDelta);
+		m_vecAnimations[m_iCurAnimIndex]->Update_Bones(TimeDelta);
 		m_iLastAnimIndex = m_iCurAnimIndex;
 	}
 

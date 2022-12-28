@@ -99,7 +99,7 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 
 	m_pImgui_Manager->Tick_Imgui();
 
-	m_pInput_Device->Reset_EveryKey();
+	m_pInput_Device->Reset_EveryKey(TimeDelta);
 }
 
 void CGameInstance::Clear_Level(_uint iLevelIndex)
@@ -164,52 +164,67 @@ _long CGameInstance::Get_DIMouseMove(MOUSEMOVESTATE eMoveState)
 
 _bool CGameInstance::Mouse_Down(MOUSEKEYSTATE MouseButton)
 {
-	NULL_CHECK_RETURN(m_pInput_Device, false);
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
 
 	return m_pInput_Device->Mouse_Down(MouseButton);
 }
 
 _bool CGameInstance::Mouse_Up(MOUSEKEYSTATE MouseButton)
 {
-	NULL_CHECK_RETURN(m_pInput_Device, false);
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
 
 	return m_pInput_Device->Mouse_Up(MouseButton);
 }
 
 _bool CGameInstance::Mouse_DoubleClick(MOUSEKEYSTATE MouseButton)
 {
-	NULL_CHECK_RETURN(m_pInput_Device, false);
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
 
 	return m_pInput_Device->Mouse_DoubleClick(MouseButton);
 }
 
-_bool CGameInstance::Key_Down(_ubyte byKeyID)
-{
-	NULL_CHECK_RETURN(m_pInput_Device, false);
-
-	return m_pInput_Device->Key_Down(byKeyID);
-}
-
-_bool CGameInstance::Key_Up(_ubyte byKeyID)
-{
-	NULL_CHECK_RETURN(m_pInput_Device, false);
-
-	return m_pInput_Device->Key_Up(byKeyID);
-}
-
 _bool CGameInstance::Key_Pressing(_ubyte byKeyID)
 {
-	NULL_CHECK_RETURN(m_pInput_Device, false);
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
 
 	return m_pInput_Device->Key_Pressing(byKeyID);
 }
 
-void CGameInstance::Reset_EveryKey()
+_bool CGameInstance::Key_Down(_ubyte byKeyID)
 {
-	NULL_CHECK_RETURN(m_pInput_Device,);
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
 
-	return m_pInput_Device->Reset_EveryKey();
+	return m_pInput_Device->Key_Down(byKeyID);
 }
+
+_bool CGameInstance::Key_DoubleDown(_ubyte byKeyID)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
+
+	return m_pInput_Device->Key_DoubleDown(byKeyID);
+}
+
+_bool CGameInstance::Key_Up(_ubyte byKeyID)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
+
+	return m_pInput_Device->Key_Up(byKeyID);
+}
+
+_bool CGameInstance::Key_Charge(_ubyte byKeyID, _double dTime)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
+
+	return m_pInput_Device->Key_Charge(byKeyID, dTime);
+}
+
+void CGameInstance::Reset_EveryKey(_double dTimeDelta)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, );
+
+	return m_pInput_Device->Reset_EveryKey(dTimeDelta);
+}
+
 
 HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 {

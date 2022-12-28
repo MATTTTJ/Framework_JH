@@ -144,6 +144,38 @@ HRESULT CMesh::Load_Mesh(HANDLE& hFile, DWORD& dwByte)
 	return S_OK;
 }
 
+void CMesh::Check_MeshSize(_float& Xmin, _float& Xmax, _float& Ymin, _float& Ymax, _float& Zmin, _float& Zmax)
+{
+	if (m_eType == CModel::MODEL_NONANIM)
+	{
+		for (_uint i = 0; i < m_iNumVertices; ++i)
+		{
+			Xmin = min(Xmin, m_pNonAnimVertices[i].vPosition.x);
+			Xmax = max(Xmax, m_pNonAnimVertices[i].vPosition.x);
+
+			Ymin = min(Ymin, m_pNonAnimVertices[i].vPosition.y);
+			Ymax = max(Ymax, m_pNonAnimVertices[i].vPosition.y);
+
+			Zmin = min(Zmin, m_pNonAnimVertices[i].vPosition.z);
+			Zmax = max(Zmax, m_pNonAnimVertices[i].vPosition.z);
+		}
+	}
+	else if (m_eType == CModel::MODEL_ANIM)
+	{
+		for (_uint i = 0; i < m_iNumVertices; ++i)
+		{
+			Xmin = min(Xmin, m_pAnimVertices[i].vPosition.x);
+			Xmax = max(Xmax, m_pAnimVertices[i].vPosition.x);
+
+			Ymin = min(Ymin, m_pAnimVertices[i].vPosition.y);
+			Ymax = max(Ymax, m_pAnimVertices[i].vPosition.y);
+
+			Zmin = min(Zmin, m_pAnimVertices[i].vPosition.z);
+			Zmax = max(Zmax, m_pAnimVertices[i].vPosition.z);
+		}
+	}
+}
+
 HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, CModel* pModel)
 {
 	if (CModel::MODELTYPE_END == eType)

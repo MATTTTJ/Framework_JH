@@ -8,17 +8,37 @@
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
+	, m_fGravity(0.02f)
+	, m_fInitJumpSpeed(1.5f)
+	, m_fCurJumpSpeed(0.f)
+	, m_fMaxDashTickCount(1.f)
+	, m_fCurDashTickCount(0.f)
 {
 	
 }
 
 CPlayer::CPlayer(const CPlayer & rhs)
 	: CGameObject(rhs)
+	, m_fGravity(rhs.m_fGravity)
+	, m_fInitJumpSpeed(rhs.m_fInitJumpSpeed)
+	, m_fCurJumpSpeed(rhs.m_fCurJumpSpeed)
+	, m_fMaxDashTickCount(rhs.m_fMaxDashTickCount)
+	, m_fCurDashTickCount(rhs.m_fCurDashTickCount)
 {
 	m_tWeaponDesc[WEAPON_DEFAULT].m_wstrWeaponName = L"WEAPON_DEFAULT";
 	m_tWeaponDesc[WEAPON_FLAMEBULLET].m_wstrWeaponName = L"WEAPON_FLAMEBULLET";
 	m_tWeaponDesc[WEAPON_FIREDRAGON].m_wstrWeaponName = L"WEAPON_FIREDRAGON";
 	m_tWeaponDesc[WEAPON_POISON].m_wstrWeaponName = L"WEAPON_POISON";
+
+	
+	m_PlayerOption.m_iMaxHp = 100;
+	m_PlayerOption.m_iHp = m_PlayerOption.m_iMaxHp;
+	m_PlayerOption.m_iGold = 0;
+	m_PlayerOption.m_iMaxShieldPoint = 100;
+	m_PlayerOption.m_iShieldPoint = m_PlayerOption.m_iMaxShieldPoint;
+	m_PlayerOption.m_iPistol_BulletCnt = 50;
+	m_PlayerOption.m_iRifle_BulletCnt = 50;
+	m_PlayerOption.m_iInjector_BulletCnt = 50;
 }
 
 _matrix CPlayer::Get_BoneMatrix(const string& strBoneName)
@@ -72,14 +92,14 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
 
+
+
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
-	FAILED_CHECK_RETURN(SetUp_State(), E_FAIL);
 
-	// m_pModelCom->Set_CurAnimIndex(rand() % 20);
-	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-1.4452f, -0.42242f, -1.11702f, 1.f));
-	// FAILED_CHECK_RETURN(Ready_Parts(), E_FAIL);
+	m_pWeaponState = CWeapon_State::Create(this, m_pState, m_pModelCom, m_pTransformCom);
+	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
 
-	// m_pModelCom->Set_CurAnimIndex(3);
+	m_pModelCom->Set_CurAnimIndex(CWeapon_State::DEFAULT_PISTOL_IDLE);
 
 	return S_OK;
 }
@@ -90,92 +110,13 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	if (nullptr != m_pState)
 		m_pState->Tick(dTimeDelta);
+	m_pWeaponState->Tick(dTimeDelta);
+
+	m_pModelCom->Play_Animation(dTimeDelta, m_eLerpType);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	_long		MouseMove = 0;
-
-	if (pGameInstance->Get_DIKeyState(DIK_1))
-	{
-		// m_pModelCom = m_pWeaponModelCom[WEAPON_DEFAULT];
-		m_pModelCom = m_tWeaponDesc[WEAPON_DEFAULT].m_pWeaponModelCom;
-		m_wstrCurWeaponName = L"";
-		m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_DEFAULT].m_wstrWeaponName;
-	}
-	if (pGameInstance->Get_DIKeyState(DIK_2))
-	{
-		m_pModelCom = m_tWeaponDesc[WEAPON_FLAMEBULLET].m_pWeaponModelCom;
-		m_wstrCurWeaponName = L"";
-		m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_FLAMEBULLET].m_wstrWeaponName;
-	}
-	if (pGameInstance->Get_DIKeyState(DIK_3))
-	{
-		m_pModelCom = m_tWeaponDesc[WEAPON_FIREDRAGON].m_pWeaponModelCom;
-		m_wstrCurWeaponName = L"";
-		m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_FIREDRAGON].m_wstrWeaponName;
-	}
-	if (pGameInstance->Get_DIKeyState(DIK_4))
-	{
-		m_pModelCom = m_tWeaponDesc[WEAPON_POISON].m_pWeaponModelCom;
-		m_wstrCurWeaponName = L"";
-		m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_POISON].m_wstrWeaponName;
-	}
-	// if (pGameInstance->Get_DIKeyState(DIK_DOWN))
-	// {
-	// 	m_pTransformCom->Go_Backward(dTimeDelta);
-	// }
-	//
-	// if (pGameInstance->Get_DIKeyState(DIK_UP))
-	// {
-	// 	m_pTransformCom->Go_Straight(dTimeDelta);
-	// }
-	// if (pGameInstance->Get_DIKeyState(DIK_R))
-	// {
-	// 	m_pModelCom->Set_CurAnimIndex(1);
-	// }
-	// if (pGameInstance->Get_DIMouseState(DIM_LB) & 0x80)
-	// {
-	// 	if(m_wstrCurWeaponName == L"WEAPON_DEFAULT")
-	// 	{
-	// 		m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
-	// 	}
-	// 	else if(m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
-	// 	{
-	// 		m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_FIRE);
-	// 	}
-	// 	else if (m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
-	// 	{
-	// 		m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_FIRE);
-	// 	}
-	// 	else if (m_wstrCurWeaponName == L"WEAPON_POISON")
-	// 	{
-	// 		if (m_iPoisonAttCnt == 2)
-	// 			m_iPoisonAttCnt = 0;
-	//
-	// 		m_pModelCom->Set_CurAnimIndex(POISON_FIRE_A + m_iPoisonAttCnt);
-	// 		m_iPoisonAttCnt++;
-	// 	}
-	// }
-	// else
-	// {
-	// 	if (m_wstrCurWeaponName == L"WEAPON_DEFAULT")
-	// 	{
-	// 		m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_IDLE);
-	// 	}
-	// 	else if (m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
-	// 	{
-	// 		m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_IDLE);
-	// 	}
-	// 	else if (m_wstrCurWeaponName == L"WEAPON_FIREDRAGON")
-	// 	{
-	// 		m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_IDLE);
-	// 	}
-	// 	else if (m_wstrCurWeaponName == L"WEAPON_POISON")
-	// 		m_pModelCom->Set_CurAnimIndex(POISON_IDLE);
-	// }
-
-	m_pModelCom->Play_Animation(dTimeDelta, 0.1, 1.0);
-
+	
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 	{
 		m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
@@ -202,15 +143,6 @@ void CPlayer::Tick(_double dTimeDelta)
 void CPlayer::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
-
-	_uint iNumParts = 0;
-
-	iNumParts = (_uint)m_vecPlayerParts.size();
-
-	for (_uint i = 0; i < iNumParts; ++i)
-	{
-		m_vecPlayerParts[i]->Late_Tick(TimeDelta);
-	}
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -287,52 +219,13 @@ HRESULT CPlayer::SetUp_ShaderResources()
 {
 	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-	
+
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_PixelOffset", &(_float4(1 / (_float)g_iWinSizeX, 1 / (_float)g_iWinSizeY, 0.f, 0.f)) , sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
-
-	/* For.Lights */
-	const LIGHTDESC* pLightDesc = pGameInstance->Get_LightDesc(0);
-	NULL_CHECK_RETURN(pLightDesc, E_FAIL);
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	return S_OK;
-}
-
-HRESULT CPlayer::SetUp_State()
-{
-	m_pPlayerState = CPlayer_State::Create(this);
-	m_pWeaponState = CWeapon_State::Create(this);
-	NULL_CHECK_RETURN(m_pPlayerState, E_FAIL);
-	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
-
-	return S_OK;
-}
-
-HRESULT CPlayer::Ready_Parts()
-{
-	CGameObject*		pPartObject = nullptr;
-
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-	CWeapon::WEAPONDESC	Weapondesc;
-	ZeroMemory(&Weapondesc, sizeof(CWeapon::WEAPONDESC));
-
-	Weapondesc.PivotMatrix = m_pModelCom->Get_PivotFloat4x4();
-	Weapondesc.pSocket = m_pModelCom->Get_BonePtr("Bip001 R Finger12");
-	Weapondesc.pTargetTransform = m_pTransformCom;
-	Safe_AddRef(Weapondesc.pSocket);
-	Safe_AddRef(m_pTransformCom);
-
-	pPartObject = pGameInstance->Clone_GameObject(L"Prototype_GameObject_Weapon", &Weapondesc);
-	NULL_CHECK_RETURN(pPartObject, E_FAIL);
-
-	m_vecPlayerParts.push_back(pPartObject);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -367,19 +260,13 @@ void CPlayer::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pWeaponState);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pModelCom);
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 		Safe_Release(m_pColliderCom[i]);
-
-	for (auto& pPart : m_vecPlayerParts)
-		Safe_Release(pPart);
-
-	Safe_Release(m_pState);
-	Safe_Release(m_pPlayerState);
-	Safe_Release(m_pWeaponState);
-
-	// Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pState);
 
 	if (m_bIsClone)
 	{

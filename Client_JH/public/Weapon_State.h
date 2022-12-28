@@ -1,7 +1,13 @@
 #pragma once
 #include "Client_Defines.h"
 #include "Base.h"
+#include "Transform.h"
 
+BEGIN(Engine)
+class CGameInstance;
+class CState;
+class CModel;
+END
 
 BEGIN(Client)
 class CWeapon_State final : public CBase
@@ -32,22 +38,34 @@ public:
 		TESLA_RELOAD = 0, TESLA_FIRE = 5, TESLA_IDLE = 4
 	};
 
+	struct WEAPON_OPTION
+	{
+		_uint		iCurBullet;
+		_uint		iMaxBullet;
+
+		_uint		iAttack;
+		wstring		wstrWeaponName;
+	};
+
+	enum WEAPONTYPE { DEFAULT_PISTOL, FLAME_BULLET, FIRE_DRAGON, POISON, WEAPONTYPE_END };
+
 public:
 	CWeapon_State();
 	virtual ~CWeapon_State() = default;
 
 public:
-	HRESULT						Initialize(class CPlayer* pPlayer);
-
+	HRESULT						Initialize(class CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform);
+	void						Tick(_double dTimeDelta);
+	void						Late_Tick(_double dTimeDelta);
 private:
-	HRESULT						SetUp_State_Idle(void);
+	HRESULT						SetUp_State_Weapon_Idle(void);
 	HRESULT						SetUp_State_Fire(void);
 	HRESULT						SetUp_state_Reload(void);
 	HRESULT						SetUp_State_Throw(void);
 	HRESULT						SetUp_State_Roar(void);
 
 private:
-	void						Start_Idle(_double TimeDelta);
+	void						Start_Weapon_Idle(_double TimeDelta);
 	void						Start_Fire(_double TimeDelta);
 	void						Start_Reload(_double TimeDelta);
 	void						Start_Throw(_double TimeDelta);
@@ -62,7 +80,7 @@ private:
 
 private:
 	void						End_Common(_double TimeDelta);
-
+	void						End_Reload(_double TimeDelta);
 private:
 	_bool						None_Input(void);
 	_bool						KeyInput_None(void);
@@ -71,15 +89,26 @@ private:
 	_bool						KeyInput_E(void);
 	_bool						MouseInput_None(void);
 	_bool						MouseInput_LB(void);
-	_bool						IsFinish(void);
+	_bool						Animation_Finish(void);
 
 private:
-	class CPlayer*				m_pPlayer;
-	_bool						m_bAnimFinished = false;
+	class CGameInstance*		m_pGameInstance = nullptr;
+
+private:
+	class CPlayer*				m_pPlayer = nullptr;
+	CState*						m_pState = nullptr;
+	CModel*						m_pModelCom = nullptr;
+	CTransform*					m_pTransformCom = nullptr;
+
+private:
+	WEAPON_OPTION				m_tWeaponOption[WEAPONTYPE_END];
+
+
 public:
-	static CWeapon_State*		Create(class CPlayer* pPlayer);
+	static CWeapon_State*		Create(class CPlayer* pPlayer, CState* pStateMachineCom, CModel * pModel, CTransform * pTransform);
 	virtual void				Free() override;
 };
+
 
 
 

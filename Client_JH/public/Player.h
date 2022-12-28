@@ -1,4 +1,6 @@
 #pragma once
+#include <Model.h>
+
 #include "Client_Defines.h"
 #include "GameObject.h"
 #include "Player_State.h"
@@ -53,6 +55,20 @@ class CPlayer final : public CGameObject
 		wstring			m_wstrWeaponName;
 	
 	}WEAPONDESC;
+
+	typedef struct tagPlayerOption
+	{
+		_uint							m_iHp;
+		_uint							m_iMaxHp;
+		_uint							m_iShieldPoint;
+		_uint							m_iMaxShieldPoint;
+		_uint							m_iGold;
+
+		_uint							m_iPistol_BulletCnt; // DEFAULT, FLAME, POISON 종류 
+		_uint							m_iInjector_BulletCnt; // DRAGON 종류 
+		_uint							m_iRifle_BulletCnt; // Rifle 종류 
+	}PLAYEROPTION;
+
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayer(const CPlayer& rhs);
@@ -78,9 +94,9 @@ private:
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
-	
+	vector<CGameObject*>	m_vecPlayerParts;
+
 	CModel*					m_pWeaponModelCom[WEAPON_END] = { nullptr };
-	CAnimation*				m_pAnimCom = nullptr;
 	WEAPONDESC				m_tWeaponDesc[WEAPON_END];
 	wstring					m_wstrCurWeaponName = L"";
 
@@ -88,18 +104,26 @@ private:
 
 	_uint					m_iPoisonAttCnt = 0;
 
-	_bool					m_bIsAnimaFinished = false;
-
-private:
-	vector<CGameObject*>	m_vecPlayerParts;
 	CState*					m_pState = nullptr;
 	class CPlayer_State*	m_pPlayerState = nullptr;
 	class CWeapon_State*	m_pWeaponState = nullptr;
+
+private: // State
+	CModel::LERPTYPE		m_eLerpType = CModel::LERP_BEGIN;
+
+	_bool					m_bJump = false;
+	_float					m_fGravity;
+	_float					m_fInitJumpSpeed;
+	_float					m_fCurJumpSpeed;
+
+	_bool					m_bDash = false;
+	_float					m_fMaxDashTickCount;
+	_float					m_fCurDashTickCount;
+
+	PLAYEROPTION			m_PlayerOption;
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();
-	HRESULT					SetUp_State();
-	HRESULT					Ready_Parts();
 
 public:
 	static	CPlayer*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

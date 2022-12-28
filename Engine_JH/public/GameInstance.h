@@ -45,10 +45,12 @@ public: /* For.Input_Device */
 	_bool				Mouse_Down(MOUSEKEYSTATE MouseButton);
 	_bool				Mouse_Up(MOUSEKEYSTATE MouseButton);
 	_bool				Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);
-	_bool				Key_Down(_ubyte byKeyID);
-	_bool				Key_Up(_ubyte byKeyID);
 	_bool				Key_Pressing(_ubyte byKeyID);
-	void				Reset_EveryKey();
+	_bool				Key_Down(_ubyte byKeyID);
+	_bool				Key_DoubleDown(_ubyte byKeyID);
+	_bool				Key_Up(_ubyte byKeyID);
+	_bool				Key_Charge(_ubyte byKeyID, _double dTime);
+	void				Reset_EveryKey(_double dTimeDelta);
 public: /* For.Level_Manager */
 	HRESULT				Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	HRESULT				Render_Level();

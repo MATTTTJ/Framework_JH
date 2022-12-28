@@ -68,6 +68,8 @@ void CAnimation::Reset_Animation()
 		pChannel->Reset_KeyFrameIndex();
 
 	m_dPlayTime = 0.0;
+	m_bIsFinished = false;
+
 }
 
 HRESULT CAnimation::Initialize(aiAnimation* pAIAnimation, CModel* pModel)
@@ -96,18 +98,24 @@ HRESULT CAnimation::Initialize(aiAnimation* pAIAnimation, CModel* pModel)
 	return S_OK;
 }
 
-_bool CAnimation::Update_Bones(_double dTimeDelta, _double AnimSpeed)
+void CAnimation::Update_Bones(_double dTimeDelta)
 {
-	if (!m_bIsLooping && m_bIsFinished)
-		return false;
+	if (m_bIsFinished)
+	{
+		if (m_bIsLooping)
+			m_bIsFinished = false;
+		else
+			return;
+	}
 
-	m_dPlayTime += m_dTickPerSecond * dTimeDelta * AnimSpeed;
+	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
 
 	if (m_dPlayTime >= m_dDuration)
 	{
-		m_dPlayTime = 0.0;
+		if(m_bIsLooping)
+			m_dPlayTime = 0.0;
+
 		m_bIsFinished = true;
-		return true;
 	}
 
 	for(_uint i =0; i < m_iNumChannels; ++i)
@@ -117,13 +125,6 @@ _bool CAnimation::Update_Bones(_double dTimeDelta, _double AnimSpeed)
 
 		m_vecChannels[i]->Update_TransformMatrix(m_dPlayTime);
 	}
-
-	if (m_bIsFinished)
-	{
-		m_bIsFinished = false;
-	}
-
-	return false;
 }
 
 _bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation* pNextAnim, _double LerpSpeed, _bool bFinish)
@@ -162,14 +163,21 @@ _bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation* pNextAnim, _double
 
 void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
 {
-	if (!m_bIsLooping && m_bIsFinished)
-		return;
+	if (m_bIsFinished)
+	{
+		if (m_bIsLooping)
+			m_bIsFinished = false;
+		else
+			return;
+	}
 
-	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
+	m_dPlayTime = m_dDuration * dTimeDelta;
 
 	if (m_dPlayTime >= m_dDuration)
 	{
-		m_dPlayTime = 0.0;
+		if (m_bIsLooping)
+			m_dPlayTime = 0.0;
+
 		m_bIsFinished = true;
 	}
 
@@ -179,12 +187,8 @@ void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
 			m_vecChannels[i]->Reset_KeyFrameIndex();
 
 		m_vecChannels[i]->Update_Blend(m_dPlayTime, fRatio);
-		// m_vecChannels[i]->Update_Additive(m_dPlayTime, fRatio);
-
 	}
 
-	if (m_bIsFinished)
-		m_bIsFinished = false;
 }
 
 void CAnimation::Update_Additive(_double dTimeDelta, _float fRatio)
