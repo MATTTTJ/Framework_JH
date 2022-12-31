@@ -103,6 +103,12 @@
     <Filter Include="99. Defines">
       <UniqueIdentifier>{0b1f912b-dd5d-4e21-a571-b5ebae10fbc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Tool\NaviMesh">
+      <UniqueIdentifier>{c9daa06c-a6c3-4985-ab9c-44840c67f331}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Tool\NaviMesh\PickignCube">
+      <UniqueIdentifier>{dd81c46a-ea03-48dd-a4af-52f517de8bdf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -204,6 +210,12 @@
     <ClInclude Include="..\public\Weapon_State.h">
       <Filter>02. GameObjects\Player\State</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Imgui_NaviMeshMgr.h">
+      <Filter>96. Tool\NaviMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PickingCube.h">
+      <Filter>96. Tool\NaviMesh\PickignCube</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -292,6 +304,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Weapon_State.cpp">
       <Filter>02. GameObjects\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Imgui_NaviMeshMgr.cpp">
+      <Filter>96. Tool\NaviMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PickingCube.cpp">
+      <Filter>96. Tool\NaviMesh\PickignCube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

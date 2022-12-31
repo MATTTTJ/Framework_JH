@@ -180,6 +180,7 @@
     <ClInclude Include="..\public\Imgui_LevelSwitcher.h" />
     <ClInclude Include="..\public\Imgui_MapEditor.h" />
     <ClInclude Include="..\public\Imgui_ModelSave.h" />
+    <ClInclude Include="..\public\Imgui_NaviMeshMgr.h" />
     <ClInclude Include="..\public\Imgui_ProtoMgr.h" />
     <ClInclude Include="..\public\LaiLuo_Home.h" />
     <ClInclude Include="..\public\Level_GamePlay.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Monster.h" />
+    <ClInclude Include="..\public\PickingCube.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\Player_State.h" />
     <ClInclude Include="..\public\Sky.h" />
@@ -215,6 +217,7 @@
     <ClCompile Include="..\private\Imgui_LevelSwitcher.cpp" />
     <ClCompile Include="..\private\Imgui_MapEditor.cpp" />
     <ClCompile Include="..\private\Imgui_ModelSave.cpp" />
+    <ClCompile Include="..\private\Imgui_NaviMeshMgr.cpp" />
     <ClCompile Include="..\private\Imgui_ProtoMgr.cpp" />
     <ClCompile Include="..\private\LaiLuo_Home.cpp" />
     <ClCompile Include="..\private\Level_GamePlay.cpp" />
@@ -224,6 +227,7 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
+    <ClCompile Include="..\private\PickingCube.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\Player_State.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
