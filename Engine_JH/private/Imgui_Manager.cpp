@@ -78,6 +78,9 @@ void CImgui_Manager::Render_Update_ImGui()
 	if (!m_bDrawImGui)
 		return;
 
+	for (const auto& ImWinObj : m_vecWin)
+		ImWinObj->Render();
+
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

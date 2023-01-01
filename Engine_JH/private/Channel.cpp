@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\public\Channel.h"
-
 #include "Bone.h"
 #include "Model.h"
 
@@ -152,10 +151,9 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 		{
 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 		}
-		if("Bip001 Footsteps001" == m_strName)
+		if("Bip001 Footsteps" == m_strName)
 		{
 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-
 		}
 	
 	}

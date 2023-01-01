@@ -18,7 +18,7 @@ public:
 
 	virtual void	Imgui_RenderTab(){}
 	virtual void	Imgui_RenderWindow(){}
-
+	virtual void	Render() {}
 	
 	virtual void	Free() override {}
 

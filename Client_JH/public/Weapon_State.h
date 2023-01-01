@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CGameInstance;
 class CState;
 class CModel;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -54,7 +55,7 @@ public:
 	virtual ~CWeapon_State() = default;
 
 public:
-	HRESULT						Initialize(class CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform);
+	HRESULT						Initialize(class CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
 	void						Tick(_double dTimeDelta);
 	void						Late_Tick(_double dTimeDelta);
 private:
@@ -99,13 +100,13 @@ private:
 	CState*						m_pState = nullptr;
 	CModel*						m_pModelCom = nullptr;
 	CTransform*					m_pTransformCom = nullptr;
-
+	CNavigation*				m_pNavigationCom = nullptr;
 private:
 	WEAPON_OPTION				m_tWeaponOption[WEAPONTYPE_END];
 
 
 public:
-	static CWeapon_State*		Create(class CPlayer* pPlayer, CState* pStateMachineCom, CModel * pModel, CTransform * pTransform);
+	static CWeapon_State*		Create(class CPlayer* pPlayer, CState* pStateMachineCom, CModel * pModel, CTransform * pTransform, CNavigation* pNavigation);
 	virtual void				Free() override;
 };
 

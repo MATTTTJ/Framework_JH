@@ -14,7 +14,7 @@ public:
 	virtual HRESULT Initialize_Clone(CGameObject* pOwner, void* pArg);
 
 	static CVIBuffer_Cell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints);
-	virtual CComponent* Clone(CGameObject* pOwner, void* pArg) override;
+	virtual CComponent* Clone(CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void Free() override;
 
 };

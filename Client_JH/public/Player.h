@@ -3,7 +3,6 @@
 
 #include "Client_Defines.h"
 #include "GameObject.h"
-#include "Player_State.h"
 #include "Weapon_State.h"
 
 BEGIN(Engine)
@@ -21,6 +20,8 @@ BEGIN(Client)
 class CPlayer final : public CGameObject
 {
 	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDERTYPE_END };
+
+	enum PLAYERUITYPE { UI_BASE, UI_HP, UI_SHIELD, UI_BULLETCOUNT, UI_SKILL, UI_THROW, UI_DASH, UI_END };
 
 	enum WEAPONTYPE { WEAPON_DEFAULT, WEAPON_FLAMEBULLET, WEAPON_FIREDRAGON, WEAPON_POISON, WEAPON_END };
 
@@ -66,21 +67,23 @@ class CPlayer final : public CGameObject
 
 		_uint							m_iPistol_BulletCnt; // DEFAULT, FLAME, POISON 종류 
 		_uint							m_iInjector_BulletCnt; // DRAGON 종류 
-		_uint							m_iRifle_BulletCnt; // Rifle 종류 
+		_uint							m_iRifle_BulletCnt; // Rifle 종류
+
+		wstring							m_wstrCurWeaponName;
 	}PLAYEROPTION;
 
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayer(const CPlayer& rhs);
 	virtual ~CPlayer() = default;
-	friend CPlayer_State;
 	friend CWeapon_State;
 public:
 	_matrix					Get_BoneMatrix(const string& strBoneName);
 	_matrix					Get_OffsetMatrix(const string& strBoneName);
 	_matrix					Get_PivotMatrix();
 	_vector					Get_TransformState(CTransform::STATE eState);
-
+	const wstring&			Get_CurWeaponName(void) const { return m_PlayerOption.m_wstrCurWeaponName; }
+	void					Set_Camera(_double TimeDelta);
 
 public:
 	virtual HRESULT			Initialize_Prototype() override;
@@ -94,6 +97,8 @@ private:
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
+	class CPlayerUI_Base*			m_pPlayerUICom[UI_END] = { nullptr };
+
 	vector<CGameObject*>	m_vecPlayerParts;
 
 	CModel*					m_pWeaponModelCom[WEAPON_END] = { nullptr };
@@ -121,9 +126,11 @@ private: // State
 	_float					m_fCurDashTickCount;
 
 	PLAYEROPTION			m_PlayerOption;
+	vector<CGameObject*>	m_vecPlayerUI;
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();
+	HRESULT					Ready_UI();
 
 public:
 	static	CPlayer*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

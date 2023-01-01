@@ -25,8 +25,20 @@ protected:
 	virtual ~CTransform() = default;
 
 public:
+	void				FinalUpdate();	/* For UI .*/
+
+	void				SetParent(CTransform* pParent)	{ m_pParent = pParent; }
 	const _matrix		Get_WorldMatrix_Inverse() const {	return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)); }
 	const _matrix		Get_WorldMatrix() const {	return XMLoadFloat4x4(&m_WorldMatrix);	}
+
+	_matrix				Get_UIWorldMatrix()
+	{
+		if (nullptr == m_pParent)		
+			return XMLoadFloat4x4(&m_WorldMatrix);
+
+	return XMLoadFloat4x4(&m_WorldWithParentMatrix);
+	}
+
 	const _float4x4&	Get_WorldFloat4x4() const {	return m_WorldMatrix; }
 	_vector&			Get_State(STATE eState) const {	return XMLoadFloat4x4(&m_WorldMatrix).r[eState]; }
 	_float3				Get_Scaled() const {
@@ -54,7 +66,7 @@ public:
 
 public:
 	// void Go_Straight(_double TimeDelta, class CNavigation* pNaviCom = nullptr);
-	void Go_Straight(_double TimeDelta);
+	void Go_Straight(_double TimeDelta, class CNavigation* pNaviCom = nullptr);
 	void Go_Backward(_double TimeDelta);
 	void Go_Left(_double TimeDelta);
 	void Go_Right(_double TimeDelta);
@@ -73,6 +85,8 @@ private:
 	_float4x4				m_WorldMatrix;
 	TRANSFORMDESC			m_TransformDesc;
 	_double					m_dInitSpeed = 0.0;
+	CTransform*				m_pParent = nullptr;		// 부모 트랜스폼
+	_float4x4				m_WorldWithParentMatrix;	// 자식 * 부모 행렬
 
 public:
 	static CTransform* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

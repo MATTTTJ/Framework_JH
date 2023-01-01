@@ -10,24 +10,13 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * p
 
 HRESULT CLevel_GamePlay::Initialize()
 {
-	if (FAILED(__super::Initialize()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Light()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
-		return E_FAIL;
-	
-	if (FAILED(Ready_Layer_Camera(L"Layer_Camera")))
-		return E_FAIL;
-	
-	if (FAILED(Ready_Layer_Player(L"Layer_Player")))
-		return E_FAIL;
-
+	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_Camera"), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Effect(L"Layer_Effect"), E_FAIL);
-
-	// FAILED_CHECK_RETURN(Ready_Layer_Monster(L"Layer_Monster"), E_FAIL);
+	// FAILED_CHECK_RETURN(Ready_Layer_UI(L"Layer_UI"), E_FAIL);
 
 	return S_OK;
 }
@@ -141,6 +130,17 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const wstring wstrLayerTag)
 	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Effect_Point_Instancing"), E_FAIL);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_UI(const wstring wstrLayerTag)
+{
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_PlayerUI_Base"), E_FAIL);
 
 	RELEASE_INSTANCE(CGameInstance);
 

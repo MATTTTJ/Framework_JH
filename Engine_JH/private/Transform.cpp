@@ -16,6 +16,28 @@ CTransform::CTransform(const CTransform & rhs)
 
 }
 
+void CTransform::FinalUpdate()
+{
+	if (m_pParent == nullptr)
+		return;
+
+	_matrix  matParent = m_pParent->Get_WorldMatrix();
+	_matrix  matScaleSet = XMMatrixIdentity();
+	_vector vRight, vUp, vLook, vTranslate;
+
+	memcpy(&vRight, &matParent.r[0], sizeof(_vector));
+	memcpy(&vUp, &matParent.r[1], sizeof(_vector));
+	memcpy(&vLook, &matParent.r[2], sizeof(_vector));
+	memcpy(&vTranslate, &matParent.r[3], sizeof(_vector));
+
+	memcpy(&matScaleSet.r[0], &XMVector3Normalize(vRight), sizeof(_vector));
+	memcpy(&matScaleSet.r[1], &XMVector3Normalize(vUp), sizeof(_vector));
+	memcpy(&matScaleSet.r[2], &XMVector3Normalize(vLook), sizeof(_vector));
+	memcpy(&matScaleSet.r[3], &vTranslate, sizeof(_vector));
+
+	XMStoreFloat4x4(&m_WorldWithParentMatrix, XMLoadFloat4x4(&m_WorldMatrix) * matScaleSet);
+}
+
 void CTransform::Set_Scaled(STATE eState, _float fScale)
 {
 	if (eState == STATE_TRANSLATION)
@@ -99,15 +121,30 @@ void CTransform::Imgui_RenderProperty()
 	ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&m_WorldMatrix);
 }
 
-void CTransform::Go_Straight(_double TimeDelta)
+void CTransform::Go_Straight(_double TimeDelta, CNavigation* pNaviCom)
 {
+	// _vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
+	// _vector	vLook = Get_State(CTransform::STATE_LOOK);
+	//
+	// /* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
+	// vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * TimeDelta;
+	//
+	// Set_State(CTransform::STATE_TRANSLATION, vPosition);
+
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
 	_vector	vLook = Get_State(CTransform::STATE_LOOK);
 
 	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
 	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * TimeDelta;
 
-	Set_State(CTransform::STATE_TRANSLATION, vPosition);
+	if (nullptr == pNaviCom)
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+
+	else
+	{
+		if (true == pNaviCom->IsMove_OnNavigation(vPosition))
+			Set_State(CTransform::STATE_TRANSLATION, vPosition);
+	}
 }
 
 void CTransform::Go_Backward(_double TimeDelta)
@@ -136,11 +173,13 @@ void CTransform::Go_Right(_double TimeDelta)
 {
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
 	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
-
+	
 	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
 	vPosition += XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * TimeDelta;
-
+	
 	Set_State(CTransform::STATE_TRANSLATION, vPosition);
+
+	
 }
 
 void CTransform::Turn(_fvector vAxis, _double TimeDelta)

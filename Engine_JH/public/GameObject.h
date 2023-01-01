@@ -23,6 +23,7 @@ public:
 	void					Set_WorldMatrix(_float4x4 WorldMatrix) { if (m_pTransformCom != nullptr)		m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
 	class CComponent*		Get_Component(const wstring& wstrComponentTag);
 	class CComponent*		Find_Component(const wstring& pComopnentTag);
+	CTransform*				Get_Transform() { return m_pTransformCom; }
 
 public:
 	virtual HRESULT			Initialize_Prototype();
@@ -34,6 +35,7 @@ public:
 public: 
 	void					Imgui_RenderComponentProperties();
 	virtual void			Imgui_RenderProperty() {}
+	virtual pair<_bool, _float3>		Picking_Mesh() { return pair<_bool, _float3>{false, _float3(0.f, 0.f, 0.f)}; }
 
 protected:
 	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppOut, class CGameObject* pOwner, void* pArg = nullptr);

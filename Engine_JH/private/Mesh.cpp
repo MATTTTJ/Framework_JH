@@ -2,6 +2,7 @@
 #include "..\public\Mesh.h"
 #include "Model.h"
 #include "Bone.h"
+#include "GameUtils.h"
 
 CMesh::CMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CVIBuffer(pDevice, pContext)
@@ -327,6 +328,21 @@ void CMesh::SetUp_BoneMatrix(_float4x4* pBoneMatrices, _fmatrix PivotMatrix)
 		// BoneMatrix = 오프셋 매트릭스 * 콤바인 매트릭스
 		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_OffsetMatrix() * pBone->Get_CombindMatrix() * PivotMatrix);
 	}
+}
+
+pair<_bool, _float> CMesh::Picking(HWND& hWnd, CTransform* pTransformCom, _float3& vPickingPoint)
+{
+	pair<_bool, _float>	Result{ false, 0.f };
+
+	D3D11_VIEWPORT		ViewPort;
+	ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
+	_uint	iNumViewport = 1;
+
+	m_pContext->RSGetViewports(&iNumViewport, &ViewPort);
+
+	Result = CGameUtils::Picking(hWnd, ViewPort.Width, ViewPort.Height, pTransformCom, m_pNonAnimVertices, m_pIndices, m_iNumPrimitive, vPickingPoint);
+
+	return Result;
 }
 
 HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh, CModel* pModel)

@@ -73,6 +73,7 @@ _vector CPlayer::Get_TransformState(CTransform::STATE eState)
 	return m_pTransformCom->Get_State(eState);
 }
 
+
 HRESULT CPlayer::Initialize_Prototype()
 {
 	m_bHasModel = true;
@@ -95,8 +96,10 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
-	m_pWeaponState = CWeapon_State::Create(this, m_pState, m_pModelCom, m_pTransformCom);
+
+	m_pWeaponState = CWeapon_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
 	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
 
 	m_pModelCom->Set_CurAnimIndex(CWeapon_State::DEFAULT_PISTOL_IDLE);
@@ -116,25 +119,19 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
+
+	for (_uint i = 0; i < m_vecPlayerUI.size(); ++i)
+	{
+		m_vecPlayerUI[i]->Tick(dTimeDelta);
+	}
 	
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 	{
 		m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
 	}
 
-	_float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->back())->Get_CamLook();
-
-	_vector		vCamLook = XMLoadFloat4(&fCamLook);
-	_vector		vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	_vector		vLookat = vPos + vCamLook;
-
-	m_pTransformCom->LookAt(vLookat);
-
-	dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->
-		back())->Camera_Update(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 
-			m_pTransformCom->Get_State(CTransform::STATE_LOOK), 
-			dTimeDelta);
-
+	
+	Set_Camera(dTimeDelta);
 	
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -143,6 +140,11 @@ void CPlayer::Tick(_double dTimeDelta)
 void CPlayer::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
+
+	for (_uint i = 0; i < m_vecPlayerUI.size(); ++i)
+	{
+		m_vecPlayerUI[i]->Late_Tick(TimeDelta);
+	}
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -157,9 +159,7 @@ HRESULT CPlayer::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		/* 이 모델을 그리기위한 셰이더에 머테리얼 텍스쳐를 전달하낟. */
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
 	}
 
@@ -170,9 +170,27 @@ HRESULT CPlayer::Render()
 			m_pColliderCom[i]->Render();
 	}
 
+	m_pNavigationCom->Render();
 #endif
 
 	return S_OK;
+}
+
+
+void CPlayer::Set_Camera(_double dTimeDelta)
+{
+	_float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->back())->Get_CamLook();
+
+	_vector		vCamLook = XMLoadFloat4(&fCamLook);
+	_vector		vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	_vector		vLookat = vPos + vCamLook;
+
+	m_pTransformCom->LookAt(vLookat);
+
+	dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->
+		back())->Camera_Update(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION),
+			m_pTransformCom->Get_State(CTransform::STATE_LOOK),
+			dTimeDelta);
 }
 
 HRESULT CPlayer::SetUp_Components()
@@ -212,6 +230,14 @@ HRESULT CPlayer::SetUp_Components()
 	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLIDER_SPHERE], this, &ColliderDesc), E_FAIL);
 
+	//NavigationCom
+	CNavigation::NAVIDESC		NaviDesc;
+	ZeroMemory(&NaviDesc, sizeof(CNavigation::NAVIDESC));
+
+	NaviDesc.iCurrentIndex = 0;
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this, &NaviDesc), E_FAIL);
+
 	return S_OK;
 }
 
@@ -226,6 +252,54 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_PixelOffset", &(_float4(1 / (_float)g_iWinSizeX, 1 / (_float)g_iWinSizeY, 0.f, 0.f)) , sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Ready_UI()
+{
+	CGameObject*		pPlayerUI = nullptr;
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Base");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Skill");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Throw");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Dash");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Weapon");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Number_1");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_WeaponPic");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -265,8 +339,13 @@ void CPlayer::Free()
 	Safe_Release(m_pModelCom);
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 		Safe_Release(m_pColliderCom[i]);
+
+	for (auto& pUI : m_vecPlayerUI)
+		Safe_Release(pUI);
+
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pState);
+	Safe_Release(m_pNavigationCom);
 
 	if (m_bIsClone)
 	{

@@ -60,7 +60,16 @@ HRESULT CHome::Render()
 		m_pModelCom->Render(m_pShaderCom, i);
 	}
 
+#ifdef _DEBUG
+	m_pNavigationCom->Render();
+#endif
+
 	return S_OK;
+}
+
+pair<_bool, _float3> CHome::Picking_Mesh()
+{
+	return m_pModelCom->Picking(g_hWnd, m_pTransformCom);
 }
 
 HRESULT CHome::SetUp_Components()
@@ -68,7 +77,8 @@ HRESULT CHome::SetUp_Components()
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",(CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxNonAnim", L"Com_Shader",(CComponent**)&m_pShaderCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Home", L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
-	
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this), E_FAIL);
+
 	return S_OK;
 }
 
@@ -117,4 +127,5 @@ void CHome::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pNavigationCom);
 }

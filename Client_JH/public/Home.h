@@ -24,11 +24,13 @@ public:
 	virtual void			Late_Tick(_double TimeDelta) override;
 	virtual HRESULT			Render() override;
 
+	virtual pair<_bool, _float3> Picking_Mesh() override;
+
 private:
 	CShader*				m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
-
+	CNavigation*			m_pNavigationCom = nullptr;
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();

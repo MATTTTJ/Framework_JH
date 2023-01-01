@@ -25,20 +25,8 @@
     <Filter Include="02. GameObjects">
       <UniqueIdentifier>{e8f2541a-935c-472a-8e8c-48a76ffe6196}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\BackGround">
-      <UniqueIdentifier>{ffec1145-601d-4001-bf18-d3109d2b7b12}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97. ShaderFiles">
       <UniqueIdentifier>{af110146-d2e3-452f-b8cb-3e3b311fc82a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Terrain">
-      <UniqueIdentifier>{c7a253d8-3691-4db7-8305-330df89a75aa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\DynamicCamera">
-      <UniqueIdentifier>{8c1a88e5-8e98-481a-8c36-5f9ba18915a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Player">
-      <UniqueIdentifier>{1968dafe-99ea-49a4-af7a-8931117caf2d}</UniqueIdentifier>
     </Filter>
     <Filter Include="01. Level\98. MapTool">
       <UniqueIdentifier>{bacf02ee-dc01-4e6c-9520-62f4aafea879}</UniqueIdentifier>
@@ -61,47 +49,83 @@
     <Filter Include="96. Tool\PrototypeMgr">
       <UniqueIdentifier>{42f1aeaa-ace4-432c-8b94-cc360bf4edc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Monster">
-      <UniqueIdentifier>{0bbf329f-2bee-4b97-b8ee-4c1a9afeb6b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\StaticMesh">
-      <UniqueIdentifier>{dee98d7a-cf21-4013-a7aa-21f8cdb8dd8f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\00. LobbyObject">
-      <UniqueIdentifier>{e32f3b10-9e33-433a-a78d-17d0959a7630}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\00. LobbyObject\Home">
-      <UniqueIdentifier>{ede94a21-c603-4223-b52b-dfb1f022e4c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\00. LobbyObject\LaiLuo_Home">
-      <UniqueIdentifier>{c9cbb75c-1963-4184-8d13-711decebbad5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\00. LobbyObject\Deco">
-      <UniqueIdentifier>{594493c1-5914-488d-8a59-e28b64f4f40a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="96. Tool\ModelSave">
       <UniqueIdentifier>{68986fdd-7af9-4209-8432-30d140a53543}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Weapon">
-      <UniqueIdentifier>{0c5cb2fb-2da5-4edd-8604-66fdb313efcf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\StaticCamera">
-      <UniqueIdentifier>{3b5815cb-323e-46e7-b108-b53d641a90ce}</UniqueIdentifier>
     </Filter>
     <Filter Include="96. Tool\AnimationMgr">
       <UniqueIdentifier>{f5d3012a-3a8a-45d2-ae12-0d0cb3ebb2eb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Sky">
-      <UniqueIdentifier>{748ea821-7f4a-4f50-85b9-72872af6f3c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Player\State">
-      <UniqueIdentifier>{08f17e07-94ac-464b-841c-faea7650b009}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Effect">
-      <UniqueIdentifier>{88b4e1c4-5ec6-4328-9132-cdcc15de5843}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99. Defines">
       <UniqueIdentifier>{0b1f912b-dd5d-4e21-a571-b5ebae10fbc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager\Parent">
+      <UniqueIdentifier>{4074bb38-1999-42a9-aaee-0b381fc908ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager\Parent\UI">
+      <UniqueIdentifier>{a1eea65a-21ec-447c-b858-f001d7f86e83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\00. Public">
+      <UniqueIdentifier>{000a38b3-e405-423c-9007-098eaf9c7ac2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\00. Public\BackGround">
+      <UniqueIdentifier>{ffec1145-601d-4001-bf18-d3109d2b7b12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\00. Public\Sky">
+      <UniqueIdentifier>{748ea821-7f4a-4f50-85b9-72872af6f3c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\00. Public\DynamicCamera">
+      <UniqueIdentifier>{8c1a88e5-8e98-481a-8c36-5f9ba18915a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\00. Public\Terrain">
+      <UniqueIdentifier>{c7a253d8-3691-4db7-8305-330df89a75aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay">
+      <UniqueIdentifier>{5de486cb-8015-497d-b01d-47d0032744d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Player">
+      <UniqueIdentifier>{1968dafe-99ea-49a4-af7a-8931117caf2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Player\State">
+      <UniqueIdentifier>{08f17e07-94ac-464b-841c-faea7650b009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\StaticCamera">
+      <UniqueIdentifier>{3b5815cb-323e-46e7-b108-b53d641a90ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\StaticMesh">
+      <UniqueIdentifier>{dee98d7a-cf21-4013-a7aa-21f8cdb8dd8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Weapon">
+      <UniqueIdentifier>{0c5cb2fb-2da5-4edd-8604-66fdb313efcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster">
+      <UniqueIdentifier>{0bbf329f-2bee-4b97-b8ee-4c1a9afeb6b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Effect">
+      <UniqueIdentifier>{88b4e1c4-5ec6-4328-9132-cdcc15de5843}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. Logo">
+      <UniqueIdentifier>{ed8c2753-49bc-4cfc-847a-2746502b57e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. Logo\00. LobbyObject">
+      <UniqueIdentifier>{e32f3b10-9e33-433a-a78d-17d0959a7630}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. Logo\00. LobbyObject\Home">
+      <UniqueIdentifier>{ede94a21-c603-4223-b52b-dfb1f022e4c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. Logo\00. LobbyObject\LaiLuo_Home">
+      <UniqueIdentifier>{c9cbb75c-1963-4184-8d13-711decebbad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. Logo\00. LobbyObject\Deco">
+      <UniqueIdentifier>{594493c1-5914-488d-8a59-e28b64f4f40a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\UI">
+      <UniqueIdentifier>{82fde56f-12e7-40f9-8182-5f5996588a24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\UI\PlayerUI">
+      <UniqueIdentifier>{370b1e6a-434a-4eae-8aeb-3d69ca0dacc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Tool\Navigation Editor">
+      <UniqueIdentifier>{82c3d4bb-aeda-4a2b-96aa-5faf6d9849f2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -133,16 +157,16 @@
       <Filter>01. Level\02. GamePlay</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
-      <Filter>02. GameObjects\BackGround</Filter>
+      <Filter>02. GameObjects\00. Public\BackGround</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Terrain.h">
-      <Filter>02. GameObjects\Terrain</Filter>
+      <Filter>02. GameObjects\00. Public\Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Dynamic_Camera.h">
-      <Filter>02. GameObjects\DynamicCamera</Filter>
+      <Filter>02. GameObjects\00. Public\DynamicCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player.h">
-      <Filter>02. GameObjects\Player</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Imgui_MapEditor.h">
       <Filter>96. Tool\MapEditor</Filter>
@@ -160,40 +184,40 @@
       <Filter>96. Tool\PrototypeMgr</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ForkLift.h">
-      <Filter>02. GameObjects\StaticMesh</Filter>
+      <Filter>02. GameObjects\01. GamePlay\StaticMesh</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Monster.h">
-      <Filter>02. GameObjects\Monster</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Home.h">
-      <Filter>02. GameObjects\00. LobbyObject\Home</Filter>
+      <Filter>02. GameObjects\01. Logo\00. LobbyObject\Home</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Home_Deco.h">
-      <Filter>02. GameObjects\00. LobbyObject\Deco</Filter>
+      <Filter>02. GameObjects\01. Logo\00. LobbyObject\Deco</Filter>
     </ClInclude>
     <ClInclude Include="..\public\LaiLuo_Home.h">
-      <Filter>02. GameObjects\00. LobbyObject\LaiLuo_Home</Filter>
+      <Filter>02. GameObjects\01. Logo\00. LobbyObject\LaiLuo_Home</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Imgui_ModelSave.h">
       <Filter>96. Tool\ModelSave</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Weapon.h">
-      <Filter>02. GameObjects\Weapon</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Static_Camera.h">
-      <Filter>02. GameObjects\StaticCamera</Filter>
+      <Filter>02. GameObjects\01. GamePlay\StaticCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Sky.h">
-      <Filter>02. GameObjects\Sky</Filter>
+      <Filter>02. GameObjects\00. Public\Sky</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player_State.h">
-      <Filter>02. GameObjects\Player\State</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Player\State</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Imgui_AnimationMgr.h">
       <Filter>96. Tool\AnimationMgr</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Effect_Point_Instancing.h">
-      <Filter>02. GameObjects\Effect</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Client_Defines.h">
       <Filter>99. Defines</Filter>
@@ -202,8 +226,15 @@
       <Filter>97. ShaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Weapon_State.h">
-      <Filter>02. GameObjects\Player\State</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Player\State</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI.h">
+      <Filter>80. Manager\Parent\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerUI_Base.h">
+      <Filter>02. GameObjects\01. GamePlay\UI\PlayerUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui_NavigationEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -228,16 +259,16 @@
       <Filter>01. Level\02. GamePlay</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp">
-      <Filter>02. GameObjects\BackGround</Filter>
+      <Filter>02. GameObjects\00. Public\BackGround</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Terrain.cpp">
-      <Filter>02. GameObjects\Terrain</Filter>
+      <Filter>02. GameObjects\00. Public\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Dynamic_Camera.cpp">
-      <Filter>02. GameObjects\DynamicCamera</Filter>
+      <Filter>02. GameObjects\00. Public\DynamicCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player.cpp">
-      <Filter>02. GameObjects\Player</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Imgui_MapEditor.cpp">
       <Filter>96. Tool\MapEditor</Filter>
@@ -255,44 +286,51 @@
       <Filter>96. Tool\PrototypeMgr</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ForkLift.cpp">
-      <Filter>02. GameObjects\StaticMesh</Filter>
+      <Filter>02. GameObjects\01. GamePlay\StaticMesh</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Monster.cpp">
-      <Filter>02. GameObjects\Monster</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Home_Deco.cpp">
-      <Filter>02. GameObjects\00. LobbyObject\Deco</Filter>
+      <Filter>02. GameObjects\01. Logo\00. LobbyObject\Deco</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Home.cpp">
-      <Filter>02. GameObjects\00. LobbyObject\Home</Filter>
+      <Filter>02. GameObjects\01. Logo\00. LobbyObject\Home</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LaiLuo_Home.cpp">
-      <Filter>02. GameObjects\00. LobbyObject\LaiLuo_Home</Filter>
+      <Filter>02. GameObjects\01. Logo\00. LobbyObject\LaiLuo_Home</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Imgui_ModelSave.cpp">
       <Filter>96. Tool\ModelSave</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Weapon.cpp">
-      <Filter>02. GameObjects\Weapon</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Static_Camera.cpp">
-      <Filter>02. GameObjects\StaticCamera</Filter>
+      <Filter>02. GameObjects\01. GamePlay\StaticCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
-      <Filter>02. GameObjects\Sky</Filter>
+      <Filter>02. GameObjects\00. Public\Sky</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player_State.cpp">
-      <Filter>02. GameObjects\Player\State</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Player\State</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Imgui_AnimationMgr.cpp">
       <Filter>96. Tool\AnimationMgr</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Point_Instancing.cpp">
-      <Filter>02. GameObjects\Effect</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Weapon_State.cpp">
-      <Filter>02. GameObjects\Player\State</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Player\State</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\UI.cpp">
+      <Filter>80. Manager\Parent\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerUI_Base.cpp">
+      <Filter>02. GameObjects\01. GamePlay\UI\PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Imgui_NavigationEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

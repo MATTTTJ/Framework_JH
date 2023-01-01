@@ -180,6 +180,7 @@
     <ClInclude Include="..\public\Imgui_LevelSwitcher.h" />
     <ClInclude Include="..\public\Imgui_MapEditor.h" />
     <ClInclude Include="..\public\Imgui_ModelSave.h" />
+    <ClInclude Include="..\public\Imgui_NavigationEditor.h" />
     <ClInclude Include="..\public\Imgui_ProtoMgr.h" />
     <ClInclude Include="..\public\LaiLuo_Home.h" />
     <ClInclude Include="..\public\Level_GamePlay.h" />
@@ -190,10 +191,12 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Monster.h" />
     <ClInclude Include="..\public\Player.h" />
+    <ClInclude Include="..\public\PlayerUI_Base.h" />
     <ClInclude Include="..\public\Player_State.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Static_Camera.h" />
     <ClInclude Include="..\public\Terrain.h" />
+    <ClInclude Include="..\public\UI.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\Weapon_State.h" />
     <ClInclude Include="Client_JH.h" />
@@ -215,6 +218,7 @@
     <ClCompile Include="..\private\Imgui_LevelSwitcher.cpp" />
     <ClCompile Include="..\private\Imgui_MapEditor.cpp" />
     <ClCompile Include="..\private\Imgui_ModelSave.cpp" />
+    <ClCompile Include="..\private\Imgui_NavigationEditor.cpp" />
     <ClCompile Include="..\private\Imgui_ProtoMgr.cpp" />
     <ClCompile Include="..\private\LaiLuo_Home.cpp" />
     <ClCompile Include="..\private\Level_GamePlay.cpp" />
@@ -225,10 +229,12 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
+    <ClCompile Include="..\private\PlayerUI_Base.cpp" />
     <ClCompile Include="..\private\Player_State.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Static_Camera.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
+    <ClCompile Include="..\private\UI.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\Weapon_State.cpp" />
     <ClCompile Include="Client_JH.cpp" />

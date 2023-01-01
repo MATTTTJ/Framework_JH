@@ -46,11 +46,12 @@ void CImgui_AnimationMgr::Imgui_RenderWindow()
 	{
 		CGameObject*	pGameObject = (*m_vecAnimObjects)[iSelectObject];
 
-		CModel*	pModel = dynamic_cast<CModel*>(pGameObject->Get_Component(L"Com_Model"));
-		if (pModel != nullptr)
+		CModel*	pDefaultPistol = dynamic_cast<CModel*>(pGameObject->Get_Component(L"Com_Poison_Model"));
+
+		if (pDefaultPistol != nullptr)
 		{
 			ImGui::Separator();
-			pModel->Imgui_RenderAnimation();
+			pDefaultPistol->Imgui_RenderAnimation();
 		}
 	}
 

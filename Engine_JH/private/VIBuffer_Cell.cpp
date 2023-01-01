@@ -13,23 +13,17 @@ CVIBuffer_Cell::CVIBuffer_Cell(const CVIBuffer_Cell& rhs)
 
 HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPoints)
 {
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	m_iNumVertexBuffers = 1;
 	m_iStride = sizeof(VTXPOS);
 	m_iNumVertices = 3;
-	// m_iNumPrimitive = 3;	
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
 	m_eIndexFormat = DXGI_FORMAT_R16_UINT;
-	/*m_iIndicesSizePerPrimitive = ;
-	m_iNumIndicesPerPrimitive = ;*/
 	m_iNumIndices = 4;
 
-#pragma region VERTEX_BUFFER
-
-	ZeroMemory(&m_tBufferDesc, sizeof m_tBufferDesc);
-
+	/* Vertex Buffer */
+	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
 	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -37,26 +31,21 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPoints)
 	m_tBufferDesc.CPUAccessFlags = 0;
 	m_tBufferDesc.MiscFlags = 0;
 
-	VTXPOS*			pVertices = new VTXPOS[m_iNumVertices];
-	ZeroMemory(pVertices, sizeof(VTXPOS));
+	VTXPOS*		pVertices = new VTXPOS[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXPOS) * m_iNumVertices);
 
 	for (_uint i = 0; i < 3; ++i)
 		pVertices[i].vPosition = pPoints[i];
 
-	ZeroMemory(&m_tSubResourceData, sizeof m_tSubResourceData);
+	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_tSubResourceData.pSysMem = pVertices;
 
-	if (FAILED(__super::Create_VertexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
 
 	Safe_Delete_Array(pVertices);
 
-#pragma endregion
-
-#pragma region INDEX_BUFFER
-
-	ZeroMemory(&m_tBufferDesc, sizeof m_tBufferDesc);
-
+	/* Index Buffer */
+	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	m_tBufferDesc.ByteWidth = sizeof(_ushort) * m_iNumIndices;
 	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -72,16 +61,12 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPoints)
 	pIndices[2] = 2;
 	pIndices[3] = 0;
 
-	ZeroMemory(&m_tSubResourceData, sizeof m_tSubResourceData);
+	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_tSubResourceData.pSysMem = pIndices;
 
-	if (FAILED(__super::Create_IndexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL);
 
 	Safe_Delete_Array(pIndices);
-
-
-#pragma endregion
 
 	return S_OK;
 }
@@ -120,5 +105,5 @@ CComponent* CVIBuffer_Cell::Clone(CGameObject* pOwner, void* pArg)
 
 void CVIBuffer_Cell::Free()
 {
-	CVIBuffer::Free();
+	__super::Free();
 }

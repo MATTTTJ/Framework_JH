@@ -5,7 +5,6 @@
 CVIBuffer::CVIBuffer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
 {
-
 }
 
 CVIBuffer::CVIBuffer(const CVIBuffer & rhs)
@@ -33,7 +32,7 @@ HRESULT CVIBuffer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer::Initialize_Clone(class CGameObject* pOwner, void * pArg)
+HRESULT CVIBuffer::Initialize_Clone(CGameObject* pOwner, void * pArg)
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(pOwner, pArg), E_FAIL);
 

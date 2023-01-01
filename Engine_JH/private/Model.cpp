@@ -36,10 +36,7 @@ CModel::CModel(const CModel & rhs)
 		for(_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(Material.pTexture[i]);
 	}
-
-
 }
-
 
 CMesh* CModel::Get_Mesh(const string& strMeshName)
 {
@@ -423,6 +420,33 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrB
 	m_vecMeshes[iMeshIndex]->Render();
 
 	return S_OK;
+}
+
+pair<_bool, _float3> CModel::Picking(HWND& hWnd, CTransform* pTransformCom)
+{
+	_bool		bIsPicked = false;
+	_float3	vPickingPoint = { 0.f, 0.f, 0.f };
+	_float3	vReturnPoint = { 0.f, 0.f, 0.f };
+	pair<_bool, _float>	PickInfo;
+	_float		fMinDist = 1000.f;
+
+	for (auto& pMesh : m_vecMeshes)
+	{
+		PickInfo = pMesh->Picking(hWnd, pTransformCom, vPickingPoint);
+
+		if (PickInfo.first == true)
+		{
+			bIsPicked = true;
+
+			if (PickInfo.second < fMinDist)
+			{
+				vReturnPoint = vPickingPoint;
+				fMinDist = PickInfo.second;
+			}
+		}
+	}
+
+	return pair<_bool, _float3>{ bIsPicked, vReturnPoint };
 }
 
 HRESULT CModel::Ready_Bones(aiNode* pAINode, CBone* pParent)

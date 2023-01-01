@@ -49,19 +49,19 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 	if (!m_bRender)
 		return;
 
-	if (GetKeyState('W') & 0x8000)
+	if (GetKeyState(VK_UP) & 0x8000)
 	{
 		m_pTransformCom->Go_Straight(TimeDelta);
 	}
-	if (GetKeyState('S') & 0x8000)
+	if (GetKeyState(VK_DOWN) & 0x8000)
 	{
 		m_pTransformCom->Go_Backward(TimeDelta);
 	}
-	if (GetKeyState('A') & 0x8000)
+	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
 		m_pTransformCom->Go_Left(TimeDelta);
 	}
-	if (GetKeyState('D') & 0x8000)
+	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
 		m_pTransformCom->Go_Right(TimeDelta);
 	}

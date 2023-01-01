@@ -12,13 +12,13 @@ CWeapon_State::CWeapon_State()
 	m_tWeaponOption[POISON].wstrWeaponName = L"WEAPON_POISON";
 }
 
-HRESULT CWeapon_State::Initialize(class CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform)
+HRESULT CWeapon_State::Initialize(class CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation)
 {
 	m_pGameInstance = CGameInstance::GetInstance();
 	m_pPlayer = pPlayer;
 	m_pState = pStateMachineCom;
 	m_pTransformCom = pTransform;
-
+	m_pNavigationCom = pNavigation;
 	m_tWeaponOption[DEFAULT_PISTOL].iCurBullet = 9999;
 	m_tWeaponOption[DEFAULT_PISTOL].iMaxBullet = 9999;
 	m_tWeaponOption[DEFAULT_PISTOL].iAttack = 150;
@@ -44,6 +44,7 @@ HRESULT CWeapon_State::Initialize(class CPlayer* pPlayer, CState* pStateMachineC
 	FAILED_CHECK_RETURN(SetUp_State_Throw(), E_FAIL);
 
 	m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_pWeaponModelCom;
+	m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_wstrWeaponName;
 
 
 	return S_OK;
@@ -51,36 +52,37 @@ HRESULT CWeapon_State::Initialize(class CPlayer* pPlayer, CState* pStateMachineC
 
 void CWeapon_State::Tick(_double dTimeDelta)
 {
+
 	// 이동하기
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_1))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_pWeaponModelCom;
-		m_pPlayer->m_wstrCurWeaponName = L"";
-		m_pPlayer->m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_wstrWeaponName;
+		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
+		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_wstrWeaponName;
 	}
 	else if (m_pGameInstance->Get_DIKeyState(DIK_2))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FLAMEBULLET].m_pWeaponModelCom;
-		m_pPlayer->m_wstrCurWeaponName = L"";
-		m_pPlayer->m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FLAMEBULLET].m_wstrWeaponName;
+		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
+		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FLAMEBULLET].m_wstrWeaponName;
 	}
 	else if (m_pGameInstance->Get_DIKeyState(DIK_3))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FIREDRAGON].m_pWeaponModelCom;
-		m_pPlayer->m_wstrCurWeaponName = L"";
-		m_pPlayer->m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FIREDRAGON].m_wstrWeaponName;
+		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
+		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FIREDRAGON].m_wstrWeaponName;
 	}
 	else if (m_pGameInstance->Get_DIKeyState(DIK_4))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_POISON].m_pWeaponModelCom;
-		m_pPlayer->m_wstrCurWeaponName = L"";
-		m_pPlayer->m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_POISON].m_wstrWeaponName;
+		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
+		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_POISON].m_wstrWeaponName;
 	}
 
 	if(m_pGameInstance->Get_DIKeyState(DIK_W))
 	{
-		m_pTransformCom->Go_Straight(dTimeDelta);
+		m_pTransformCom->Go_Straight(dTimeDelta, m_pNavigationCom);
 	}
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_S))
@@ -463,11 +465,10 @@ _bool CWeapon_State::Animation_Finish()
 	return m_pModelCom->Get_AnimationFinish();
 }
 
-CWeapon_State* CWeapon_State::Create(CPlayer* pPlayer, CState* pStateMachineCom, CModel * pModel, CTransform * pTransform)
+CWeapon_State* CWeapon_State::Create(CPlayer* pPlayer, CState* pStateMachineCom, CModel * pModel, CTransform * pTransform, CNavigation* pNavigation)
 {
 	CWeapon_State*		pInstance = new CWeapon_State();
-
-	if (FAILED(pInstance->Initialize(pPlayer, pStateMachineCom, pModel, pTransform)))
+	if (FAILED(pInstance->Initialize(pPlayer, pStateMachineCom, pModel, pTransform, pNavigation)))
 	{
 		MSG_BOX("Failed to Create : CWeapon_State");
 		Safe_Release(pInstance);
