@@ -22,11 +22,11 @@ HRESULT CEffect_Point_Instancing::Initialize_Prototype()
 
 HRESULT CEffect_Point_Instancing::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
-	CGameObject::GAMEOBJECTDESC		GameObjectDesc;
-	ZeroMemory(&GameObjectDesc, sizeof(GameObjectDesc));
-
-	GameObjectDesc.TransformDesc.fSpeedPerSec = 5.f;
-	GameObjectDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
+	// CGameObject::GAMEOBJECTDESC		GameObjectDesc;
+	// ZeroMemory(&GameObjectDesc, sizeof(GameObjectDesc));
+	//
+	// GameObjectDesc.TransformDesc.fSpeedPerSec = 5.f;
+	// GameObjectDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
 	FAILED_CHECK_RETURN(CGameObject::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);

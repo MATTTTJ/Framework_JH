@@ -222,7 +222,11 @@ _bool CNavigation::IsMove_OnNavigation(_fvector vTargetPos)
 
 	// 움직이고 난 결과위치가 셀 안에 있다면 
 	if (true == m_vecCell[m_tNaviDesc.iCurrentIndex]->IsIn(vTargetPos, &iNeighborIndex))
+	{
+		m_fCellHeight = m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_CellHeight(vTargetPos);
+
 		return true;
+	}
 	// 움직이고 난 결과 위치가 이 셀을 벗어난다면
 	else
 	{
@@ -240,6 +244,9 @@ _bool CNavigation::IsMove_OnNavigation(_fvector vTargetPos)
 				{
 					// m_tNaviDesc.iCurrentIndex = 이웃의 인덱스
 					m_tNaviDesc.iCurrentIndex = iNeighborIndex;
+
+					m_fCellHeight = m_vecCell[iNeighborIndex]->Get_CellHeight(vTargetPos);
+
 					return true;
 				}
 			}

@@ -42,7 +42,7 @@ void CCell::ImGui_RenderProperty()
 // 세개의 점들 중 전달받은 두개의 점과 같은 점이 있는지를 체크한다.
 _bool CCell::Compare_Points(const _float3& SourPoint, const _float3& DestPoint)
 {
-	if(true == XMVector3Equal(XMLoadFloat3(&m_vPoints[POINT_A]), XMLoadFloat3(&SourPoint)))
+	if (true == XMVector3Equal(XMLoadFloat3(&m_vPoints[POINT_A]), XMLoadFloat3(&SourPoint)))
 	{
 		if (true == XMVector3Equal(XMLoadFloat3(&m_vPoints[POINT_B]), XMLoadFloat3(&DestPoint)))
 			return true;
@@ -71,7 +71,7 @@ _bool CCell::Compare_Points(const _float3& SourPoint, const _float3& DestPoint)
 
 _bool CCell::IsIn(_fvector vTargetPos, _int* pNeighborIndex)
 {
-	for(_uint i = 0; i<NEIGHBOR_END; ++i)
+	for (_uint i = 0; i < NEIGHBOR_END; ++i)
 	{
 		_vector		vLine = XMLoadFloat3(&m_vPoints[(i + 1) % NEIGHBOR_END]) - XMLoadFloat3(&m_vPoints[i]);
 		_vector		vNormal = XMVector3Normalize(XMVectorSet(XMVectorGetZ(vLine) * -1.f, 0.f, XMVectorGetX(vLine), 0.f));
@@ -86,9 +86,32 @@ _bool CCell::IsIn(_fvector vTargetPos, _int* pNeighborIndex)
 	return true;
 }
 
-void CCell::PickingOnCell(_fvector TargetPos, _matrix WorldMatrixInverse)
+_float4 CCell::Get_CellHeight(_float4 fTargetPos)
 {
 
+	// 플레이어 위치에서 위로 수직인 위치를 빼서 광선을 만들고, 그 광선으로 셀에 쏜다. 
+	_float4 fTargetPosUpper = _float4(fTargetPos.x, fTargetPos.y + 10.f, fTargetPos.z, 1.f);
+	_float4 fDir = fTargetPos - fTargetPosUpper;
+	fDir.Normalize();
+
+	_float fDist = 0.f;
+
+	_float4 v0 = _float4(m_vPoints[POINT_A].x, m_vPoints[POINT_A].y, m_vPoints[POINT_A].z, 1.f);
+	_vector _v0 = XMLoadFloat4(&v0);
+	_float4 v1 = _float4(m_vPoints[POINT_B].x, m_vPoints[POINT_B].y, m_vPoints[POINT_B].z, 1.f);
+	_vector _v1 = XMLoadFloat4(&v1);
+	_float4 v2 = _float4(m_vPoints[POINT_C].x, m_vPoints[POINT_C].y, m_vPoints[POINT_C].z, 1.f);
+	_vector _v2 = XMLoadFloat4(&v2);
+
+	if (TriangleTests::Intersects(XMLoadFloat4(&fTargetPosUpper), XMLoadFloat4(&fDir),
+		_v2, _v1, _v0, fDist))
+	{
+		_float4 vDest;
+		XMStoreFloat4(&vDest, XMLoadFloat4(&fTargetPosUpper) + XMLoadFloat4(&fDir) * fDist);
+		return vDest;
+	}
+
+	return _float4(0.f,0.f,0.f,1);
 }
 
 #ifdef _DEBUG

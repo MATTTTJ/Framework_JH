@@ -38,7 +38,7 @@ HRESULT CGameObject::Initialize_Clone(const wstring& wstrPrototypeTag, void* pAr
 	if (nullptr != pArg)
 		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
 
-	FAILED_CHECK_RETURN(Add_Component(CGameInstance::Get_StaticLevelIndex(),CGameInstance::m_wstrPrototypeTransformTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom, this, &GameObjectDesc.TransformDesc), E_FAIL)
+	FAILED_CHECK_RETURN(Add_Component(CGameInstance::Get_StaticLevelIndex(),CGameInstance::m_wstrPrototypeTransformTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom, this, &GameObjectDesc), E_FAIL)
 
 	return S_OK;
 }

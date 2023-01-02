@@ -17,6 +17,8 @@ public:
 	{
 		float		fSpeedPerSec;
 		float		fRotationPerSec;
+
+		_float2		vInitPos;
 	}TRANSFORMDESC;
 
 protected:

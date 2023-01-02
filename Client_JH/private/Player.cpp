@@ -5,6 +5,7 @@
 #include "Bone.h"
 #include "Static_Camera.h"
 #include "State.h"
+#include "UI.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -30,7 +31,7 @@ CPlayer::CPlayer(const CPlayer & rhs)
 	m_tWeaponDesc[WEAPON_FIREDRAGON].m_wstrWeaponName = L"WEAPON_FIREDRAGON";
 	m_tWeaponDesc[WEAPON_POISON].m_wstrWeaponName = L"WEAPON_POISON";
 
-	
+
 	m_PlayerOption.m_iMaxHp = 100;
 	m_PlayerOption.m_iHp = m_PlayerOption.m_iMaxHp;
 	m_PlayerOption.m_iGold = 0;
@@ -39,6 +40,7 @@ CPlayer::CPlayer(const CPlayer & rhs)
 	m_PlayerOption.m_iPistol_BulletCnt = 50;
 	m_PlayerOption.m_iRifle_BulletCnt = 50;
 	m_PlayerOption.m_iInjector_BulletCnt = 50;
+	m_PlayerOption.m_iThrowCnt = 4;
 }
 
 _matrix CPlayer::Get_BoneMatrix(const string& strBoneName)
@@ -96,13 +98,16 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
 
 	m_pWeaponState = CWeapon_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
 	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
 
 	m_pModelCom->Set_CurAnimIndex(CWeapon_State::DEFAULT_PISTOL_IDLE);
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
+
+	
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.f, 3.f, 0.f, 1.f));
 
 	return S_OK;
 }
@@ -298,8 +303,19 @@ HRESULT CPlayer::Ready_UI()
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
 
 	m_vecPlayerUI.push_back(pPlayerUI);
+	
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_BulletPic");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
 
+	m_vecPlayerUI.push_back(pPlayerUI);
 
+	CUI::COUNTDESC eType;
+	eType.m_eType = CUI::CNT_BULLET;
+
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_BulletCnt", &eType);
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -337,6 +353,7 @@ void CPlayer::Free()
 	Safe_Release(m_pWeaponState);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 		Safe_Release(m_pColliderCom[i]);
 

@@ -7,6 +7,7 @@
 #include "Home.h"
 #include "LaiLuo_Home.h"
 #include "Monster.h"
+#include "NumberUI.h"
 #include "Player.h"
 #include "PlayerUI_Base.h"
 #include "Terrain.h"
@@ -110,9 +111,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerSkillOff", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/img_skillbg_Off.png", 1)), E_FAIL);
 
 	// 플레이어 총알 3종
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerBullet_1", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/img_skillbg_Off.png", 1)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerBullet_2", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/img_skillbg_Off.png", 1)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerBullet_3", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/img_skillbg_Off.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerBullet_Pistol", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/PistolBullet.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerBullet_Rifle", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/RifleBullet.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerBullet_Injector", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/InjectorBullet.png", 1)), E_FAIL);
 
 	// 플레이어 쓰로우
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerThrowOn", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/img_Throw_On.png", 1)), E_FAIL);
@@ -126,9 +127,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerGunInfo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/img_weaponbg.png", 1)), E_FAIL);
 
 	// 플레이어 총 번호
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerGunNumber_1", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/img_shine1.png", 1)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerGunNumber_2", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/img_shine2.png", 1)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerGunNumber_3", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/img_shine3.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerGunNumber_1", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/WeaponNum1.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerGunNumber_2", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/WeaponNum2.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerGunNumber_3", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/WeaponNum3.png", 1)), E_FAIL);
 
 	// 플레이어 들고있는 총 사진
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_Default_Pistol", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/1202.png", 1)), E_FAIL);
@@ -136,7 +137,22 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_Fire_Dragon", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/1412.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_Poison", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/1509.png", 1)), E_FAIL);
 
-	
+	// 숫자 텍스쳐
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_0", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/0.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_1", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/1.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_2", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/2.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_3", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/3.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_4", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/4.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_5", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/5.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_6", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/6.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_7", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/7.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_8", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/8.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_9", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/9.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_Slash", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/-.png", 1)), E_FAIL);
+
+
+
+
 	m_wstrLoadingText = L"네비게이션 정보 생성중입니다.";
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Client_JH\\Bin\\Save Data\\Navigation\\Navigation_Test.json")), E_FAIL);
 
@@ -198,8 +214,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Throw", CPlayer_UI_Throw::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Dash", CPlayer_UI_Dash::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Weapon", CPlayer_UI_Weapon::Create(m_pDevice, m_pContext)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Number_1", CPlayer_UI_Weapon_First::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Number_1", CPlayer_UI_Weapon_Number::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_WeaponPic", CPlayer_UI_Weapon_Pic::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_BulletPic", CPlayer_UI_BulletType::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_BulletCnt", CPlayer_UI_CountMachine::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_NumberUI", CNumberUI::Create(m_pDevice, m_pContext)), E_FAIL);
 
 
 	m_wstrLoadingText = L"로딩끝. ";

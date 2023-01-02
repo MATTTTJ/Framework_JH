@@ -9,6 +9,11 @@ public:
 	typedef struct tagGameObjectDesc
 	{
 		CTransform::TRANSFORMDESC		TransformDesc;
+
+
+		// For CountUI
+		_int					m_iNumCnt;
+		_int					m_iNumber;
 	}GAMEOBJECTDESC;
 
 protected:

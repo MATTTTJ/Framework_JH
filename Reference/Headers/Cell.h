@@ -25,7 +25,7 @@ public:
 
 	_bool							Compare_Points(const _float3& SourPoint, const _float3& DestPoint);
 	_bool							IsIn(_fvector vTargetPos, _int* pNeighborIndex);
-
+	_float4							Get_CellHeight(_float4 fTargetPos);
 #ifdef _DEBUG
 	HRESULT							Render(class CShader* pShader);
 #endif

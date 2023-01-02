@@ -25,30 +25,6 @@ class CPlayer final : public CGameObject
 
 	enum WEAPONTYPE { WEAPON_DEFAULT, WEAPON_FLAMEBULLET, WEAPON_FIREDRAGON, WEAPON_POISON, WEAPON_END };
 
-	enum DEFAULT_PISTOL_ANIMATION
-	{
-		DEFAULT_PISTOL_IDLE, DEFAULT_PISTOL_RELOAD, DEFAULT_PISTOL_FIRE
-	};
-
-	enum FLAME_BULLET_ANIMATION
-	{
-		FLAME_BULLET_RELOAD, FLAME_BULLET_FIRE, FLAME_BULLET_IDLE
-	};
-
-	enum FIREDRAGON_ANIMATION
-	{
-		FIRE_DRAGON_RELOAD, FIRE_DRAGON_IDLE, FIRE_DRAGON_FIRE
-	};
-
-	enum POISON_ANIMATION
-	{
-		POISON_FIRE_A, POISON_FIRE_B, POISON_FIRE_C, POISON_IDLE
-	};
-
-	enum TESLA_ANIMATION
-	{
-		TESLA_RELOAD = 0, TESLA_FIRE = 5, TESLA_IDLE = 4
-	};
 
 	typedef struct tagWeaponType
 	{
@@ -68,7 +44,8 @@ class CPlayer final : public CGameObject
 		_uint							m_iPistol_BulletCnt; // DEFAULT, FLAME, POISON 종류 
 		_uint							m_iInjector_BulletCnt; // DRAGON 종류 
 		_uint							m_iRifle_BulletCnt; // Rifle 종류
-
+		_uint							m_iThrowCnt;
+		wstring							m_wstrWeaponNumber;
 		wstring							m_wstrCurWeaponName;
 	}PLAYEROPTION;
 
@@ -83,6 +60,15 @@ public:
 	_matrix					Get_PivotMatrix();
 	_vector					Get_TransformState(CTransform::STATE eState);
 	const wstring&			Get_CurWeaponName(void) const { return m_PlayerOption.m_wstrCurWeaponName; }
+	const wstring&			Get_CurWeaponNumber(void) const { return m_PlayerOption.m_wstrWeaponNumber; }
+	CWeapon_State*			Get_WeaponStatePtr(void) { return m_pWeaponState; }
+
+	_uint					Get_GoldCnt(void) { return m_PlayerOption.m_iGold; }
+	_uint					Get_ThrowCnt(void) { return m_PlayerOption.m_iThrowCnt;  }
+	_uint					Get_RifleBulletCnt(void) { return m_PlayerOption.m_iRifle_BulletCnt; }
+	_uint					Get_PistolBulletCnt(void) { return m_PlayerOption.m_iPistol_BulletCnt; }
+	_uint					Get_InjectorBulletCnt(void) { return m_PlayerOption.m_iInjector_BulletCnt; }
+
 	void					Set_Camera(_double TimeDelta);
 
 public:
@@ -127,6 +113,7 @@ private: // State
 
 	PLAYEROPTION			m_PlayerOption;
 	vector<CGameObject*>	m_vecPlayerUI;
+
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();

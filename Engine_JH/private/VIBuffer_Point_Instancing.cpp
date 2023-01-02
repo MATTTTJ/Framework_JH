@@ -50,7 +50,7 @@ HRESULT CVIBuffer_Point_Instancing::Initialize_Prototype(_uint iNumInstance)
 	ZeroMemory(pVertices, sizeof(VTXPOINT));
 
 	pVertices->vPosition = _float3(0.0f, 0.0f, 0.0f);
-	pVertices->vPSize = _float2(0.2f, 0.2f);	
+	pVertices->vPSize = _float2(1000.f, 1000.f);	
 
 	ZeroMemory(&m_tSubResourceData, sizeof m_tSubResourceData);
 	m_tSubResourceData.pSysMem = pVertices;
@@ -107,7 +107,7 @@ HRESULT CVIBuffer_Point_Instancing::Initialize_Prototype(_uint iNumInstance)
 		pInstanceVertices[i].vRight = _float4(1.0f, 0.f, 0.f, 0.f);
 		pInstanceVertices[i].vUp = _float4(0.0f, 1.f, 0.f, 0.f);
 		pInstanceVertices[i].vLook = _float4(0.0f, 0.f, 1.f, 0.f);
-		pInstanceVertices[i].vPosition = _float4(rand() % 5, 3.0f, rand() % 5, 1.f);
+		pInstanceVertices[i].vPosition = _float4(0.f, 0.f, 0.f, 1.f);
 	}
 	
 	ZeroMemory(&m_tSubResourceData, sizeof m_tSubResourceData);
@@ -128,21 +128,21 @@ HRESULT CVIBuffer_Point_Instancing::Initialize_Clone(CGameObject* pOwner, void *
 
 HRESULT CVIBuffer_Point_Instancing::Tick(_double TimeDelta)
 {
-	D3D11_MAPPED_SUBRESOURCE			SubResource;
-	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
-	m_pContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-
-	for (_uint i = 0; i < m_iNumInstance; ++i)	
-	{
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.y -= m_pSpeeds[i] * TimeDelta;
-
-		if (((VTXMATRIX*)SubResource.pData)[i].vPosition.y < 0.f)
-			((VTXMATRIX*)SubResource.pData)[i].vPosition.y = 3.f;
-	}	
-
-	m_pContext->Unmap(m_pInstanceBuffer, 0);
-
+	// D3D11_MAPPED_SUBRESOURCE			SubResource;
+	// ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	//
+	// m_pContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	//
+	// for (_uint i = 0; i < m_iNumInstance; ++i)	
+	// {
+	// 	((VTXMATRIX*)SubResource.pData)[i].vPosition.y -= m_pSpeeds[i] * TimeDelta;
+	//
+	// 	if (((VTXMATRIX*)SubResource.pData)[i].vPosition.y < 0.f)
+	// 		((VTXMATRIX*)SubResource.pData)[i].vPosition.y = 3.f;
+	// }	
+	//
+	// m_pContext->Unmap(m_pInstanceBuffer, 0);
+	//
 	return S_OK;
 }
 

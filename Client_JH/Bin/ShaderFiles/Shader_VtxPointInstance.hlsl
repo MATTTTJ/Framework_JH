@@ -88,10 +88,43 @@ void GS_MAIN( point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 
 }
 
-/* w나누기. */
-/* 뷰퍼ㅗ트 변호ㅓㅏㄴ */
-/*( 래스터라이즈 */
+[maxvertexcount(6)]
+void GS_MAIN_UI(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
+{
+	GS_OUT		Out[4];
 
+
+	matrix		matVP = mul(g_ViewMatrix, g_ProjMatrix);
+
+	float3		vPosition;
+
+	vPosition = In[0].vPosition + In[0].vPSize.x * 0.5f + In[0].vPSize.y * 0.5f;
+	Out[0].vPosition = mul(vector(vPosition, 1.f), matVP);
+	Out[0].vTexUV = float2(0.f, 0.f);
+
+	vPosition = In[0].vPosition - In[0].vPSize.x * 0.5f + In[0].vPSize.y * 0.5f;
+	Out[1].vPosition = mul(vector(vPosition, 1.f), matVP);
+	Out[1].vTexUV = float2(1.f, 0.f);
+
+	vPosition = In[0].vPosition - In[0].vPSize.x * 0.5f - In[0].vPSize.y * 0.5f;
+	Out[2].vPosition = mul(vector(vPosition, 1.f), matVP);
+	Out[2].vTexUV = float2(1.f, 1.f);
+
+	vPosition = In[0].vPosition + In[0].vPSize.x * 0.5f + In[0].vPSize.y * 0.5f;
+	Out[3].vPosition = mul(vector(vPosition, 1.f), matVP);
+	Out[3].vTexUV = float2(0.f, 1.f);
+
+	Vertices.Append(Out[0]);
+	Vertices.Append(Out[1]);
+	Vertices.Append(Out[2]);
+	Vertices.RestartStrip();
+
+	Vertices.Append(Out[0]);
+	Vertices.Append(Out[2]);
+	Vertices.Append(Out[3]);
+	Vertices.RestartStrip();
+
+}
 
 struct PS_IN
 {
@@ -110,7 +143,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(PointSampler, In.vTexUV);
-	Out.vColor.rgb = float3(1.f, 0.f, 0.f);
+	// Out.vColor.rgb = float3(1.f, 0.f, 0.f);
 
 	if(Out.vColor.a < 0.1f)
 		discard;
@@ -132,4 +165,31 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
+
+	pass UI
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass UI_Test
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_UI();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+	
 }

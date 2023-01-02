@@ -111,6 +111,7 @@ private:
 	class CTimer_Manager*			m_pTimer_Manager = nullptr;
 	class CLight_Manager*			m_pLight_Manager = nullptr;
 	class CFontMgr*					m_pFont_Manager = nullptr;
+	class CFrustum*					m_pFrustum = nullptr;
 
 	class CImgui_Manager*			m_pImgui_Manager = nullptr;
 

@@ -53,9 +53,44 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_Texture.Sample(PointSampler, In.vTexUV);
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+
 	if (Out.vColor.a < 0.1f)
 		discard;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_SLASH(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(PointSampler, In.vTexUV);
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_Number(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(PointSampler, In.vTexUV);
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	if (Out.vColor.r < float(0.15f) && Out.vColor.g < float(0.15f) && Out.vColor.b<float( 0.15f))
+	{
+		Out.vColor.rgb = float3(0.f, 0.f, 0.f);
+	}
+	else
+	{
+		Out.vColor = float4(1.f, 0.f, 0.f,1.f);
+	}
+
 
 	return Out;
 }
@@ -86,5 +121,44 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass UI_Alpha
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass UI_ForSlash
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SLASH();
+	}
+
+	pass UI_ForNumber
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_Number();
 	}
 }

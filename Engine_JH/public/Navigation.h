@@ -17,8 +17,11 @@ private:
 	virtual ~CNavigation() = default;
 
 public:
+	const _float&				Get_CellHeight() const { return m_fCellHeight.y; }
 	_uint						Get_CellCount() { return (_uint)m_vecCell.size(); }
 	class CCell*				Get_Cell(_int iIndex) { return m_vecCell[iIndex]; }
+	vector<class CCell*>*		Get_vecCell() { return &m_vecCell; }
+
 public:
 	virtual HRESULT			Initialize_Prototype(const wstring& wstrFilePath);
 	virtual HRESULT			Initialize_Clone(CGameObject* pOwner, void* pArg) override;
@@ -42,6 +45,10 @@ private:
 
 private:
 	HRESULT					Ready_Neighbor();
+
+private:
+	_float4					m_fCellHeight = { 0.f, 0.f,0.f,1.f };
+
 
 #ifdef _DEBUG
 private:

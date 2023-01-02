@@ -14,12 +14,23 @@ BEGIN(Client)
 
 class CUI abstract : public CGameObject
 {
+
+public:
+	enum COUNTUI { CNT_GOLD, CNT_BULLET, CNT_THROW, CNT_END };
+	enum WEAPONNUMBER { WEAPON_FIRST, WEAPON_SECOND, WEAPON_THIRD, WEAPON_NUMEND };
+	enum NUMBUR { ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, SLASH, NUM_END };
+
+	typedef struct tagCountType
+	{
+		COUNTUI m_eType;
+	}COUNTDESC;
+
 protected:
 	CUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI(const CUI& rhs);
 	virtual ~CUI() = default;
 
-protected:
+public:
 	virtual HRESULT				Initialize_Prototype() override;
 	virtual HRESULT				Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
@@ -34,10 +45,15 @@ protected:
 	CTexture*					m_pOnTextureCom = nullptr;
 	CTexture*					m_pOffTextureCom = nullptr;
 	CTexture*					m_pWeaponTextureCom[CWeapon_State::WEAPONTYPE_END] = { nullptr };
+	CTexture*					m_pWeaponNumberCom[WEAPON_NUMEND] = { nullptr };
+	CTexture*					m_pNumberingTexCom[NUM_END] = { nullptr };
+
+
 
 	CVIBuffer_Rect*				m_pVIBufferCom = nullptr;
 
 	CGameObject*				m_pOwner = nullptr;
+	CWeapon_State*				m_pState = nullptr;
 
 protected:
 	_float						m_fX, m_fY, m_fSizeX, m_fSizeY;

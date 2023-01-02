@@ -127,6 +127,9 @@
     <Filter Include="96. Tool\Navigation Editor">
       <UniqueIdentifier>{82c3d4bb-aeda-4a2b-96aa-5faf6d9849f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\UI\CountUI">
+      <UniqueIdentifier>{6b233713-0b9b-4049-b239-53e0d2111f33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -234,7 +237,12 @@
     <ClInclude Include="..\public\PlayerUI_Base.h">
       <Filter>02. GameObjects\01. GamePlay\UI\PlayerUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Imgui_NavigationEditor.h" />
+    <ClInclude Include="..\public\NumberUI.h">
+      <Filter>02. GameObjects\01. GamePlay\UI\CountUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Imgui_NavigationEditor.h">
+      <Filter>96. Tool\Navigation Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -330,7 +338,12 @@
     <ClCompile Include="..\private\PlayerUI_Base.cpp">
       <Filter>02. GameObjects\01. GamePlay\UI\PlayerUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Imgui_NavigationEditor.cpp" />
+    <ClCompile Include="..\private\NumberUI.cpp">
+      <Filter>02. GameObjects\01. GamePlay\UI\CountUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Imgui_NavigationEditor.cpp">
+      <Filter>96. Tool\Navigation Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

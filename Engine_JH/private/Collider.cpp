@@ -38,10 +38,7 @@ HRESULT CCollider::Initialize_Prototype(COLLIDERTYPE eType)
 	size_t			iShaderByteCodeSize;
 
 	m_pEffect->GetVertexShaderBytecode(&pShaderByteCode, &iShaderByteCodeSize);
-
-	if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCode, iShaderByteCodeSize, &m_pInputLayout)))
-		return E_FAIL;
-
+	FAILED_CHECK_RETURN(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCode, iShaderByteCodeSize, &m_pInputLayout), E_FAIL);
 #endif
 
 	return S_OK;
@@ -153,9 +150,11 @@ CGameObject* CCollider::CollisionReturnObj(CCollider* pTargetCollider)
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB && 
 			m_pAABB->Intersects(*pTargetCollider->m_pAABB))
 			pTarget = pTargetCollider->Get_Owner();
+
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB &&
 			m_pAABB->Intersects(*pTargetCollider->m_pOBB))
 			pTarget = pTargetCollider->Get_Owner();
+
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE &&
 			m_pAABB->Intersects(*pTargetCollider->m_pSphere))
 			pTarget = pTargetCollider->Get_Owner();
@@ -165,20 +164,25 @@ CGameObject* CCollider::CollisionReturnObj(CCollider* pTargetCollider)
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB &&
 			m_pOBB->Intersects(*pTargetCollider->m_pAABB))
 			pTarget = pTargetCollider->Get_Owner();
+
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB &&
 			m_pOBB->Intersects(*pTargetCollider->m_pOBB))
 			pTarget = pTargetCollider->Get_Owner();
+
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE &&
 			m_pOBB->Intersects(*pTargetCollider->m_pSphere))
 			pTarget = pTargetCollider->Get_Owner();
 		break;
+
 	case COLLIDER_SPHERE:
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB &&
 			m_pSphere->Intersects(*pTargetCollider->m_pAABB))
 			pTarget = pTargetCollider->Get_Owner();
+
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB &&
 			m_pSphere->Intersects(*pTargetCollider->m_pOBB))
 			pTarget = pTargetCollider->Get_Owner();
+
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE &&
 			m_pSphere->Intersects(*pTargetCollider->m_pSphere))
 			pTarget = pTargetCollider->Get_Owner();

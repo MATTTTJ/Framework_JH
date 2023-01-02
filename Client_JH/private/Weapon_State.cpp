@@ -19,20 +19,16 @@ HRESULT CWeapon_State::Initialize(class CPlayer* pPlayer, CState* pStateMachineC
 	m_pState = pStateMachineCom;
 	m_pTransformCom = pTransform;
 	m_pNavigationCom = pNavigation;
-	m_tWeaponOption[DEFAULT_PISTOL].iCurBullet = 9999;
-	m_tWeaponOption[DEFAULT_PISTOL].iMaxBullet = 9999;
+	m_tWeaponOption[DEFAULT_PISTOL].iCurBullet = m_tWeaponOption[DEFAULT_PISTOL].iMaxBullet = 50;
 	m_tWeaponOption[DEFAULT_PISTOL].iAttack = 150;
 
-	m_tWeaponOption[FLAME_BULLET].iCurBullet = 30;
-	m_tWeaponOption[FLAME_BULLET].iMaxBullet = 30;
+	m_tWeaponOption[FLAME_BULLET].iCurBullet =	m_tWeaponOption[FLAME_BULLET].iMaxBullet = 30;
 	m_tWeaponOption[FLAME_BULLET].iAttack = 300;
 
-	m_tWeaponOption[FIRE_DRAGON].iCurBullet = 60;
-	m_tWeaponOption[FIRE_DRAGON].iMaxBullet = 60;
+	m_tWeaponOption[FIRE_DRAGON].iCurBullet = m_tWeaponOption[FIRE_DRAGON].iMaxBullet = 60;
 	m_tWeaponOption[FIRE_DRAGON].iAttack = 100;
 
-	m_tWeaponOption[POISON].iCurBullet = 1;
-	m_tWeaponOption[POISON].iMaxBullet = 1;
+	m_tWeaponOption[POISON].iCurBullet = m_tWeaponOption[POISON].iMaxBullet = 1;
 	m_tWeaponOption[POISON].iAttack = 230;
 
 
@@ -45,7 +41,7 @@ HRESULT CWeapon_State::Initialize(class CPlayer* pPlayer, CState* pStateMachineC
 
 	m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_pWeaponModelCom;
 	m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_wstrWeaponName;
-
+	m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"3";
 
 	return S_OK;
 }
@@ -54,24 +50,35 @@ void CWeapon_State::Tick(_double dTimeDelta)
 {
 
 	// 이동하기
+	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
+	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	PlayerPos.y = m_fHeight + 1.5f; 
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, PlayerPos);
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_1))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_pWeaponModelCom;
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_wstrWeaponName;
+		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"";
+		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"1";
+
 	}
 	else if (m_pGameInstance->Get_DIKeyState(DIK_2))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FLAMEBULLET].m_pWeaponModelCom;
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FLAMEBULLET].m_wstrWeaponName;
+		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"";
+		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"2";
 	}
 	else if (m_pGameInstance->Get_DIKeyState(DIK_3))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FIREDRAGON].m_pWeaponModelCom;
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FIREDRAGON].m_wstrWeaponName;
+		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"";
+		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"3";
 	}
 	else if (m_pGameInstance->Get_DIKeyState(DIK_4))
 	{
@@ -102,6 +109,10 @@ void CWeapon_State::Tick(_double dTimeDelta)
 void CWeapon_State::Late_Tick(_double dTimeDelta)
 {
 }
+
+
+
+
 
 HRESULT CWeapon_State::SetUp_State_Weapon_Idle()
 {

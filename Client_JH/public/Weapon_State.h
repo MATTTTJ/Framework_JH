@@ -49,15 +49,18 @@ public:
 	};
 
 	enum WEAPONTYPE { DEFAULT_PISTOL, FLAME_BULLET, FIRE_DRAGON, POISON, WEAPONTYPE_END };
-
+	enum WEAPONNUMBER { WEAPON_FIRST, WEAPON_SECOND, WEAPON_THIRD, WEAPON_NUMBEREND };
 public:
 	CWeapon_State();
 	virtual ~CWeapon_State() = default;
 
 public:
+	const _uint&						Get_CurWeaponBulletCnt(void) const { return m_tWeaponOption->iCurBullet; }
+
 	HRESULT						Initialize(class CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
 	void						Tick(_double dTimeDelta);
 	void						Late_Tick(_double dTimeDelta);
+
 private:
 	HRESULT						SetUp_State_Weapon_Idle(void);
 	HRESULT						SetUp_State_Fire(void);
@@ -103,14 +106,12 @@ private:
 	CNavigation*				m_pNavigationCom = nullptr;
 private:
 	WEAPON_OPTION				m_tWeaponOption[WEAPONTYPE_END];
-
-
+	// _bool						m_bIsWeaponNumber[WEAPON_NUMBEREND] = { false };
+	// WEAPONNUMBER				m_eType;
 public:
 	static CWeapon_State*		Create(class CPlayer* pPlayer, CState* pStateMachineCom, CModel * pModel, CTransform * pTransform, CNavigation* pNavigation);
 	virtual void				Free() override;
 };
-
-
 
 
 END
