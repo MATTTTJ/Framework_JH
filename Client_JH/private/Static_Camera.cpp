@@ -35,7 +35,7 @@ HRESULT CStatic_Camera::Initialize_Clone(const wstring& wstrPrototypeTag, void* 
 		CameraDesc.vEye = _float4(0.f, 20.f, -30.f, 1.f);
 		CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 		CameraDesc.vUp = _float4(0.f, 1.f, 0.f, 0.f);
-		CameraDesc.TransformDesc.fSpeedPerSec = 15.0;
+		CameraDesc.TransformDesc.fSpeedPerSec = 7.f;
 		CameraDesc.TransformDesc.fRotationPerSec= XMConvertToRadians(90.f);
 	}
 
@@ -63,22 +63,7 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 		XMStoreFloat4(&m_vCameraLook, dynamic_cast<CTransform*>(CGameInstance::GetInstance()->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_Transform"))->Get_State(CTransform::STATE_LOOK));
 	}
 
-	_int TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X);
-	_int TurnY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y);
 
-	if (TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
-	{
-		_matrix Mat = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f) *  0.1f * (_float)dTimeDelta * TurnX);
-		XMStoreFloat4(&m_vCameraLook, XMVector4Transform(XMLoadFloat4(&m_vCameraLook), Mat));
-		XMStoreFloat4(&m_vCameraLook, XMVector3Normalize(XMLoadFloat4(&m_vCameraLook)));
-	}
-	
-	if (TurnY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
-	{
-		_matrix matRotationY = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f) *  0.1f * (_float)dTimeDelta * TurnY);
-		XMStoreFloat4(&m_vCameraLook, XMVector4Transform(XMLoadFloat4(&m_vCameraLook), matRotationY));
-		XMStoreFloat4(&m_vCameraLook, XMVector3Normalize(XMLoadFloat4(&m_vCameraLook)));
-	}
 
 	// if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_X))
 	// {
@@ -127,7 +112,22 @@ void CStatic_Camera::Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _dou
 	if (!m_bRender)
 		return;
 
-	
+	_int TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X);
+	_int TurnY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y);
+
+	if (TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
+	{
+		_matrix Mat = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f) *  0.1f * (_float)dTimeDelta * TurnX);
+		XMStoreFloat4(&m_vCameraLook, XMVector4Transform(XMLoadFloat4(&m_vCameraLook), Mat));
+		XMStoreFloat4(&m_vCameraLook, XMVector3Normalize(XMLoadFloat4(&m_vCameraLook)));
+	}
+
+	if (TurnY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
+	{
+		_matrix matRotationY = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f) *  0.1f * (_float)dTimeDelta * TurnY);
+		XMStoreFloat4(&m_vCameraLook, XMVector4Transform(XMLoadFloat4(&m_vCameraLook), matRotationY));
+		XMStoreFloat4(&m_vCameraLook, XMVector3Normalize(XMLoadFloat4(&m_vCameraLook)));
+	}
 
 	_vector vPlayerPos = PlayerPos;
 	
@@ -152,13 +152,18 @@ void CStatic_Camera::Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _dou
 		// 여기 값 갖고 놀면 카메라 위치 조절 가능함
 		// _vector vCamPos = vPlayerPos + (vLook + XMVectorSet(0.f, 4.f + m_fCamHeight, 0.f, 0.f));
 		_matrix	OwnerWorldMatrix = XMLoadFloat4x4(&m_pOwner->Get_WorldFloat4x4());
-		_matrix	TargetBoneMatrix = dynamic_cast<CPlayer*>(m_pOwner)->Get_BoneMatrix("Bip001 HeadNub");
-		_matrix PivotMatrix = dynamic_cast<CPlayer*>(m_pOwner)->Get_PivotMatrix();
-		
-		_float4x4	CombindMatrix;
-		XMStoreFloat4x4(&CombindMatrix, TargetBoneMatrix * PivotMatrix * OwnerWorldMatrix);
+		_matrix	TargetBoneMatrix = dynamic_cast<CPlayer*>(m_pOwner)->Get_BoneMatrix("Bip001 Head");
+		_matrix PivotMatrix = CGameUtils::Get_PlayerPivotMatrix(); //dynamic_cast<CPlayer*>(m_pOwner)->Get_PivotMatrix();
 
-		_vector vCamPos = XMVectorSet(CombindMatrix._41, CombindMatrix._42, CombindMatrix._43, CombindMatrix._44);
+		// PivotMatrix.r[3] += dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK);
+
+		_float4x4	CombindMatrix;
+		XMStoreFloat4x4(&CombindMatrix, TargetBoneMatrix * OwnerWorldMatrix);
+
+		
+
+		_vector vCamPos = XMVectorSet(CombindMatrix._41, CombindMatrix._42 + 0.2f, CombindMatrix._43, CombindMatrix._44);//+ (dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_RIGHT) * - 0.1f) + 
+			//(dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK) * 0.1f);
 
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vCamPos);
 

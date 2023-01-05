@@ -43,9 +43,9 @@ public:
 	BoundingSphere*			Get_SpherePtr() { return m_pSphere; }
 	BoundingBox*			Get_AABBPtr() { return m_pAABB; }
 
-	_float3					Get_OBBCenter() { return m_pOBB->Center; }
-	_float3					Get_AABBCenter() { return m_pAABB->Center; }
-	_float3					Get_SPhereCenter() { return m_pSphere->Center; }
+	_float4					Get_OBBCenter() { return _float4(m_pOBB->Center.x, m_pOBB->Center.y, m_pOBB->Center.z, 0.f); }
+	_float4					Get_AABBCenter() { return _float4(m_pAABB->Center.x, m_pAABB->Center.y, m_pAABB->Center.z, 0.f); }
+	_float4					Get_SphereCenter() { return _float4(m_pSphere->Center.x, m_pSphere->Center.y, m_pSphere->Center.z, 0.f); }
 
 public:
 	virtual HRESULT			Initialize_Prototype(COLLIDERTYPE eType);

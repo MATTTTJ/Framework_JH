@@ -55,6 +55,7 @@ private:
 	virtual ~CPlayer() = default;
 	friend CWeapon_State;
 public:
+	CCollider*				Get_OBBPtr() { return m_pColliderCom[COLLIDER_OBB]; }
 	_matrix					Get_BoneMatrix(const string& strBoneName);
 	_matrix					Get_OffsetMatrix(const string& strBoneName);
 	_matrix					Get_PivotMatrix();
@@ -73,7 +74,7 @@ public:
 	_uint					Get_InjectorBulletCnt(void) { return m_PlayerOption.m_iInjector_BulletCnt; }
 
 	void					Set_Camera(_double TimeDelta);
-	void					Collision_AimBox_To_Monster();
+	CGameObject*			Collision_AimBox_To_Monster();
 
 public:
 	virtual HRESULT			Initialize_Prototype() override;

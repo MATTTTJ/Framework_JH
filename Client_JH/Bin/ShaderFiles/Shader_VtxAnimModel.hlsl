@@ -89,7 +89,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	float3 vCameraPos = normalize(TexNormal.xyz - g_vCameraPos.xyz);
 
 	// float RimLightColor = smoothstep(0.0001f, 1.f, 1 - saturate(dot(In.vNormal.xyz, vCameraPos.xyz)));
-	float RimLightColor = 1 - saturate(dot(In.vNormal.xyz, -vCameraPos.xyz));
+	float RimLightColor = 1 - saturate(dot(In.vNormal.xyz, vCameraPos.xyz));
 
 	RimLightColor = pow(RimLightColor, 100.0f);
 
@@ -110,17 +110,17 @@ PS_OUT PS_MAIN(PS_IN In)
 	}
 	float L = sqrt((Lx*Lx) + (Ly*Ly));
 
-	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) + (RimLightColor * 0.15f);
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) ;
 
 
-	// if(L < 0.05)
-	// {
-	// 	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) - RimLightColor;
-	// }
-	// else
-	// {
-	// 	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.6f ;
-	// }
+	if(L < 0.2)
+	{
+		Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) + (RimLightColor * 0.15f);
+	}
+	else
+	{
+		Out.vColor = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.6f) + (RimLightColor * 0.15f);
+	}
 	// Out.vColor = float4(L.xxx, 1);
 	//
 	// if(Out.vColor.rgb / 3.f < 0.99f)

@@ -21,7 +21,7 @@ const _uint& CWeapon_State::Get_CurWeaponBulletCnt(wstring WeaponName)
 		if (WeaponName == m_tWeaponOption[i].wstrWeaponName)
 			return m_tWeaponOption[i].iCurBullet;
 	}
-	
+
 	return 9999;
 }
 
@@ -67,8 +67,9 @@ void CWeapon_State::Tick(_double dTimeDelta)
 	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 	_float4 fFootPos = m_pPlayer->Get_BoneMatrix("Bip001 Footsteps").r[3];
 	PlayerPos.y = m_fHeight + 2.644f;
-	
+
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, PlayerPos);
+
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_1))
 	{
@@ -102,28 +103,14 @@ void CWeapon_State::Tick(_double dTimeDelta)
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_POISON].m_wstrWeaponName;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_W))
-	{
-		m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
-	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_S))
-	{
-		m_pTransformCom->Go_Backward(dTimeDelta);
-	}
-	if (m_pGameInstance->Get_DIKeyState(DIK_A))
-	{
-		m_pTransformCom->Go_Left(dTimeDelta);
-	}
-	if (m_pGameInstance->Get_DIKeyState(DIK_D))
-	{
-		m_pTransformCom->Go_Right(dTimeDelta);
-	}
+
+
 
 
 	for (auto iter = m_vecBullet.begin(); iter != m_vecBullet.end();)
 	{
-		if(CGameInstance::GetInstance()->Key_Down(DIK_F9) && !m_bDeadOnce)
+		if (CGameInstance::GetInstance()->Key_Down(DIK_F9) && !m_bDeadOnce)
 		{
 			m_vecBullet.front()->Set_Dead(true);
 			m_bDeadOnce = true;
@@ -161,6 +148,8 @@ void CWeapon_State::Late_Tick(_double dTimeDelta)
 		m_vecBullet[i]->Late_Tick(dTimeDelta);
 	}
 }
+
+
 
 HRESULT CWeapon_State::SetUp_State_Weapon_Idle()
 {
@@ -286,22 +275,73 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 
 		// TODO:: 카메라 룩 설정할 수 있게 작업하기 
 
-		CGameObject::GAMEOBJECTDESC		tmp;
-		ZeroMemory(&tmp, sizeof(CGameObject::GAMEOBJECTDESC));
+		if (nullptr != m_pPlayer->Collision_AimBox_To_Monster())
+		{
+			if (nullptr == m_pPlayer->m_pFirstAimColliderCom)
+				return;
 
-		_matrix matpivot;
-		matpivot = XMMatrixIdentity();
-		matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
+			_float4x4 fmatrix = m_pPlayer->Collision_AimBox_To_Monster()->Get_WorldFloat4x4();
 
-		_float4 Position;
-		XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
+			_vector MonsterPos = fmatrix.Translation();
 
-		tmp.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-		CGameObject*		pBullet = nullptr;
-		pBullet = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp);
-		NULL_CHECK_RETURN(pBullet, );
+			_vector FirstAimSpherePos = m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter();
 
-		m_vecBullet.push_back(pBullet);
+			_vector SecondAimSpherePos = m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter();
+
+			_float MonsterToFirstAim, MonsterToSecondAim;
+
+			XMStoreFloat(&MonsterToFirstAim, XMVector3Length(MonsterPos - FirstAimSpherePos));
+			XMStoreFloat(&MonsterToSecondAim, XMVector3Length(MonsterPos - SecondAimSpherePos));
+
+			if (fabsf(MonsterToFirstAim) - fabsf(MonsterToSecondAim) < EPSILON)
+			{
+				CGameObject::GAMEOBJECTDESC		tmp;
+				ZeroMemory(&tmp, sizeof(CGameObject::GAMEOBJECTDESC));
+
+				_float4 Position;
+				XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
+
+				tmp.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+				tmp.m_vBulletLook = m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter();
+				CGameObject*		pBullet = nullptr;
+				pBullet = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp);
+				NULL_CHECK_RETURN(pBullet, );
+
+				m_vecBullet.push_back(pBullet);
+			}
+			else
+			{
+				CGameObject::GAMEOBJECTDESC		tmp;
+				ZeroMemory(&tmp, sizeof(CGameObject::GAMEOBJECTDESC));
+			
+				_float4 Position;
+				XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
+
+				tmp.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+				tmp.m_vBulletLook = m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter();
+				CGameObject*		pBullet = nullptr;
+				pBullet = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp);
+				NULL_CHECK_RETURN(pBullet, );
+
+				m_vecBullet.push_back(pBullet);
+			}
+		}
+		else
+		{
+			CGameObject::GAMEOBJECTDESC		tmp;
+			ZeroMemory(&tmp, sizeof(CGameObject::GAMEOBJECTDESC));
+
+			_float4 Position;
+			XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
+
+			tmp.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+			tmp.m_vBulletLook = _float4(m_pPlayer->Get_TransformState(CTransform::STATE_LOOK));
+			CGameObject*		pBullet = nullptr;
+			pBullet = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp);
+			NULL_CHECK_RETURN(pBullet, );
+
+			m_vecBullet.push_back(pBullet);
+		}
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName)
 	{
@@ -417,7 +457,7 @@ void CWeapon_State::End_Reload(_double TimeDelta)
 {
 	if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName)
 	{
-		if (0 != m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt)
+		if (0 < m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt)
 		{
 			_int BulletCnt = m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt;
 			_int NeedBulletCnt = m_tWeaponOption[DEFAULT_PISTOL].iMaxBullet - m_tWeaponOption[DEFAULT_PISTOL].iCurBullet;
@@ -437,7 +477,7 @@ void CWeapon_State::End_Reload(_double TimeDelta)
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName)
 	{
-		if (0 != m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt)
+		if (0 < m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt)
 		{
 			_int BulletCnt = m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt;
 			_int NeedBulletCnt = m_tWeaponOption[FLAME_BULLET].iMaxBullet - m_tWeaponOption[FLAME_BULLET].iCurBullet;
@@ -457,11 +497,27 @@ void CWeapon_State::End_Reload(_double TimeDelta)
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FIRE_DRAGON].wstrWeaponName)
 	{
-		m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_IDLE);
+		if (0 < m_pPlayer->m_PlayerOption.m_iInjector_BulletCnt)
+		{
+			_int BulletCnt = m_pPlayer->m_PlayerOption.m_iInjector_BulletCnt;
+			_int NeedBulletCnt = m_tWeaponOption[FIRE_DRAGON].iMaxBullet - m_tWeaponOption[FIRE_DRAGON].iCurBullet;
+
+			if (BulletCnt > NeedBulletCnt)
+			{
+				BulletCnt -= NeedBulletCnt;
+				m_tWeaponOption[FIRE_DRAGON].iCurBullet = m_tWeaponOption[FIRE_DRAGON].iMaxBullet;
+				m_pPlayer->m_PlayerOption.m_iInjector_BulletCnt = BulletCnt;
+			}
+			else
+			{
+				m_tWeaponOption[FIRE_DRAGON].iCurBullet += BulletCnt;
+				m_pPlayer->m_PlayerOption.m_iInjector_BulletCnt = 0;
+			}
+		}
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[POISON].wstrWeaponName)
 	{
-		if (0 != m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt)
+		if (0 < m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt)
 		{
 			_int BulletCnt = m_pPlayer->m_PlayerOption.m_iPistol_BulletCnt;
 			_int NeedBulletCnt = m_tWeaponOption[POISON].iMaxBullet - m_tWeaponOption[POISON].iCurBullet;
@@ -562,7 +618,7 @@ void CWeapon_State::Free()
 {
 	Safe_Release(m_pGameInstance);
 
-	for (_uint i =0; i < m_vecBullet.size(); ++i)
+	for (_uint i = 0; i < m_vecBullet.size(); ++i)
 	{
 		Safe_Release(m_vecBullet[i]);
 	}

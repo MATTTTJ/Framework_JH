@@ -46,7 +46,7 @@ HRESULT CNavigation::Initialize_Prototype(const wstring& wstrFilePath)
 
 		_uint	iCellCount;
 		jCells["Cell Count"].get_to<_uint>(iCellCount);
-
+		
 		for (auto jCell : jCells["Cells"])
 		{
 			_float3	vPoint[CCell::POINT_END];

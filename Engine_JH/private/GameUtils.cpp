@@ -509,3 +509,8 @@ void CGameUtils::SortPointsByCW(_float3* vPoints)
 void CGameUtils::Cell_Sorting(_float3* vPoints)
 {
 }
+
+_matrix CGameUtils::Get_PlayerPivotMatrix()
+{
+	return XMMatrixIdentity() * XMMatrixRotationY(XMConvertToRadians(180.f));
+}

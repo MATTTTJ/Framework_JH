@@ -4,6 +4,7 @@
 #include "Transform.h"
 
 BEGIN(Engine)
+class CGameObject;
 class CGameInstance;
 class CState;
 class CModel;
@@ -21,12 +22,12 @@ public:
 
 	enum FLAME_BULLET_ANIMATION
 	{	
-		FLAME_BULLET_RELOAD, FLAME_BULLET_FIRE, FLAME_BULLET_IDLE
+		FLAME_BULLET_FIRE, FLAME_BULLET_IDLE, FLAME_BULLET_RELOAD
 	};
 
 	enum FIREDRAGON_ANIMATION
 	{
-		FIRE_DRAGON_RELOAD, FIRE_DRAGON_IDLE, FIRE_DRAGON_FIRE
+		PLAYER_ROAR, PLAYER_THROW, FIRE_DRAGON_FIRE, FIRE_DRAGON_RELOAD, FIRE_DRAGON_IDLE
 	};
 
 	enum POISON_ANIMATION
@@ -60,7 +61,7 @@ public:
 	HRESULT						Initialize(class CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
 	void						Tick(_double dTimeDelta);
 	void						Late_Tick(_double dTimeDelta);
-
+	
 private:
 	HRESULT						SetUp_State_Weapon_Idle(void);
 	HRESULT						SetUp_State_Fire(void);

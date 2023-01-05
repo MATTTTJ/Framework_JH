@@ -27,7 +27,7 @@ HRESULT CHome_Deco::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f));
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f));
 
 	return S_OK;
 }

@@ -46,7 +46,7 @@ void CImgui_AnimationMgr::Imgui_RenderWindow()
 	{
 		CGameObject*	pGameObject = (*m_vecAnimObjects)[iSelectObject];
 
-		CModel*	pDefaultPistol = dynamic_cast<CModel*>(pGameObject->Get_Component(L"Com_Model"));
+		CModel*	pDefaultPistol = dynamic_cast<CModel*>(pGameObject->Get_Component(L"Com_Fire_Dragon_Model"));
 
 		if (pDefaultPistol != nullptr)
 		{

@@ -23,6 +23,12 @@ CGameObject::CGameObject(const CGameObject& rhs)
 	Safe_AddRef(m_pContext);
 }
 
+CGameObject::GAMEOBJECTDESC CGameObject::Set_GameObjectDesc(GAMEOBJECTDESC Desc)
+{
+	
+	return Desc;
+}
+
 HRESULT CGameObject::Initialize_Prototype()
 {
 	return S_OK;

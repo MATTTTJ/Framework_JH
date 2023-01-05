@@ -16,6 +16,7 @@ public:
 		_int					m_iNumCnt;
 		_int					m_iNumber;
 		_float4					m_vNumColor;
+		_float4					m_vBulletLook;
 	}GAMEOBJECTDESC;
 
 protected:
@@ -26,6 +27,9 @@ protected:
 public:
 	const _bool				Check_Dead() { return m_bIsDead; }
 	void					Set_Dead(_bool bDead) { m_bIsDead = bDead; }
+
+
+	GAMEOBJECTDESC			Set_GameObjectDesc(GAMEOBJECTDESC Desc);
 
 	const _bool&			Get_HasModel() { return m_bHasModel; }
 	const _float4x4&		Get_WorldFloat4x4() const { return m_pTransformCom->Get_WorldFloat4x4(); }
