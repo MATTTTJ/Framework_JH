@@ -29,7 +29,6 @@ HRESULT CNumberUI::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 	FAILED_CHECK_RETURN(CGameObject::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
-	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
 
 	if(nullptr != pArg)
 	{
@@ -37,11 +36,15 @@ HRESULT CNumberUI::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 		tmp = *(GAMEOBJECTDESC*)pArg;
 		m_iNumCnt = tmp.m_iNumCnt;
 		m_iNumber = tmp.m_iNumber;
-
+		m_vNumColor = tmp.m_vNumColor;
+		m_pTransformCom->Set_Scaled(_float3(tmp.m_vTexSize.x, tmp.m_vTexSize.y, 1.f));
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(tmp.TransformDesc.vInitPos.x, tmp.TransformDesc.vInitPos.y, 0.f, 1.f));
 	}
 	else
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(900.f, -315.f, 0.f, 1.f));
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(900.f, -315.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
+	}
 
 
 	return S_OK;
@@ -102,7 +105,7 @@ HRESULT CNumberUI::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);
-
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vNumColor", &m_vNumColor, sizeof(_float4)), E_FAIL);
 	if(m_iNumber == 0)
 	{
 		FAILED_CHECK_RETURN(m_pNumberingTexCom[ZERO]->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);

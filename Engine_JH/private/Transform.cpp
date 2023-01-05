@@ -121,7 +121,7 @@ void CTransform::Imgui_RenderProperty()
 	ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&m_WorldMatrix);
 }
 
-void CTransform::Go_Straight(_double TimeDelta, CNavigation* pNaviCom)
+void CTransform::Go_Straight(_double TimeDelta, TRANSTYPE eType, CNavigation* pNaviCom)
 {
 	// _vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
 	// _vector	vLook = Get_State(CTransform::STATE_LOOK);
@@ -138,13 +138,23 @@ void CTransform::Go_Straight(_double TimeDelta, CNavigation* pNaviCom)
 	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * TimeDelta;
 
 	if (nullptr == pNaviCom)
+	{
 		Set_State(CTransform::STATE_TRANSLATION, vPosition);
-
+	}
 	else
 	{
 		if (true == pNaviCom->IsMove_OnNavigation(vPosition))
 			Set_State(CTransform::STATE_TRANSLATION, vPosition);
 	}
+
+	if (TRANS_BULLET == eType)
+	{
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+	}	
+
+	
+
+	
 }
 
 void CTransform::Go_Backward(_double TimeDelta)

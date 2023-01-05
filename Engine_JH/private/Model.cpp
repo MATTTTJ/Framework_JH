@@ -82,6 +82,14 @@ CBone* CModel::Get_BonePtr(const string& strBoneName)
 	return *iter;
 }
 
+_matrix CModel::Get_CombindMatrix(const string& strBoneName)
+{
+	CBone*	pBone = Get_BonePtr(strBoneName);
+	NULL_CHECK_RETURN(pBone, XMMatrixIdentity());
+
+	return pBone->Get_CombindMatrix();
+}
+
 void CModel::Set_CurAnimIndex(_uint AnimIndex)
 {
 	if (AnimIndex < 0 || AnimIndex > m_iNumAnimation || AnimIndex == m_iCurAnimIndex)

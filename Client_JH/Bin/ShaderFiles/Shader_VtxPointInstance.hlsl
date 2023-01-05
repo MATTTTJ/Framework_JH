@@ -2,8 +2,14 @@
 #include "Shader_Client_Defines.h"
 
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix			g_SocketMatrix;
+float			g_fTrailCount;
 
 vector			g_vCamPosition;
+vector			g_vInitPos;
+vector			g_vLook;
+vector			g_vRightSrc;
+vector			g_vUp;
 
 texture2D		g_Texture;
 
@@ -27,8 +33,10 @@ VS_OUT VS_MAIN(VS_IN In)
 	VS_OUT		Out = (VS_OUT)0;
 
 	vector		vPosition = mul(float4(In.vPosition, 1.f), In.Matrix);
+	// vPosition = mul(vPosition, g_SocketMatrix);
 
-	Out.vPosition = mul(vPosition, g_WorldMatrix).xyz;	
+	Out.vPosition = mul(vPosition, g_WorldMatrix).xyz;
+
 	Out.vPSize = In.vPSize;
 
 	return Out;
@@ -52,13 +60,14 @@ void GS_MAIN( point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 {
 	GS_OUT		Out[4];
 
-	float3		vLook = g_vCamPosition.xyz - In[0].vPosition;
+	float3		vLook = normalize(In[0].vPosition.xyz - g_vCamPosition.xyz);
 	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x * 0.5f;
 	float3		vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y * 0.5f;
 
 	matrix		matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
 	float3		vPosition;
+
 
 	vPosition = In[0].vPosition + vRight + vUp;
 	Out[0].vPosition = mul(vector(vPosition, 1.f), matVP);
@@ -76,6 +85,8 @@ void GS_MAIN( point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 	Out[3].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[3].vTexUV = float2(0.f, 1.f);
 
+
+
 	Vertices.Append(Out[0]);
 	Vertices.Append(Out[1]);
 	Vertices.Append(Out[2]);
@@ -86,34 +97,40 @@ void GS_MAIN( point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 	Vertices.Append(Out[3]);
 	Vertices.RestartStrip();
 
-}
+};
 
 [maxvertexcount(6)]
-void GS_MAIN_UI(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
+void GS_MAIN_BULLET(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 {
 	GS_OUT		Out[4];
 
+
+	float3		vLook = g_vLook.xyz;
+
+	float3		vRight = normalize(cross(g_vUp.xyz, vLook)* In[0].vPSize.x * 0.5f);
+
+	float3		vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y * 0.5f;
 
 	matrix		matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
 	float3		vPosition;
 
-	vPosition = In[0].vPosition + In[0].vPSize.x * 0.5f + In[0].vPSize.y * 0.5f;
+	vPosition = In[0].vPosition + vRight + vUp;
 	Out[0].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[0].vTexUV = float2(0.f, 0.f);
 
-	vPosition = In[0].vPosition - In[0].vPSize.x * 0.5f + In[0].vPSize.y * 0.5f;
+	vPosition = (In[0].vPosition - vRight + vUp) ;
 	Out[1].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[1].vTexUV = float2(1.f, 0.f);
 
-	vPosition = In[0].vPosition - In[0].vPSize.x * 0.5f - In[0].vPSize.y * 0.5f;
+	vPosition = (In[0].vPosition - vRight - vUp) ;
 	Out[2].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[2].vTexUV = float2(1.f, 1.f);
 
-	vPosition = In[0].vPosition + In[0].vPSize.x * 0.5f + In[0].vPSize.y * 0.5f;
+	vPosition = In[0].vPosition + vRight - vUp;
 	Out[3].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[3].vTexUV = float2(0.f, 1.f);
-
+	
 	Vertices.Append(Out[0]);
 	Vertices.Append(Out[1]);
 	Vertices.Append(Out[2]);
@@ -124,7 +141,7 @@ void GS_MAIN_UI(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 	Vertices.Append(Out[3]);
 	Vertices.RestartStrip();
 
-}
+};
 
 struct PS_IN
 {
@@ -166,27 +183,14 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass UI
+	pass Bullet
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_None);
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = compile gs_5_0 GS_MAIN();
-		HullShader = NULL;
-		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
-	}
-
-	pass UI_Test
-	{
-		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
-
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = compile gs_5_0 GS_MAIN_UI();
+		GeometryShader = compile gs_5_0 GS_MAIN_BULLET();
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();

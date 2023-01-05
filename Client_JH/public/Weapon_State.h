@@ -16,7 +16,7 @@ class CWeapon_State final : public CBase
 public:
 	enum DEFAULT_PISTOL_ANIMATION
 	{
-		DEFAULT_PISTOL_IDLE, DEFAULT_PISTOL_RELOAD, DEFAULT_PISTOL_FIRE
+		DEFAULT_PISTOL_FIRE, DEFAULT_PISTOL_IDLE, DEFAULT_PISTOL_RELOAD
 	};
 
 	enum FLAME_BULLET_ANIMATION
@@ -55,7 +55,7 @@ public:
 	virtual ~CWeapon_State() = default;
 
 public:
-	const _uint&						Get_CurWeaponBulletCnt(void) const { return m_tWeaponOption->iCurBullet; }
+	const _uint&				Get_CurWeaponBulletCnt(wstring WeaponName);
 
 	HRESULT						Initialize(class CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
 	void						Tick(_double dTimeDelta);
@@ -104,8 +104,11 @@ private:
 	CModel*						m_pModelCom = nullptr;
 	CTransform*					m_pTransformCom = nullptr;
 	CNavigation*				m_pNavigationCom = nullptr;
+
+	_bool						m_bDeadOnce = false;
 private:
 	WEAPON_OPTION				m_tWeaponOption[WEAPONTYPE_END];
+	vector<class CGameObject*>		m_vecBullet;
 	// _bool						m_bIsWeaponNumber[WEAPON_NUMBEREND] = { false };
 	// WEAPONNUMBER				m_eType;
 public:

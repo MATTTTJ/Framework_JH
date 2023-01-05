@@ -31,11 +31,29 @@ HRESULT CLayer::Initialize()
 
 void CLayer::Tick(_double TimeDelta)
 {
-	for(auto& pGameObject : m_GameObjectList)
+
+
+	for(auto iter = m_GameObjectList.begin(); iter != m_GameObjectList.end();)
+	{
+		if (true == (*iter)->Check_Dead())
+		{
+			(*iter)->Set_Dead(false);
+
+			Safe_Release(*iter);
+			iter = m_GameObjectList.erase(iter);
+		}
+		else
+		{
+			++iter;
+		}
+	}
+
+	for (auto& pGameObject : m_GameObjectList)
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Tick(TimeDelta);
 	}
+
 }
 
 void CLayer::Late_Tick(_double TimeDelta)

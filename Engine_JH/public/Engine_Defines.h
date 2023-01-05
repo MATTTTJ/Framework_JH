@@ -76,5 +76,7 @@ using namespace nlohmann;
 
 #endif // _DEBUG
 
+#define		OBJ_NOEVENT 0
+#define		OBJ_DEAD    -1
 
 using namespace Engine;

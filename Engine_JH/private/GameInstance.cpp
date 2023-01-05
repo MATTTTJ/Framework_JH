@@ -453,6 +453,20 @@ void CGameInstance::Clear_ImguiObjects()
 	m_pImgui_Manager->Clear_ImguiObjects();
 }
 
+_bool CGameInstance::isInFrustum_WorldSpace(_fvector vWorldPos, _float fRange)
+{
+	NULL_CHECK_RETURN(m_pFrustum, false);
+
+	return m_pFrustum->isInFrustum_WorldSpace(vWorldPos, fRange);
+}
+
+_bool CGameInstance::isInFrustum_LocalSpace(_fvector vLocalPos, _float fRange)
+{
+	NULL_CHECK_RETURN(m_pFrustum, false);
+
+	return m_pFrustum->isInFrustum_LocalSpace(vLocalPos, fRange);
+}
+
 void CGameInstance::Release_Engine()
 {
 
@@ -474,6 +488,8 @@ void CGameInstance::Release_Engine()
 	CLight_Manager::GetInstance()->DestroyInstance();
 
 	CFontMgr::GetInstance()->DestroyInstance();
+
+	CFrustum::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
 

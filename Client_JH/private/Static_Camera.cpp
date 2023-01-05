@@ -63,25 +63,40 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 		XMStoreFloat4(&m_vCameraLook, dynamic_cast<CTransform*>(CGameInstance::GetInstance()->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_Transform"))->Get_State(CTransform::STATE_LOOK));
 	}
 
-	_int TurnX = 0, TurnY = 0;
+	_int TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X);
+	_int TurnY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y);
 
-	if(TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
+	if (TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
 	{
-		_matrix matRotation = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f),
-			XMConvertToRadians(90.f) *  0.1f * (_float)dTimeDelta * TurnX);
-		XMStoreFloat4(&m_vCameraLook, XMVector4Transform(XMLoadFloat4(&m_vCameraLook), matRotation));
+		_matrix Mat = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f) *  0.1f * (_float)dTimeDelta * TurnX);
+		XMStoreFloat4(&m_vCameraLook, XMVector4Transform(XMLoadFloat4(&m_vCameraLook), Mat));
 		XMStoreFloat4(&m_vCameraLook, XMVector3Normalize(XMLoadFloat4(&m_vCameraLook)));
-
 	}
+	
 	if (TurnY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
 	{
-		m_fCamHeight += (_float)TurnY / 1000.f;
-
-		if (m_fCamHeight >= 0.1f)
-			m_fCamHeight = 0.1f;
-		else if (m_fCamHeight <= -0.1f)
-			m_fCamHeight = -0.1f;
+		_matrix matRotationY = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f) *  0.1f * (_float)dTimeDelta * TurnY);
+		XMStoreFloat4(&m_vCameraLook, XMVector4Transform(XMLoadFloat4(&m_vCameraLook), matRotationY));
+		XMStoreFloat4(&m_vCameraLook, XMVector3Normalize(XMLoadFloat4(&m_vCameraLook)));
 	}
+
+	// if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_X))
+	// {
+	// 	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
+	// }
+	//
+	// if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_Y))
+	// {
+	// 	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
+	// }
+
+		// m_fCamHeight += (_float)TurnY / 1000.f;
+		//
+		// if (m_fCamHeight >= 0.1f)
+		// 	m_fCamHeight = 0.1f;
+		// else if (m_fCamHeight <= -0.1f)
+		// 	m_fCamHeight = -0.1f;
+	
 }
 
 void CStatic_Camera::Late_Tick(_double dTimeDelta)
@@ -114,7 +129,7 @@ void CStatic_Camera::Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _dou
 
 	
 
-	_vector vPlayerPos = PlayerPos + XMVectorSet(-0.2f,0.f,0.f,0.f);
+	_vector vPlayerPos = PlayerPos;
 	
 	_vector vLook = XMLoadFloat4(&m_vCameraLook);
 
@@ -131,22 +146,25 @@ void CStatic_Camera::Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _dou
 			return;
 		}
 
-		vLook = XMVector3Normalize(vLook) * -5.f;
+		// vLook = XMVector3Normalize(vLook) * -5.f;
+
 
 		// 여기 값 갖고 놀면 카메라 위치 조절 가능함
 		// _vector vCamPos = vPlayerPos + (vLook + XMVectorSet(0.f, 4.f + m_fCamHeight, 0.f, 0.f));
 		_matrix	OwnerWorldMatrix = XMLoadFloat4x4(&m_pOwner->Get_WorldFloat4x4());
 		_matrix	TargetBoneMatrix = dynamic_cast<CPlayer*>(m_pOwner)->Get_BoneMatrix("Bip001 HeadNub");
 		_matrix PivotMatrix = dynamic_cast<CPlayer*>(m_pOwner)->Get_PivotMatrix();
-
+		
 		_float4x4	CombindMatrix;
 		XMStoreFloat4x4(&CombindMatrix, TargetBoneMatrix * PivotMatrix * OwnerWorldMatrix);
 
-		_vector vCamPos = XMVectorSet(CombindMatrix._41, CombindMatrix._42 + m_fCamHeight, CombindMatrix._43, CombindMatrix._44);
+		_vector vCamPos = XMVectorSet(CombindMatrix._41, CombindMatrix._42, CombindMatrix._43, CombindMatrix._44);
 
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vCamPos);
 
-		m_pTransformCom->LookAt(vPlayerPos + PlayerLook * 2.2f);
+		
+
+		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + PlayerLook);
 
 		// m_pTransformCom->LookAt(vPlayerPos + XMVectorSet(CombindMatrix._41, CombindMatrix._42, CombindMatrix._43, CombindMatrix._44));
 

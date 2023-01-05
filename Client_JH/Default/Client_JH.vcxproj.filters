@@ -130,6 +130,15 @@
     <Filter Include="02. GameObjects\01. GamePlay\UI\CountUI">
       <UniqueIdentifier>{6b233713-0b9b-4049-b239-53e0d2111f33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\Human">
+      <UniqueIdentifier>{bce87b83-ef36-4dcd-acb2-9318e38c5c77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Bullet">
+      <UniqueIdentifier>{0ca297de-8801-4a9a-803c-69a428b8a133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager\Parent\Bullet">
+      <UniqueIdentifier>{3b4e5e48-d73a-4a22-bd20-f1a1d195fa20}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -243,6 +252,12 @@
     <ClInclude Include="..\public\Imgui_NavigationEditor.h">
       <Filter>96. Tool\Navigation Editor</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Bullet.h">
+      <Filter>80. Manager\Parent\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Default_Pistol.h">
+      <Filter>02. GameObjects\01. GamePlay\Bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -343,6 +358,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Imgui_NavigationEditor.cpp">
       <Filter>96. Tool\Navigation Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bullet.cpp">
+      <Filter>80. Manager\Parent\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Default_Pistol.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,7 @@ private:
 private:
 	int								m_iNumCnt;
 	int								m_iNumber;
-
+	_float4							m_vNumColor;
 public:
 	static CNumberUI*				Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*			Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;

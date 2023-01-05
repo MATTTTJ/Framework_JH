@@ -33,6 +33,11 @@ RasterizerState RS_Default
 	FrontCounterClockwise = false;
 };
 
+RasterizerState RS_None
+{
+	CullMode = None;
+FrontCounterClockwise = false;
+};
 
 RasterizerState RS_CW
 {

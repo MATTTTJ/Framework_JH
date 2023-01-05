@@ -2,9 +2,11 @@
 #include "Shader_Client_Defines.h"
 
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-
+vector			g_vNumColor = (vector)1.f;
+vector			g_vSlashColor = (vector)0.f;
+float			g_glowStrength = 1.f;
 texture2D		g_Texture;
-
+texture2D       g_SkillGlowTexture;
 /* 샘플링 해오는 함수 */
 /* dx9 : tex2D(DefaultSampler, In.vTexUV);*/
 /* dx11 : g_Texture.Sample(DefaultSampler, In.vTexUV); */
@@ -70,6 +72,15 @@ PS_OUT PS_MAIN_SLASH(PS_IN In)
 	if (Out.vColor.a < 0.1f)
 		discard;
 
+	if (Out.vColor.r < float(0.1f) && Out.vColor.g < float(0.1f) && Out.vColor.b<float(0.1f))
+	{
+		Out.vColor.rgba = float4(0.f, 0.f, 0.f, 0.9f);
+	}
+	else
+	{
+		Out.vColor = g_vSlashColor;
+	}
+
 	return Out;
 }
 
@@ -77,27 +88,50 @@ PS_OUT PS_MAIN_Number(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_Texture.Sample(PointSampler, In.vTexUV);
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 
-	if (Out.vColor.a < 0.1f)
+	if (Out.vColor.a < 0.3f)
 		discard;
 
-	if (Out.vColor.r < float(0.15f) && Out.vColor.g < float(0.15f) && Out.vColor.b<float( 0.15f))
+	if (Out.vColor.r < float(0.3f) && Out.vColor.g < float(0.3f) && Out.vColor.b<float(0.3f))
 	{
-		Out.vColor.rgb = float3(0.f, 0.f, 0.f);
+		Out.vColor.rgba = float4(0.f, 0.f, 0.f, 0.9f);
 	}
 	else
 	{
-		Out.vColor = float4(1.f, 0.f, 0.f,1.f);
+		Out.vColor = g_vNumColor;
 	}
 
 
 	return Out;
 }
 
+PS_OUT PS_MAIN_GLOW(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	float4	textureColor;
+	float4  glowColor;
+
+	textureColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	glowColor = g_SkillGlowTexture.Sample(LinearSampler, In.vTexUV);
+	
+	// if (glowColor.r < 0.2f && glowColor.g < 0.2f && glowColor.b < 0.2f)
+	// 	glowColor.a = 0.f;
+	// glowColor.a = 0.f;
+
+	Out.vColor = saturate(textureColor + (glowColor * g_glowStrength) );
+	 
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	return Out;
+}
+
+
 technique11 DefaultTechnique
 {
-	pass Rect
+	pass Rect0
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -110,7 +144,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass UI
+	pass UI1
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
@@ -123,7 +157,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass UI_Alpha
+	pass UI_Alpha2
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
@@ -136,7 +170,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass UI_ForSlash
+	pass UI_ForSlash3
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
@@ -149,7 +183,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_SLASH();
 	}
 
-	pass UI_ForNumber
+	pass UI_ForNumber4
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
@@ -160,5 +194,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_Number();
+	}
+
+	pass Glow5
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_GLOW();
 	}
 }

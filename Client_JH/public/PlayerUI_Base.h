@@ -46,11 +46,94 @@ private:
 	HRESULT			SetUp_Component();
 	HRESULT			SetUp_ShaderResources();
 
+private:
+	_bool			m_bIsChange = false;
+
+
+
 public:
 	static CPlayerUI_Skill*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
 	virtual void Free() override;
 };
+
+class CPlayerUI_Skill_Base final : public CUI
+{
+private:
+	CPlayerUI_Skill_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CPlayerUI_Skill_Base(const CPlayerUI_Skill_Base& rhs);
+	virtual ~CPlayerUI_Skill_Base() = default;
+
+protected:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
+	virtual void	Tick(_double dTimeDelta) override;
+	virtual void	Late_Tick(_double dTimeDelta) override;
+	virtual HRESULT Render() override;
+
+private:
+	HRESULT			SetUp_Component();
+	HRESULT			SetUp_ShaderResources();
+
+private:
+	_bool			m_bIsChange = false;
+
+
+
+public:
+	static CPlayerUI_Skill_Base*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
+	virtual void Free() override;
+};
+
+class CPlayerUI_Gold final : public CUI
+{
+private:
+	CPlayerUI_Gold(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CPlayerUI_Gold(const CPlayerUI_Gold& rhs);
+	virtual ~CPlayerUI_Gold() = default;
+
+protected:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
+	virtual void	Tick(_double dTimeDelta) override;
+	virtual void	Late_Tick(_double dTimeDelta) override;
+	virtual HRESULT Render() override;
+
+private:
+	HRESULT			SetUp_Component();
+	HRESULT			SetUp_ShaderResources();
+
+public:
+	static CPlayerUI_Gold*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
+	virtual void Free() override;
+};
+
+class CPlayerUI_Emerald final : public CUI
+{
+private:
+	CPlayerUI_Emerald(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CPlayerUI_Emerald(const CPlayerUI_Emerald& rhs);
+	virtual ~CPlayerUI_Emerald() = default;
+
+protected:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
+	virtual void	Tick(_double dTimeDelta) override;
+	virtual void	Late_Tick(_double dTimeDelta) override;
+	virtual HRESULT Render() override;
+
+private:
+	HRESULT			SetUp_Component();
+	HRESULT			SetUp_ShaderResources();
+
+public:
+	static CPlayerUI_Emerald*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
+	virtual void Free() override;
+};
+
 
 class CPlayer_UI_Throw final : public CUI
 {
@@ -66,6 +149,8 @@ protected:
 	virtual void	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT Render() override;
 
+private:
+	_uint			m_iThrownCnt = 0;
 private:
 	HRESULT			SetUp_Component();
 	HRESULT			SetUp_ShaderResources();
@@ -218,7 +303,7 @@ protected:
 	virtual void	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT Render() override;
 	void			Create_CountUI();
-	void			InttoString(_uint ConvertCnt, _float2 vPos);
+	void			InttoString(_uint ConvertCnt, _float2 vPos, _float4 vColor, _float2 vSize);
 	
 private:
 	HRESULT			SetUp_Component();
@@ -232,9 +317,33 @@ private:
 	_uint			m_iWeapon_BulletCnt = 50;
 	_uint			m_iThrowCnt;
 	_uint			m_iGoldCnt;
+	_uint			m_iEmeraldCnt;
+	_uint			m_iLastEmeraldCnt;
+	_uint			m_iLastGoldCnt = 99;
+	_uint			m_iLastThrowCnt = 99;
+
+
 	COUNTUI			m_eType = CNT_END;
 	CGameInstance*	m_pGameInstance = nullptr;
 	vector<CUI*>	m_vecCountUI;
+	WEAPONTYPE		m_eWeaponType = WEAPONTYPE_END;
+
+	_float2			m_vPlayerEmeraldCntPos = {};
+	_float2			m_vPlayerGoldCntPos = { 805.f, 640.f };
+	_float2			m_vPlayerThrowCntPos = { 533.f, -447.f };
+	_float2			m_vWeaponBulletCntPos = { 905.f, -315.f };
+	_float2			m_vPlayerBulletCntPos = { 1011.f, -315.f };
+
+	_float4			m_vGoldNumColor = { 1.f,1.f,1.f,1.f };
+	_float4			m_vThrowNumColor = { 1.f,1.f,1.f,1.f };
+	_float4			m_vPistolNumColor = { 1.f, 0.95f, 0.68f, 0.9f };
+	_float4			m_vRifleNumColor = { 0.18f, 0.89f, 0.25f, 0.9f };
+	_float4			m_vInjectorNumColor = { 0.18f, 0.85f, 1.f, 0.9f };
+
+
+	_float2			m_vBulletNumberSize = { 36.f, 36.f };
+	_float2			m_vGoldNumberSize = { 28.f, 28.f };
+	_float2			m_vThrowNumberSize = { 26.f, 26.f };
 
 public:
 	static CPlayer_UI_CountMachine*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

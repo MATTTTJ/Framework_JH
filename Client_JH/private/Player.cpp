@@ -34,7 +34,8 @@ CPlayer::CPlayer(const CPlayer & rhs)
 
 	m_PlayerOption.m_iMaxHp = 100;
 	m_PlayerOption.m_iHp = m_PlayerOption.m_iMaxHp;
-	m_PlayerOption.m_iGold = 0;
+	m_PlayerOption.m_iGold = 500;
+	m_PlayerOption.m_iEmeraldCnt = 0;
 	m_PlayerOption.m_iMaxShieldPoint = 100;
 	m_PlayerOption.m_iShieldPoint = m_PlayerOption.m_iMaxShieldPoint;
 	m_PlayerOption.m_iPistol_BulletCnt = 50;
@@ -75,6 +76,29 @@ _vector CPlayer::Get_TransformState(CTransform::STATE eState)
 	return m_pTransformCom->Get_State(eState);
 }
 
+_matrix CPlayer::Get_CombindMatrix(const string& strBoneName)
+{
+	if (nullptr == m_pModelCom)
+		return XMMatrixIdentity();
+
+	return m_pModelCom->Get_CombindMatrix(strBoneName);
+}
+
+CModel* CPlayer::Get_CurWeaponModelCom()
+{
+	for(_uint i = 0; i < WEAPON_END; ++i)
+	{
+		if (m_PlayerOption.m_wstrCurWeaponName == m_tWeaponDesc[i].m_wstrWeaponName)
+		{
+			return m_tWeaponDesc[i].m_pWeaponModelCom;
+		}
+		else
+			return nullptr;
+	}
+
+	return nullptr;
+}
+
 
 HRESULT CPlayer::Initialize_Prototype()
 {
@@ -100,13 +124,28 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
 
+
+
 	m_pWeaponState = CWeapon_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
 	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
 
 	m_pModelCom->Set_CurAnimIndex(CWeapon_State::DEFAULT_PISTOL_IDLE);
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
-	
+	_matrix matpivot;
+	matpivot = XMMatrixIdentity();
+	matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
+	_float4 tmp;
+	XMStoreFloat4(&tmp, (Get_BoneMatrix("Bip001 Footsteps") * matpivot * m_pTransformCom->Get_WorldMatrix()).r[3]);
+
+	_float4 dest = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+
+	dest.y = tmp.y;
+
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, dest);
+
+
+	m_pTransformCom->Set_Scaled(_float3(2.f, 2.f, 2.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.f, 3.f, 0.f, 1.f));
 
 	return S_OK;
@@ -115,6 +154,9 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+	_matrix matpivot;
+	matpivot = XMMatrixIdentity();
+	matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
 
 	if (nullptr != m_pState)
 		m_pState->Tick(dTimeDelta);
@@ -129,14 +171,40 @@ void CPlayer::Tick(_double dTimeDelta)
 	{
 		m_vecPlayerUI[i]->Tick(dTimeDelta);
 	}
-	
+
+	_float4 R, U, L, P;
+	_matrix FakeWorldMatrix;
+	R = m_pTransformCom->Get_WorldMatrix().r[0];
+	U = m_pTransformCom->Get_WorldMatrix().r[1];
+	L = m_pTransformCom->Get_WorldMatrix().r[2];
+	P = m_pTransformCom->Get_WorldMatrix().r[3];
+	P = P + _float4(0.f, 0.5f, 0.f, 0.f);
+
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 	{
-		m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
+		if (m_pColliderCom[i] == nullptr)
+			continue;
+
+		if (i == COLLIDER_MUZZLE)
+		{
+			if(m_PlayerOption.m_wstrCurWeaponName == L"WEAPON_DEFAULT")
+				m_pColliderCom[i]->Update(Get_BoneMatrix("Att") * matpivot * m_pTransformCom->Get_WorldMatrix());
+			else if (m_PlayerOption.m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
+			{
+				m_pColliderCom[i]->Update(Get_BoneMatrix("Att001") * matpivot * m_pTransformCom->Get_WorldMatrix());
+			}
+		}
+		else if (i == COLLIDER_OBB)
+			m_pColliderCom[i]->Update(_matrix(R, U, L, P));
+		else 
+			m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
 	}
 
-	
+	m_pFirstAimColliderCom->Update(_matrix(R, U, L, P));
+	m_pSecondAimColliderCom->Update(_matrix(R, U, L, P));
+
 	Set_Camera(dTimeDelta);
+
 	
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -145,6 +213,9 @@ void CPlayer::Tick(_double dTimeDelta)
 void CPlayer::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
+
+	m_pWeaponState->Late_Tick(TimeDelta);
+
 
 	for (_uint i = 0; i < m_vecPlayerUI.size(); ++i)
 	{
@@ -165,6 +236,8 @@ HRESULT CPlayer::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
 	}
 
@@ -174,6 +247,8 @@ HRESULT CPlayer::Render()
 		if (nullptr != m_pColliderCom[i])
 			m_pColliderCom[i]->Render();
 	}
+	m_pFirstAimColliderCom->Render();
+	m_pSecondAimColliderCom->Render();
 
 	m_pNavigationCom->Render();
 #endif
@@ -184,18 +259,28 @@ HRESULT CPlayer::Render()
 
 void CPlayer::Set_Camera(_double dTimeDelta)
 {
-	_float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->back())->Get_CamLook();
+	m_vCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->back())->Get_CamLook();
 
-	_vector		vCamLook = XMLoadFloat4(&fCamLook);
-	_vector		vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	_vector		vLookat = vPos + vCamLook;
+	// _vector		vCamLook = XMLoadFloat4(&m_vCamLook);
+	_float4		vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	m_vCamLookAt = vPos + m_vCamLook;
 
-	m_pTransformCom->LookAt(vLookat);
+	m_pTransformCom->LookAt(m_vCamLookAt);
 
 	dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->
 		back())->Camera_Update(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION),
 			m_pTransformCom->Get_State(CTransform::STATE_LOOK),
 			dTimeDelta);
+}
+
+void CPlayer::Collision_AimBox_To_Monster()
+{
+	CCollider*		pTargetCollider = (CCollider*)CGameInstance::GetInstance()->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_SPHERE");
+
+	if (nullptr == pTargetCollider)
+		return;
+
+	m_pColliderCom[COLLIDER_OBB]->Collision(pTargetCollider);
 }
 
 HRESULT CPlayer::SetUp_Components()
@@ -212,28 +297,52 @@ HRESULT CPlayer::SetUp_Components()
 
 
 	m_pModelCom = m_tWeaponDesc[WEAPON_DEFAULT].m_pWeaponModelCom;
-	m_wstrCurWeaponName = L"";
-	m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_DEFAULT].m_wstrWeaponName;
+	m_PlayerOption.m_wstrCurWeaponName = L"";
+	m_PlayerOption.m_wstrCurWeaponName = m_tWeaponDesc[WEAPON_DEFAULT].m_wstrWeaponName;
+
 	CCollider::COLLIDERDESC			ColliderDesc;
 
 	/* For.Com_AABB */
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(0.7f, 1.5f, 0.7f);
-	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_AABB", L"Com_AABB", (CComponent**)&m_pColliderCom[COLLIDER_AABB], this, &ColliderDesc), E_FAIL);
 
 	/* For.Com_OBB */
+	XMStoreFloat3(&m_vAimColliderPos, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(1.0f, 1.0f, 1.0f);
-	ColliderDesc.vRotation = _float3(0.f, XMConvertToRadians(45.0f), 0.f);
-	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
+	ColliderDesc.vSize = _float3(0.5f, 0.5f, 30.f);
+	ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vPosition = _float3(m_vAimColliderPos.x * 15.f, m_vAimColliderPos.y *15.f, m_vAimColliderPos.z * 15.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_OBB", L"Com_OBB", (CComponent**)&m_pColliderCom[COLLIDER_OBB], this, &ColliderDesc), E_FAIL);
 
-	/* For.Com_SPHERE */
+	// /* For.Com_SPHERE */
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(0.7f, 0.7f, 0.7f);
-	ColliderDesc.vPosition = _float3(0.f, ColliderDesc.vSize.y * 0.5f, 0.f);
+	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLIDER_SPHERE], this, &ColliderDesc), E_FAIL);
+
+	// For First Aim Sphere
+	XMStoreFloat3(&m_vAimColliderPos, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(0.5f, 0.5f, 0.5f);
+	ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vPosition = ColliderDesc.vPosition = _float3(m_vAimColliderPos.x * 15.f, m_vAimColliderPos.y * 15.f, m_vAimColliderPos.z * 15.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_BulletFirstAim", (CComponent**)&m_pFirstAimColliderCom, this, &ColliderDesc), E_FAIL);
+
+	// For Second Aim Sphere
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(0.5f, 0.5f, 0.5f);
+	ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vPosition = ColliderDesc.vPosition = _float3(m_vAimColliderPos.x * 30.f, m_vAimColliderPos.y * 30.f, m_vAimColliderPos.z * 30.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_BulletSecondAim", (CComponent**)&m_pSecondAimColliderCom, this, &ColliderDesc), E_FAIL);
+	// For Muzzle Coll
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(0.3f, 0.3f, 0.3f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	// ColliderDesc.vRotation = _float3(-1.f, 0.f, -1.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_Muzzle_SPHERE", L"Com_MuzzleSPHERE", (CComponent**)&m_pColliderCom[COLLIDER_MUZZLE], this, &ColliderDesc), E_FAIL);
 
 	//NavigationCom
 	CNavigation::NAVIDESC		NaviDesc;
@@ -253,10 +362,14 @@ HRESULT CPlayer::SetUp_ShaderResources()
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
+	_float3 tmp;
+	XMStoreFloat3(&tmp, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_PixelOffset", &(_float4(1 / (_float)g_iWinSizeX, 1 / (_float)g_iWinSizeY, 0.f, 0.f)) , sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vCameraPos", &(pGameInstance->Get_CamPos()), sizeof(_float3)), E_FAIL);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -274,7 +387,22 @@ HRESULT CPlayer::Ready_UI()
 
 	m_vecPlayerUI.push_back(pPlayerUI);
 
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_Player_Skill_BaseTex");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
 	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Skill");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_Player_GoldTex");
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_Player_EmeraldTex");
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
 
 	m_vecPlayerUI.push_back(pPlayerUI);
@@ -313,6 +441,24 @@ HRESULT CPlayer::Ready_UI()
 	eType.m_eType = CUI::CNT_BULLET;
 
 	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_BulletCnt", &eType);
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	eType.m_eType = CUI::CNT_GOLD;
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_GoldCnt", &eType);
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	eType.m_eType = CUI::CNT_THROW;
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_ThrowCnt", &eType);
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+
+	m_vecPlayerUI.push_back(pPlayerUI);
+
+	eType.m_eType = CUI::CNT_EMERALD;
+	pPlayerUI = pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_EmeraldCnt", &eType);
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
 
 	m_vecPlayerUI.push_back(pPlayerUI);
@@ -356,7 +502,7 @@ void CPlayer::Free()
 
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 		Safe_Release(m_pColliderCom[i]);
-
+	Safe_Release(m_pFirstAimColliderCom);
 	for (auto& pUI : m_vecPlayerUI)
 		Safe_Release(pUI);
 

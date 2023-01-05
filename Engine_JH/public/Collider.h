@@ -11,7 +11,7 @@ BEGIN(Engine)
 class ENGINE_DLL CCollider final : public CComponent
 {
 public:
-	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB,  COLLIDER_SPHERE, COLLIDERTYPE_END };
+	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB,  COLLIDER_SPHERE, COLLIDER_MUZZLE, COLLIDERTYPE_END };
 
 public:
 	typedef struct tagColliderDesc
@@ -36,6 +36,16 @@ public:
 public:
 	const	COLLIDERTYPE&	Get_ColliderType() const { return m_eType; }
 
+public:
+	_bool					Get_IsColl() { return m_bIsColl; }
+
+	BoundingOrientedBox*	Get_OBBPtr() { return m_pOBB; }
+	BoundingSphere*			Get_SpherePtr() { return m_pSphere; }
+	BoundingBox*			Get_AABBPtr() { return m_pAABB; }
+
+	_float3					Get_OBBCenter() { return m_pOBB->Center; }
+	_float3					Get_AABBCenter() { return m_pAABB->Center; }
+	_float3					Get_SPhereCenter() { return m_pSphere->Center; }
 
 public:
 	virtual HRESULT			Initialize_Prototype(COLLIDERTYPE eType);

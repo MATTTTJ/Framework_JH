@@ -142,6 +142,8 @@ void CCustomObject::Tick(_double dTimeDelta)
 	{
 		m_pColliderCom->Update(XMLoadFloat4x4(&m_pTransformCom->Get_WorldFloat4x4()));
 	}
+
+
 }
 
 void CCustomObject::Late_Tick(_double TimeDelta)

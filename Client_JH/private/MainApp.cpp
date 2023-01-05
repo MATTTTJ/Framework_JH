@@ -69,6 +69,7 @@ HRESULT CMainApp::Render()
 	}
 
 	m_pGameInstance->Render_Font(TEXT("Font_Comic"), m_szFPS, _float2(100.f, 0.f), 0.f, _float2(1.f, 1.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+
 #endif
 	m_pGameInstance->Present();
 

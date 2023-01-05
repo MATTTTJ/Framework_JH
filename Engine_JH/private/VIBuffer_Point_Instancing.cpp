@@ -13,10 +13,12 @@ CVIBuffer_Point_Instancing::CVIBuffer_Point_Instancing(const CVIBuffer_Point_Ins
 
 }
 
-HRESULT CVIBuffer_Point_Instancing::Initialize_Prototype(_uint iNumInstance)
+HRESULT CVIBuffer_Point_Instancing::Initialize_Prototype(_uint iNumInstance, _float3 vPosition)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
+
+	m_vInitPosition = vPosition;
 
 	m_pSpeeds = new _double[iNumInstance];
 
@@ -49,8 +51,8 @@ HRESULT CVIBuffer_Point_Instancing::Initialize_Prototype(_uint iNumInstance)
 	VTXPOINT*			pVertices = new VTXPOINT;
 	ZeroMemory(pVertices, sizeof(VTXPOINT));
 
-	pVertices->vPosition = _float3(0.0f, 0.0f, 0.0f);
-	pVertices->vPSize = _float2(1000.f, 1000.f);	
+	pVertices->vPosition = { 0.f, 0.f, 0.f};
+	pVertices->vPSize = _float2(0.5f, 0.5f);	
 
 	ZeroMemory(&m_tSubResourceData, sizeof m_tSubResourceData);
 	m_tSubResourceData.pSysMem = pVertices;
@@ -181,11 +183,11 @@ HRESULT CVIBuffer_Point_Instancing::Render()
 	return S_OK;
 }
 
-CVIBuffer_Point_Instancing * CVIBuffer_Point_Instancing::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _uint iNumInstance)
+CVIBuffer_Point_Instancing * CVIBuffer_Point_Instancing::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _uint iNumInstance, _float3 vPosition)
 {
 	CVIBuffer_Point_Instancing*		pInstance = new CVIBuffer_Point_Instancing(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(iNumInstance)))
+	if (FAILED(pInstance->Initialize_Prototype(iNumInstance, vPosition)))
 	{
 		MSG_BOX("Failed to Created : CVIBuffer_Point_Instancing");
 		Safe_Release(pInstance);

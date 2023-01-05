@@ -101,6 +101,9 @@ public: // for imgui manager
 	void				Add_ImguiWindowObject(class CImguiObject* ImguiObject);
 	void				Clear_ImguiObjects();
 
+public: /* For.Frustum */
+	_bool isInFrustum_WorldSpace(_fvector vWorldPos, _float fRange = 0.f);
+	_bool isInFrustum_LocalSpace(_fvector vLocalPos, _float fRange = 0.f);
 private:
 	class CGraphic_Device*			m_pGraphic_Device = nullptr;
 	class CInput_Device*			m_pInput_Device = nullptr;

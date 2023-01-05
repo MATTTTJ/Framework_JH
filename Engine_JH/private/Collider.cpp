@@ -83,7 +83,19 @@ HRESULT CCollider::Initialize_Clone(CGameObject* pOwner, void * pArg)
 			XMMatrixTranslation(ColliderDesc.vPosition.x, ColliderDesc.vPosition.y, ColliderDesc.vPosition.z));
 		m_pSphere = new BoundingSphere(*m_pSphere_Original);
 		break;
-	
+
+	case CCollider::COLLIDER_MUZZLE:
+		m_pSphere_Original = new BoundingSphere(_float3(0.f, 0.f, 0.f), 0.5f);
+
+		m_pSphere_Original->Transform(*m_pSphere_Original,
+			XMMatrixScaling(ColliderDesc.vSize.x, ColliderDesc.vSize.y, ColliderDesc.vSize.z) *
+			XMMatrixRotationX(ColliderDesc.vRotation.x) *
+			XMMatrixRotationY(ColliderDesc.vRotation.y) *
+			XMMatrixRotationZ(ColliderDesc.vRotation.z) *
+			XMMatrixTranslation(ColliderDesc.vPosition.x, ColliderDesc.vPosition.y, ColliderDesc.vPosition.z));
+		m_pSphere = new BoundingSphere(*m_pSphere_Original);
+		break;
+		
 	}
 
 	return S_OK;
@@ -99,6 +111,9 @@ void CCollider::Update(_fmatrix TransformMatrix)
 		m_pOBB_Original->Transform(*m_pOBB, TransformMatrix);
 		break;
 	case CCollider::COLLIDER_SPHERE:
+		m_pSphere_Original->Transform(*m_pSphere, TransformMatrix);
+		break;
+	case CCollider::COLLIDER_MUZZLE:
 		m_pSphere_Original->Transform(*m_pSphere, TransformMatrix);
 		break;
 	}
@@ -135,8 +150,8 @@ _bool CCollider::Collision(CCollider* pTargetCollider)
 			m_bIsColl = m_pSphere->Intersects(*pTargetCollider->m_pSphere);
 		break;
 	}
-	return m_bIsColl;
 
+	return m_bIsColl;
 }
 
 CGameObject* CCollider::CollisionReturnObj(CCollider* pTargetCollider)
@@ -320,6 +335,8 @@ _bool CCollider::Collision_OBB(CCollider* pTargetCollider)
 #ifdef _DEBUG
 HRESULT CCollider::Render()
 {
+	m_pContext->GSSetShader(nullptr, nullptr, 0);
+
 	m_vColor = m_bIsColl == true ? _float4(1.f, 0.f, 0.f, 1.f) : _float4(0.f, 1.f, 0.f, 1.f);
 
 	m_pEffect->SetWorld(XMMatrixIdentity());
@@ -346,6 +363,9 @@ HRESULT CCollider::Render()
 		DX::Draw(m_pBatch, *m_pOBB, XMLoadFloat4(&m_vColor));
 		break;
 	case CCollider::COLLIDER_SPHERE:
+		DX::Draw(m_pBatch, *m_pSphere, XMLoadFloat4(&m_vColor));
+		break;
+	case CCollider::COLLIDER_MUZZLE:
 		DX::Draw(m_pBatch, *m_pSphere, XMLoadFloat4(&m_vColor));
 		break;
 	}

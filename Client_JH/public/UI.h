@@ -16,9 +16,10 @@ class CUI abstract : public CGameObject
 {
 
 public:
-	enum COUNTUI { CNT_GOLD, CNT_BULLET, CNT_THROW, CNT_END };
+	enum COUNTUI { CNT_GOLD, CNT_BULLET, CNT_THROW, CNT_EMERALD, CNT_END };
 	enum WEAPONNUMBER { WEAPON_FIRST, WEAPON_SECOND, WEAPON_THIRD, WEAPON_NUMEND };
 	enum NUMBUR { ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, SLASH, NUM_END };
+	enum WEAPONTYPE { WEAPON_PISTOL, WEAPON_RIFLE, WEAPON_INJECTOR, WEAPONTYPE_END };
 
 	typedef struct tagCountType
 	{
@@ -44,6 +45,8 @@ protected:
 
 	CTexture*					m_pOnTextureCom = nullptr;
 	CTexture*					m_pOffTextureCom = nullptr;
+	CTexture*					m_pGlowTextureCom = nullptr;
+
 	CTexture*					m_pWeaponTextureCom[CWeapon_State::WEAPONTYPE_END] = { nullptr };
 	CTexture*					m_pWeaponNumberCom[WEAPON_NUMEND] = { nullptr };
 	CTexture*					m_pNumberingTexCom[NUM_END] = { nullptr };
@@ -59,6 +62,8 @@ protected:
 	_float						m_fX, m_fY, m_fSizeX, m_fSizeY;
 	_float4x4					m_ViewMatrix;
 	_float4x4					m_ProjMatrix;
+
+	_float						m_fGlowStrength;
 
 public:
 	virtual CGameObject*		Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;

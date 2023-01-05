@@ -24,6 +24,7 @@ public:
 	_matrix						Get_BoneMatrix(const string& strBoneName);
 	_matrix						Get_OffsetMatrix(const string& strBoneName);
 	class	CBone*				Get_BonePtr(const string& strBoneName);
+	_matrix						Get_CombindMatrix(const string& strBoneName);
 	void						Set_CurAnimIndex(_uint AnimIndex);
 	void						Set_BlendAnimIndex(_uint BlendAnimIndex);
 	_bool						Get_AnimationFinish();

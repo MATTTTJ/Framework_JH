@@ -12,13 +12,14 @@ public:
 
 	enum DIRECTION { DIR_W, DIR_A, DIR_S, DIR_D, DIR_WA, DIR_WD, DIR_SA, DIR_SD, DIR_END };
 
+	enum TRANSTYPE { TRANS_PLAYER, TRANS_BULLET, TRANS_MONSTER , TRANSTYPE_END };
 
 	typedef struct tagTransformDesc
 	{
 		float		fSpeedPerSec;
 		float		fRotationPerSec;
 
-		_float2		vInitPos;
+		_float3		vInitPos;
 	}TRANSFORMDESC;
 
 protected:
@@ -68,7 +69,7 @@ public:
 
 public:
 	// void Go_Straight(_double TimeDelta, class CNavigation* pNaviCom = nullptr);
-	void Go_Straight(_double TimeDelta, class CNavigation* pNaviCom = nullptr);
+	void Go_Straight(_double TimeDelta, TRANSTYPE eType, class CNavigation* pNaviCom = nullptr);
 	void Go_Backward(_double TimeDelta);
 	void Go_Left(_double TimeDelta);
 	void Go_Right(_double TimeDelta);
@@ -90,6 +91,7 @@ private:
 	CTransform*				m_pParent = nullptr;		// 부모 트랜스폼
 	_float4x4				m_WorldWithParentMatrix;	// 자식 * 부모 행렬
 
+	TRANSTYPE				m_eType = TRANSTYPE_END;
 public:
 	static CTransform* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(class CGameObject* pOwner, void* pArg = nullptr) override;

@@ -72,7 +72,8 @@ void CUI::Free()
 	Safe_Release(m_pOffTextureCom);
 	Safe_Release(m_pOnTextureCom);
 	Safe_Release(m_pVIBufferCom);
-	
+	Safe_Release(m_pGlowTextureCom);
+
 	for(_int i = 0; i < CWeapon_State::WEAPONTYPE_END; ++i)
 	{
 		Safe_Release(m_pWeaponTextureCom[i]);

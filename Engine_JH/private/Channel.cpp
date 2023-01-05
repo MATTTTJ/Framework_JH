@@ -147,10 +147,7 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 		vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex].vRotation), XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vRotation), (_float)dRatio);
 		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition), (_float)dRatio);
 		vPosition = XMVectorSetW(vPosition, 1.f);
-		if ("104_Teammate" == m_strName)
-		{
-			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		}
+
 		if("Bip001 Footsteps" == m_strName)
 		{
 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
@@ -219,16 +216,12 @@ _bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* CurrentC
 	vRotation = XMQuaternionSlerp(vLastRotation, vCurRotation, static_cast<_float>(m_dLerpRatio));
 	vPosition = XMVectorLerp(vLastPosition, vCurPosition, static_cast<_float>(m_dLerpRatio));
 	vPosition = XMVectorSetW(vPosition, 1.f);
-	if ("104_Teammate" == m_strName)
-	{
-		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	}
 
 	if ("Bip001 Footsteps001" == m_strName)
 	{
 		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		return true;
 	}
+
 	TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 
 	m_pBone->Set_TransformMatrix(TransformMatrix);
@@ -271,17 +264,19 @@ void CChannel::Update_Blend(_double dPlayTime, _float fRatio)
 		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition), fTmp);
 		vPosition = XMVectorSetW(vPosition, 1.f);
 
-		if ("104_Teammate" == m_strName)
-		{
-			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		}
 	}
+
+	
 
 	vScale = XMVectorLerp(vBaseScale, vScale, fRatio);
 	vRotation = XMQuaternionSlerp(vBaseRotation, vRotation, fRatio);
 	vPosition = XMVectorLerp(vBasePosition, vPosition, fRatio);
 	vPosition = XMVectorSetW(vPosition, 1.f);
 
+	if ("Bip001 Footsteps001" == m_strName)
+	{
+		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	}
 
 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 
@@ -332,10 +327,6 @@ void CChannel::Update_Additive(_double dPlayTime, _float fRatio)
 		vPosition = XMVectorLerp(vSourPosition, vDestPosition, Ratio);
 		vPosition = XMVectorSetW(vPosition, 1.f);
 
-		if ("104_Teammate" == m_strName)
-		{
-			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		}
 
 		// if ("Bip001 Footsteps" == m_strName)
 		// {

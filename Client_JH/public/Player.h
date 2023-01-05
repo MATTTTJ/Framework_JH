@@ -1,12 +1,11 @@
 #pragma once
 #include <Model.h>
-
 #include "Client_Defines.h"
 #include "GameObject.h"
 #include "Weapon_State.h"
 
 BEGIN(Engine)
-	class CShader;
+class CShader;
 class CRenderer;
 class CCollider;
 class CModel;
@@ -19,7 +18,7 @@ BEGIN(Client)
 
 class CPlayer final : public CGameObject
 {
-	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDERTYPE_END };
+	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_MUZZLE, COLLIDERTYPE_END };
 
 	enum PLAYERUITYPE { UI_BASE, UI_HP, UI_SHIELD, UI_BULLETCOUNT, UI_SKILL, UI_THROW, UI_DASH, UI_END };
 
@@ -39,6 +38,7 @@ class CPlayer final : public CGameObject
 		_uint							m_iMaxHp;
 		_uint							m_iShieldPoint;
 		_uint							m_iMaxShieldPoint;
+		_uint							m_iEmeraldCnt;
 		_uint							m_iGold;
 
 		_uint							m_iPistol_BulletCnt; // DEFAULT, FLAME, POISON Á¾·ù 
@@ -59,17 +59,21 @@ public:
 	_matrix					Get_OffsetMatrix(const string& strBoneName);
 	_matrix					Get_PivotMatrix();
 	_vector					Get_TransformState(CTransform::STATE eState);
+	_matrix					Get_CombindMatrix(const string& strBoneName);
 	const wstring&			Get_CurWeaponName(void) const { return m_PlayerOption.m_wstrCurWeaponName; }
 	const wstring&			Get_CurWeaponNumber(void) const { return m_PlayerOption.m_wstrWeaponNumber; }
 	CWeapon_State*			Get_WeaponStatePtr(void) { return m_pWeaponState; }
 
+	CModel*					Get_CurWeaponModelCom(void);
+	_uint					Get_EmeraldCnt(void) { return m_PlayerOption.m_iEmeraldCnt; }
 	_uint					Get_GoldCnt(void) { return m_PlayerOption.m_iGold; }
-	_uint					Get_ThrowCnt(void) { return m_PlayerOption.m_iThrowCnt;  }
+	_uint					Get_ThrowCnt(void) { return m_PlayerOption.m_iThrowCnt; }
 	_uint					Get_RifleBulletCnt(void) { return m_PlayerOption.m_iRifle_BulletCnt; }
 	_uint					Get_PistolBulletCnt(void) { return m_PlayerOption.m_iPistol_BulletCnt; }
 	_uint					Get_InjectorBulletCnt(void) { return m_PlayerOption.m_iInjector_BulletCnt; }
 
 	void					Set_Camera(_double TimeDelta);
+	void					Collision_AimBox_To_Monster();
 
 public:
 	virtual HRESULT			Initialize_Prototype() override;
@@ -82,14 +86,18 @@ private:
 	CShader*				m_pShaderCom	= nullptr;
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
+
+
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
+	CCollider*				m_pFirstAimColliderCom = nullptr;
+	CCollider*				m_pSecondAimColliderCom = nullptr;
+
 	class CPlayerUI_Base*			m_pPlayerUICom[UI_END] = { nullptr };
 
 	vector<CGameObject*>	m_vecPlayerParts;
 
 	CModel*					m_pWeaponModelCom[WEAPON_END] = { nullptr };
 	WEAPONDESC				m_tWeaponDesc[WEAPON_END];
-	wstring					m_wstrCurWeaponName = L"";
 
 	CNavigation*			m_pNavigationCom = nullptr;
 
@@ -101,7 +109,9 @@ private:
 
 private: // State
 	CModel::LERPTYPE		m_eLerpType = CModel::LERP_BEGIN;
-
+	_float4					m_vCamLook;
+	_float4					m_vCamLookAt;
+	_float3					m_vAimColliderPos;
 	_bool					m_bJump = false;
 	_float					m_fGravity;
 	_float					m_fInitJumpSpeed;

@@ -170,7 +170,9 @@
   <ItemGroup>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Client_Defines.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\Bullet.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\Default_Pistol.h" />
     <ClInclude Include="..\public\Dynamic_Camera.h" />
     <ClInclude Include="..\public\Effect_Point_Instancing.h" />
     <ClInclude Include="..\public\ForkLift.h" />
@@ -208,6 +210,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\Bullet.cpp" />
+    <ClCompile Include="..\private\Default_Pistol.cpp" />
     <ClCompile Include="..\private\Dynamic_Camera.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>

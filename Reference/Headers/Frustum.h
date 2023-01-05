@@ -15,10 +15,23 @@ private:
 public:
 	HRESULT		Initialize();
 	void		Transform_ToWorldSpace();
+	void		Transform_ToLocalSpace(_fmatrix WorldMatrix);
+
+
+public:
+	_bool		isInFrustum_WorldSpace(_fvector vWorldPos, _float fRange = 0.f);
+	_bool		isInFrustum_LocalSpace(_fvector vLocalPos, _float fRange = 0.f);
+
 private:
 	_float3		m_vPoints[8];
-	_float4		m_vPlane[6];
+	_float3		m_vPointInWorld[8];
 
+	_float4		m_PlaneInWorld[6];
+	_float4		m_PlaneInLocal[6];
+
+
+private:
+	void		Make_Planes(_float4* pPlane, const _float3* pPoints);
 
 public:
 	virtual void Free() override;

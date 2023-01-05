@@ -12,8 +12,10 @@ public:
 
 
 		// For CountUI
+		_float2					m_vTexSize;
 		_int					m_iNumCnt;
 		_int					m_iNumber;
+		_float4					m_vNumColor;
 	}GAMEOBJECTDESC;
 
 protected:
@@ -22,6 +24,9 @@ protected:
 	virtual ~CGameObject() = default;
 
 public:
+	const _bool				Check_Dead() { return m_bIsDead; }
+	void					Set_Dead(_bool bDead) { m_bIsDead = bDead; }
+
 	const _bool&			Get_HasModel() { return m_bHasModel; }
 	const _float4x4&		Get_WorldFloat4x4() const { return m_pTransformCom->Get_WorldFloat4x4(); }
 	const wstring&			Get_PrototypeGameObjectTag() { return m_wstrPrototypeGameObjectTag; }
@@ -52,6 +57,9 @@ protected:
 protected:
 	_bool					m_bHasModel = false; 
 	_bool					m_bIsClone = false;
+
+	_bool					m_bIsDead = false;
+
 	wstring					m_wstrPrototypeGameObjectTag = L"";
 
 	map<const wstring, class CComponent*>	m_mapComponents;

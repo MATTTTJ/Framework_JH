@@ -5,7 +5,7 @@ matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 /* 1. 모델의 전체의 뼈를 받아온다. */
 /* 2. 모델 중, 현재 그릴려고 하는 메시에 뼈를 받아온다. */
 matrix			g_BoneMatrices[256];
-
+float3			g_vCameraPos;
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
 
@@ -52,6 +52,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	vector			vPosition = mul(float4(In.vPosition, 1.f), BoneMatrix);
 	vector			vNormal = mul(float4(In.vNormal, 0.f), BoneMatrix);
 
+	
 	Out.vPosition = mul(vPosition, matWVP);
 	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
 	Out.vTexUV = In.vTexUV;
@@ -59,97 +60,6 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	return Out;
 }
-
-// struct GS_IN
-// {
-// 	float4	vPosition : POSITION;
-// 	float3	vNormal : NORMAL;
-// 	float  EdgeFlag : PSIZE;
-//
-// };
-
-// struct GS_OUT
-// {
-// 	float4 vPosition : VS_POSITION;
-// 	float3 vNormal : NORMAL;
-// 	float  EdgeFlag : PSIZE;
-//
-// };
-//
-// float3 GetNormal(float3 A, float3 B, float C)
-// {
-// 	float3 AB = normalize(B - A);
-// 	float AC = normalize(C - A);
-// 	return normalize(cross(AB, AC));
-// }
-//
-// void CreateVertex(inout TriangleStream<GS_OUT> triStream, float3 pos, float3 normal,
-// 	float edgeFlag = 0)
-// {
-// 	//Step 1. Create a GS_DATA object
-// 	GS_OUT tempData;
-// 	//Step 2. Transform the position using the WVP Matrix and assign it to (GS_DATA
-// 	//object).Position(Keep in mind: float3 -> float4)
-// 		tempData.vPosition = mul(float4(pos, 1), g_WorldMatrix * g_ViewMatrix * g_ProjMatrix);
-// 	//Step 3. Transform the normal using the World Matrix and assign it to (GS_DATA
-// 	//object).Normal(Only Rotation, No translation!)
-// 		tempData.vNormal = mul(normal, (float3x3)g_WorldMatrix);
-// 	//Step 4. Assign texCoord to (GS_DATA object).TexCoord
-// 	tempData.EdgeFlag = edgeFlag;
-// 	//Step 5. Append (GS_DATA object) to the TriangleStream parameter
-// 	//(TriangleStream::Append(...))
-// 		triStream.Append(tempData);
-// }
-//
-// [maxvertexcount(12)]
-// void GS_MAIN(triangleadj VS_OUT vertices[6], inout TriangleStream<GS_OUT> triStream)
-// {
-// 	float4 wp1 = vertices[0].vPosition;
-// 	float4 wp2 = vertices[2].vPosition;
-// 	float4 wp3 = vertices[4].vPosition;
-//
-// 	float3 faceNormal = GetNormal(wp1, wp2, wp3);
-// 	float3 basePoint = float4((wp1 + wp2, wp3));
-// 	float3 viewDirection = normalize(basePoint - g_ViewMatrix[3].xyz);
-// 	viewDirection = normalize(viewDirection);
-//
-// 	float dotView = dot(faceNormal, viewDirection);
-//
-// 	if(dotView < 0)
-// 	{
-// 		for (uint i = 0; i<6; i += 2)
-// 		{
-// 			uint iNextTri = (i + 2) % 6;
-// 			wp1 = vertices[i].vPosition;
-// 			wp2 = vertices[i + 1].vPosition;
-// 			wp3 = vertices[iNextTri].vPosition;
-// 			faceNormal = GetNormal(wp1, wp2, wp3);
-// 			basePoint = float4((wp1 + wp2 + wp3) / 3).xyz;
-// 			viewDirection = normalize(basePoint - g_ViewMatrix[3].xyz);
-// 			dotView = dot(faceNormal, viewDirection);
-// 			if (dotView >= 0)
-// 			{
-// 				for (int v = 0; v < 2; v++)
-// 				{
-// 					float3 wsPos = vertices[i].vPosition + v * vertices[i].vNormal * 2;
-// 					CreateVertex(triStream, wsPos, vertices[i].vNormal, 3);
-// 				}
-// 				for (int v = 0; v < 2; v++)
-// 				{
-// 					float3 wsPos = vertices[iNextTri].vPosition +
-// 						v * vertices[iNextTri].vNormal * 2;
-// 					CreateVertex(triStream, wsPos, vertices[iNextTri].vNormal, 3);
-// 				}
-// 				triStream.RestartStrip();
-//
-// 				CreateVertex(triStream, vertices[0].vPosition, vertices[0].vNormal, 0);
-// 				CreateVertex(triStream, vertices[2].vPosition, vertices[2].vNormal, 0);
-// 				CreateVertex(triStream, vertices[4].vPosition, vertices[4].vNormal, 0);
-// 			}
-// 	}
-//// }
-
-
 
 
 
@@ -173,13 +83,15 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
-	//
-	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	
-	if (0.1f > Out.vColor.a)
-		discard;
-	
 
+	float4 TexNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+
+	float3 vCameraPos = normalize(TexNormal.xyz - g_vCameraPos.xyz);
+
+	// float RimLightColor = smoothstep(0.0001f, 1.f, 1 - saturate(dot(In.vNormal.xyz, vCameraPos.xyz)));
+	float RimLightColor = 1 - saturate(dot(In.vNormal.xyz, -vCameraPos.xyz));
+
+	RimLightColor = pow(RimLightColor, 100.0f);
 
 	float Lx = 0;
 	float Ly = 0;
@@ -198,14 +110,17 @@ PS_OUT PS_MAIN(PS_IN In)
 	}
 	float L = sqrt((Lx*Lx) + (Ly*Ly));
 
-	if(L < 0.05)
-	{
-		Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	}
-	else
-	{
-		Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.6f ;
-	}
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) + (RimLightColor * 0.15f);
+
+
+	// if(L < 0.05)
+	// {
+	// 	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) - RimLightColor;
+	// }
+	// else
+	// {
+	// 	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.6f ;
+	// }
 	// Out.vColor = float4(L.xxx, 1);
 	//
 	// if(Out.vColor.rgb / 3.f < 0.99f)
@@ -214,6 +129,8 @@ PS_OUT PS_MAIN(PS_IN In)
 	// }
 	// else
 	// 	Out.vColor = float4(L.xxx, 1);
+	if (0.1f > Out.vColor.a)
+		discard;
 
 	
 	return Out;
