@@ -31,8 +31,6 @@ HRESULT CLayer::Initialize()
 
 void CLayer::Tick(_double TimeDelta)
 {
-
-
 	for(auto iter = m_GameObjectList.begin(); iter != m_GameObjectList.end();)
 	{
 		if (true == (*iter)->Check_Dead())

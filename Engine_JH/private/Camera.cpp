@@ -44,7 +44,7 @@ void CCamera::Tick(_double TimeDelta)
 
 	// 월드스페이스의 역행렬은 카메라의 뷰스페이스
 	m_pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
-	m_pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(XMConvertToRadians(57.f), 1280 / (_float)720, 0.2f, 300.f));
+	m_pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(XMConvertToRadians(60.f), 1280 / (_float)720, 0.1f, 300.f));
 }
 
 void CCamera::Late_Tick(_double TimeDelta)

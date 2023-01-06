@@ -46,10 +46,10 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 
 		m_vDir = vDir;
 
-		_float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Camera")->back())->Get_CamLook();
+		_float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_CamLook();
 		_float4 fPlayerLook =	dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK);
 
-		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMLoadFloat4(&fCamLook));
+		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMLoadFloat4(&tmp.m_vBulletLook));
 	}
 	else
 	{
@@ -94,38 +94,18 @@ void CDefault_Pistol::Tick(_double dTimeDelta)
 		// m_fTrailCount = 0.f;
 	// 0.016
 
-	// if (m_fTrailCount <= 0.f)
-	// 	Set_Dead(true);
-
 	m_fTrailCount += (_float)dTimeDelta;
 	m_vUp = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_UP);
 
 
 	m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_BULLET);
+
 }
 
 void CDefault_Pistol::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
-
-	// _matrix matpivot;
-	// matpivot = XMMatrixIdentity();
-	// matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
-	//
-	// _matrix			SocketMatrix = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_OffsetMatrix("Att") * dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_CombindMatrix("Att") * matpivot;
-	//
-	// SocketMatrix.r[0] = XMVector3Normalize(SocketMatrix.r[0]);
-	// SocketMatrix.r[1] = XMVector3Normalize(SocketMatrix.r[1]);
-	// SocketMatrix.r[2] = XMVector3Normalize(SocketMatrix.r[2]);
-	//
-	// SocketMatrix = SocketMatrix * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4());
-
-	// XMStoreFloat4x4(&m_SocketMatrix, SocketMatrix);
-	// dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * dynamic_cast<CPlayer*>(m_pOwner)->Get_(CTransform::STATE_TRANSLATION);
-
-	// m_pTransformCom->Set_Scaled(_float3(10.f, 10.f, 10.f));
-
-
+	
 	m_vTest = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_UP);
 
 

@@ -222,9 +222,6 @@
     <ClInclude Include="..\public\Sky.h">
       <Filter>02. GameObjects\00. Public\Sky</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Player_State.h">
-      <Filter>02. GameObjects\01. GamePlay\Player\State</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Imgui_AnimationMgr.h">
       <Filter>96. Tool\AnimationMgr</Filter>
     </ClInclude>
@@ -334,9 +331,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
       <Filter>02. GameObjects\00. Public\Sky</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Player_State.cpp">
-      <Filter>02. GameObjects\01. GamePlay\Player\State</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Imgui_AnimationMgr.cpp">
       <Filter>96. Tool\AnimationMgr</Filter>

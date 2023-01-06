@@ -148,10 +148,14 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition), (_float)dRatio);
 		vPosition = XMVectorSetW(vPosition, 1.f);
 
-		if("Bip001 Footsteps" == m_strName)
-		{
-			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		}
+		// if("Bip001 Footsteps" == m_strName)
+		// {
+		// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		// }
+		// if ("Bip001 Footsteps001" == m_strName)
+		// {
+		// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		// }
 	
 	}
 	// 백터들을 받아서 행렬로 만들어주는 함수. 2번째 인자는 기준점인데 원점이 들어간다.
@@ -217,10 +221,15 @@ _bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* CurrentC
 	vPosition = XMVectorLerp(vLastPosition, vCurPosition, static_cast<_float>(m_dLerpRatio));
 	vPosition = XMVectorSetW(vPosition, 1.f);
 
-	if ("Bip001 Footsteps001" == m_strName)
-	{
-		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	}
+	// if ("Bip001 Footsteps001" == m_strName)
+	// {
+	// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	// }
+	//
+	// if ("Bip001 Footsteps" == m_strName)
+	// {
+	// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	// }
 
 	TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 
@@ -272,11 +281,15 @@ void CChannel::Update_Blend(_double dPlayTime, _float fRatio)
 	vRotation = XMQuaternionSlerp(vBaseRotation, vRotation, fRatio);
 	vPosition = XMVectorLerp(vBasePosition, vPosition, fRatio);
 	vPosition = XMVectorSetW(vPosition, 1.f);
-
-	if ("Bip001 Footsteps001" == m_strName)
-	{
-		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	}
+	//
+	// if ("Bip001 Footsteps001" == m_strName)
+	// {
+	// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	// }
+	// if ("Bip001 Footsteps" == m_strName)
+	// {
+	// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	// }
 
 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 

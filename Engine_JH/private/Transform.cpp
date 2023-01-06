@@ -135,7 +135,7 @@ void CTransform::Go_Straight(_double TimeDelta, TRANSTYPE eType, CNavigation* pN
 	_vector	vLook = Get_State(CTransform::STATE_LOOK);
 
 	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
-	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * TimeDelta;
+	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
 	if (nullptr == pNaviCom)
 	{
@@ -160,11 +160,11 @@ void CTransform::Go_Straight(_double TimeDelta, TRANSTYPE eType, CNavigation* pN
 void CTransform::Go_Backward(_double TimeDelta)
 {
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
-	_vector	vLook = Get_State(CTransform::STATE_LOOK);
+	_vector	vLook = 
+		Get_State(CTransform::STATE_LOOK);
 
 	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
-	vPosition -= XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * TimeDelta;
-
+	vPosition -= XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 	Set_State(CTransform::STATE_TRANSLATION, vPosition);
 }
 
@@ -174,7 +174,7 @@ void CTransform::Go_Left(_double TimeDelta)
 	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
 
 	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
-	vPosition -= XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * TimeDelta;
+	vPosition -= XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
 	Set_State(CTransform::STATE_TRANSLATION, vPosition);
 }
@@ -185,7 +185,7 @@ void CTransform::Go_Right(_double TimeDelta)
 	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
 	
 	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
-	vPosition += XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * TimeDelta;
+	vPosition += XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 	
 	Set_State(CTransform::STATE_TRANSLATION, vPosition);
 
@@ -194,7 +194,7 @@ void CTransform::Go_Right(_double TimeDelta)
 
 void CTransform::Turn(_fvector vAxis, _double TimeDelta)
 {
-	_matrix		RotationMatrix = XMMatrixRotationAxis(vAxis, m_TransformDesc.fRotationPerSec * TimeDelta);
+	_matrix		RotationMatrix = XMMatrixRotationAxis(vAxis, m_TransformDesc.fRotationPerSec * (_float)TimeDelta);
 
 	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
 	_vector		vUp = Get_State(CTransform::STATE_UP);
@@ -242,7 +242,7 @@ void CTransform::Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit)
 
 	if (fDistance > fLimit)
 	{
-		vPosition += XMVector3Normalize(vDir) * m_TransformDesc.fSpeedPerSec * TimeDelta;
+		vPosition += XMVector3Normalize(vDir) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 		Set_State(CTransform::STATE_TRANSLATION, vPosition);
 	}
 }
@@ -325,9 +325,9 @@ void CTransform::Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTic
 void CTransform::Speed_Up(_bool bKeyState)
 {
 	if (bKeyState)
-		m_TransformDesc.fSpeedPerSec = m_dInitSpeed * 5.0;
+		m_TransformDesc.fSpeedPerSec = (_float)(m_dInitSpeed * 5.0);
 	else
-		m_TransformDesc.fSpeedPerSec = m_dInitSpeed;
+		m_TransformDesc.fSpeedPerSec = (_float)m_dInitSpeed;
 }
 
 HRESULT CTransform::Bind_ShaderResource(CShader* pShaderCom, const wstring&  pConstantName)

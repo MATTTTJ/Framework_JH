@@ -20,8 +20,8 @@ void CImgui_Setting::Imgui_RenderWindow()
 
 	if (iCurrentLevel == 2)
 	{
-		_bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Camera")->front())->Get_RenderState();
-		_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Camera")->back())->Get_RenderState();
+		_bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_ZCamera")->front())->Get_RenderState();
+		_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_ZCamera")->back())->Get_RenderState();
 		_bool		bSelect = false;
 
 

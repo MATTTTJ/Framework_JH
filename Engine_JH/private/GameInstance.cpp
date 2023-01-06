@@ -367,6 +367,13 @@ _float4 CGameInstance::Get_CamPos()
 	return m_pPipeLine->Get_CamPosition();
 }
 
+_float4 CGameInstance::Get_CamLook()
+{
+	NULL_CHECK_RETURN(m_pPipeLine, _float4(0.0f, 0.0f, 0.0f, 0.0f));
+
+	return m_pPipeLine->Get_CamLook();
+}
+
 _double CGameInstance::Get_TimeDelta(const wstring pTimerTag)
 {
 	NULL_CHECK_RETURN(m_pTimer_Manager, 0.0f);

@@ -63,12 +63,8 @@ void CWeapon_State::Tick(_double dTimeDelta)
 {
 
 	// 이동하기
-	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
-	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	_float4 fFootPos = m_pPlayer->Get_BoneMatrix("Bip001 Footsteps").r[3];
-	PlayerPos.y = m_fHeight + 2.644f;
 
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, PlayerPos);
+
 
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_1))
@@ -102,7 +98,6 @@ void CWeapon_State::Tick(_double dTimeDelta)
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_POISON].m_wstrWeaponName;
 	}
-
 
 
 
@@ -302,7 +297,7 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 				XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
 
 				tmp.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-				tmp.m_vBulletLook = m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter();
+				tmp.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter());
 				CGameObject*		pBullet = nullptr;
 				pBullet = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp);
 				NULL_CHECK_RETURN(pBullet, );
@@ -318,7 +313,7 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 				XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
 
 				tmp.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-				tmp.m_vBulletLook = m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter();
+				tmp.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter());
 				CGameObject*		pBullet = nullptr;
 				pBullet = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp);
 				NULL_CHECK_RETURN(pBullet, );
@@ -335,7 +330,7 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 			XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
 
 			tmp.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-			tmp.m_vBulletLook = _float4(m_pPlayer->Get_TransformState(CTransform::STATE_LOOK));
+			tmp.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
 			CGameObject*		pBullet = nullptr;
 			pBullet = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp);
 			NULL_CHECK_RETURN(pBullet, );

@@ -55,6 +55,7 @@ private:
 	virtual ~CPlayer() = default;
 	friend CWeapon_State;
 public:
+	
 	CCollider*				Get_OBBPtr() { return m_pColliderCom[COLLIDER_OBB]; }
 	_matrix					Get_BoneMatrix(const string& strBoneName);
 	_matrix					Get_OffsetMatrix(const string& strBoneName);
@@ -66,6 +67,7 @@ public:
 	CWeapon_State*			Get_WeaponStatePtr(void) { return m_pWeaponState; }
 
 	CModel*					Get_CurWeaponModelCom(void);
+	_float4x4					Get_HeadModelCom(void);
 	_uint					Get_EmeraldCnt(void) { return m_PlayerOption.m_iEmeraldCnt; }
 	_uint					Get_GoldCnt(void) { return m_PlayerOption.m_iGold; }
 	_uint					Get_ThrowCnt(void) { return m_PlayerOption.m_iThrowCnt; }
@@ -73,14 +75,14 @@ public:
 	_uint					Get_PistolBulletCnt(void) { return m_PlayerOption.m_iPistol_BulletCnt; }
 	_uint					Get_InjectorBulletCnt(void) { return m_PlayerOption.m_iInjector_BulletCnt; }
 
-	void					Set_Camera(_double TimeDelta);
+	void					Set_Camera(_double dTimeDelta);
 	CGameObject*			Collision_AimBox_To_Monster();
 
 public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void			Tick(_double dTimeDelta) override;
-	virtual void			Late_Tick(_double TimeDelta) override;
+	virtual void			Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 
 private:
@@ -88,6 +90,7 @@ private:
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
 
+	class CStaticCamera*	m_pCamera = nullptr;
 
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
 	CCollider*				m_pFirstAimColliderCom = nullptr;

@@ -162,7 +162,7 @@ void CPlayerUI_Skill::Tick(_double dTimeDelta)
 	if (m_fGlowStrength >= 1.f)
 		m_bIsChange = true;
 	else if(m_fGlowStrength <= 0)
-		m_bIsChange = false;
+		m_bIsChange = false;                                                                                                                                                                                 
 
 	if (m_bIsChange == true)
 		m_fGlowStrength += (_float)dTimeDelta * -1.f;
@@ -282,7 +282,7 @@ HRESULT CPlayerUI_Gold::Initialize_Clone(const wstring& wstrPrototypeTag, void* 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(750.f, 640.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(950.f, 640.f, 0.f, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-850.f, -470.f, 0.f, 1.f));
 
 	return S_OK;
@@ -515,7 +515,7 @@ HRESULT CPlayerUI_Emerald::Initialize_Clone(const wstring& wstrPrototypeTag, voi
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(470.f, 640.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(670.f, 640.f, 0.f, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-850.f, -470.f, 0.f, 1.f));
 
 	return S_OK;
@@ -631,7 +631,7 @@ HRESULT CPlayer_UI_Throw::Initialize_Clone(const wstring& wstrPrototypeTag, void
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(600.f, -480.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(750.f, -480.f, 0.f, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-850.f, -470.f, 0.f, 1.f));
 
 	return S_OK;
@@ -761,7 +761,7 @@ HRESULT CPlayer_UI_Dash::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(730.f, -480.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(880.f, -480.f, 0.f, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-850.f, -470.f, 0.f, 1.f));
 
 	return S_OK;
@@ -878,7 +878,7 @@ HRESULT CPlayer_UI_Weapon::Initialize_Clone(const wstring& wstrPrototypeTag, voi
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(930.f, -480.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(1080.f, -480.f, 0.f, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-850.f, -470.f, 0.f, 1.f));
 
 	return S_OK;
@@ -995,7 +995,7 @@ HRESULT CPlayer_UI_Weapon_Number::Initialize_Clone(const wstring& wstrPrototypeT
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(920.f, -538.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(1070.f, -538.f, 0.f, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-850.f, -470.f, 0.f, 1.f));
 
 
@@ -1131,7 +1131,7 @@ HRESULT CPlayer_UI_Weapon_Pic::Initialize_Clone(const wstring& wstrPrototypeTag,
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(945.f, -430.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(1095.f, -430.f, 0.f, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-850.f, -470.f, 0.f, 1.f));
 
 	return S_OK;
@@ -1148,11 +1148,11 @@ void CPlayer_UI_Weapon_Pic::Tick(_double dTimeDelta)
 
 	if (m_wstrWeaponName == L"WEAPON_FIREDRAGON")
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(960.f, -460.f, 0.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(1110.f, -460.f, 0.f, 1.f));
 	}
 	else
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(945.f, -460.f, 0.f, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(1095.f, -460.f, 0.f, 1.f));
 	}
 }
 
@@ -1281,7 +1281,7 @@ HRESULT CPlayer_UI_BulletType::Initialize_Clone(const wstring& wstrPrototypeTag,
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(775.f, -315.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(955.f, -315.f, 0.f, 1.f));
 
 	return S_OK;
 }
@@ -1427,7 +1427,7 @@ HRESULT CPlayer_UI_CountMachine::Initialize_Clone(const wstring& wstrPrototypeTa
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(977.f, -315.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(1127.f, -315.f, 0.f, 1.f));
 
 	return S_OK;
 }
@@ -1531,7 +1531,6 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 				Safe_Release(iter);
 			m_vecCountUI.clear();
 
-			m_vPlayerEmeraldCntPos = _float2{ 500.f, 640.f };
 			InttoString(m_iEmeraldCnt, m_vPlayerEmeraldCntPos, m_vGoldNumColor, m_vGoldNumberSize);
 		}
 		break;

@@ -2,6 +2,10 @@
 #include "Client_Defines.h"
 #include "Camera.h"
 
+BEGIN(Engine)
+class CCollider;
+END
+
 BEGIN(Client)
 
 class CStatic_Camera final :	public CCamera
@@ -17,11 +21,13 @@ public:
 	void					Tick(_double dTimeDelta) override;
 	void					Late_Tick(_double dTimeDelta) override;
 	HRESULT					Render() override;
-	void					Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _double dTimeDelta);
+	void					Camera_Update(_double dTimeDelta, _float4x4 PlayerWorld);
 	void					Mouse_Fix();
-
-	_float4*					Get_CamLook(void) { return &m_vCameraLook; }
+	void					Set_FixControl() { m_bFix = !m_bFix; }
+	void					Set_CamPos(_float4 vPos, _float4 vLook);
+	_float4*				Get_CamLook(void) { return &m_vCameraLook; }
 private:
+	CCollider*		m_pColliderCom = nullptr;
 	CGameObject*			m_pOwner = nullptr;
 	_bool					m_bFix = false;
 private:

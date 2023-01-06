@@ -2,7 +2,7 @@
 #include "..\public\Static_Camera.h"
 #include "GameInstance.h"
 #include "Player.h"
-
+#include "Collider.h"
 
 CStatic_Camera::CStatic_Camera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CCamera(pDevice, pContext)
@@ -10,7 +10,7 @@ CStatic_Camera::CStatic_Camera(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 }
 
 CStatic_Camera::CStatic_Camera(const CStatic_Camera& rhs)
-	:CCamera(rhs)
+	: CCamera(rhs)
 {
 }
 
@@ -29,14 +29,14 @@ HRESULT CStatic_Camera::Initialize_Clone(const wstring& wstrPrototypeTag, void* 
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERADESC));
 
 	if (pArg != nullptr)
-		memcpy(&CameraDesc,pArg, sizeof(CCamera::CAMERADESC));
+		memcpy(&CameraDesc, pArg, sizeof(CCamera::CAMERADESC));
 	else
 	{
 		CameraDesc.vEye = _float4(0.f, 20.f, -30.f, 1.f);
 		CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 		CameraDesc.vUp = _float4(0.f, 1.f, 0.f, 0.f);
 		CameraDesc.TransformDesc.fSpeedPerSec = 7.f;
-		CameraDesc.TransformDesc.fRotationPerSec= XMConvertToRadians(90.f);
+		CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.f);
 	}
 
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &CameraDesc), E_FAIL);
@@ -53,9 +53,20 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 
 	__super::Tick(dTimeDelta);
 
-	if (GetAsyncKeyState('Y'))
+	if (m_bFix == true)
 	{
-		m_bFix = !m_bFix;
+		Mouse_Fix();
+	}
+
+	_uint iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
+
+
+	if (m_pOwner == nullptr)
+		m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->front();
+	else if (CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->empty())
+	{
+		m_pOwner = nullptr;
+		return;
 	}
 
 	if (m_vCameraLook.w == -1)
@@ -63,38 +74,21 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 		XMStoreFloat4(&m_vCameraLook, dynamic_cast<CTransform*>(CGameInstance::GetInstance()->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_Transform"))->Get_State(CTransform::STATE_LOOK));
 	}
 
-
-
-	// if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_X))
-	// {
-	// 	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
-	// }
-	//
-	// if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_Y))
-	// {
-	// 	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
-	// }
-
-		// m_fCamHeight += (_float)TurnY / 1000.f;
-		//
-		// if (m_fCamHeight >= 0.1f)
-		// 	m_fCamHeight = 0.1f;
-		// else if (m_fCamHeight <= -0.1f)
-		// 	m_fCamHeight = -0.1f;
 	
+
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_TRANSLATION));
+
+	m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK));
+
+	m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CStatic_Camera::Late_Tick(_double dTimeDelta)
 {
 	if (!m_bRender)
 		return;
+
 	__super::Late_Tick(dTimeDelta);
-
-	if(false != m_bFix)
-	{
-		Mouse_Fix();
-	}
-
 }
 
 HRESULT CStatic_Camera::Render()
@@ -104,90 +98,45 @@ HRESULT CStatic_Camera::Render()
 
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
+	m_pColliderCom->Render();
+
 	return S_OK;
 }
 
-void CStatic_Camera::Camera_Update(_fvector PlayerPos, _fvector PlayerLook, _double dTimeDelta)
+void CStatic_Camera::Camera_Update(_double dTimeDelta, _float4x4 PlayerWorld)
 {
 	if (!m_bRender)
 		return;
 
-	_int TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X);
-	_int TurnY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y);
-
-	if (TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
-	{
-		_matrix Mat = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f) *  0.1f * (_float)dTimeDelta * TurnX);
-		XMStoreFloat4(&m_vCameraLook, XMVector4Transform(XMLoadFloat4(&m_vCameraLook), Mat));
-		XMStoreFloat4(&m_vCameraLook, XMVector3Normalize(XMLoadFloat4(&m_vCameraLook)));
-	}
-
-	if (TurnY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
-	{
-		_matrix matRotationY = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f) *  0.1f * (_float)dTimeDelta * TurnY);
-		XMStoreFloat4(&m_vCameraLook, XMVector4Transform(XMLoadFloat4(&m_vCameraLook), matRotationY));
-		XMStoreFloat4(&m_vCameraLook, XMVector3Normalize(XMLoadFloat4(&m_vCameraLook)));
-	}
-
-	_vector vPlayerPos = PlayerPos;
-	
-	_vector vLook = XMLoadFloat4(&m_vCameraLook);
-
 
 	_uint iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
 
+
 	if (m_pOwner == nullptr)
 		m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->front();
-	else
+	else if (CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->empty())
 	{
-		if (CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->empty())
-		{
-			m_pOwner = nullptr;
-			return;
-		}
-
-		// vLook = XMVector3Normalize(vLook) * -5.f;
-
-
-		// 여기 값 갖고 놀면 카메라 위치 조절 가능함
-		// _vector vCamPos = vPlayerPos + (vLook + XMVectorSet(0.f, 4.f + m_fCamHeight, 0.f, 0.f));
-		_matrix	OwnerWorldMatrix = XMLoadFloat4x4(&m_pOwner->Get_WorldFloat4x4());
-		_matrix	TargetBoneMatrix = dynamic_cast<CPlayer*>(m_pOwner)->Get_BoneMatrix("Bip001 Head");
-		_matrix PivotMatrix = CGameUtils::Get_PlayerPivotMatrix(); //dynamic_cast<CPlayer*>(m_pOwner)->Get_PivotMatrix();
-
-		// PivotMatrix.r[3] += dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK);
-
-		_float4x4	CombindMatrix;
-		XMStoreFloat4x4(&CombindMatrix, TargetBoneMatrix * OwnerWorldMatrix);
-
-		
-
-		_vector vCamPos = XMVectorSet(CombindMatrix._41, CombindMatrix._42 + 0.2f, CombindMatrix._43, CombindMatrix._44);//+ (dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_RIGHT) * - 0.1f) + 
-			//(dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK) * 0.1f);
-
-		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vCamPos);
-
-		
-
-		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + PlayerLook);
-
-		// m_pTransformCom->LookAt(vPlayerPos + XMVectorSet(CombindMatrix._41, CombindMatrix._42, CombindMatrix._43, CombindMatrix._44));
-
-		// _float CurTurnX = 0.f, LastTurnX = 0.f;
-		// _float4 tmp;
-		// if (CurTurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
-		// {
-		// 	if (LastTurnX != CurTurnX)
-		// 		dynamic_cast<CTransform*>(m_pOwner)->Rotation(XMVectorSet(0.f,1.f,0.f,0.f), XMConvertToRadians(CurTurnX - LastTurnX));
-		// 	else
-		// 		return;
-		//
-		// 	LastTurnX = CurTurnX;
-
-		// }
-
+		m_pOwner = nullptr;
+		return;
 	}
+
+	_float4x4	OwnerWorldMatrix = PlayerWorld;
+	_float4x4	TargetBoneMatrix = dynamic_cast<CPlayer*>(m_pOwner)->Get_HeadModelCom();
+	_matrix		PivotMatrix = CGameUtils::Get_PlayerPivotMatrix();
+	
+	_float4x4	CombindMatrix;
+	XMStoreFloat4x4(&CombindMatrix, TargetBoneMatrix *PivotMatrix* OwnerWorldMatrix);
+	
+	_vector vCamPos = XMVectorSet(CombindMatrix._41, CombindMatrix._42, CombindMatrix._43, CombindMatrix._44) + (_vector(PlayerWorld.Backward() * 0.1f) - (_vector(PlayerWorld.Right() * 0.05f) - (_vector(PlayerWorld.Up() * 0.3f))));
+
+	// m_pTransformCom->Set_State(CTransform::STATE_LOOK, _vector(PlayerWorld.Up()));
+	// m_pTransformCom->Set_State(CTransform::STATE_RIGHT, _vector(PlayerWorld.Right()));
+	// m_pTransformCom->Set_State(CTransform::STATE_LOOK, _vector(PlayerWorld.Backward()));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vCamPos);
+	// m_pTransformCom->Set_State(CTransform::STATE_RIGHT, dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_RIGHT));
+	m_pTransformCom->LookAt(vCamPos + _vector(PlayerWorld.Backward()));
 }
+
 
 void CStatic_Camera::Mouse_Fix()
 {
@@ -197,8 +146,23 @@ void CStatic_Camera::Mouse_Fix()
 	SetCursorPos(pt.x, pt.y);
 }
 
+void CStatic_Camera::Set_CamPos(_float4 vPos, _float4 vLook)
+{
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vPos);
+	m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMLoadFloat4(&vLook));
+
+}
+
 HRESULT CStatic_Camera::SetUp_Component()
 {
+
+	CCollider::COLLIDERDESC			ColliderDesc;
+	// /* For.Com_SPHERE */
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom, this, &ColliderDesc), E_FAIL);
+	
 	return S_OK;
 }
 
