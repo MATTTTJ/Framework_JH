@@ -328,7 +328,7 @@ private:
 	vector<CUI*>	m_vecCountUI;
 	WEAPONTYPE		m_eWeaponType = WEAPONTYPE_END;
 
-	_float2			m_vPlayerEmeraldCntPos = { 700.f, 640.f };
+	_float2			m_vPlayerEmeraldCntPos = { 800.f, 640.f };
 	_float2			m_vPlayerGoldCntPos = { 1005.f, 640.f };
 	_float2			m_vPlayerThrowCntPos = { 683.f, -447.f };
 	_float2			m_vWeaponBulletCntPos = { 1055.f, -315.f };

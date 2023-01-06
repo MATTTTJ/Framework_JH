@@ -515,7 +515,7 @@ HRESULT CPlayerUI_Emerald::Initialize_Clone(const wstring& wstrPrototypeTag, voi
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(670.f, 640.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(770.f, 640.f, 0.f, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-850.f, -470.f, 0.f, 1.f));
 
 	return S_OK;
