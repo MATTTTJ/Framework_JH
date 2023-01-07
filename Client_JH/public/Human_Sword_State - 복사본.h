@@ -15,17 +15,11 @@ BEGIN(Client)
 class CHuman_Sword_State final : public CBase
 {
 public:
-	enum ANIMATION
-	{
-		
-	};
-
-public:
 	CHuman_Sword_State();
 	virtual ~CHuman_Sword_State() = default;
 
 public:
-	HRESULT						Initialize(class CHuman_Sword* pOwner, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
+	HRESULT						Initialize(class CCritter_Small* pCritter, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform);
 	void						Tick(_double dTimeDelta);
 	void						Late_Tick(_double dTimeDelta);
 
@@ -45,7 +39,7 @@ private:
 
 
 private:
-	class CHuman_Sword*			m_pOwner = nullptr;
+	class CPlayer*				m_pPlayer = nullptr;
 	CState*						m_pState = nullptr;
 	CModel*						m_pModelCom = nullptr;
 	CTransform*					m_pTransformCom = nullptr;
@@ -94,7 +88,7 @@ private:
 	// _bool					Check_WalkTime();
 
 public:
-	static CHuman_Sword_State*	Create(class CHuman_Sword* pOwner, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
+	static CHuman_Sword_State*	Create(class CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
 	virtual void				Free() override;
 };
 

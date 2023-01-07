@@ -8,8 +8,7 @@ CHuman_Sword_State::CHuman_Sword_State()
 {
 }
 
-HRESULT CHuman_Sword_State::Initialize(CCritter_Small* pCritter, CState* pStateMachineCom, CModel* pModel,
-	CTransform* pTransform)
+HRESULT CHuman_Sword_State::Initialize(CHuman_Sword* pOwner, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation)
 {
 	return S_OK;
 }
@@ -179,7 +178,7 @@ _bool CHuman_Sword_State::Player_NotDetected()
 	return true;
 }
 
-CHuman_Sword_State* CHuman_Sword_State::Create(CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel,
+CHuman_Sword_State* CHuman_Sword_State::Create(CHuman_Sword* pOwner, CState* pStateMachineCom, CModel* pModel,
 	CTransform* pTransform, CNavigation* pNavigation)
 {
 	return nullptr;

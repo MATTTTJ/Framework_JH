@@ -15,8 +15,7 @@ CMonster::CMonster(const CMonster & rhs)
 
 HRESULT CMonster::Initialize_Prototype()
 {
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	return S_OK;
 }

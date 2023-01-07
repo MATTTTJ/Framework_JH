@@ -13,7 +13,7 @@ class CMonster abstract : public CGameObject
 {
 
 public:
-	enum COLLIDERTYPE { COLLTYPE_AABB, COLLTYPE_OBB, COLLTYPE_SPHERE, COLLTYPE_END };
+	enum MONSTERCOLLTYPE { COLLTYPE_DETECTED, COLLTYPE_HITHEAD, COLLTYPE_HITBODY, COLLTYPE_ATTPOS, COLLTYPE_END };
 
 protected:
 	CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -37,17 +37,17 @@ public:
 
 public:
 	virtual void			Collision_Event(class CPlayer* pPlayer) {} // 구현해도되고 안해도되고 
-	virtual	void			Ready_UI() {}
 
 protected:
 	class CPlayer*			m_pPlayer = nullptr;
-	CState*					m_pStat = nullptr;
+	CState*					m_pState = nullptr;
+	CCollider*				m_pColliderCom[COLLTYPE_END] = { nullptr };
 
 	_bool					m_bPlayerDetected = false;
+	
 
-	CCollider*				m_pHeadColliderCom = nullptr;
-	CCollider*				m_pBodyColliderCom = nullptr;
-	CCollider*				m_pAttackColliderCom = nullptr;
+protected:
+	vector<CGameObject*>	m_vecMonsterUI;
 
 public:
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE; // 필수 구현

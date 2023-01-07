@@ -109,6 +109,17 @@ void CModel::Reset_Animation()
 {
 	m_vecAnimations[m_iCurAnimIndex]->Reset_Animation();
 }
+
+HRESULT CModel::Check_MeshSize(const string& strMeshName, _float& Xmin, _float& Xmax, _float& Ymin, _float& Ymax, _float& Zmin, _float& Zmax)
+{
+	CMesh*	pMesh = Get_Mesh(strMeshName);
+	NULL_CHECK_RETURN(pMesh, E_FAIL);
+
+	pMesh->Check_MeshSize(Xmin, Xmax, Ymin, Ymax, Zmin, Zmax);
+
+	return S_OK;
+}
+
 void CModel::Set_BlendAnimIndex(_uint BlendAnimIndex)
 {
 	if (BlendAnimIndex < 0 || BlendAnimIndex == m_iCurBlendIndex)
@@ -393,6 +404,7 @@ HRESULT CModel::Bind_Material(CShader* pShader, _uint iMeshIndex, aiTextureType 
 		return E_FAIL;
 
 	_uint iMaterialIndex = m_vecMeshes[iMeshIndex]->Get_MaterialIndex();
+
 	if (iMaterialIndex >= m_iNumMaterials)
 		return E_FAIL;
 

@@ -409,7 +409,10 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 	{
 		memcpy(&m_pAnimVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
 		memcpy(&m_pAnimVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
-		memcpy(&m_pAnimVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
+		if (pAIMesh->mTextureCoords[0] != nullptr)
+			memcpy(&m_pAnimVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
+		else
+			m_pAnimVertices[i].vTexUV = _float2(0.f, 0.f);
 		memcpy(&m_pAnimVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
 	}
 
@@ -419,8 +422,6 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 	for (_uint i = 0; i < m_iNumMeshBones; ++i)
 	{
 		aiBone*		pAIBone = pAIMesh->mBones[i];	
-
-		/* 이 뼈는 몇개의 정점에 영향을 주는가?! */
 		_uint iNumWeights = pAIBone->mNumWeights;
 
 		for (_uint j = 0; j < iNumWeights; ++j)
@@ -499,6 +500,5 @@ void CMesh::Free()
 
 	for(auto& pBone : m_vecMeshBones)
 		Safe_Release(pBone);
-
 	m_vecMeshBones.clear();
 }

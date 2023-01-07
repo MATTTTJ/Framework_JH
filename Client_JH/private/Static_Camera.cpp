@@ -129,11 +129,7 @@ void CStatic_Camera::Camera_Update(_double dTimeDelta, _float4x4 PlayerWorld)
 	
 	_vector vCamPos = XMVectorSet(CombindMatrix._41, CombindMatrix._42, CombindMatrix._43, CombindMatrix._44) + (_vector(PlayerWorld.Backward() * 0.1f) - (_vector(PlayerWorld.Right() * 0.05f) - (_vector(PlayerWorld.Up() * 0.3f))));
 
-	// m_pTransformCom->Set_State(CTransform::STATE_LOOK, _vector(PlayerWorld.Up()));
-	// m_pTransformCom->Set_State(CTransform::STATE_RIGHT, _vector(PlayerWorld.Right()));
-	// m_pTransformCom->Set_State(CTransform::STATE_LOOK, _vector(PlayerWorld.Backward()));
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vCamPos);
-	// m_pTransformCom->Set_State(CTransform::STATE_RIGHT, dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_RIGHT));
 	m_pTransformCom->LookAt(vCamPos + _vector(PlayerWorld.Backward()));
 }
 
@@ -157,7 +153,6 @@ HRESULT CStatic_Camera::SetUp_Component()
 {
 
 	CCollider::COLLIDERDESC			ColliderDesc;
-	// /* For.Com_SPHERE */
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);

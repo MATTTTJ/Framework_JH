@@ -131,6 +131,7 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	m_pWeaponState = CWeapon_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
 	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
 
+
 	m_pModelCom->Set_CurAnimIndex(CWeapon_State::DEFAULT_PISTOL_IDLE);
 
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
@@ -195,10 +196,9 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	Set_On_NaviMesh();
 
-	if (nullptr != m_pState)
-		m_pState->Tick(dTimeDelta);
-
 	m_pWeaponState->Tick(dTimeDelta);
+	m_pState->Tick(dTimeDelta);
+
 	m_pModelCom->Play_Animation(dTimeDelta, m_eLerpType);
 
 	for (_uint i = 0; i < m_vecPlayerUI.size(); ++i)
@@ -291,18 +291,8 @@ HRESULT CPlayer::Render()
 
 void CPlayer::Set_Camera(_double dTimeDelta)
 {
-	// m_vCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_CamLook();
-	//
-	// // _vector		vCamLook = XMLoadFloat4(&m_vCamLook);
-	// _float4		vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	// m_vCamLookAt = vPos + m_vCamLook;
-	// m_pTransformCom->LookAt(m_vCamLookAt);
-
-	// dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Set_CamPos(vPos, XMVectorSet(0.f,0.f,1.f,0.f));
-
 	dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->
 		back())->Camera_Update(	dTimeDelta, m_pTransformCom->Get_WorldMatrix());
-
 }
 
 CGameObject* CPlayer::Collision_AimBox_To_Monster()

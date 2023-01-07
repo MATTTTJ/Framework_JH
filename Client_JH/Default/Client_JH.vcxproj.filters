@@ -148,8 +148,44 @@
     <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword">
       <UniqueIdentifier>{a4eaa124-e960-4ca9-a738-77b935b7d69a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword\Human_Sword_State">
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Spear">
+      <UniqueIdentifier>{a2bd8373-65a2-493d-975e-3c181c8c3592}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Granade">
+      <UniqueIdentifier>{22fa6a54-91c2-4b88-831b-07905b1042a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Bow">
+      <UniqueIdentifier>{b57a7207-b5e1-411c-9a39-a2200cad1fce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Explod_Fire">
+      <UniqueIdentifier>{db1f4cc6-e3e7-4b8f-af81-3c7060896c9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug">
+      <UniqueIdentifier>{176579da-a6b8-4d31-b900-9aec637880b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight">
+      <UniqueIdentifier>{d7b99ab9-6d6b-4466-9d2d-c429f4abab4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Spear\State">
+      <UniqueIdentifier>{05dbf438-c5cb-4376-bcd9-54343ce5a3d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword\State">
       <UniqueIdentifier>{b18736cb-ee32-4d20-a95f-c44f3424a712}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Granade\State">
+      <UniqueIdentifier>{73812d6b-4325-4e52-adf1-470887f416a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Bow\State">
+      <UniqueIdentifier>{716ca7ba-c87a-4046-aeec-a10070afb401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Explod_Fire\State">
+      <UniqueIdentifier>{3063f971-9536-4abb-ab60-9d03a040dd3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\State">
+      <UniqueIdentifier>{cd71d742-2125-43d4-955e-4ea31ef67c3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight\State">
+      <UniqueIdentifier>{764ff002-4b6b-42ba-b3c3-670a0f79fc7c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -270,7 +306,45 @@
     <ClInclude Include="..\public\Human_Sword.h">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Human_Sword_State.h" />
+    <ClInclude Include="..\public\Human_Spear.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Spear</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Human_Spear_State.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Spear\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Human_Sword_State.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Human_Granade.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Granade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Human_Granade_State.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Granade\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Human_Bow.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Bow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Human_Bow_State.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Bow\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Human_Explode.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Explod_Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Human_Explode_State.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Explod_Fire\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Elite_Bug.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Elite_Bug_State.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Elite_Knight.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Elite_Knight_State.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -378,7 +452,45 @@
     <ClCompile Include="..\private\Human_Sword.cpp">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Human_Sword_State.cpp" />
+    <ClCompile Include="..\private\Human_Sword_State.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Human_Spear.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Spear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Human_Spear_State.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Spear\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Human_Granade.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Granade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Human_Granade_State.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Granade\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Human_Bow.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Bow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Human_Bow_State.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Bow\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Human_Explode.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Explod_Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Human_Explode_State.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Explod_Fire\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Elite_Bug.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Elite_Bug_State.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Elite_Knight.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Elite_Knight_State.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

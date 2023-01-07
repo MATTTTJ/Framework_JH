@@ -32,6 +32,7 @@ public:
 	_uint						Get_LastAnimationIndex() { return m_iLastAnimIndex; }
 	class CAnimation*			Find_Anim(const string& strAnim);
 	void						Reset_Animation();
+	HRESULT						Check_MeshSize(const string & strMeshName, _float & Xmin, _float & Xmax, _float & Ymin, _float & Ymax, _float & Zmin, _float & Zmax);
 
 	void						Reset_IsFinished(void) { m_bIsAnimFinished = false; }
 

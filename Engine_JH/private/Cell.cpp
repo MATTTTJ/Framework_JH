@@ -162,15 +162,12 @@ _float4 CCell::Get_CellHeight(_float4 fTargetPos)
 
 	_float fDist = 0.f;
 
-	_float4 v0 = _float4(m_vPoints[POINT_A].x, m_vPoints[POINT_A].y, m_vPoints[POINT_A].z, 1.f);
-	_vector _v0 = XMLoadFloat4(&v0);
-	_float4 v1 = _float4(m_vPoints[POINT_B].x, m_vPoints[POINT_B].y, m_vPoints[POINT_B].z, 1.f);
-	_vector _v1 = XMLoadFloat4(&v1);
-	_float4 v2 = _float4(m_vPoints[POINT_C].x, m_vPoints[POINT_C].y, m_vPoints[POINT_C].z, 1.f);
-	_vector _v2 = XMLoadFloat4(&v2);
+	_vector	vPointA = XMVectorSetW(m_vPoints[POINT_A], 1.f);
+	_vector	vPointB = XMVectorSetW(m_vPoints[POINT_B], 1.f);
+	_vector	vPointC = XMVectorSetW(m_vPoints[POINT_C], 1.f);
 
 	if (TriangleTests::Intersects(XMLoadFloat4(&fTargetPosUpper), XMLoadFloat4(&fDir),
-		_v2, _v1, _v0, fDist))
+		vPointA, vPointB, vPointC, fDist))
 	{
 		_float4 vDest;
 		XMStoreFloat4(&vDest, XMLoadFloat4(&fTargetPosUpper) + XMLoadFloat4(&fDir) * fDist);

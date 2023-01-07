@@ -175,9 +175,21 @@
     <ClInclude Include="..\public\Default_Pistol.h" />
     <ClInclude Include="..\public\Dynamic_Camera.h" />
     <ClInclude Include="..\public\Effect_Point_Instancing.h" />
+    <ClInclude Include="..\public\Elite_Bug.h" />
+    <ClInclude Include="..\public\Elite_Bug_State.h" />
+    <ClInclude Include="..\public\Elite_Knight.h" />
+    <ClInclude Include="..\public\Elite_Knight_State.h" />
     <ClInclude Include="..\public\ForkLift.h" />
     <ClInclude Include="..\public\Home.h" />
     <ClInclude Include="..\public\Home_Deco.h" />
+    <ClInclude Include="..\public\Human_Bow.h" />
+    <ClInclude Include="..\public\Human_Bow_State.h" />
+    <ClInclude Include="..\public\Human_Explode.h" />
+    <ClInclude Include="..\public\Human_Explode_State.h" />
+    <ClInclude Include="..\public\Human_Granade.h" />
+    <ClInclude Include="..\public\Human_Granade_State.h" />
+    <ClInclude Include="..\public\Human_Spear.h" />
+    <ClInclude Include="..\public\Human_Spear_State.h" />
     <ClInclude Include="..\public\Human_Sword.h" />
     <ClInclude Include="..\public\Human_Sword_State.h" />
     <ClInclude Include="..\public\Imgui_AnimationMgr.h" />
@@ -217,9 +229,21 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\private\Effect_Point_Instancing.cpp" />
+    <ClCompile Include="..\private\Elite_Bug.cpp" />
+    <ClCompile Include="..\private\Elite_Bug_State.cpp" />
+    <ClCompile Include="..\private\Elite_Knight.cpp" />
+    <ClCompile Include="..\private\Elite_Knight_State.cpp" />
     <ClCompile Include="..\private\ForkLift.cpp" />
     <ClCompile Include="..\private\Home.cpp" />
     <ClCompile Include="..\private\Home_Deco.cpp" />
+    <ClCompile Include="..\private\Human_Bow.cpp" />
+    <ClCompile Include="..\private\Human_Bow_State.cpp" />
+    <ClCompile Include="..\private\Human_Explode.cpp" />
+    <ClCompile Include="..\private\Human_Explode_State.cpp" />
+    <ClCompile Include="..\private\Human_Granade.cpp" />
+    <ClCompile Include="..\private\Human_Granade_State.cpp" />
+    <ClCompile Include="..\private\Human_Spear.cpp" />
+    <ClCompile Include="..\private\Human_Spear_State.cpp" />
     <ClCompile Include="..\private\Human_Sword.cpp" />
     <ClCompile Include="..\private\Human_Sword_State.cpp" />
     <ClCompile Include="..\private\Imgui_AnimationMgr.cpp" />
