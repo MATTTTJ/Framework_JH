@@ -40,8 +40,8 @@ void CMonster::Late_Tick(_double TimeDelta)
 
 HRESULT CMonster::Render()
 {
-	if (FAILED(__super::Render()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+
 #ifdef _DEBUG
 	// for (_uint i = 0; i < COLLTYPE_END; ++i)
 	// {

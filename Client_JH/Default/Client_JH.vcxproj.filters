@@ -145,6 +145,12 @@
     <Filter Include="02. GameObjects\01. GamePlay\Monster\01. DesertMap">
       <UniqueIdentifier>{dea0dc07-9711-4772-a44a-dbcdd77cb741}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword">
+      <UniqueIdentifier>{a4eaa124-e960-4ca9-a738-77b935b7d69a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword\Human_Sword_State">
+      <UniqueIdentifier>{b18736cb-ee32-4d20-a95f-c44f3424a712}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -261,6 +267,10 @@
     <ClInclude Include="..\public\Monster.h">
       <Filter>80. Manager\Parent\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Human_Sword.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Human_Sword_State.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -365,6 +375,10 @@
     <ClCompile Include="..\private\Monster.cpp">
       <Filter>80. Manager\Parent\Monster</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Human_Sword.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Human_Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Human_Sword_State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

@@ -178,6 +178,8 @@
     <ClInclude Include="..\public\ForkLift.h" />
     <ClInclude Include="..\public\Home.h" />
     <ClInclude Include="..\public\Home_Deco.h" />
+    <ClInclude Include="..\public\Human_Sword.h" />
+    <ClInclude Include="..\public\Human_Sword_State.h" />
     <ClInclude Include="..\public\Imgui_AnimationMgr.h" />
     <ClInclude Include="..\public\Imgui_LevelSwitcher.h" />
     <ClInclude Include="..\public\Imgui_MapEditor.h" />
@@ -218,6 +220,8 @@
     <ClCompile Include="..\private\ForkLift.cpp" />
     <ClCompile Include="..\private\Home.cpp" />
     <ClCompile Include="..\private\Home_Deco.cpp" />
+    <ClCompile Include="..\private\Human_Sword.cpp" />
+    <ClCompile Include="..\private\Human_Sword_State.cpp" />
     <ClCompile Include="..\private\Imgui_AnimationMgr.cpp" />
     <ClCompile Include="..\private\Imgui_LevelSwitcher.cpp" />
     <ClCompile Include="..\private\Imgui_MapEditor.cpp" />

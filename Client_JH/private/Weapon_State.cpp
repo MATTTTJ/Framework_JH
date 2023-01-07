@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "..\public\Weapon_State.h"
+#include "GameInstance.h"
 #include "Bullet.h"
 #include "Player.h"
-#include "GameInstance.h"
-#include "State.h"
 
 
 CWeapon_State::CWeapon_State()
