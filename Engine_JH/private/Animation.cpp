@@ -113,9 +113,6 @@ void CAnimation::Update_Bones(_double dTimeDelta)
 
 	if (m_dPlayTime >= m_dDuration)
 	{
-		if(m_bIsLooping)
-			m_dPlayTime = 0.0;
-
 		m_bIsFinished = true;
 	}
 
@@ -126,6 +123,9 @@ void CAnimation::Update_Bones(_double dTimeDelta)
 
 		m_vecChannels[i]->Update_TransformMatrix(m_dPlayTime);
 	}
+
+	if (m_bIsFinished && m_bIsLooping)
+		m_dPlayTime = 0.0;
 }
 
 _bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation* pNextAnim, _double LerpSpeed, _bool bFinish)

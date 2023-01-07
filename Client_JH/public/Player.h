@@ -55,7 +55,7 @@ private:
 	virtual ~CPlayer() = default;
 	friend CWeapon_State;
 public:
-	
+	void					Set_On_NaviMesh();
 	CCollider*				Get_OBBPtr() { return m_pColliderCom[COLLIDER_OBB]; }
 	_matrix					Get_BoneMatrix(const string& strBoneName);
 	_matrix					Get_OffsetMatrix(const string& strBoneName);

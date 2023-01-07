@@ -24,8 +24,12 @@ public:
 	void							ImGui_RenderProperty();
 
 	_bool							Compare_Points(const _float3& SourPoint, const _float3& DestPoint);
-	_bool							IsIn(_fvector vTargetPos, _int* pNeighborIndex);
+	_bool							Compare_Height(_fvector vTargetPos);
+	_bool							Compare_VerHeight(_fvector vTargetPos);
+	_bool							Compare_VerHeight(_fvector vTargetPos, CCell* pOtherCell);
+	_bool							IsIn(_fvector vTargetPos, _int& pNeighborIndex, _float4 & vBlockedLine, _float4 & vBlockedLineNormal);
 	_float4							Get_CellHeight(_float4 fTargetPos);
+	void							Get_BlockedLine(NEIGHBOR eNeighbor, _float4& vBlockedLine, _float4& vBlockedLineNormal);
 #ifdef _DEBUG
 	HRESULT							Render(class CShader* pShader);
 #endif
@@ -49,5 +53,7 @@ public:
 	static CCell*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, _int iIndex);
 	virtual void	Free();
 };
+
+
 
 END

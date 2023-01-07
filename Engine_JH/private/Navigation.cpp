@@ -17,7 +17,7 @@ CNavigation::CNavigation(const CNavigation& rhs)
 	, m_tNaviDesc(rhs.m_tNaviDesc)
 
 #ifdef _DEBUG
-	, m_pShaderCom( rhs.m_pShaderCom)
+	, m_pShaderCom(rhs.m_pShaderCom)
 #endif
 {
 	for (auto& pCell : m_vecCell)
@@ -46,7 +46,7 @@ HRESULT CNavigation::Initialize_Prototype(const wstring& wstrFilePath)
 
 		_uint	iCellCount;
 		jCells["Cell Count"].get_to<_uint>(iCellCount);
-		
+
 		for (auto jCell : jCells["Cells"])
 		{
 			_float3	vPoint[CCell::POINT_END];
@@ -213,56 +213,77 @@ HRESULT CNavigation::Find_NearBy_Point(_float3& vPoint)
 	return S_OK;
 }
 
-_bool CNavigation::IsMove_OnNavigation(_fvector vTargetPos)
+_bool CNavigation::IsMove_OnNavigation(_fvector vTargetPos, _float4& vBlockedLine, _float4& vBlockedLineNormal)
 {
 	if (-1 == m_tNaviDesc.iCurrentIndex)
 		return false;
 
 	_int	iNeighborIndex = -1;
 
-	// 움직이고 난 결과위치가 셀 안에 있다면 
-	if (true == m_vecCell[m_tNaviDesc.iCurrentIndex]->IsIn(vTargetPos, &iNeighborIndex))
+	if (true == m_vecCell[m_tNaviDesc.iCurrentIndex]->IsIn(vTargetPos, iNeighborIndex, vBlockedLine, vBlockedLineNormal))
 	{
 		m_fCellHeight = m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_CellHeight(vTargetPos);
-
 		return true;
 	}
-	// 움직이고 난 결과 위치가 이 셀을 벗어난다면
 	else
 	{
 		// 나간 방향으로 이웃이 있다면
-		if(-1 != iNeighborIndex)
+		if (-1 != iNeighborIndex)
 		{
-			while(true)
+			while (true)
 			{
-				if( -1 == iNeighborIndex)
-				{
+				if (iNeighborIndex == -1)
 					return false;
-				}
-
-				if(true == m_vecCell[iNeighborIndex]->IsIn(vTargetPos, &iNeighborIndex))
+				else
 				{
-					// m_tNaviDesc.iCurrentIndex = 이웃의 인덱스
-					m_tNaviDesc.iCurrentIndex = iNeighborIndex;
+					if (true == m_vecCell[iNeighborIndex]->IsIn(vTargetPos, iNeighborIndex, vBlockedLine, vBlockedLineNormal))
+					{
 
-					m_fCellHeight = m_vecCell[iNeighborIndex]->Get_CellHeight(vTargetPos);
+						// if (m_vecCell[m_tNaviDesc.iCurrentIndex]->Compare_VerHeight(vTargetPos, m_vecCell[iNeighborIndex]))
+						// {
+						// 	m_bIsOverHeight = true;
+						// 	return false;
+						// }
 
-					return true;
+						m_tNaviDesc.iCurrentIndex = iNeighborIndex;
+
+						CCell::NEIGHBOR		eNeighbor = CCell::NEIGHBOR_END;
+
+						if (m_vecCell[iNeighborIndex]->Compare_Points(m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_Point(CCell::POINT_A), m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_Point(CCell::POINT_B)))
+						{
+							eNeighbor = CCell::NEIGHBOR_AB;
+						}
+						else if (true == m_vecCell[iNeighborIndex]->Compare_Points(m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_Point(CCell::POINT_B), m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_Point(CCell::POINT_C)))
+						{
+							eNeighbor = CCell::NEIGHBOR_BC;
+						}
+
+						else if (true == m_vecCell[iNeighborIndex]->Compare_Points(m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_Point(CCell::POINT_C), m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_Point(CCell::POINT_A)))
+						{
+							eNeighbor = CCell::NEIGHBOR_CA;
+						}
+
+						if (eNeighbor != CCell::NEIGHBOR_END)
+						{
+							m_vecCell[iNeighborIndex]->Get_BlockedLine(eNeighbor, vBlockedLine, vBlockedLineNormal);
+						}
+						return true;
+					}
 				}
 			}
 		}
-		else // 나간 방향으로 이웃이 없었다면 
-		{
-			return false;
-		}
+		else
+			return false; 
 	}
 }
+
+
 #ifdef _DEBUG
 HRESULT CNavigation::Render()
 {
 	_float fHeight = 0.f;
 
-	if(-1 == m_tNaviDesc.iCurrentIndex)
+	if (-1 == m_tNaviDesc.iCurrentIndex)
 	{
 		fHeight = 0.1f;
 		HRESULT	hr = m_pShaderCom->Set_RawValue(L"g_fHeight", &fHeight, sizeof(_float));
@@ -318,7 +339,7 @@ HRESULT CNavigation::Ready_Neighbor()
 	return S_OK;
 }
 
-CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,	const wstring& wstrFilePath)
+CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& wstrFilePath)
 {
 	CNavigation*		pInstance = new CNavigation(pDevice, pContext);
 

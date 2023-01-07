@@ -44,6 +44,7 @@ CPlayer::CPlayer(const CPlayer & rhs)
 	m_PlayerOption.m_iThrowCnt = 4;
 }
 
+
 _matrix CPlayer::Get_BoneMatrix(const string& strBoneName)
 {
 	if (nullptr == m_pModelCom)
@@ -141,6 +142,20 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	return S_OK;
 }
 
+void CPlayer::Set_On_NaviMesh()
+{
+	_matrix matpivot;
+	matpivot = XMMatrixIdentity();
+	matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
+
+	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
+	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	PlayerPos.y = m_fHeight + 2.644f;
+
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, PlayerPos);
+}
+
+
 void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
@@ -178,15 +193,7 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_pTransformCom->Go_Right(dTimeDelta);
 	}
 
-	_matrix matpivot;
-	matpivot = XMMatrixIdentity();
-	matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
-
-	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
-	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	PlayerPos.y = m_fHeight + 2.644f;
-
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, PlayerPos);
+	Set_On_NaviMesh();
 
 	if (nullptr != m_pState)
 		m_pState->Tick(dTimeDelta);
@@ -215,10 +222,10 @@ void CPlayer::Tick(_double dTimeDelta)
 		if (i == COLLIDER_MUZZLE)
 		{
 			if(m_PlayerOption.m_wstrCurWeaponName == L"WEAPON_DEFAULT")
-				m_pColliderCom[i]->Update(Get_BoneMatrix("Att") * matpivot * m_pTransformCom->Get_WorldMatrix());
+				m_pColliderCom[i]->Update(Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 			else if (m_PlayerOption.m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
 			{
-				m_pColliderCom[i]->Update(Get_BoneMatrix("Att001") * matpivot * m_pTransformCom->Get_WorldMatrix());
+				m_pColliderCom[i]->Update(Get_BoneMatrix("Att001") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 			}
 		}
 		else if (i == COLLIDER_OBB)

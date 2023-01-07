@@ -69,7 +69,67 @@ _bool CCell::Compare_Points(const _float3& SourPoint, const _float3& DestPoint)
 	return false;
 }
 
-_bool CCell::IsIn(_fvector vTargetPos, _int* pNeighborIndex)
+_bool CCell::Compare_Height(_fvector vTargetPos)
+{
+	_float		fAvgHeight = 0.f;
+
+	for (_uint i = 0; i < POINT_END; ++i)
+		fAvgHeight += m_vPoints[i].y;
+
+	fAvgHeight /= 3.f;
+
+	if (fAvgHeight > XMVectorGetY(vTargetPos))
+		return true;
+	else
+		return false;
+}
+
+_bool CCell::Compare_VerHeight(_fvector vTargetPos)
+{
+	_float		fAvgHeight = 0.f;
+
+	for (_uint i = 0; i < POINT_END; ++i)
+		fAvgHeight += m_vPoints[i].y;
+
+	fAvgHeight /= 3.f;
+
+	fAvgHeight = fAvgHeight + 2.644f;
+	if (fAvgHeight - XMVectorGetY(vTargetPos) > 0.3f)
+		return true;
+	else
+		return false;
+}
+
+_bool CCell::Compare_VerHeight(_fvector vTargetPos, CCell* pOtherCell)
+{
+	_float		fAvgHeight = 0.f;
+	_float		fAvgHeight_A = 0.f;
+
+	for (_uint i = 0; i < POINT_END; ++i)
+	{
+		fAvgHeight += m_vPoints[i].y;
+		fAvgHeight_A += pOtherCell->m_vPoints[i].y;
+	}
+
+	fAvgHeight /= 3.f;
+	fAvgHeight_A /= 3.f;
+
+	if ((fAvgHeight - XMVectorGetY(vTargetPos)) > 0.15f)
+		return false;
+	else
+		return true;
+}
+
+void CCell::Get_BlockedLine(NEIGHBOR eNeighbor, _float4& vBlockedLine, _float4& vBlockedLineNormal)
+{
+	_vector	vLine = XMLoadFloat3(&m_vPoints[(eNeighbor + 1 % NEIGHBOR_END)]) - XMLoadFloat3(&m_vPoints[eNeighbor]);
+	_vector vNormal = XMVector3Normalize(XMVectorSet(XMVectorGetZ(vLine) * -1.f, 0.f, XMVectorGetX(vLine), 0.f));
+
+	XMStoreFloat4(&vBlockedLine, vLine);
+	XMStoreFloat4(&vBlockedLineNormal, vNormal);
+}
+
+_bool CCell::IsIn(_fvector vTargetPos, _int& pNeighborIndex, _float4 & vBlockedLine, _float4 & vBlockedLineNormal)
 {
 	for (_uint i = 0; i < NEIGHBOR_END; ++i)
 	{
@@ -77,9 +137,15 @@ _bool CCell::IsIn(_fvector vTargetPos, _int* pNeighborIndex)
 		_vector		vNormal = XMVector3Normalize(XMVectorSet(XMVectorGetZ(vLine) * -1.f, 0.f, XMVectorGetX(vLine), 0.f));
 		_vector		vDir = XMVector3Normalize(vTargetPos - XMLoadFloat3(&m_vPoints[i]));
 
-		if (0 < XMVectorGetX(XMVector3Dot(vNormal, vDir)))
+		if (0.f < XMVectorGetX(XMVector3Dot(vNormal, vDir)))
 		{
-			*pNeighborIndex = m_iNeighborIndices[i];
+			pNeighborIndex = m_iNeighborIndices[i];
+
+			if(-1 == pNeighborIndex)
+			{
+				XMStoreFloat4(&vBlockedLine, vLine);
+				XMStoreFloat4(&vBlockedLineNormal, vNormal);
+			}
 			return false;
 		}
 	}

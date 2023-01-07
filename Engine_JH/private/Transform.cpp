@@ -87,9 +87,9 @@ HRESULT CTransform::Initialize_Clone(CGameObject* pOwner, void * pArg)
 void CTransform::Imgui_RenderProperty()
 {
 	ImGuizmo::BeginFrame();
-	
+
 	static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);
-	
+
 	ImGui::BulletText("ImGuizmo Type");
 	if (ImGui::RadioButton("Translate", CurGuizmoType == ImGuizmo::TRANSLATE))
 		CurGuizmoType = ImGuizmo::TRANSLATE;
@@ -99,68 +99,87 @@ void CTransform::Imgui_RenderProperty()
 	ImGui::SameLine();
 	if (ImGui::RadioButton("Rotate", CurGuizmoType == ImGuizmo::ROTATE))
 		CurGuizmoType = ImGuizmo::ROTATE;
-	
+
 	_float	vPos[3], vScale[3], vAngle[3];
 	ImGuizmo::DecomposeMatrixToComponents((_float*)&m_WorldMatrix, vPos, vAngle, vScale);
 	IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Translate", vPos);
 	IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Scale", vScale);
 	IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Rotate", vAngle);
 	ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&m_WorldMatrix);
-	
+
 	ImGuiIO&	io = ImGui::GetIO();
 	RECT		rt;
 	GetClientRect(CGameInstance::GetInstance()->GetHWND(), &rt);
 	POINT		LT{ rt.left, rt.top };
 	ClientToScreen(CGameInstance::GetInstance()->GetHWND(), &LT);
 	ImGuizmo::SetRect((_float)LT.x, (_float)LT.y, io.DisplaySize.x, io.DisplaySize.y);
-	
+
 	_float4x4		matView, matProj;
 	XMStoreFloat4x4(&matView, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
 	XMStoreFloat4x4(&matProj, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
-	
+
 	ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&m_WorldMatrix);
 }
 
 void CTransform::Go_Straight(_double TimeDelta, TRANSTYPE eType, CNavigation* pNaviCom)
 {
-	// _vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
-	// _vector	vLook = Get_State(CTransform::STATE_LOOK);
-	//
-	// /* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
-	// vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * TimeDelta;
-	//
-	// Set_State(CTransform::STATE_TRANSLATION, vPosition);
+
 
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
-	_vector	vLook = Get_State(CTransform::STATE_LOOK);
+	_float4	vLook = Get_State(CTransform::STATE_LOOK);
 
-	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
-	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
-
+	_vector vMovePos = vPosition + XMVector3Normalize(vLook)* m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+	// vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 	if (nullptr == pNaviCom)
 	{
 		Set_State(CTransform::STATE_TRANSLATION, vPosition);
 	}
 	else
 	{
-		if (true == pNaviCom->IsMove_OnNavigation(vPosition))
-			Set_State(CTransform::STATE_TRANSLATION, vPosition);
+		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+
+		if (true == pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+		else
+		{
+			// TODO :: 셀의 평균 높이가 플레이어보다 일정 수치가 높으면
+			// if(pNaviCom->Is_OverHeight())
+			// {
+			// 	Set_State(CTransform::STATE_TRANSLATION, vPosition);
+			// }
+			// else
+			// {
+			_vector vInDir = vMovePos - vPosition;
+			_vector vOutDir = vPosition - vMovePos;
+			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+
+			_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+
+			vMovePos = vPosition + vSlidingDir;
+
+			if (pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			{
+				Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+			}
+		}
 	}
+	// }
 
 	if (TRANS_BULLET == eType)
 	{
-		Set_State(CTransform::STATE_TRANSLATION, vPosition);
-	}	
+		Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+	}
 
-	
 
-	
+
+
 }
 
 void CTransform::Go_Backward(_double TimeDelta)
 {
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
-	_vector	vLook = 
+	_vector	vLook =
 		Get_State(CTransform::STATE_LOOK);
 
 	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
@@ -183,13 +202,13 @@ void CTransform::Go_Right(_double TimeDelta)
 {
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
 	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
-	
+
 	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
 	vPosition += XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
-	
+
 	Set_State(CTransform::STATE_TRANSLATION, vPosition);
 
-	
+
 }
 
 void CTransform::Turn(_fvector vAxis, _double TimeDelta)
@@ -265,9 +284,9 @@ void CTransform::Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTic
 		return;
 
 	_float4	vPos;
-	XMStoreFloat4(&vPos,Get_State(CTransform::STATE_TRANSLATION));
+	XMStoreFloat4(&vPos, Get_State(CTransform::STATE_TRANSLATION));
 	_float4	vLook;
-	XMStoreFloat4(&vLook , Get_State(CTransform::STATE_LOOK));
+	XMStoreFloat4(&vLook, Get_State(CTransform::STATE_LOOK));
 	_float3	vScale = Get_Scaled();
 
 	_float4	vDir;

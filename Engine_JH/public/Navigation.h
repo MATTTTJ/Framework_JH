@@ -21,6 +21,7 @@ public:
 	_uint						Get_CellCount() { return (_uint)m_vecCell.size(); }
 	class CCell*				Get_Cell(_int iIndex) { return m_vecCell[iIndex]; }
 	vector<class CCell*>*		Get_vecCell() { return &m_vecCell; }
+	_bool						Is_OverHeight() { return m_bIsOverHeight; }
 
 public:
 	virtual HRESULT			Initialize_Prototype(const wstring& wstrFilePath);
@@ -32,7 +33,7 @@ public:
 	HRESULT					Delete_Cell(_int iIndex);
 	HRESULT					Save_Cell(string strSaveFilePath);
 	HRESULT					Find_NearBy_Point(_float3& vPoint);
-	_bool					IsMove_OnNavigation(_fvector vTargetPos);
+	_bool					IsMove_OnNavigation(_fvector vTargetPos, _float4& vBlockedLine, _float4& vBlockedLineNormal);
 
 #ifdef _DEBUG
 public:
@@ -48,7 +49,7 @@ private:
 
 private:
 	_float4					m_fCellHeight = { 0.f, 0.f,0.f,1.f };
-
+	_bool					m_bIsOverHeight = false;
 
 #ifdef _DEBUG
 private:
