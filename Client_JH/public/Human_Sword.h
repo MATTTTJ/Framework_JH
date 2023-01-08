@@ -39,7 +39,6 @@ public:
 private:
 	CRenderer*					m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;
-	CModel*						m_pModelCom = nullptr;
 	CNavigation*				m_pNavigationCom = nullptr;
 	class CHuman_Sword_State*	m_pHuman_Sword_State = nullptr;
 

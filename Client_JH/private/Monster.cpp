@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "..\public\Monster.h"
+#include "GameInstance.h"
+#include "State.h"
+#include "UI.h"
+
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -11,6 +15,30 @@ CMonster::CMonster(const CMonster & rhs)
 	: CGameObject(rhs)
 {
 
+}
+
+_matrix CMonster::Get_BoneMatrix(const string& strBoneName)
+{
+	if (nullptr == m_pModelCom)
+		return XMMatrixIdentity();
+
+	return m_pModelCom->Get_BoneMatrix(strBoneName);
+}
+
+_vector CMonster::Get_TransformState(CTransform::STATE eState)
+{
+	if (m_pModelCom == nullptr)
+		return XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	return m_pTransformCom->Get_State(eState);
+}
+
+_matrix CMonster::Get_CombindMatrix(const string& strBoneName)
+{
+	if (nullptr == m_pModelCom)
+		return XMMatrixIdentity();
+
+	return m_pModelCom->Get_CombindMatrix(strBoneName);
 }
 
 HRESULT CMonster::Initialize_Prototype()

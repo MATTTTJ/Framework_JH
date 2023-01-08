@@ -190,4 +190,6 @@ CGameObject* CStatic_Camera::Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CStatic_Camera::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pColliderCom);
 }

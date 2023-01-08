@@ -81,7 +81,6 @@ HRESULT CObject_Manager::Add_AnimObject(CGameObject* pAnimObject)
 	NULL_CHECK_RETURN(pAnimObject, E_FAIL);
 
 	m_vecAnimObjects.push_back(pAnimObject);
-	Safe_AddRef(pAnimObject);
 	return S_OK;
 }
 
@@ -250,10 +249,6 @@ void CObject_Manager::Free()
 
 		m_pLayers[i].clear();
 	}
-	for (auto& pAnimObject : m_vecAnimObjects)
-		Safe_Release(pAnimObject);
-	m_vecAnimObjects.clear();
-
 
 	Safe_Delete_Array(m_pLayers);
 

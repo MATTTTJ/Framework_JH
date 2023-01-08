@@ -100,8 +100,6 @@ void CWeapon_State::Tick(_double dTimeDelta)
 
 
 
-
-
 	for (auto iter = m_vecBullet.begin(); iter != m_vecBullet.end();)
 	{
 		if (CGameInstance::GetInstance()->Key_Down(DIK_F9) && !m_bDeadOnce)
@@ -610,8 +608,6 @@ CWeapon_State* CWeapon_State::Create(CPlayer* pPlayer, CState* pStateMachineCom,
 
 void CWeapon_State::Free()
 {
-	Safe_Release(m_pGameInstance);
-
 	for (_uint i = 0; i < m_vecBullet.size(); ++i)
 	{
 		Safe_Release(m_vecBullet[i]);

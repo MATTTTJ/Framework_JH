@@ -32,6 +32,8 @@ protected:
 	virtual ~CUI() = default;
 
 public:
+	void						Set_Owner(CGameObject* pOwner) { m_pOwner = pOwner; }
+	void						Set_Weapon_State(CWeapon_State* pState) { m_pWeapon_State = pState; }
 	virtual HRESULT				Initialize_Prototype() override;
 	virtual HRESULT				Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
@@ -42,6 +44,7 @@ protected:
 	CRenderer*					m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;
 	CTexture*					m_pTextureCom = nullptr;
+	CVIBuffer_Rect*				m_pVIBufferCom = nullptr;
 
 	CTexture*					m_pOnTextureCom = nullptr;
 	CTexture*					m_pOffTextureCom = nullptr;
@@ -53,10 +56,9 @@ protected:
 
 
 
-	CVIBuffer_Rect*				m_pVIBufferCom = nullptr;
 
 	CGameObject*				m_pOwner = nullptr;
-	CWeapon_State*				m_pState = nullptr;
+	CWeapon_State*				m_pWeapon_State = nullptr;
 
 protected:
 	_float						m_fX, m_fY, m_fSizeX, m_fSizeY;

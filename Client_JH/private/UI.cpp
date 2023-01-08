@@ -34,20 +34,20 @@ void CUI::Tick(_double dTimeDelta)
 
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
-	if (nullptr == m_pOwner)
-	{
-		m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front();
-		m_pState = dynamic_cast<CPlayer*>(m_pOwner)->Get_WeaponStatePtr();
-	}
-
-	else
-	{
-		if (CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->empty())
-		{
-			m_pOwner = nullptr;
-			return;
-		}
-	}
+	// if (nullptr == m_pOwner)
+	// {
+	// 	m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front();
+	// 	m_pWeapon_State = dynamic_cast<CPlayer*>(m_pOwner)->Get_WeaponStatePtr();
+	// }
+	//
+	// else
+	// {
+	// 	if (CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->empty())
+	// 	{
+	// 		m_pOwner = nullptr;
+	// 		return;
+	// 	}
+	// }
 }
 
 void CUI::Late_Tick(_double dTimeDelta)
@@ -66,26 +66,21 @@ void CUI::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pOffTextureCom);
-	Safe_Release(m_pOnTextureCom);
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pOnTextureCom);
+	Safe_Release(m_pOffTextureCom);
 	Safe_Release(m_pGlowTextureCom);
 
-	for(_int i = 0; i < CWeapon_State::WEAPONTYPE_END; ++i)
-	{
+	for (_int i = 0; i < CWeapon_State::WEAPONTYPE_END; ++i)
 		Safe_Release(m_pWeaponTextureCom[i]);
-	}
 
 	for (_int i = 0; i < WEAPON_NUMEND; ++i)
-	{
 		Safe_Release(m_pWeaponNumberCom[i]);
-	}
 
 	for (_int i = 0; i < NUM_END; ++i)
-	{
 		Safe_Release(m_pNumberingTexCom[i]);
-	}
+
+	Safe_Release(m_pRendererCom);
 }

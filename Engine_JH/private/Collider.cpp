@@ -156,6 +156,8 @@ _bool CCollider::Collision(CCollider* pTargetCollider)
 
 CGameObject* CCollider::CollisionReturnObj(CCollider* pTargetCollider)
 {
+	
+
 	m_bIsColl = false;
 	CGameObject*		pTarget = nullptr;
 
@@ -462,7 +464,6 @@ void CCollider::Free()
 	Safe_Delete(m_pSphere);
 
 #ifdef _DEBUG
-
 	Safe_Release(m_pInputLayout);
 
 	if (false == m_bIsCloned)

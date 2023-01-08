@@ -112,6 +112,9 @@ HRESULT CHuman_Sword::Render()
 
 void CHuman_Sword::Collider_Tick(_double TimeDelta)
 {
+	// m_pColliderCom[i]->Update(Get_BoneMatrix("Att001") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+
+
 	m_pColliderCom[COLLTYPE_DETECTED]->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pColliderCom[COLLTYPE_HITBODY]->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pColliderCom[COLLTYPE_HITHEAD]->Update(m_pTransformCom->Get_WorldMatrix());
@@ -159,10 +162,27 @@ HRESULT CHuman_Sword::SetUp_Components()
 	// FAILED_CHECK_RETURN(m_pModelCom->Check_MeshSize("CritterSmall_01_LOD0", Xmin, Xmax, Ymin, Ymax, Zmin, Zmax), E_FAIL);
 
 	CCollider::COLLIDERDESC	ColliderDesc;
+
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLTYPE_HITBODY], this, &ColliderDesc), E_FAIL);
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLTYPE_HITHEAD], this, &ColliderDesc), E_FAIL);
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLTYPE_ATTPOS], this, &ColliderDesc), E_FAIL);
+
 	return S_OK;
 }
 
@@ -217,26 +237,26 @@ CGameObject* CHuman_Sword::Clone(const wstring& wstrPrototypeTag, void* pArg)
 
 void CHuman_Sword::Free()
 {
-	__super::Free();
-
-	Safe_Release(m_pHuman_Sword_State);
-	Safe_Release(m_pNavigationCom);
-
-	for(_uint i =0; i<COLLTYPE_END; ++i)
-	{
-		if(nullptr != m_pColliderCom[i])
-			Safe_Release(m_pColliderCom[i]);
-	}
-	for (auto& iter = m_vecMonsterUI.begin(); iter != m_vecMonsterUI.end();)
-	{
-		if (nullptr != (*iter))
-		{
-			Safe_Release(iter);
-		}
-		else
-			++iter;
-	}
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pRendererCom);
+	// __super::Free();
+	//
+	// Safe_Release(m_pHuman_Sword_State);
+	// Safe_Release(m_pNavigationCom);
+	//
+	// for(_uint i =0; i<COLLTYPE_END; ++i)
+	// {
+	// 	if(nullptr != m_pColliderCom[i])
+	// 		Safe_Release(m_pColliderCom[i]);
+	// }
+	//
+	// for (auto& pUI : m_vecMonsterUI)
+	// {
+	// 	if (pUI != nullptr)
+	// 	{
+	// 		Safe_Release(pUI);
+	// 	}
+	// }
+	//
+	// Safe_Release(m_pModelCom);
+	// Safe_Release(m_pShaderCom);
+	// Safe_Release(m_pRendererCom);
 }

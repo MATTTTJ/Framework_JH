@@ -1,14 +1,13 @@
 #pragma once
-#include <Model.h>
 #include "Client_Defines.h"
 #include "GameObject.h"
+#include "Model.h"
 #include "Weapon_State.h"
-
 BEGIN(Engine)
-class CShader;
 class CRenderer;
-class CCollider;
+class CShader;
 class CModel;
+class CCollider;
 class CNavigation;
 class CAnimation;
 class CState;
@@ -54,6 +53,7 @@ private:
 	CPlayer(const CPlayer& rhs);
 	virtual ~CPlayer() = default;
 	friend CWeapon_State;
+
 public:
 	void					Set_On_NaviMesh();
 	CCollider*				Get_OBBPtr() { return m_pColliderCom[COLLIDER_OBB]; }
@@ -62,12 +62,13 @@ public:
 	_matrix					Get_PivotMatrix();
 	_vector					Get_TransformState(CTransform::STATE eState);
 	_matrix					Get_CombindMatrix(const string& strBoneName);
+	// const _uint&			Get_CurweaponBulletCnt();
 	const wstring&			Get_CurWeaponName(void) const { return m_PlayerOption.m_wstrCurWeaponName; }
 	const wstring&			Get_CurWeaponNumber(void) const { return m_PlayerOption.m_wstrWeaponNumber; }
 	CWeapon_State*			Get_WeaponStatePtr(void) { return m_pWeaponState; }
 
 	CModel*					Get_CurWeaponModelCom(void);
-	_float4x4					Get_HeadModelCom(void);
+	_float4x4				Get_HeadModelCom(void);
 	_uint					Get_EmeraldCnt(void) { return m_PlayerOption.m_iEmeraldCnt; }
 	_uint					Get_GoldCnt(void) { return m_PlayerOption.m_iGold; }
 	_uint					Get_ThrowCnt(void) { return m_PlayerOption.m_iThrowCnt; }
@@ -90,26 +91,20 @@ private:
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
 
-	class CStaticCamera*	m_pCamera = nullptr;
-
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
 	CCollider*				m_pFirstAimColliderCom = nullptr;
 	CCollider*				m_pSecondAimColliderCom = nullptr;
 
-	class CPlayerUI_Base*			m_pPlayerUICom[UI_END] = { nullptr };
-
-	vector<CGameObject*>	m_vecPlayerParts;
-
-	CModel*					m_pWeaponModelCom[WEAPON_END] = { nullptr };
-	WEAPONDESC				m_tWeaponDesc[WEAPON_END];
-
-	CNavigation*			m_pNavigationCom = nullptr;
-
-	_uint					m_iPoisonAttCnt = 0;
-
+	class CPlayerUI_Base*	m_pPlayerUICom[UI_END] = { nullptr };
 	CState*					m_pState = nullptr;
-	class CPlayer_State*	m_pPlayerState = nullptr;
 	class CWeapon_State*	m_pWeaponState = nullptr;
+	WEAPONDESC				m_tWeaponDesc[WEAPON_END];
+	CNavigation*			m_pNavigationCom = nullptr;
+	_uint					m_iPoisonAttCnt = 0;
+	
+
+
+	// vector<CGameObject*>	m_vecPlayerParts;
 
 private: // State
 	CModel::LERPTYPE		m_eLerpType = CModel::LERP_BEGIN;

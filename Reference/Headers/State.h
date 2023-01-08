@@ -87,7 +87,7 @@ public:
 		const auto iter = find_if(m_mapChanger.begin(), m_mapChanger.end(), CTag_Finder(m_wstrCurStateName));
 
 		CHANGER	Changer;
-		ZeroMemory(&Changer, sizeof(CHANGER));
+		// ZeroMemory(&Changer, sizeof(CHANGER));
 
 		Changer.wstrNextState = wstrNextState;
 		Changer.Changer_Func = [obj, memFunc]()

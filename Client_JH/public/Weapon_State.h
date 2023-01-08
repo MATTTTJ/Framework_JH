@@ -42,11 +42,11 @@ public:
 
 	struct WEAPON_OPTION
 	{
-		_uint		iCurBullet;
-		_uint		iMaxBullet;
+		_uint		iCurBullet = 0;
+		_uint		iMaxBullet = 0;
 
-		_uint		iAttack;
-		wstring		wstrWeaponName;
+		_uint		iAttack = 0;
+		wstring		wstrWeaponName = L"";
 	};
 
 	enum WEAPONTYPE { DEFAULT_PISTOL, FLAME_BULLET, FIRE_DRAGON, POISON, WEAPONTYPE_END };
@@ -109,7 +109,7 @@ private:
 	_bool						m_bDeadOnce = false;
 private:
 	WEAPON_OPTION				m_tWeaponOption[WEAPONTYPE_END];
-	vector<class CGameObject*>		m_vecBullet;
+	vector<class CGameObject*>	m_vecBullet;
 	// _bool						m_bIsWeaponNumber[WEAPON_NUMBEREND] = { false };
 	// WEAPONNUMBER				m_eType;
 public:

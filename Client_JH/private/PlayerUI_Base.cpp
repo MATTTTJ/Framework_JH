@@ -1463,7 +1463,7 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 			m_eWeaponType = WEAPON_RIFLE;
 
 			m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_PistolBulletCnt();
-			m_iWeapon_BulletCnt = m_pState->Get_CurWeaponBulletCnt(m_wstrWeaponName);
+			m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
 
 			for (auto& iter : m_vecCountUI)
@@ -1480,7 +1480,7 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 			m_eWeaponType = WEAPON_INJECTOR;
 
 			m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_InjectorBulletCnt();
-			m_iWeapon_BulletCnt = m_pState->Get_CurWeaponBulletCnt(m_wstrWeaponName);
+			m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
 			for (auto& iter : m_vecCountUI)
 				Safe_Release(iter);
@@ -1496,7 +1496,7 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 			m_eWeaponType = WEAPON_PISTOL;
 
 			m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_PistolBulletCnt();
-			m_iWeapon_BulletCnt = m_pState->Get_CurWeaponBulletCnt(m_wstrWeaponName);
+			m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
 			for (auto& iter : m_vecCountUI)
 				Safe_Release(iter);

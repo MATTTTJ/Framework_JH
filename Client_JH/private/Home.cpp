@@ -124,8 +124,8 @@ void CHome::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pNavigationCom);
 }

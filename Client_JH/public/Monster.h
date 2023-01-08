@@ -4,7 +4,8 @@
 
 BEGIN(Engine)
 class CCollider;
-class CState; 
+class CState;
+class CModel;
 END
 
 BEGIN(Client)
@@ -24,6 +25,10 @@ public:
 	void					Set_Player(class CPlayer* pPlayer) { m_pPlayer = pPlayer; }
 
 public:
+	_matrix					Get_BoneMatrix(const string& strBoneName);
+	_vector					Get_TransformState(CTransform::STATE eState);
+	_matrix					Get_CombindMatrix(const string& strBoneName);
+
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void			Tick(_double TimeDelta) override;
@@ -39,6 +44,7 @@ public:
 	virtual void			Collision_Event(class CPlayer* pPlayer) {} // 구현해도되고 안해도되고 
 
 protected:
+	CModel*					m_pModelCom = nullptr;
 	class CPlayer*			m_pPlayer = nullptr;
 	CState*					m_pState = nullptr;
 	CCollider*				m_pColliderCom[COLLTYPE_END] = { nullptr };
