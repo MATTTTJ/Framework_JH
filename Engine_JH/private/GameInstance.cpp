@@ -311,6 +311,22 @@ CComponent* CGameInstance::Get_ComponentPtr(_uint iLevelIndex, const wstring& ws
 	return m_pObject_Manager->Get_ComponentPtr(iLevelIndex, wstrLayerTag, wstrComponentTag, iIndex);
 }
 
+CGameObject* CGameInstance::Clone_GameObjectReturnPtr_M(_uint iLevelIndex, const wstring& wstrLayerTag,
+	const wstring& wstrPrototypeTag,_float4x4 matWorld, void* pArg)
+{
+	NULL_CHECK_RETURN(m_pObject_Manager, nullptr);
+
+	return m_pObject_Manager->Clone_GameObjectReturnPtr_M(iLevelIndex, wstrLayerTag, wstrPrototypeTag, matWorld, pArg);
+}
+
+CGameObject* CGameInstance::Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring& wstrLayerTag,
+	const wstring& wstrPrototypeTag, void* pArg)
+{
+	NULL_CHECK_RETURN(m_pObject_Manager, nullptr);
+
+	return m_pObject_Manager->Clone_GameObjectReturnPtr(iLevelIndex, wstrLayerTag, wstrPrototypeTag, pArg);
+}
+
 map<const wstring, CComponent*>* CGameInstance::Get_PrototypeComponents()
 {
 	NULL_CHECK_RETURN(m_pComponent_Manager, nullptr);

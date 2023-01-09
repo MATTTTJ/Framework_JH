@@ -11,12 +11,22 @@ public:
 		CTransform::TRANSFORMDESC		TransformDesc;
 
 
+		//체력, 데미지
+		_int					m_iHP = 0;
+		_int					m_iMaxHP = 0;
+
+		_int					m_iShield = 0;
+		_int					m_iMaxShield = 0;
+
+		_uint					m_iDamage = 0;
+		
+
 		// For CountUI
-		_float2					m_vTexSize;
-		_int					m_iNumCnt;
-		_int					m_iNumber;
-		_float4					m_vNumColor;
-		_float4					m_vBulletLook;
+		_float2					m_vTexSize = { 0.f, 0.f};
+		_int					m_iNumCnt = 0;
+		_int					m_iNumber = 0;
+		_float4					m_vNumColor = {1.f, 1.f, 1.f, 1.f};
+		_float4					m_vBulletLook = { 0.f, 0.f, 0.f, 0.f }; 
 	}GAMEOBJECTDESC;
 
 protected:
@@ -31,6 +41,7 @@ public:
 
 	GAMEOBJECTDESC			Set_GameObjectDesc(GAMEOBJECTDESC Desc);
 
+	const _bool&			Get_IsClone() { return m_bIsClone; }
 	const _bool&			Get_HasModel() { return m_bHasModel; }
 	const _float4x4&		Get_WorldFloat4x4() const { return m_pTransformCom->Get_WorldFloat4x4(); }
 	const wstring&			Get_PrototypeGameObjectTag() { return m_wstrPrototypeGameObjectTag; }

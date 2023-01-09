@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Player.h"
 #include "GameInstance.h"
+#include "Monster.h"
 #include "Static_Camera.h"
 #include "State.h"
 #include "UI.h"
@@ -139,7 +140,7 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
-	m_pTransformCom->Set_Scaled(_float3(0.3f, 0.3f, 0.3f));
+	m_pTransformCom->Set_Scaled(_float3(1.f, 1.f, 1.f));
 	
 
 
@@ -154,7 +155,8 @@ void CPlayer::Set_On_NaviMesh()
 
 	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
 	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	PlayerPos.y = m_fHeight + 2.644f;
+	PlayerPos.y = m_fHeight + 1.5f;
+	// 2.644
 
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, PlayerPos);
 }
@@ -287,6 +289,8 @@ HRESULT CPlayer::Render()
 		if (nullptr != m_pColliderCom[i])
 			m_pColliderCom[i]->Render();
 	}
+	
+
 	m_pFirstAimColliderCom->Render();
 	m_pSecondAimColliderCom->Render();
 
@@ -303,14 +307,28 @@ void CPlayer::Set_Camera(_double dTimeDelta)
 		back())->Camera_Update(	dTimeDelta, m_pTransformCom->Get_WorldMatrix());
 }
 
+_bool CPlayer::Collision_Body(CCollider* pOtherCollider)
+{
+	return m_pColliderCom[COLLIDER_SPHERE]->Collision(pOtherCollider);
+}
+
 CGameObject* CPlayer::Collision_AimBox_To_Monster()
 {
-	CCollider*		pTargetCollider = (CCollider*)CGameInstance::GetInstance()->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_SPHERE");
+	// CCollider*		pTargetCollider = (CCollider*)CGameInstance::GetInstance()->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_SPHERE");
 
-	if (nullptr == pTargetCollider)
-		return nullptr;
+	// if (nullptr == pTargetCollider)
+		// return nullptr;
 
-	return	m_pColliderCom[COLLIDER_OBB]->CollisionReturnObj(pTargetCollider);
+
+	return	nullptr;//m_pColliderCom[COLLIDER_OBB]->CollisionReturnObj(pTargetCollider);
+}
+
+void CPlayer::Collision_Event(CMonster* pMonster)
+{
+	CMonster::MONSTEROPTION		MonsterOption;
+	// MonsterOption.
+
+	// TODO :: 몬스터 옵션 지역변수로 저장하고 플레이어에 적용하기 
 }
 
 HRESULT CPlayer::SetUp_Components()
@@ -350,7 +368,7 @@ HRESULT CPlayer::SetUp_Components()
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLIDER_SPHERE], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_BODYSPHERE", (CComponent**)&m_pColliderCom[COLLIDER_SPHERE], this, &ColliderDesc), E_FAIL);
 
 	// For First Aim Sphere
 	XMStoreFloat3(&m_vAimColliderPos, m_pTransformCom->Get_State(CTransform::STATE_LOOK));

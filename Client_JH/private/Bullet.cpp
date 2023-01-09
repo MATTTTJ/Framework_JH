@@ -62,12 +62,21 @@ void CBullet::Tick(_double dTimeDelta)
 		}
 	}
 
+	_float4 tmp = m_vInitPos -= m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+
+	if(	tmp.x + tmp.y + tmp.z  / 3.f > 500.f)
+	{
+		Set_Dead(true);
+	}
+	
+
 }
 
 void CBullet::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
+	
 
 }
 
@@ -94,7 +103,7 @@ HRESULT CBullet::SetUp_Components()
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vSize = _float3(0.3f, 0.3f, 0.5f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_Muzzle_SPHERE", L"Com_BulletSPHERE", (CComponent**)&m_pBulletColliderCom, this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_BulletSPHERE", (CComponent**)&m_pBulletColliderCom, this, &ColliderDesc), E_FAIL);
 
 	return S_OK;
 }
@@ -109,6 +118,13 @@ HRESULT CBullet::SetUp_ShaderResources()
 
 	return S_OK;
 }
+
+_bool CBullet::Collision_To_Monster(CCollider* pTargetCollider)
+{
+	return m_pBulletColliderCom->Collision(pTargetCollider);
+}
+
+
 
 void CBullet::Free()
 {

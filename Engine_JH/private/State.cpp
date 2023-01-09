@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\State.h"
+#include <sstream>
+#include "GameUtils.h"
 
 #ifdef _DEBUG
 #define new DBG_NEW 
@@ -13,6 +15,30 @@ CState::CState(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 CState::CState(const CState & rhs)
 	:CComponent(rhs)
 {
+
+}
+
+void CState::Imgui_RenderProperty()
+{
+	char	szCurrentNode[256];
+	CGameUtils::wc2c(m_wstrCurStateName.c_str(), szCurrentNode);
+
+	ImGui::Text("Current State : %s", szCurrentNode);
+
+	if (ImGui::BeginListBox("Node Transition History"))
+	{
+		for (const auto& e : m_strDebugQue)
+			ImGui::Selectable(e.c_str());
+		ImGui::EndListBox();
+	}
+
+	_int	iInput = (_int)m_iDebugQueSize;
+	ImGui::InputInt("Debug History Size", &iInput);
+
+	if (iInput >= 0)
+		m_iDebugQueSize = iInput;
+
+	m_bStoreHistory = true;
 }
 
 HRESULT CState::Initialize_Proto(void)
@@ -38,6 +64,7 @@ void CState::Tick(_double TimeDelta)
 		if (true == Changer.Changer_Func())
 		{
 			m_wstrNextStateName = Changer.wstrNextState;
+			StateHistoryUpdate(Changer.wstrNextState);
 			break;
 		}
 	}
@@ -62,6 +89,25 @@ void CState::Tick(_double TimeDelta)
 	}
 }
 
+void CState::StateHistoryUpdate(const wstring& wstrNextStateName)
+{
+	if (!m_bStoreHistory)
+		return;
+
+	char From[256], To[256];
+	CGameUtils::wc2c(m_wstrBeforeStateName.c_str(), From);
+	CGameUtils::wc2c(wstrNextStateName.c_str(), To);
+
+	std::stringstream ss;
+	ss << From << " => " << To;
+	m_strDebugQue.push_front(ss.str());
+
+	if (m_strDebugQue.size() > m_iDebugQueSize)
+		m_strDebugQue.pop_back();
+
+	m_bStoreHistory = false;
+}
+
 CState & CState::Set_Root(const wstring& wstrStateName)
 {
 	m_wstrRootStateName = wstrStateName;
@@ -79,6 +125,7 @@ CState & CState::Add_State(const wstring& wstrStateName)
 
 	return *this;
 }
+
 
 CState * CState::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

@@ -67,14 +67,15 @@ void CElite_Bug::Collider_Tick(_double TimeDelta)
 	CMonster::Collider_Tick(TimeDelta);
 }
 
-void CElite_Bug::Collider_Late_Tick(_double TimeDelta)
-{
-	CMonster::Collider_Late_Tick(TimeDelta);
-}
 
 void CElite_Bug::Set_On_NaviMesh()
 {
 	CMonster::Set_On_NaviMesh();
+}
+
+void CElite_Bug::Collision_Event(CBullet* pBullet)
+{
+	CMonster::Collision_Event(pBullet);
 }
 
 HRESULT CElite_Bug::Ready_UI()
@@ -92,10 +93,6 @@ HRESULT CElite_Bug::SetUp_ShaderResources()
 	return S_OK;
 }
 
-void CElite_Bug::Collision_Event(CPlayer* pPlayer)
-{
-	CMonster::Collision_Event(pPlayer);
-}
 
 CElite_Bug* CElite_Bug::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

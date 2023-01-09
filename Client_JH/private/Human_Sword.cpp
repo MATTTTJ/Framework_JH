@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Human_Sword.h"
+
+#include "Bullet.h"
 #include "GameInstance.h"
 #include "Human_Sword_State.h"
 #include "Player.h"
@@ -25,24 +27,22 @@ HRESULT CHuman_Sword::Initialize_Prototype()
 
 HRESULT CHuman_Sword::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
-	CTransform::TRANSFORMDESC		TransformDesc;
-	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
+	ZeroMemory(&m_tMonsterOption, sizeof(MONSTEROPTION));
 
 	if (nullptr != pArg)
-		memcpy(&TransformDesc, pArg, sizeof(CTransform::TRANSFORMDESC));
+		memcpy(&m_tMonsterOption, pArg, sizeof(MONSTEROPTION));
 	else
 	{
-		TransformDesc.fSpeedPerSec = 5.0f;
-		TransformDesc.fRotationPerSec = XMConvertToRadians(90.f);
+		m_tMonsterOption.m_bFirstSpawnType[STATE_ALREADYSPAWN] = true;
 	}
 
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &TransformDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tMonsterOption), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
 	m_pHuman_Sword_State = CHuman_Sword_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
 
-	// m_pModelCom->Set_CurAnimIndex(CHuman_Sword_State::IDLE_LOOP);
+	m_pModelCom->Set_CurAnimIndex(CHuman_Sword_State::SWORD_NODETECTED);
 
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.f, 0.f, 10.f, 1.f));
 
@@ -54,11 +54,12 @@ void CHuman_Sword::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 	
 	Set_On_NaviMesh();
-	
-	m_pHuman_Sword_State->Tick(TimeDelta);
-	m_pState->Tick(TimeDelta);
 
-	m_pModelCom->Play_Animation(TimeDelta);
+	m_pState->Tick(TimeDelta);
+	m_pHuman_Sword_State->Tick(TimeDelta);
+
+	if(m_bPlayAnimation)
+		m_pModelCom->Play_Animation(TimeDelta);
 
 	Collider_Tick(TimeDelta);
 
@@ -66,6 +67,9 @@ void CHuman_Sword::Tick(_double TimeDelta)
 	{
 		m_vecMonsterUI[i]->Tick(TimeDelta);
 	}
+
+
+
 }
 
 void CHuman_Sword::Late_Tick(_double TimeDelta)
@@ -78,6 +82,7 @@ void CHuman_Sword::Late_Tick(_double TimeDelta)
 	{
 		m_vecMonsterUI[i]->Late_Tick(TimeDelta);
 	}
+
 
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
@@ -105,6 +110,8 @@ HRESULT CHuman_Sword::Render()
 	m_pColliderCom[COLLTYPE_HITBODY]->Render();
 	m_pColliderCom[COLLTYPE_HITHEAD]->Render();
 	m_pColliderCom[COLLTYPE_ATTPOS]->Render();
+	m_pColliderCom[COLLTYPE_ATTRANGE]->Render();
+
 #endif
 
 	return S_OK;
@@ -112,18 +119,83 @@ HRESULT CHuman_Sword::Render()
 
 void CHuman_Sword::Collider_Tick(_double TimeDelta)
 {
-	// m_pColliderCom[i]->Update(Get_BoneMatrix("Att001") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
-
-
 	m_pColliderCom[COLLTYPE_DETECTED]->Update(m_pTransformCom->Get_WorldMatrix());
-	m_pColliderCom[COLLTYPE_HITBODY]->Update(m_pTransformCom->Get_WorldMatrix());
-	m_pColliderCom[COLLTYPE_HITHEAD]->Update(m_pTransformCom->Get_WorldMatrix());
-	m_pColliderCom[COLLTYPE_ATTPOS]->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pColliderCom[COLLTYPE_HITBODY]->Update(Get_BoneMatrix("Bip001 Spine") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pColliderCom[COLLTYPE_HITHEAD]->Update(Get_BoneMatrix("Bip001 Head") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pColliderCom[COLLTYPE_ATTPOS]->Update(Get_BoneMatrix("Bip001 Prop1") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pColliderCom[COLLTYPE_ATTRANGE]->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
-void CHuman_Sword::Collider_Late_Tick(_double TimeDelta)
+_bool CHuman_Sword::Collision_Detected(CCollider* pOtherCollider)
 {
-	__super::Collider_Late_Tick(TimeDelta);
+	return m_pColliderCom[COLLTYPE_DETECTED]->Collision(pOtherCollider);
+}
+
+_bool CHuman_Sword::Collider_HitHead(CCollider* pOtherCollider)
+{
+	return m_pColliderCom[COLLTYPE_HITHEAD]->Collision(pOtherCollider);
+}
+
+_bool CHuman_Sword::Collider_HitBody(CCollider* pOtherCollider)
+{
+	return m_pColliderCom[COLLTYPE_HITBODY]->Collision(pOtherCollider);
+}
+
+_bool CHuman_Sword::Collider_AttRange(CCollider* pOtherCollider)
+{
+	return m_pColliderCom[COLLTYPE_HITBODY]->Collision(pOtherCollider);
+}
+
+_bool CHuman_Sword::Collision_Bullet_Body(vector<CGameObject*>* pGameObject)
+{
+	size_t BulletCnt = (_uint)pGameObject->size();
+
+	if(BulletCnt != 0)
+	{
+		auto iter = pGameObject->begin();
+
+		for(_uint i =0; i < BulletCnt; ++i)
+		{
+			++iter;
+		}
+
+		if (iter == pGameObject->end())
+			return false;
+
+		CCollider* pBulletCollider = dynamic_cast<CBullet*>(*iter)->Get_ColliderPtr();
+
+		NULL_CHECK_RETURN(pBulletCollider, false);
+
+		return m_pColliderCom[COLLTYPE_HITBODY]->Collision(pBulletCollider);
+	}
+	else
+		return false;
+}
+
+_bool CHuman_Sword::Collision_Bullet_Head(vector<CGameObject*>* pGameObject)
+{
+	_uint  BulletCnt = (_uint)pGameObject->size();
+
+	if (BulletCnt != 0)
+	{
+		auto iter = pGameObject->begin();
+
+		for (_uint i = 0; i < BulletCnt; ++i)
+		{
+			++iter;
+		}
+
+		if (iter == pGameObject->end())
+			return false;
+
+		CCollider* pBulletCollider = dynamic_cast<CBullet*>(*iter)->Get_ColliderPtr();
+
+		NULL_CHECK_RETURN(pBulletCollider, false);
+
+		return m_pColliderCom[COLLTYPE_HITHEAD]->Collision(pBulletCollider);
+	}
+	else
+		return false;
 }
 
 void CHuman_Sword::Set_On_NaviMesh()
@@ -164,24 +236,36 @@ HRESULT CHuman_Sword::SetUp_Components()
 	CCollider::COLLIDERDESC	ColliderDesc;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vSize = _float3(17.f, 17.f, 17.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_DetectedSphere", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
-	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLTYPE_HITBODY], this, &ColliderDesc), E_FAIL);
+	ColliderDesc.vSize = _float3(0.7f, 0.7f, 0.7f);
+	ColliderDesc.vPosition = _float3(0.25f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_HitBodySphere", (CComponent**)&m_pColliderCom[COLLTYPE_HITBODY], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
-	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLTYPE_HITHEAD], this, &ColliderDesc), E_FAIL);
+	ColliderDesc.vSize = _float3(0.8f, 0.8f, 0.8f);
+	ColliderDesc.vPosition = _float3(0.25f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_HitHeadSphere", (CComponent**)&m_pColliderCom[COLLTYPE_HITHEAD], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vSize = _float3(0.f, 0.f, 0.3f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, -0.7f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_AttackPosSphere", (CComponent**)&m_pColliderCom[COLLTYPE_ATTPOS], this, &ColliderDesc), E_FAIL);
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(4.7f, 4.7f, 4.7f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_SPHERE", (CComponent**)&m_pColliderCom[COLLTYPE_ATTPOS], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_AttackRangeSphere", (CComponent**)&m_pColliderCom[COLLTYPE_ATTRANGE], this, &ColliderDesc), E_FAIL);
+
+	CNavigation::NAVIDESC		NaviDesc;
+	ZeroMemory(&NaviDesc, sizeof(CNavigation::NAVIDESC));
+
+	NaviDesc.iCurrentIndex = 0;
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this, &NaviDesc), E_FAIL);
 
 	return S_OK;
 }
@@ -204,10 +288,34 @@ HRESULT CHuman_Sword::SetUp_ShaderResources()
 	return S_OK;
 }
 
-void CHuman_Sword::Collision_Event(CPlayer* pPlayer)
+void CHuman_Sword::Collision_Event(CBullet* pBullet)
 {
-	CMonster::Collision_Event(pPlayer);
+	CBullet::BULLETOPTION BulletDesc;
+	BulletDesc = pBullet->Get_BulletOption();
+
+	m_tMonsterOption.GameObjectDesc.m_iDamage -= BulletDesc.BulletDesc.m_iDamage;
+
+	m_pHuman_Sword_State->Reset_Damaged();
+	//
+	// if(m_tMonsterOption.GameObjectDesc.m_iHP < 0)
+	// {
+	// 	Set_Dead(true);
+	// }
 }
+
+_bool CHuman_Sword::Collision_Test()
+{
+	CGameInstance*			pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CCollider*		pTargetCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Com_BulletSPHERE");
+	NULL_CHECK_RETURN(pTargetCollider, false);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return	m_pColliderCom[COLLTYPE_HITBODY]->Collision(pTargetCollider);
+
+}
+
 
 CHuman_Sword* CHuman_Sword::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -237,26 +345,23 @@ CGameObject* CHuman_Sword::Clone(const wstring& wstrPrototypeTag, void* pArg)
 
 void CHuman_Sword::Free()
 {
-	// __super::Free();
-	//
-	// Safe_Release(m_pHuman_Sword_State);
-	// Safe_Release(m_pNavigationCom);
-	//
-	// for(_uint i =0; i<COLLTYPE_END; ++i)
-	// {
-	// 	if(nullptr != m_pColliderCom[i])
-	// 		Safe_Release(m_pColliderCom[i]);
-	// }
-	//
-	// for (auto& pUI : m_vecMonsterUI)
-	// {
-	// 	if (pUI != nullptr)
-	// 	{
-	// 		Safe_Release(pUI);
-	// 	}
-	// }
-	//
-	// Safe_Release(m_pModelCom);
-	// Safe_Release(m_pShaderCom);
-	// Safe_Release(m_pRendererCom);
+	__super::Free();
+	
+	Safe_Release(m_pHuman_Sword_State);
+	Safe_Release(m_pNavigationCom);
+	Safe_Release(m_pState);
+
+	for(_uint i =0; i<COLLTYPE_END; ++i)
+	{
+		Safe_Release(m_pColliderCom[i]);
+	}
+	
+	for (auto& pUI : m_vecMonsterUI)
+	{
+		Safe_Release(pUI);
+	}
+	
+	Safe_Release(m_pModelCom);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pRendererCom);
 }

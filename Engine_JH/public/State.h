@@ -25,9 +25,13 @@ private:
 	virtual ~CState() = default;
 
 public:
+	virtual void	Imgui_RenderProperty() override;
 	virtual HRESULT	Initialize_Proto(void);
 	virtual HRESULT Initialize_Clone(CGameObject* pOwner, void* pArg = nullptr);
 	void			Tick(_double TimeDelta);
+
+	void			StateHistoryUpdate(const wstring& wstrNextStateName);
+
 
 public:
 	const wstring&		Get_CurState() { return m_wstrCurStateName; }
@@ -109,7 +113,11 @@ private:
 	wstring				m_wstrCurStateName = L"";
 	wstring				m_wstrNextStateName = L"";
 	wstring				m_wstrBeforeStateName = L"";
+	_bool				m_bStoreHistory = false;
 
+
+	list<string>		m_strDebugQue;
+	_uint				m_iDebugQueSize = 10;
 private:
 	map<const wstring, list<CHANGER>>	m_mapChanger;
 

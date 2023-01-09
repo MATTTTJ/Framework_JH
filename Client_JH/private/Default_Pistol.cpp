@@ -24,18 +24,17 @@ HRESULT CDefault_Pistol::Initialize_Prototype()
 
 HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
-	CGameObject::GAMEOBJECTDESC		tmp;
-	tmp = *(GAMEOBJECTDESC*)pArg;
+	m_tBulletOption = *(BULLETOPTION*)pArg;
 
-	tmp.TransformDesc.fSpeedPerSec = 70.f;
+	m_tBulletOption.BulletDesc.TransformDesc.fSpeedPerSec = 5.f;
 
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &tmp), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	if (nullptr != pArg)
 	{
 		m_pTransformCom->Set_Scaled(_float3(1.f, 1.f, 1.f));
-		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(tmp.TransformDesc.vInitPos.x, tmp.TransformDesc.vInitPos.y, tmp.TransformDesc.vInitPos.z, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tBulletOption.BulletDesc.TransformDesc.vInitPos.x, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.y, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.z, 1.f));
 
 		_matrix matpivot;
 		matpivot = XMMatrixIdentity();
@@ -49,7 +48,7 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 		_float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_CamLook();
 		_float4 fPlayerLook =	dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK);
 
-		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMLoadFloat4(&tmp.m_vBulletLook));
+		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMLoadFloat4(&m_tBulletOption.BulletDesc.m_vBulletLook));
 	}
 	else
 	{
@@ -108,6 +107,11 @@ void CDefault_Pistol::Late_Tick(_double dTimeDelta)
 	
 	m_vTest = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_UP);
 
+	if (Collision_Test())
+		int i = 0;
+
+	// 기존 코드 정리하고 총알 자체에서 몬스터들 콜라이더와 비교하기 
+
 
 	// if (nullptr != m_pBulletColliderCom)
 	// 	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
@@ -163,6 +167,16 @@ HRESULT CDefault_Pistol::SetUp_ShaderResources()
 
 	return S_OK;
 }
+
+_bool CDefault_Pistol::Collision_Test()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_HitBodySphere");
+
+	return m_pBulletColliderCom->Collision(pCollider);
+}
+
 
 CDefault_Pistol* CDefault_Pistol::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

@@ -16,10 +16,10 @@ public:
 
 	typedef struct tagTransformDesc
 	{
-		float		fSpeedPerSec;
-		float		fRotationPerSec;
+		_float		fSpeedPerSec = 5.f;
+		_float		fRotationPerSec = XMConvertToRadians(0.f);
 
-		_float3		vInitPos;
+		_float3		vInitPos = { 0.f, 0.f, 0.f };
 	}TRANSFORMDESC;
 
 protected:

@@ -32,6 +32,9 @@ public:
 	HRESULT			Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 	HRESULT			Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, _float4x4 WorldMatrix, void* pArg = nullptr);
 	CGameObject*	Clone_GameObject(const wstring& wstrPrototypeTag, void* pArg = nullptr);
+	class CGameObject*		Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag,  void* pArg = nullptr);
+	class CGameObject*		Clone_GameObjectReturnPtr_M(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag,_float4x4 matWorld = XMMatrixIdentity(), void* pArg = nullptr);
+
 	void			Tick(_double TimeDelta);
 	void			Late_Tick(_double TimeDelta);
 

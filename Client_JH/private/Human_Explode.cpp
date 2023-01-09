@@ -67,14 +67,16 @@ void CHuman_Explode::Collider_Tick(_double TimeDelta)
 	CMonster::Collider_Tick(TimeDelta);
 }
 
-void CHuman_Explode::Collider_Late_Tick(_double TimeDelta)
-{
-	CMonster::Collider_Late_Tick(TimeDelta);
-}
+
 
 void CHuman_Explode::Set_On_NaviMesh()
 {
 	CMonster::Set_On_NaviMesh();
+}
+
+void CHuman_Explode::Collision_Event(CBullet* pBullet)
+{
+	CMonster::Collision_Event(pBullet);
 }
 
 HRESULT CHuman_Explode::Ready_UI()
@@ -92,10 +94,7 @@ HRESULT CHuman_Explode::SetUp_ShaderResources()
 	return S_OK;
 }
 
-void CHuman_Explode::Collision_Event(CPlayer* pPlayer)
-{
-	CMonster::Collision_Event(pPlayer);
-}
+
 
 CHuman_Explode* CHuman_Explode::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

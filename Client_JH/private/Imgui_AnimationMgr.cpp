@@ -12,7 +12,7 @@ HRESULT CImgui_AnimationMgr::Initialize(void* pArg)
 {
 	m_szWindowName = "Animation Manager";
 
-	m_vecAnimObjects = CGameInstance::GetInstance()->Get_AnimObject();
+ 	m_vecAnimObjects = CGameInstance::GetInstance()->Get_AnimObject();
 	NULL_CHECK_RETURN(m_vecAnimObjects, E_FAIL);
 
 	return S_OK;
@@ -66,7 +66,7 @@ CImgui_AnimationMgr* CImgui_AnimationMgr::Create(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Create : CTool_AnimationManager");
+		MSG_BOX("Failed to Create : CImgui_AnimationMgr");
 		Safe_Release(pInstance);
 	}
 

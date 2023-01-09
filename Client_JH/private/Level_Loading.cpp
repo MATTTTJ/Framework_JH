@@ -79,27 +79,6 @@ HRESULT CLevel_Loading::Render()
 
 	return S_OK;
 }
-
-HRESULT CLevel_Loading::Ready_Layer_Loading(const wstring& wstrLayerTag, LEVEL eNextLevlID)
-{
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-	if (LEVEL_LOGO == eNextLevlID)
-	{
-		if (FAILED(pGameInstance->Clone_GameObject(LEVEL_LOADING, wstrLayerTag, L"Prototype_Component_FirstLoadingTexture")))
-			return E_FAIL;
-	}
-	if (LEVEL_GAMEPLAY == eNextLevlID)
-	{
-		if (FAILED(pGameInstance->Clone_GameObject(LEVEL_LOADING, wstrLayerTag, L"Prototype_Component_SecondLoadingTexture")))
-			return E_FAIL;
-	}
-	Safe_Release(pGameInstance);
-
-	return S_OK;
-
-}
-
 CLevel_Loading* CLevel_Loading::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID)
 {
 	CLevel_Loading*		pInst = new CLevel_Loading(pDevice, pContext);

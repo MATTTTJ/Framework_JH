@@ -15,6 +15,19 @@ BEGIN(Client)
 class CBullet abstract:	public CGameObject
 {
 
+
+public:
+
+	typedef	struct tagBulletOption
+	{
+		enum ELEMENTS { TYPE_NONE, TYPE_FIRE, TYPE_POISON, TYPE_THUNDER, TYPE_END };
+
+		CGameObject::GAMEOBJECTDESC BulletDesc;
+
+		_uint BulletDamage = 0;
+		ELEMENTS m_eType = TYPE_END;
+	}BULLETOPTION;
+
 protected:
 	enum BULLETOWNERTYPE { OWNER_PLAYER, OWNER_MONSTER, OWNER_END };
 	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_MUZZLE, COLLIDERTYPE_END };
@@ -25,15 +38,22 @@ protected:
 	virtual ~CBullet() = default;
 
 public:
+	virtual CCollider*			Get_ColliderPtr() { return m_pBulletColliderCom; }
+	virtual BULLETOPTION&		Get_BulletOption() { return m_tBulletOption; }
+
+public:
 	virtual HRESULT				Initialize_Prototype() override;
 	virtual HRESULT				Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT				Render() override;
-
+	virtual _bool				Collision_To_Monster(CCollider* pTargetCollider);
+	// virtual _bool				Collision_Test();
 private:
 	HRESULT						SetUp_Components();
 	HRESULT						SetUp_ShaderResources();
+
+public:
 
 protected:
 	CRenderer*					m_pRendererCom = nullptr;
@@ -45,13 +65,16 @@ protected:
 	CVIBuffer_Point_Instancing*	m_pPointBuffer = nullptr;
 
 protected:
+	BULLETOPTION				m_tBulletOption;
+
+
 	_float						m_fTrailCount;
 	_bool						m_bTrailConvertOnce = false;
 
 	_float4						m_vCamPos;
 	_float4						m_vInitPos;
 	_float4						m_vPlayerLook;
-
+	_float4						m_vFirstSpawn;
 	_float4x4					m_PivotMatrix;
 public:
 	virtual CGameObject*		Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\public\Layer.h"
-
 #include "GameObject.h"
 
 
@@ -27,12 +26,10 @@ HRESULT CLayer::Initialize()
 
 void CLayer::Tick(_double TimeDelta)
 {
-	for(auto iter = m_GameObjectList.begin(); iter != m_GameObjectList.end();)
+	for(auto& iter = m_GameObjectList.begin(); iter != m_GameObjectList.end();)
 	{
 		if (true == (*iter)->Check_Dead())
 		{
-			(*iter)->Set_Dead(false);
-
 			Safe_Release(*iter);
 			iter = m_GameObjectList.erase(iter);
 		}
@@ -47,7 +44,6 @@ void CLayer::Tick(_double TimeDelta)
 		if (nullptr != pGameObject)
 			pGameObject->Tick(TimeDelta);
 	}
-
 }
 
 void CLayer::Late_Tick(_double TimeDelta)
@@ -85,8 +81,12 @@ CLayer* CLayer::Create()
 
 void CLayer::Free()
 {
+	
 	for (auto& pGameObject : m_GameObjectList)
-		Safe_Release(pGameObject);
+	{
+			Safe_Release(pGameObject);
+	}
 
 	m_GameObjectList.clear();
+
 }

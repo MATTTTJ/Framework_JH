@@ -77,8 +77,10 @@ public:
 	_uint					Get_InjectorBulletCnt(void) { return m_PlayerOption.m_iInjector_BulletCnt; }
 
 	void					Set_Camera(_double dTimeDelta);
-	CGameObject*			Collision_AimBox_To_Monster();
 
+	_bool					Collision_Body(CCollider* pOtherCollider);
+	CGameObject*			Collision_AimBox_To_Monster();
+	void					Collision_Event(class CMonster* pMonster);
 public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;

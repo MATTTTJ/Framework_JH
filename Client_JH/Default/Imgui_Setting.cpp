@@ -15,7 +15,7 @@ void CImgui_Setting::Imgui_RenderWindow()
 {
 	IMGUI_LEFT_LABEL(ImGui::SliderFloat, "Alpha", m_pAlpha, 0.f, 1.f);
 	ImGui::Text("(CTRL+Click to Input Directly)");
-
+	// ImGui::ShowDemoWindow();
 	_uint		iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
 
 	if (iCurrentLevel == 2)

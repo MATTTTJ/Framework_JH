@@ -1,6 +1,16 @@
 #include "stdafx.h"
 #include "..\public\Level_GamePlay.h"
 #include "GameInstance.h"
+#include "Player.h"
+#include "Monster.h"
+#include "Imgui_AnimationMgr.h"
+#include "Imgui_PropertyEditor.h"
+#include "Imgui_LevelSwitcher.h"
+#include "Imgui_MapEditor.h"
+#include "Imgui_ProtoMgr.h"
+#include "Imgui_Setting.h"
+#include "Imgui_ModelSave.h"
+#include "Imgui_NavigationEditor.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -16,7 +26,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_ZCamera"), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Monster(L"Layer_Monster"), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_Effect(L"Layer_Effect"), E_FAIL);
+	// FAILED_CHECK_RETURN(Ready_Layer_Effect(L"Layer_Effect"), E_FAIL);
+
+
 
 	// FAILED_CHECK_RETURN(Ready_Layer_UI(L"Layer_UI"), E_FAIL);
 
@@ -92,17 +104,25 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring wstrLayerTag)
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Camera_Static"), E_FAIL);
 
 	RELEASE_INSTANCE(CGameInstance);
-
+	
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+	CMonster*			pMonster = nullptr;
+	CPlayer*			pPlayer = dynamic_cast<CPlayer*>(pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front());
+	NULL_CHECK_RETURN(pPlayer, E_FAIL);
 
-	// FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Monster"), E_FAIL)
+	_matrix PivotMatrix = XMMatrixIdentity();
+	PivotMatrix.r[3] = XMVectorSet(-14.f, 0.f, 0.19f, 1.f);
 
-
+	CMonster::MONSTEROPTION			MonsterDesc;
+	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;
+	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Sword", PivotMatrix, &MonsterDesc));
+	pMonster->Set_Player(pPlayer);
+	NULL_CHECK_RETURN(pMonster, E_FAIL);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -112,17 +132,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-	// {
-	// 	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Player")))
-	// 		return E_FAIL;
-	// }
-
-	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Player")))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Player"), E_FAIL);
 	
-	// if (FAILED(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_LaiHome")))
-	// 	return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 

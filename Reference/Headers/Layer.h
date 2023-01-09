@@ -17,7 +17,6 @@ public:
 	HRESULT							Initialize();
 	void							Tick(_double TimeDelta);
 	void							Late_Tick(_double TimeDelta);
-	list<class CGameObject*>&		GetGameObjects() { return m_GameObjectList; }
 
 private:
 	list<class CGameObject*>			m_GameObjectList; // 레이어에 맞게 보관된 게임오브젝트들을 업데이트 돌려주는 클래스 

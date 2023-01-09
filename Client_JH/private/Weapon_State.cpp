@@ -43,8 +43,6 @@ HRESULT CWeapon_State::Initialize(class CPlayer* pPlayer, CState* pStateMachineC
 	m_tWeaponOption[POISON].iCurBullet = m_tWeaponOption[POISON].iMaxBullet = 1;
 	m_tWeaponOption[POISON].iAttack = 230;
 
-
-
 	FAILED_CHECK_RETURN(SetUp_State_Weapon_Idle(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Fire(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_state_Reload(), E_FAIL);
@@ -62,9 +60,6 @@ void CWeapon_State::Tick(_double dTimeDelta)
 {
 
 	// 이동하기
-
-
-
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_1))
 	{
@@ -99,7 +94,7 @@ void CWeapon_State::Tick(_double dTimeDelta)
 	}
 
 
-
+	// 디버그용 총알 지우기
 	for (auto iter = m_vecBullet.begin(); iter != m_vecBullet.end();)
 	{
 		if (CGameInstance::GetInstance()->Key_Down(DIK_F9) && !m_bDeadOnce)
@@ -124,10 +119,10 @@ void CWeapon_State::Tick(_double dTimeDelta)
 	m_bDeadOnce = false;
 
 
-	for (_uint i = 0; i < m_vecBullet.size(); ++i)
-	{
-		m_vecBullet[i]->Tick(dTimeDelta);
-	}
+	// for (_uint i = 0; i < m_vecBullet.size(); ++i)
+	// {
+	// 	m_vecBullet[i]->Tick(dTimeDelta);
+	// }
 
 	// 벡터의 프론트를 지우는 게 맞다 .
 
@@ -135,10 +130,16 @@ void CWeapon_State::Tick(_double dTimeDelta)
 
 void CWeapon_State::Late_Tick(_double dTimeDelta)
 {
-	for (_uint i = 0; i < m_vecBullet.size(); ++i)
+	_uint DefaultBulletSize = (_uint)m_vecBullet.size();
+
+	for (_uint i = 0; i < DefaultBulletSize; ++i)
 	{
 		m_vecBullet[i]->Late_Tick(dTimeDelta);
+		// m_vecBullet[i]->Collision_To_Monster();
 	}
+
+	
+
 }
 
 
@@ -266,6 +267,9 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 		m_tWeaponOption[DEFAULT_PISTOL].iCurBullet -= 1;
 
 		// TODO:: 카메라 룩 설정할 수 있게 작업하기 
+		CBullet::BULLETOPTION tmp;
+		_float4 Position;
+		XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
 
 		if (nullptr != m_pPlayer->Collision_AimBox_To_Monster())
 		{
@@ -285,53 +289,46 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 			XMStoreFloat(&MonsterToFirstAim, XMVector3Length(MonsterPos - FirstAimSpherePos));
 			XMStoreFloat(&MonsterToSecondAim, XMVector3Length(MonsterPos - SecondAimSpherePos));
 
+			
+
 			if (fabsf(MonsterToFirstAim) - fabsf(MonsterToSecondAim) < EPSILON)
 			{
-				CGameObject::GAMEOBJECTDESC		tmp;
-				ZeroMemory(&tmp, sizeof(CGameObject::GAMEOBJECTDESC));
+				tmp.BulletDesc.TransformDesc.vInitPos  = _float3(Position.x, Position.y, Position.z);
+				tmp.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter());
+			
+				CBullet*		pBullet = nullptr;
+				pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &tmp));
 
-				_float4 Position;
-				XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
-
-				tmp.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-				tmp.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter());
-				CGameObject*		pBullet = nullptr;
-				pBullet = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp);
 				NULL_CHECK_RETURN(pBullet, );
+				Safe_AddRef(pBullet);
 
 				m_vecBullet.push_back(pBullet);
 			}
 			else
 			{
-				CGameObject::GAMEOBJECTDESC		tmp;
-				ZeroMemory(&tmp, sizeof(CGameObject::GAMEOBJECTDESC));
-			
-				_float4 Position;
-				XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
+				tmp.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+				tmp.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter());
 
-				tmp.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-				tmp.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter());
-				CGameObject*		pBullet = nullptr;
-				pBullet = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp);
+				CBullet*		pBullet = nullptr;
+				pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &tmp));
+
 				NULL_CHECK_RETURN(pBullet, );
+				Safe_AddRef(pBullet);
 
 				m_vecBullet.push_back(pBullet);
 			}
 		}
 		else
 		{
-			CGameObject::GAMEOBJECTDESC		tmp;
-			ZeroMemory(&tmp, sizeof(CGameObject::GAMEOBJECTDESC));
+			tmp.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+			tmp.BulletDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
 
-			_float4 Position;
-			XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
+			CBullet*		pBullet = nullptr;
+			// pBullet = dynamic_cast<CBullet*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp));
 
-			tmp.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-			tmp.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
-			CGameObject*		pBullet = nullptr;
-			pBullet = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp);
+			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &tmp));
 			NULL_CHECK_RETURN(pBullet, );
-
+			Safe_AddRef(pBullet);
 			m_vecBullet.push_back(pBullet);
 		}
 	}

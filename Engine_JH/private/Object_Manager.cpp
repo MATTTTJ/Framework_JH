@@ -17,9 +17,7 @@ CComponent* CObject_Manager::Get_ComponentPtr(_uint iLevelIndex, const wstring& 
 		return nullptr;
 
 	CLayer*		pLayer = Find_Layer(iLevelIndex, wstrLayerTag);
-
-	if (nullptr == pLayer)
-		return nullptr;
+	NULL_CHECK_RETURN(pLayer, nullptr);
 
 	return pLayer->Get_ComponentPtr(pComponentTag, iIndex);
 }
@@ -79,7 +77,6 @@ HRESULT CObject_Manager::Add_Prototype(const wstring& pPrototypeTag, CGameObject
 HRESULT CObject_Manager::Add_AnimObject(CGameObject* pAnimObject)
 {
 	NULL_CHECK_RETURN(pAnimObject, E_FAIL);
-
 	m_vecAnimObjects.push_back(pAnimObject);
 	return S_OK;
 }
@@ -87,8 +84,7 @@ HRESULT CObject_Manager::Add_AnimObject(CGameObject* pAnimObject)
 HRESULT CObject_Manager::Clone_GameObject(_uint iLevelIndex, const wstring& pLayerTag, const wstring& wstrPrototypeTag, void * pArg)
 {
 	CGameObject*		pPrototype = Find_Prototype(wstrPrototypeTag);
-	if (nullptr == pPrototype)
-		return E_FAIL;
+	NULL_CHECK_RETURN(pPrototype, E_FAIL);
 
 	CGameObject*		pGameObject = pPrototype->Clone(wstrPrototypeTag, pArg);
 
@@ -98,13 +94,12 @@ HRESULT CObject_Manager::Clone_GameObject(_uint iLevelIndex, const wstring& pLay
 	{
 		pLayer = CLayer::Create();
 		NULL_CHECK_RETURN(pLayer, E_FAIL);
-
 		FAILED_CHECK_RETURN(pLayer->Add_GameObject(pGameObject), E_FAIL);
 
 		m_pLayers[iLevelIndex].emplace(pLayerTag, pLayer);
 	}
 	else
-		pLayer->Add_GameObject(pGameObject);
+		FAILED_CHECK_RETURN(pLayer->Add_GameObject(pGameObject), E_FAIL);
 
 	return S_OK;
 }
@@ -146,7 +141,63 @@ CGameObject* CObject_Manager::Clone_GameObject(const wstring& wstrPrototypeTag, 
 	if (nullptr == pGameObject)
 		return nullptr;
 
+	// 필요하면 Add_GameObject로 게임오브젝트 리스트에 넣어서 사용가능함, 레이어태그도 당연히 필요하겠지
+
 	return pGameObject;
+}
+
+CGameObject* CObject_Manager::Clone_GameObjectReturnPtr_M(_uint iLevelIndex, const wstring& wstrLayerTag,
+	const wstring& wstrPrototypeTag, _float4x4 matWorld , void* pArg)
+{
+	CGameObject*	pPrototype = Find_Prototype(wstrPrototypeTag);
+	NULL_CHECK_RETURN(pPrototype, nullptr);
+
+	CGameObject*	pCloneObject = pPrototype->Clone(wstrPrototypeTag, pArg);
+	NULL_CHECK_RETURN(pCloneObject, nullptr);
+
+	pCloneObject->Set_WorldMatrix(matWorld);
+
+	CLayer*			pLayer = Find_Layer(iLevelIndex, wstrLayerTag);
+
+	if (nullptr == pLayer)
+	{
+		pLayer = CLayer::Create();
+
+		NULL_CHECK_RETURN(pLayer, nullptr);
+		FAILED_CHECK_RETURN(pLayer->Add_GameObject(pCloneObject), nullptr);
+
+		m_pLayers[iLevelIndex].emplace(wstrLayerTag, pLayer);
+	}
+	else
+		FAILED_CHECK_RETURN(pLayer->Add_GameObject(pCloneObject), nullptr);
+
+	return pCloneObject;
+}
+
+CGameObject* CObject_Manager::Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring& wstrLayerTag,
+	const wstring& wstrPrototypeTag,void* pArg)
+{
+	CGameObject*	pPrototype = Find_Prototype(wstrPrototypeTag);
+	NULL_CHECK_RETURN(pPrototype, nullptr);
+
+	CGameObject*	pCloneObject = pPrototype->Clone(wstrPrototypeTag, pArg);
+	NULL_CHECK_RETURN(pCloneObject, nullptr);
+
+	CLayer*			pLayer = Find_Layer(iLevelIndex, wstrLayerTag);
+
+	if (nullptr == pLayer)
+	{
+		pLayer = CLayer::Create();
+
+		NULL_CHECK_RETURN(pLayer, nullptr);
+		FAILED_CHECK_RETURN(pLayer->Add_GameObject(pCloneObject), nullptr);
+
+		m_pLayers[iLevelIndex].emplace(wstrLayerTag, pLayer);
+	}
+	else
+		FAILED_CHECK_RETURN(pLayer->Add_GameObject(pCloneObject), nullptr);
+
+	return pCloneObject;
 }
 
 void CObject_Manager::Tick(_double TimeDelta)

@@ -17,10 +17,19 @@ class CHuman_Sword final  :	public CMonster
 {
 	friend class CHuman_Sword_State;
 
+
+
+public:
+
+
 public:
 	CHuman_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CHuman_Sword(const CHuman_Sword& rhs);
 	virtual ~CHuman_Sword() = default;
+
+public:
+
+
 
 public:
 	virtual HRESULT				Initialize_Prototype() override;
@@ -31,11 +40,19 @@ public:
 
 public:
 	virtual void				Collider_Tick(_double TimeDelta) override;
-	virtual void				Collider_Late_Tick(_double TimeDelta) override;
+
+public:
+	 _bool						Collision_Detected(CCollider* pOtherCollider) ;
+	 _bool						Collider_HitHead(CCollider* pOtherCollider) ;
+	 _bool						Collider_HitBody(CCollider* pOtherCollider) ;
+	 _bool						Collider_AttRange(CCollider* pOtherCollider) ;
+
+	_bool						Collision_Bullet_Body(vector<CGameObject*>* pGameObject);
+	_bool						Collision_Bullet_Head(vector<CGameObject*>* pGameObject);
 
 	virtual void				Set_On_NaviMesh() override;
-	virtual void				Collision_Event(CPlayer* pPlayer) override;
-
+	virtual void				Collision_Event(class CBullet* pBullet) override;
+	_bool						Collision_Test(); 
 private:
 	CRenderer*					m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;

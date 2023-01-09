@@ -56,7 +56,10 @@ void CImgui_Manager::Tick_Imgui()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	ImGui_DockSpace();
 
+	RenderTab();
+	RenderWindow();
 	
 }
 
@@ -65,10 +68,7 @@ void CImgui_Manager::Render_Imgui()
 	if (!m_bDrawImGui)
 		return;
 
-	ImGui_DockSpace();
 
-	RenderTab();
-	RenderWindow();
 
 	ImGui::Render();
 }

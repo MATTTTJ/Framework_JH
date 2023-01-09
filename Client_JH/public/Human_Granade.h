@@ -28,10 +28,9 @@ public:
 
 public:
 	virtual void			Collider_Tick(_double TimeDelta) override;
-	virtual void			Collider_Late_Tick(_double TimeDelta) override;
 
 	virtual void			Set_On_NaviMesh() override;
-	virtual void			Collision_Event(CPlayer* pPlayer) override;
+	virtual void Collision_Event(CBullet* pBullet) override;
 
 private:
 	HRESULT					SetUp_Components();

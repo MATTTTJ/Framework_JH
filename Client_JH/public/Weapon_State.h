@@ -57,6 +57,7 @@ public:
 
 public:
 	const _uint&				Get_CurWeaponBulletCnt(wstring WeaponName);
+	vector<class CBullet*>		Get_LiveBullet() { return m_vecBullet; }
 
 	HRESULT						Initialize(class CPlayer* pPlayer, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
 	void						Tick(_double dTimeDelta);
@@ -109,7 +110,7 @@ private:
 	_bool						m_bDeadOnce = false;
 private:
 	WEAPON_OPTION				m_tWeaponOption[WEAPONTYPE_END];
-	vector<class CGameObject*>	m_vecBullet;
+	vector<class CBullet*>		m_vecBullet;
 	// _bool						m_bIsWeaponNumber[WEAPON_NUMBEREND] = { false };
 	// WEAPONNUMBER				m_eType;
 public:

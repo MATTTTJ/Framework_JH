@@ -67,14 +67,16 @@ void CHuman_Granade::Collider_Tick(_double TimeDelta)
 	CMonster::Collider_Tick(TimeDelta);
 }
 
-void CHuman_Granade::Collider_Late_Tick(_double TimeDelta)
-{
-	CMonster::Collider_Late_Tick(TimeDelta);
-}
+
 
 void CHuman_Granade::Set_On_NaviMesh()
 {
 	CMonster::Set_On_NaviMesh();
+}
+
+void CHuman_Granade::Collision_Event(CBullet* pBullet)
+{
+	CMonster::Collision_Event(pBullet);
 }
 
 HRESULT CHuman_Granade::Ready_UI()
@@ -92,10 +94,6 @@ HRESULT CHuman_Granade::SetUp_ShaderResources()
 	return S_OK;
 }
 
-void CHuman_Granade::Collision_Event(CPlayer* pPlayer)
-{
-	CMonster::Collision_Event(pPlayer);
-}
 
 CHuman_Granade* CHuman_Granade::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

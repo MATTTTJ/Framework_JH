@@ -6,7 +6,12 @@
 #include "Bone.h"
 #include "Animation.h"
 #include "GameInstance.h"
+#include "GameObject.h"
 #include "GameUtils.h"
+
+#ifdef _DEBUG
+#define new DBG_NEW 
+#endif
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -185,6 +190,8 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePat
 	else if (!lstrcmp(wszExt, L".model"))
 		FAILED_CHECK_RETURN(Load_MeshMaterial(m_wstrFilePath), E_FAIL);
 
+	
+
 	return S_OK;
 }
 
@@ -218,9 +225,11 @@ HRESULT CModel::Initialize_Clone(CGameObject* pOwner, void * pArg)
 
 		CloseHandle(hFile);
 	}
-
 	if (m_eType == MODEL_ANIM && m_pOwner != nullptr)
+	{
 		CGameInstance::GetInstance()->Add_AnimObject(m_pOwner);
+	}
+	
 	return S_OK;
 }
 
@@ -699,8 +708,6 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 			}
 		}
 	}
-
-	/* 파일 위치 포인터 받아서 저장하기 */
 	m_dwBeginBoneData = SetFilePointer(hFile, 0, nullptr, FILE_CURRENT);
 
 	/* Bones */
@@ -742,7 +749,6 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 
 HRESULT CModel::Load_BoneAnimation(HANDLE& hFile, DWORD& dwByte)
 {
-	/* Bones */
 	ReadFile(hFile, &m_iNumBones, sizeof(_uint), &dwByte, nullptr);
 	m_vecBones.reserve(m_iNumBones);
 
@@ -800,6 +806,7 @@ CComponent * CModel::Clone(CGameObject* pOwner, void * pArg)
 void CModel::Free()
 {
 	__super::Free();
+	
 
 	for (auto& pMesh : m_vecMeshes)
 		Safe_Release(pMesh);
