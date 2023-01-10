@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "State.h"
 #include "UI.h"
-
+#include "Collider.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)

@@ -73,9 +73,9 @@ void CElite_Bug::Set_On_NaviMesh()
 	CMonster::Set_On_NaviMesh();
 }
 
-void CElite_Bug::Collision_Event(CBullet* pBullet)
+void CElite_Bug::Collision_Body(CBullet* pBullet)
 {
-	CMonster::Collision_Event(pBullet);
+	CMonster::Collision_Body(pBullet);
 }
 
 HRESULT CElite_Bug::Ready_UI()

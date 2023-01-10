@@ -234,9 +234,11 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\Object_Manager.h" />
     <ClInclude Include="..\public\PipeLine.h" />
     <ClInclude Include="..\public\Renderer.h" />
+    <ClInclude Include="..\public\Render_Target.h" />
     <ClInclude Include="..\public\Shader.h" />
     <ClInclude Include="..\public\State.h" />
     <ClInclude Include="..\public\StateMachine.h" />
+    <ClInclude Include="..\public\Target_Manager.h" />
     <ClInclude Include="..\public\Texture.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
@@ -302,9 +304,11 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\Object_Manager.cpp" />
     <ClCompile Include="..\private\PipeLine.cpp" />
     <ClCompile Include="..\private\Renderer.cpp" />
+    <ClCompile Include="..\private\Render_Target.cpp" />
     <ClCompile Include="..\private\Shader.cpp" />
     <ClCompile Include="..\private\State.cpp" />
     <ClCompile Include="..\private\StateMachine.cpp" />
+    <ClCompile Include="..\private\Target_Manager.cpp" />
     <ClCompile Include="..\private\Texture.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>

@@ -166,6 +166,12 @@
     <Filter Include="01. Utility\03. Components\10. Frustum">
       <UniqueIdentifier>{e99e4186-53d6-4e0d-8b5c-41a6032970f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\11. RenderTarget">
+      <UniqueIdentifier>{be6503cc-ab0f-48ff-a007-f349eb173822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\11. RenderTarget\Manager">
+      <UniqueIdentifier>{fdc40669-7c94-4389-9038-eba7ded26476}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -396,7 +402,15 @@
     <ClInclude Include="..\public\VIBuffer_Cell_Circle.h">
       <Filter>01. Utility\03. Components\02. VIBuffer\Cell\Circle</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Frustum.h" />
+    <ClInclude Include="..\public\Render_Target.h">
+      <Filter>01. Utility\03. Components\11. RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Frustum.h">
+      <Filter>01. Utility\03. Components\10. Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Target_Manager.h">
+      <Filter>01. Utility\03. Components\11. RenderTarget\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -594,7 +608,15 @@
     <ClCompile Include="..\private\VIBuffer_Cell_Circle.cpp">
       <Filter>01. Utility\03. Components\02. VIBuffer\Cell\Circle</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Frustum.cpp" />
+    <ClCompile Include="..\private\Render_Target.cpp">
+      <Filter>01. Utility\03. Components\11. RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Frustum.cpp">
+      <Filter>01. Utility\03. Components\10. Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Target_Manager.cpp">
+      <Filter>01. Utility\03. Components\11. RenderTarget\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd">

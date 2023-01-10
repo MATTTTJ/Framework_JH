@@ -28,10 +28,6 @@ public:
 	virtual ~CHuman_Sword() = default;
 
 public:
-
-
-
-public:
 	virtual HRESULT				Initialize_Prototype() override;
 	virtual HRESULT				Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double TimeDelta) override;
@@ -47,12 +43,14 @@ public:
 	 _bool						Collider_HitBody(CCollider* pOtherCollider) ;
 	 _bool						Collider_AttRange(CCollider* pOtherCollider) ;
 
-	_bool						Collision_Bullet_Body(vector<CGameObject*>* pGameObject);
-	_bool						Collision_Bullet_Head(vector<CGameObject*>* pGameObject);
+	// _bool						Collision_Bullet_Body(vector<CGameObject*>* pGameObject);
+	// _bool						Collision_Bullet_Head(vector<CGameObject*>* pGameObject);
 
 	virtual void				Set_On_NaviMesh() override;
-	virtual void				Collision_Event(class CBullet* pBullet) override;
-	_bool						Collision_Test(); 
+
+	virtual void				Collision_Body(class CBullet* pBullet) override;
+	virtual void				Collision_Head(class CBullet* pBullet) override;
+	virtual void				Collision_Hide(CBullet* pBullet) override;
 private:
 	CRenderer*					m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;

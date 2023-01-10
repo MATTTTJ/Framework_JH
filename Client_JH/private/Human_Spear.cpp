@@ -74,9 +74,9 @@ void CHuman_Spear::Set_On_NaviMesh()
 	CMonster::Set_On_NaviMesh();
 }
 
-void CHuman_Spear::Collision_Event(CBullet* pBullet)
+void CHuman_Spear::Collision_Body(CBullet* pBullet)
 {
-	CMonster::Collision_Event(pBullet);
+	CMonster::Collision_Body(pBullet);
 }
 
 HRESULT CHuman_Spear::Ready_UI()

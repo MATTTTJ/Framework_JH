@@ -257,12 +257,10 @@ _bool CNavigation::IsMove_OnNavigation(_fvector vTargetPos, _float4& vBlockedLin
 						{
 							eNeighbor = CCell::NEIGHBOR_BC;
 						}
-
 						else if (true == m_vecCell[iNeighborIndex]->Compare_Points(m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_Point(CCell::POINT_C), m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_Point(CCell::POINT_A)))
 						{
 							eNeighbor = CCell::NEIGHBOR_CA;
 						}
-
 						if (eNeighbor != CCell::NEIGHBOR_END)
 						{
 							m_vecCell[iNeighborIndex]->Get_BlockedLine(eNeighbor, vBlockedLine, vBlockedLineNormal);
@@ -275,6 +273,18 @@ _bool CNavigation::IsMove_OnNavigation(_fvector vTargetPos, _float4& vBlockedLin
 		else
 			return false; 
 	}
+}
+
+HRESULT CNavigation::Render_Selected_Cell(_int iIndex)
+{
+	_float		fHeight = 0.15f;
+
+	m_pShaderCom->Set_RawValue(L"g_fHeight", &fHeight, sizeof(_float));
+	m_pShaderCom->Set_RawValue(L"g_vColor", &_float4(1.f, 0.4f, 0.f, 1.f), sizeof(_float4));
+
+	m_vecCell[iIndex]->Render(m_pShaderCom);
+
+	return S_OK;
 }
 
 

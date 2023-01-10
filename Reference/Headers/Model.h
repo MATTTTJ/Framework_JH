@@ -15,6 +15,7 @@ public:
 
 public:
 	HRESULT						Save_Model(const char* pSaveFileDirectory);
+	const _int&					Get_CurAnimation() const { return m_iCurAnimIndex; }
 	class CMesh*				Get_Mesh(const string& strMeshName);
 	const MODELTYPE&			Get_ModelType() { return m_eType; }
 	_uint						Get_NumMeshes() const {	return m_iNumMeshes; }
@@ -33,6 +34,7 @@ public:
 	class CAnimation*			Find_Anim(const string& strAnim);
 	void						Reset_Animation();
 	HRESULT						Check_MeshSize(const string & strMeshName, _float & Xmin, _float & Xmax, _float & Ymin, _float & Ymax, _float & Zmin, _float & Zmax);
+	void						Set_LerpTime(_float fLerpTime) { m_fAnimChangeTime = fLerpTime; }
 
 	void						Reset_IsFinished(void) { m_bIsAnimFinished = false; }
 

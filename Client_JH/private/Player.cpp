@@ -140,7 +140,7 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
-	m_pTransformCom->Set_Scaled(_float3(1.f, 1.f, 1.f));
+	m_pTransformCom->Set_Scaled(_float3(0.5f, 0.5f, 0.5f));
 	
 
 
@@ -149,10 +149,6 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 void CPlayer::Set_On_NaviMesh()
 {
-	_matrix matpivot;
-	matpivot = XMMatrixIdentity();
-	matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
-
 	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
 	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 	PlayerPos.y = m_fHeight + 1.5f;
@@ -188,15 +184,15 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	if (CGameInstance::GetInstance()->Key_Pressing(DIK_S))
 	{
-		m_pTransformCom->Go_Backward(dTimeDelta);
+		m_pTransformCom->Go_Backward(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
 	}
 	if (CGameInstance::GetInstance()->Key_Pressing(DIK_A))
 	{
-		m_pTransformCom->Go_Left(dTimeDelta);
+		m_pTransformCom->Go_Left(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
 	}
 	if (CGameInstance::GetInstance()->Key_Pressing(DIK_D))
 	{
-		m_pTransformCom->Go_Right(dTimeDelta);
+		m_pTransformCom->Go_Right(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
 	}
 
 	Set_On_NaviMesh();
@@ -366,7 +362,7 @@ HRESULT CPlayer::SetUp_Components()
 
 	// /* For.Com_SPHERE */
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vSize = _float3(3.f, 3.f, 3.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_BODYSPHERE", (CComponent**)&m_pColliderCom[COLLIDER_SPHERE], this, &ColliderDesc), E_FAIL);
 

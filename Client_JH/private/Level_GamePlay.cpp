@@ -87,7 +87,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring wstrLayerTag)
 	// FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Terrain"), E_FAIL);
 
 	// FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_ForkLift"), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Sky"), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Sky"), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Home"), E_FAIL);
 	// if (FAILED(pGameInstance->))
 	// 	return E_FAIL;
@@ -120,9 +120,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 
 	CMonster::MONSTEROPTION			MonsterDesc;
 	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;
+	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	MonsterDesc.MonsterDesc.m_iDamage = 15;
+	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 5.f;
 	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Sword", PivotMatrix, &MonsterDesc));
 	pMonster->Set_Player(pPlayer);
 	NULL_CHECK_RETURN(pMonster, E_FAIL);
+
+
 
 	RELEASE_INSTANCE(CGameInstance);
 

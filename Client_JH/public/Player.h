@@ -55,6 +55,7 @@ private:
 	friend CWeapon_State;
 
 public:
+	CTransform*				Get_Transform() { return m_pTransformCom; }
 	void					Set_On_NaviMesh();
 	CCollider*				Get_OBBPtr() { return m_pColliderCom[COLLIDER_OBB]; }
 	_matrix					Get_BoneMatrix(const string& strBoneName);

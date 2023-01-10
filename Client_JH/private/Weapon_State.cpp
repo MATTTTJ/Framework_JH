@@ -94,37 +94,8 @@ void CWeapon_State::Tick(_double dTimeDelta)
 	}
 
 
-	// 디버그용 총알 지우기
-	for (auto iter = m_vecBullet.begin(); iter != m_vecBullet.end();)
-	{
-		if (CGameInstance::GetInstance()->Key_Down(DIK_F9) && !m_bDeadOnce)
-		{
-			m_vecBullet.front()->Set_Dead(true);
-			m_bDeadOnce = true;
-		}
-
-		if (true == (*iter)->Check_Dead())
-		{
-			(*iter)->Set_Dead(false);
-
-			Safe_Release(*iter);
-			iter = m_vecBullet.erase(iter);
-		}
-		else
-		{
-			++iter;
-		}
-	}
-
 	m_bDeadOnce = false;
 
-
-	// for (_uint i = 0; i < m_vecBullet.size(); ++i)
-	// {
-	// 	m_vecBullet[i]->Tick(dTimeDelta);
-	// }
-
-	// 벡터의 프론트를 지우는 게 맞다 .
 
 }
 
@@ -298,10 +269,7 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 			
 				CBullet*		pBullet = nullptr;
 				pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &tmp));
-
 				NULL_CHECK_RETURN(pBullet, );
-				Safe_AddRef(pBullet);
-
 				m_vecBullet.push_back(pBullet);
 			}
 			else
@@ -311,10 +279,7 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 
 				CBullet*		pBullet = nullptr;
 				pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &tmp));
-
 				NULL_CHECK_RETURN(pBullet, );
-				Safe_AddRef(pBullet);
-
 				m_vecBullet.push_back(pBullet);
 			}
 		}
@@ -324,12 +289,8 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 			tmp.BulletDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
 
 			CBullet*		pBullet = nullptr;
-			// pBullet = dynamic_cast<CBullet*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_Default_PistolTex", &tmp));
-
 			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &tmp));
 			NULL_CHECK_RETURN(pBullet, );
-			Safe_AddRef(pBullet);
-			m_vecBullet.push_back(pBullet);
 		}
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName)
@@ -605,10 +566,10 @@ CWeapon_State* CWeapon_State::Create(CPlayer* pPlayer, CState* pStateMachineCom,
 
 void CWeapon_State::Free()
 {
-	for (_uint i = 0; i < m_vecBullet.size(); ++i)
-	{
-		Safe_Release(m_vecBullet[i]);
-	}
-	m_vecBullet.clear();
+	// for (_uint i = 0; i < m_vecBullet.size(); ++i)
+	// {
+	// 	Safe_Release(m_vecBullet[i]);
+	// }
+	// m_vecBullet.clear();
 }
 

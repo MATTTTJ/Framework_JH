@@ -30,7 +30,7 @@ public:
 	virtual void			Collider_Tick(_double TimeDelta) override;
 
 	virtual void			Set_On_NaviMesh() override;
-	virtual void Collision_Event(CBullet* pBullet) override;
+	virtual void Collision_Body(CBullet* pBullet) override;
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();

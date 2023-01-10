@@ -123,19 +123,20 @@ void CTransform::Imgui_RenderProperty()
 
 void CTransform::Go_Straight(_double TimeDelta, TRANSTYPE eType, CNavigation* pNaviCom)
 {
-
+	m_eType = eType;
 
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
 	_float4	vLook = Get_State(CTransform::STATE_LOOK);
 
-	_vector vMovePos = vPosition + XMVector3Normalize(vLook)* m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 	// vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
-	if (nullptr == pNaviCom)
-	{
+
+	if (nullptr == pNaviCom && m_eType == TRANS_FIX)
 		Set_State(CTransform::STATE_TRANSLATION, vPosition);
-	}
-	else
+
+	else if(m_eType == TRANS_MONSTER || m_eType == TRANS_PLAYER)
 	{
+		_vector vMovePos = vPosition + XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f))* m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
 		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
 		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
 
@@ -143,13 +144,6 @@ void CTransform::Go_Straight(_double TimeDelta, TRANSTYPE eType, CNavigation* pN
 			Set_State(CTransform::STATE_TRANSLATION, vMovePos);
 		else
 		{
-			// TODO :: 셀의 평균 높이가 플레이어보다 일정 수치가 높으면
-			// if(pNaviCom->Is_OverHeight())
-			// {
-			// 	Set_State(CTransform::STATE_TRANSLATION, vPosition);
-			// }
-			// else
-			// {
 			_vector vInDir = vMovePos - vPosition;
 			_vector vOutDir = vPosition - vMovePos;
 			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
@@ -164,10 +158,11 @@ void CTransform::Go_Straight(_double TimeDelta, TRANSTYPE eType, CNavigation* pN
 			}
 		}
 	}
-	// }
 
-	if (TRANS_BULLET == eType)
+	else if (TRANS_BULLET == m_eType || TRANSTYPE_END == m_eType)
 	{
+		_vector vMovePos = vPosition + XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
 		Set_State(CTransform::STATE_TRANSLATION, vMovePos);
 	}
 
@@ -176,37 +171,142 @@ void CTransform::Go_Straight(_double TimeDelta, TRANSTYPE eType, CNavigation* pN
 
 }
 
-void CTransform::Go_Backward(_double TimeDelta)
+void CTransform::Go_Backward(_double TimeDelta, TRANSTYPE eType, CNavigation* pNaviCom)
 {
-	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
-	_vector	vLook =
-		Get_State(CTransform::STATE_LOOK);
+	m_eType = eType;
 
-	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
-	vPosition -= XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
-	Set_State(CTransform::STATE_TRANSLATION, vPosition);
+	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
+	_float4	vLook = Get_State(CTransform::STATE_LOOK);
+
+	// vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
+	if (nullptr == pNaviCom && m_eType == TRANS_FIX)
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+
+	else if (m_eType == TRANS_MONSTER || m_eType == TRANS_PLAYER)
+	{
+		_vector vMovePos = vPosition - XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f))* m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
+		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+
+		if (true == pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+		else
+		{
+			_vector vInDir = vMovePos - vPosition;
+			_vector vOutDir = vPosition - vMovePos;
+			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+
+			_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+
+			vMovePos = vPosition + vSlidingDir;
+
+			if (pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			{
+				Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+			}
+		}
+	}
+
+	else if (TRANS_BULLET == m_eType || TRANSTYPE_END == m_eType)
+	{
+		_vector vMovePos = vPosition - XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
+		Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+	}
 }
 
-void CTransform::Go_Left(_double TimeDelta)
+void CTransform::Go_Left(_double TimeDelta, TRANSTYPE eType,  CNavigation* pNaviCom )
 {
+	m_eType = eType;
+
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
-	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
+	_float4	vRight = Get_State(CTransform::STATE_RIGHT);
 
-	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
-	vPosition -= XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+	// vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
-	Set_State(CTransform::STATE_TRANSLATION, vPosition);
+	if (nullptr == pNaviCom && m_eType == TRANS_FIX)
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+
+	else if (m_eType == TRANS_MONSTER || m_eType == TRANS_PLAYER)
+	{
+		_vector vMovePos = vPosition - XMVector3Normalize(XMVectorSet(vRight.x, 0.f, vRight.z, 0.f))* m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
+		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+
+		if (true == pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+		else
+		{
+			_vector vInDir = vMovePos - vPosition;
+			_vector vOutDir = vPosition - vMovePos;
+			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+
+			_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+
+			vMovePos = vPosition + vSlidingDir;
+
+			if (pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			{
+				Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+			}
+		}
+	}
+
+	else if (TRANS_BULLET == m_eType || TRANSTYPE_END == m_eType)
+	{
+		_vector vMovePos = vPosition - XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
+		Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+	}
 }
 
-void CTransform::Go_Right(_double TimeDelta)
+void CTransform::Go_Right(_double TimeDelta, TRANSTYPE eType, CNavigation* pNaviCom)
 {
+	m_eType = eType;
+
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
-	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
+	_float4	vRight = Get_State(CTransform::STATE_RIGHT);
 
-	/* 이렇게 얻어온 VlOOK은 Z축 스케일을 포함하낟. */
-	vPosition += XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+	// vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
-	Set_State(CTransform::STATE_TRANSLATION, vPosition);
+	if (nullptr == pNaviCom && m_eType == TRANS_FIX)
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+
+	else if (m_eType == TRANS_MONSTER || m_eType == TRANS_PLAYER)
+	{
+		_vector vMovePos = vPosition + XMVector3Normalize(XMVectorSet(vRight.x, 0.f, vRight.z, 0.f))* m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
+		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+
+		if (true == pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+		else
+		{
+			_vector vInDir = vMovePos - vPosition;
+			_vector vOutDir = vPosition - vMovePos;
+			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+
+			_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+
+			vMovePos = vPosition + vSlidingDir;
+
+			if (pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			{
+				Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+			}
+		}
+	}
+
+	else if (TRANS_BULLET == m_eType || TRANSTYPE_END == m_eType)
+	{
+		_vector vMovePos = vPosition + XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
+		Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+	}
 
 
 }
@@ -239,11 +339,37 @@ void CTransform::Rotation(_fvector vAxis, _float fRadian)
 	Set_State(CTransform::STATE_LOOK, XMVector4Transform(vLook, RotationMatrix));
 }
 
+void CTransform::RotateToTarget(const _vector& vTargetPos)
+{
+	// _float3 vLook = vTargetPos - Get_State(CTransform::STATE_TRANSLATION);
+	//
+	// vLook = XMVector3Normalize(vLook);
+	//
+	// const _float2 v2Look{ 0.f, 1.f };
+	// _float2 v2ToDest{ vLook.x, vLook.z };
+	//
+	// const _float fDot = v2Look.Dot(v2ToDest);
+	//
+	// if(vLook.x < 0)
+	// {
+	// 	Set_State(CTransform::STATE_UP, XMLoadFloat(-acosf(fDot)));
+	//
+	// 	Get_State(CTransform::STATE_UP)
+	// }
+	//
+	// fDot = XMStoreFloat(&fDot, XMVector2Dot(&v2Look, &v2ToDest));
+	//
+
+
+
+
+}
+
 void CTransform::LookAt(_fvector vTargetPos)
 {
 	_float3		vScale = Get_Scaled();
 
-	_vector		vLook = XMVector3Normalize(vTargetPos - Get_State(CTransform::STATE_TRANSLATION)) * vScale.z;
+	_float4		vLook = XMVector3Normalize(vTargetPos - Get_State(CTransform::STATE_TRANSLATION)) * vScale.z;
 	_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
 	_vector		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
 
@@ -252,11 +378,35 @@ void CTransform::LookAt(_fvector vTargetPos)
 	Set_State(CTransform::STATE_LOOK, vLook);
 }
 
+void CTransform::LookAt_Monster(_fvector vTargetPos, _double TimeDelta, _float fLimitRange)
+{
+	_float3		vScale = Get_Scaled();
+
+	_float4		TargetPos = vTargetPos;
+	TargetPos = XMVectorSet(TargetPos.x, 0.f, TargetPos.z, TargetPos.w);
+
+	_float4 vDir = vTargetPos - Get_State(CTransform::STATE_TRANSLATION);
+
+	_float	fDistance = XMVectorGetX(XMVector3Length(vDir));
+
+	if(fDistance > fLimitRange)
+	{
+		_float4		vLook = XMVector3Normalize(XMLoadFloat4(&TargetPos) - Get_State(CTransform::STATE_TRANSLATION)) * vScale.z;
+		_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
+		_vector		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
+
+		Set_State(CTransform::STATE_RIGHT, vRight);
+		Set_State(CTransform::STATE_UP, vUp);
+		Set_State(CTransform::STATE_LOOK, vLook);
+	}
+}
+
 void CTransform::Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit)
 {
 	_vector		vPosition = Get_State(CTransform::STATE_TRANSLATION);
-	_vector		vDir = vTargetPos - vPosition;
 
+	_vector		vDir = vTargetPos - vPosition;
+	
 	_float		fDistance = XMVectorGetX(XMVector3Length(vDir));
 
 	if (fDistance > fLimit)

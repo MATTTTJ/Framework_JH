@@ -6,6 +6,9 @@
 #include "Json/json.hpp"
 #include <fstream>
 #include "Cell.h"
+#include "Home.h"
+#include "Player.h"
+#include "Static_Camera.h"
 
 CImgui_NavigationEditor::CImgui_NavigationEditor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice), m_pContext(pContext)
@@ -26,7 +29,6 @@ HRESULT CImgui_NavigationEditor::Initialize(void* pArg)
 
 void CImgui_NavigationEditor::Imgui_RenderWindow()
 {
-	static _int	iSelectedCell = -1;
 	char**			ppCellTag = nullptr;
 	static _bool	bSave = false;
 	static char	szSaveFileName[MAX_PATH] = "";
@@ -61,17 +63,17 @@ void CImgui_NavigationEditor::Imgui_RenderWindow()
 			strcpy_s(ppCellTag[i], strlen(pCellTag) + 1, pCellTag);
 		}
 
-		ImGui::ListBox("Cell List", &iSelectedCell, ppCellTag, m_iNumCell);
+		ImGui::ListBox("Cell List", &m_iSelectedCell, ppCellTag, m_iNumCell);
 
-		if ((ImGui::Button("Delete") || m_pGameInstance->Key_Down(DIK_DELETE)) && iSelectedCell != -1)
+		if ((ImGui::Button("Delete") || m_pGameInstance->Key_Down(DIK_DELETE)) && m_iSelectedCell != -1)
 		{
 			for (_uint i = 0; i < m_iNumCell; ++i)
 				Safe_Delete_Array(ppCellTag[i]);
 			Safe_Delete_Array(ppCellTag);
 
-			m_pNavigationCom->Delete_Cell(iSelectedCell);
+			m_pNavigationCom->Delete_Cell(m_iSelectedCell);
 
-			iSelectedCell = -1;
+			m_iSelectedCell = -1;
 
 			return;
 		}
@@ -130,7 +132,7 @@ void CImgui_NavigationEditor::Imgui_RenderWindow()
 
 			m_pNavigationCom = CNavigation::Create(m_pDevice, m_pContext, wstrFilePath);
 
-			iSelectedCell = -1;
+			m_iSelectedCell = -1;
 
 			ImGuiFileDialog::Instance()->Close();
 
@@ -152,11 +154,11 @@ void CImgui_NavigationEditor::Imgui_RenderWindow()
 		// Mesh Picking
 		if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_SPACE))
 		{
-			list<CGameObject*>*	IslandList = m_pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_BackGround");
+			list<CGameObject*>*	MeshList = m_pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_BackGround");
 
-			for (auto& pIsland : *IslandList)
+			for (auto& pMesh : *MeshList)
 			{
-				pair<_bool, _float3>		PickInfo = pIsland->Picking_Mesh();
+				pair<_bool, _float3>		PickInfo = pMesh->Picking_Mesh();
 
 				if (PickInfo.first == true)
 				{
@@ -177,6 +179,26 @@ void CImgui_NavigationEditor::Imgui_RenderWindow()
 				}
 			}
 		}
+
+		else if (m_pGameInstance->Mouse_Down(DIM_LB))
+		{
+			CNavigation* pNavigation = dynamic_cast<CNavigation*>(m_pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_BackGround", L"Com_Navigation"));
+			vector<CCell*>* vecCell = pNavigation->Get_vecCell();
+			CHome*			pHome = dynamic_cast<CHome*>(m_pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_BackGround")->front());
+
+			D3D11_VIEWPORT		ViewPort;
+			ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
+			_uint	iNumViewport = 1;
+
+			m_pContext->RSGetViewports(&iNumViewport, &ViewPort);
+
+			pair<_bool, _int> tmp =  CGameUtils::Picking_Cell(g_hWnd, ViewPort.Width, ViewPort.Height, pHome->Get_Transform(), pNavigation);
+
+			m_iSelectedCell = m_iCellIndex = tmp.second;
+			
+		}
+
+
 		// Undo
 		else if (m_pGameInstance->Key_Down(DIK_Z) && m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80)
 		{
@@ -201,13 +223,17 @@ void CImgui_NavigationEditor::Imgui_RenderWindow()
 		ImGui::InputFloat3("POINT_A", &m_vPoint[POINT_A].x);
 		ImGui::InputFloat3("POINT_B", &m_vPoint[POINT_B].x);
 		ImGui::InputFloat3("POINT_C", &m_vPoint[POINT_C].x);
+		ImGui::InputInt("PickingCell", &m_iCellIndex);
+
 	}
 
-	if (iSelectedCell != -1)
+	
+
+	if (m_iSelectedCell != -1)
 	{
 		ImGui::Separator();
 
-		CCell*		pCell = m_pNavigationCom->Get_Cell(iSelectedCell);
+		CCell*		pCell = m_pNavigationCom->Get_Cell(m_iSelectedCell);
 		NULL_CHECK_RETURN(pCell, );
 
 		pCell->ImGui_RenderProperty();
@@ -222,6 +248,9 @@ void CImgui_NavigationEditor::Render()
 {
 #ifdef _DEBUG
 	m_pNavigationCom->Render();
+
+	if (m_iSelectedCell != -1)
+		m_pNavigationCom->Render_Selected_Cell(m_iSelectedCell);
 
 	for (_uint i = 0; i < (_uint)POINT_END; ++i)
 	{

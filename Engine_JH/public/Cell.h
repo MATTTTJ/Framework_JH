@@ -28,7 +28,9 @@ public:
 	_bool							Compare_VerHeight(_fvector vTargetPos);
 	_bool							Compare_VerHeight(_fvector vTargetPos, CCell* pOtherCell);
 	_bool							IsIn(_fvector vTargetPos, _int& pNeighborIndex, _float4 & vBlockedLine, _float4 & vBlockedLineNormal);
+
 	_float4							Get_CellHeight(_float4 fTargetPos);
+	CCell*							Picking_Cell();
 	void							Get_BlockedLine(NEIGHBOR eNeighbor, _float4& vBlockedLine, _float4& vBlockedLineNormal);
 #ifdef _DEBUG
 	HRESULT							Render(class CShader* pShader);

@@ -74,9 +74,9 @@ void CHuman_Explode::Set_On_NaviMesh()
 	CMonster::Set_On_NaviMesh();
 }
 
-void CHuman_Explode::Collision_Event(CBullet* pBullet)
+void CHuman_Explode::Collision_Body(CBullet* pBullet)
 {
-	CMonster::Collision_Event(pBullet);
+	CMonster::Collision_Body(pBullet);
 }
 
 HRESULT CHuman_Explode::Ready_UI()

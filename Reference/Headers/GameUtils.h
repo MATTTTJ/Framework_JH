@@ -23,6 +23,8 @@ public:
 
 	static pair<_bool, _float>	Picking(HWND& hWnd, _float fScreenWidth, _float fScreenHeight, class CTransform* pTransformCom, _float3* pVertexPos, _uint iNumVerticesX, _uint iNumVerticesZ, _float3& vPickingPoint);
 	static pair<_bool, _float>	Picking(HWND& hWnd, _float fScreenWidth, _float fScreenHeight, class CTransform* pTransformCom, VTXMODEL* pVertices, FACEINDICES32* pIndices, _uint iNumPrimitive, _float3& vPickingPoint);
+	static pair<_bool, _int>	Picking_Cell(HWND& hWnd, _float fScreenWidth, _float fScreenHeight, class CTransform* pTransformCom, class CNavigation* pNaviCom);
+
 	static void					SortPointsByCW(_float3* vPoints);
 	static void					Cell_Sorting(_float3* vPoints);
 

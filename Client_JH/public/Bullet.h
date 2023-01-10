@@ -24,7 +24,6 @@ public:
 
 		CGameObject::GAMEOBJECTDESC BulletDesc;
 
-		_uint BulletDamage = 0;
 		ELEMENTS m_eType = TYPE_END;
 	}BULLETOPTION;
 
@@ -47,8 +46,10 @@ public:
 	virtual void				Tick(_double dTimeDelta) override;
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT				Render() override;
-	virtual _bool				Collision_To_Monster(CCollider* pTargetCollider);
-	// virtual _bool				Collision_Test();
+	virtual _bool				Collision_Body();
+	virtual _bool				Collision_Head();
+	virtual _bool				Collision_HideCollider();
+
 private:
 	HRESULT						SetUp_Components();
 	HRESULT						SetUp_ShaderResources();
@@ -76,6 +77,9 @@ protected:
 	_float4						m_vPlayerLook;
 	_float4						m_vFirstSpawn;
 	_float4x4					m_PivotMatrix;
+
+	_bool						m_bCollOnce = false;
+	_int						TestCnt = 0;
 public:
 	virtual CGameObject*		Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;
 	virtual void				Free() override;

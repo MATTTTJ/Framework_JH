@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Cell.h"
 #include "GameInstance.h"
+#include "GameUtils.h"
 
 CCell::CCell(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -152,6 +153,8 @@ _bool CCell::IsIn(_fvector vTargetPos, _int& pNeighborIndex, _float4 & vBlockedL
 	return true;
 }
 
+
+
 _float4 CCell::Get_CellHeight(_float4 fTargetPos)
 {
 
@@ -175,6 +178,11 @@ _float4 CCell::Get_CellHeight(_float4 fTargetPos)
 	}
 
 	return _float4(0.f,0.f,0.f,1);
+}
+
+CCell* CCell::Picking_Cell()
+{
+	return nullptr;
 }
 
 #ifdef _DEBUG

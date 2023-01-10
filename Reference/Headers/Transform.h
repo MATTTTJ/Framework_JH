@@ -12,7 +12,7 @@ public:
 
 	enum DIRECTION { DIR_W, DIR_A, DIR_S, DIR_D, DIR_WA, DIR_WD, DIR_SA, DIR_SD, DIR_END };
 
-	enum TRANSTYPE { TRANS_PLAYER, TRANS_BULLET, TRANS_MONSTER , TRANSTYPE_END };
+	enum TRANSTYPE { TRANS_PLAYER, TRANS_BULLET, TRANS_MONSTER , TRANS_FIX,  TRANSTYPE_END };
 
 	typedef struct tagTransformDesc
 	{
@@ -69,13 +69,15 @@ public:
 
 public:
 	// void Go_Straight(_double TimeDelta, class CNavigation* pNaviCom = nullptr);
-	void Go_Straight(_double TimeDelta, TRANSTYPE eType, class CNavigation* pNaviCom = nullptr);
-	void Go_Backward(_double TimeDelta);
-	void Go_Left(_double TimeDelta);
-	void Go_Right(_double TimeDelta);
+	void Go_Straight(_double TimeDelta, TRANSTYPE eType = TRANSTYPE_END, class CNavigation* pNaviCom = nullptr);
+	void Go_Backward(_double TimeDelta,TRANSTYPE eType = TRANSTYPE_END, class CNavigation* pNaviCom = nullptr);
+	void Go_Left(_double TimeDelta, TRANSTYPE eType = TRANSTYPE_END, class CNavigation* pNaviCom = nullptr);
+	void Go_Right(_double TimeDelta, TRANSTYPE eType = TRANSTYPE_END, class CNavigation* pNaviCom = nullptr);
 	void Turn(_fvector vAxis, _double TimeDelta); /* Dynamic */
 	void Rotation(_fvector vAxis, _float fRadian); /* Static */
+	void RotateToTarget(const _vector& vTargetPos);
 	void LookAt(_fvector vTargetPos);
+	void LookAt_Monster(_fvector vTargetPos, _double TimeDelta, _float fLimitRange);
 	void Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit = 0.1f);
 
 	void				Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpeed);

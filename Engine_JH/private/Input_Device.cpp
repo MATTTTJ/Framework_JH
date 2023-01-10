@@ -16,9 +16,13 @@ CInput_Device::CInput_Device()
 
 _bool CInput_Device::Mouse_Down(MOUSEKEYSTATE MouseButton)
 {
-	if(!m_bMouseState[MouseButton] && (m_MouseState.rgbButtons[MouseButton] & 0x80))
+	if (m_bPressThisFrame[MouseButton] == true)
+		return true;
+
+	if (!m_bMouseState[MouseButton] && (m_MouseState.rgbButtons[MouseButton] & 0x80))
 	{
 		m_bMouseState[MouseButton] = true;
+		m_bPressThisFrame[MouseButton] = true;
 		return true;
 	}
 
@@ -29,7 +33,9 @@ _bool CInput_Device::Mouse_Up(MOUSEKEYSTATE MouseButton)
 {
 	if(m_bMouseState[MouseButton] && !(m_MouseState.rgbButtons[MouseButton] & 0x80))
 	{
-		m_bMouseState[MouseButton] = true;
+		m_bMouseState[MouseButton] = false;
+		m_bPressThisFrame[MouseButton] = false;
+
 		return true;
 	}
 

@@ -58,7 +58,7 @@ HRESULT CHome::Render()
 	}
 
 #ifdef _DEBUG
-	// m_pNavigationCom->Render();
+	m_pNavigationCom->Render();
 #endif
 
 	return S_OK;

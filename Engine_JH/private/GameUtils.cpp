@@ -1,4 +1,6 @@
 #include "..\public\GameUtils.h"
+
+#include "Cell.h"
 #include "GameInstance.h"
 
 
@@ -168,7 +170,7 @@ pair<_bool, _float> CGameUtils::Picking(HWND& hWnd, _float fScreenWidth, _float 
 	vMousePoint = XMVector3TransformCoord(vMousePoint, matProjInv);
 
 	/* Now in View Space */
-	_vector	vRayPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	_vector	vRayPos = vMousePoint;
 	_vector	vRayDir = (vMousePoint - vRayPos);
 
 	/* View -> World */
@@ -184,8 +186,6 @@ pair<_bool, _float> CGameUtils::Picking(HWND& hWnd, _float fScreenWidth, _float 
 	vRayDir = XMVector3Normalize(XMVector3TransformNormal(vRayDir, matWorldInv));
 
 	/* Now in Local Space */
-	_float4	vCameraPos = CGameInstance::GetInstance()->Get_CamPos();
-	_vector	vPickingPos{ 0.f, 0.f, 0.f, 1.f };
 	_float		fDist = 0.f;
 	pair<_bool, _float>	Result{ false, 100000.f };
 
@@ -300,6 +300,72 @@ pair<_bool, _float> CGameUtils::Picking(HWND& hWnd, _float fScreenWidth, _float 
 		}
 	}
 
+	return Result;
+}
+
+pair<_bool, _int> CGameUtils::Picking_Cell(HWND& hWnd, _float fScreenWidth, _float fScreenHeight, CTransform* pTransformCom, CNavigation* pNaviCom)
+{
+
+	POINT		pt;
+	GetCursorPos(&pt);
+	ScreenToClient(hWnd, &pt);
+
+	/* ViewPort -> Projection */
+	_float3	vViewportPoint;
+	vViewportPoint.x = (_float)pt.x / (fScreenWidth * 0.5f) - 1.f;
+	vViewportPoint.y = (_float)pt.y / (fScreenHeight * -0.5f) + 1.f;
+	vViewportPoint.z = 0.f;
+
+	/* Now in Projection Space */
+	_vector	vMousePoint = XMLoadFloat3(&vViewportPoint);
+	vMousePoint = XMVectorSetW(vMousePoint, 1.f);
+
+	/* Projection -> View */
+	_matrix	matProjInv = CGameInstance::GetInstance()->Get_TransformMatrix_Inverse(CPipeLine::D3DTS_PROJ);
+
+	vMousePoint = XMVector3TransformCoord(vMousePoint, matProjInv);
+
+	/* Now in View Space */
+	_vector	vRayPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	_vector	vRayDir = (vMousePoint - vRayPos);
+
+	/* View -> World */
+	_matrix	matViewInv = CGameInstance::GetInstance()->Get_TransformMatrix_Inverse(CPipeLine::D3DTS_VIEW);
+
+	vRayPos = XMVector3TransformCoord(vRayPos, matViewInv);
+	vRayDir = (XMVector3TransformNormal(vRayDir, matViewInv));
+
+	/* World -> Local */
+	_matrix	matWorldInv = pTransformCom->Get_WorldMatrix_Inverse();
+
+	vRayPos = XMVector3TransformCoord(vRayPos, matWorldInv);
+	vRayDir = XMVector3Normalize(XMVector3TransformNormal(vRayDir, matWorldInv));
+
+	/* Now in Local Space */
+	_float		fDist = 0.f;
+	pair<_bool, _int>	Result{ false, 100000 };
+
+	vector<CCell*> vecCell = *pNaviCom->Get_vecCell();
+
+	for (auto iter : vecCell)
+	{
+		_vector vPointA, vPointB, vPointC, vPlane;
+		ZeroMemory(&vPointA, sizeof(_vector));
+		ZeroMemory(&vPointB, sizeof(_vector));
+		ZeroMemory(&vPointC, sizeof(_vector));
+		ZeroMemory(&vPlane, sizeof(_vector));
+
+		vPointA = XMLoadFloat3(&iter->Get_Point(CCell::POINT_A));
+		vPointB = XMLoadFloat3(&iter->Get_Point(CCell::POINT_B));
+		vPointC = XMLoadFloat3(&iter->Get_Point(CCell::POINT_C));
+
+		if (TriangleTests::Intersects(vRayPos, vRayDir, vPointA, vPointB, vPointC, fDist))
+		{
+			Result.first = true;
+			Result.second = iter->Get_Index();
+			break;
+		}
+	}
 	return Result;
 }
 

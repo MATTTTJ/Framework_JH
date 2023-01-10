@@ -37,6 +37,7 @@ public:
 
 #ifdef _DEBUG
 public:
+	HRESULT					Render_Selected_Cell(_int iIndex);
 	HRESULT					Render();
 #endif
 

@@ -12,6 +12,7 @@ CBullet::CBullet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CBullet::CBullet(const CBullet& rhs)
 	:CGameObject(rhs)
+	,TestCnt(rhs.TestCnt)
 {
 }
 
@@ -76,8 +77,12 @@ void CBullet::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	
-
+	if (m_bCollOnce == false)
+	{
+		Collision_Body();
+		Collision_Head();
+		Collision_HideCollider();
+	}
 }
 
 HRESULT CBullet::Render()
@@ -93,6 +98,64 @@ HRESULT CBullet::Render()
 
 #endif
 	return S_OK;
+}
+
+_bool CBullet::Collision_Body()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_HitBodySphere");
+	if (m_pBulletColliderCom->Collision(pCollider))
+	{
+		CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+		if (pMonster == nullptr)
+			return false;
+
+		pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+		m_bCollOnce = true;
+		return true;					// 총알과 몬스터 둘다에 바디와 헤드 만들어서 충돌 이벤트 던지기
+	}
+	else
+		return false;
+}
+
+_bool CBullet::Collision_Head()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_HitHeadSphere");
+	if (m_pBulletColliderCom->Collision(pCollider))
+	{
+		CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+		if (pMonster == nullptr)
+			return false;
+
+		pMonster->Collision_Head(this); // 총알이 어디 충돌했는지 판단하니까 
+		m_bCollOnce = true;
+		return true;					// 총알과 몬스터 둘다에 바디와 헤드 만들어서 충돌 이벤트 던지기
+	}
+	else
+		return false;
+}
+
+_bool CBullet::Collision_HideCollider()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_AttackRangeSphere");
+	if (m_pBulletColliderCom->Collision(pCollider))
+	{
+		CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+
+		if (pMonster == nullptr)
+			return false;
+
+		pMonster->Collision_Hide(this); // 총알이 어디 충돌했는지 판단하니까
+		// m_bCollOnce = true;
+		return true;					// 총알과 몬스터 둘다에 바디와 헤드 만들어서 충돌 이벤트 던지기
+	}
+	else
+		return false;
 }
 
 HRESULT CBullet::SetUp_Components()
@@ -119,19 +182,20 @@ HRESULT CBullet::SetUp_ShaderResources()
 	return S_OK;
 }
 
-_bool CBullet::Collision_To_Monster(CCollider* pTargetCollider)
-{
-	return m_pBulletColliderCom->Collision(pTargetCollider);
-}
 
 
 
 void CBullet::Free()
 {
 	__super::Free();
+
+	
+	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pBulletColliderCom);
+	Safe_Release(m_pPointBuffer);
+	
 
 }

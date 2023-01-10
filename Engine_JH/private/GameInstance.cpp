@@ -6,6 +6,7 @@
 #include "Light_Manager.h"
 #include "Object_Manager.h"
 #include "Timer_Manager.h"
+#include "Target_Manager.h"
 #include "Frustum.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -24,8 +25,10 @@ CGameInstance::CGameInstance()
 	, m_pLight_Manager(CLight_Manager::GetInstance())
 	, m_pImgui_Manager(CImgui_Manager::GetInstance())
 	, m_pFont_Manager(CFontMgr::GetInstance())
+	, m_pTarget_Manager(CTarget_Manager::GetInstance())
 	, m_pFrustum(CFrustum::GetInstance())
 {
+	Safe_AddRef(m_pTarget_Manager);
 	Safe_AddRef(m_pFrustum);
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pLight_Manager);
@@ -514,6 +517,8 @@ void CGameInstance::Release_Engine()
 
 	CFrustum::GetInstance()->DestroyInstance();
 
+	CTarget_Manager::GetInstance()->DestroyInstance();
+
 	CGraphic_Device::GetInstance()->DestroyInstance();
 
 	CTimer_Manager::GetInstance()->DestroyInstance();
@@ -521,6 +526,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pImgui_Manager);

@@ -74,9 +74,9 @@ void CHuman_Granade::Set_On_NaviMesh()
 	CMonster::Set_On_NaviMesh();
 }
 
-void CHuman_Granade::Collision_Event(CBullet* pBullet)
+void CHuman_Granade::Collision_Body(CBullet* pBullet)
 {
-	CMonster::Collision_Event(pBullet);
+	CMonster::Collision_Body(pBullet);
 }
 
 HRESULT CHuman_Granade::Ready_UI()

@@ -26,7 +26,9 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 {
 	m_tBulletOption = *(BULLETOPTION*)pArg;
 
-	m_tBulletOption.BulletDesc.TransformDesc.fSpeedPerSec = 5.f;
+	m_tBulletOption.BulletDesc.TransformDesc.fSpeedPerSec = 70.f;
+	m_tBulletOption.m_eType = CBullet::BULLETOPTION::TYPE_FIRE;
+	m_tBulletOption.BulletDesc.m_iDamage = 30;
 
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
@@ -107,10 +109,11 @@ void CDefault_Pistol::Late_Tick(_double dTimeDelta)
 	
 	m_vTest = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_UP);
 
-	if (Collision_Test())
-		int i = 0;
+	// if (Collision_Body())
+	// 	int i = 0;
 
-	// 기존 코드 정리하고 총알 자체에서 몬스터들 콜라이더와 비교하기 
+	// 기존 코드 정리하고 총알 자체에서 몬스터들 콜라이더와 비교하기
+	// 부딪힌 객체 받아서 그 객체에 어떻게 전달할건지 생각해보기 
 
 
 	// if (nullptr != m_pBulletColliderCom)
@@ -119,7 +122,7 @@ void CDefault_Pistol::Late_Tick(_double dTimeDelta)
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
 	}
 
 	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
@@ -168,14 +171,23 @@ HRESULT CDefault_Pistol::SetUp_ShaderResources()
 	return S_OK;
 }
 
-_bool CDefault_Pistol::Collision_Test()
-{
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_HitBodySphere");
-
-	return m_pBulletColliderCom->Collision(pCollider);
-}
+// _bool CDefault_Pistol::Collision_Body()
+// {
+// 	// CGameInstance* pGameInstance = CGameInstance::GetInstance();
+// 	//
+// 	// CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_HitBodySphere");
+// 	// if(m_pBulletColliderCom->Collision(pCollider))
+// 	// {
+// 	// 	CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+// 	// 	if (pMonster == nullptr)
+// 	// 		return false;
+// 	//
+// 	// 	pMonster->Collision_Event(this); // 총알이 어디 충돌했는지 판단하니까 
+// 	// 	return true;					// 총알과 몬스터 둘다에 바디와 헤드 만들어서 충돌 이벤트 던지기
+// 	// }
+// 	// else 
+// 	// 	return false;
+// }
 
 
 CDefault_Pistol* CDefault_Pistol::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -206,6 +218,12 @@ void CDefault_Pistol::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pPointBuffer);
+	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pBulletColliderCom);
+	Safe_Release(m_pPointBuffer);
+	
+
 }
