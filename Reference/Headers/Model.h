@@ -47,6 +47,8 @@ public:
 	void						Play_Animation(_double TimeDelta, LERPTYPE eType = LERP_BEGIN);
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);
 	HRESULT						Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrBoneConstantName = L"", _uint iPassIndex = 0);
+	HRESULT						Render_2Pass(CShader* pShader, _uint iMeshIndex, const wstring& NoRenderTag = L"", const wstring & wstrBoneConstantName = L"", _uint iPassIndex = 0);
+
 	pair<_bool, _float3>		Picking(HWND& hWnd, class CTransform* pTransformCom);
 
 private:

@@ -9,6 +9,7 @@
 #include "Human_Sword.h"
 #include "LaiLuo_Home.h"
 #include "Monster.h"
+#include "MonsterUI.h"
 #include "NumberUI.h"
 #include "Player.h"
 #include "PlayerUI_Base.h"
@@ -166,6 +167,28 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Bullet", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Bullet/bullet_red.png", 1)), E_FAIL);
 
 
+	// 몬스터 체력 베이스 텍스쳐
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_MonsterUI_Base", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/bg_monsterHP_normal.png", 1)), E_FAIL);
+
+	// 몬스터 노말 텍스쳐
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Monster_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Human_Sword/monster_body_2001_s.png", 1)), E_FAIL);
+
+	// 몬스터 아웃라인 글로우 텍스쳐 
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Monster_GlowTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Human_Sword/monster_body_2001_Glow.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Monster_GlowTex_Test", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Human_Sword/Glow_Test.png", 1)), E_FAIL);
+
+
+
+
+
+
+
+
+
+
+
+
+
 	m_wstrLoadingText = L"네비게이션 정보 생성중입니다.";
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Client_JH\\Bin\\Save Data\\Navigation\\Navigation_Test.json")), E_FAIL);
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"C:\\Users\\Hoon\\Desktop\\3D_JH\\Framework_JH\\Client_JH\\Bin\\Save Data\\Navigation\\Navigation_Test.json")), E_FAIL);
@@ -239,6 +262,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_GoldTex", CPlayerUI_Gold::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_EmeraldTex", CPlayerUI_Emerald::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_Skill_BaseTex", CPlayerUI_Skill_Base::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_MonsterUI_Base", CMonsterUI::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	// 노말맵 몬스터 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Sword", CHuman_Sword::Create(m_pDevice, m_pContext)), E_FAIL);

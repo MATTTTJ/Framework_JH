@@ -35,7 +35,7 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 
 	if (nullptr != pArg)
 	{
-		m_pTransformCom->Set_Scaled(_float3(1.f, 1.f, 1.f));
+		m_vPSize = _float2{ 1.f, 1.f };
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tBulletOption.BulletDesc.TransformDesc.vInitPos.x, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.y, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.z, 1.f));
 
 		_matrix matpivot;
@@ -165,7 +165,7 @@ HRESULT CDefault_Pistol::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vLook", &m_vLook, sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vRightSrc", &m_vTest, sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vUp", &m_vUp, sizeof(_float4)), E_FAIL);
-
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vPSize", &m_vPSize, sizeof(_float2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);
 
 	return S_OK;

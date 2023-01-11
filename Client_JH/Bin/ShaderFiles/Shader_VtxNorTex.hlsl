@@ -2,21 +2,8 @@
 
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
-vector			g_vCamPosition;
-
-/* 빛정보 */
-vector			g_vLightDir;
-vector			g_vLightPos;
-float			g_fRange;
-vector			g_vLightDiffuse;
-vector			g_vLightAmbient;
-vector			g_vLightSpecular;
-
-
 /* 재질정보 */
 texture2D		g_DiffuseTexture[2];
-vector			g_vMtrlAmbient = vector(0.4f, 0.4f, 0.4f, 1.f);
-vector			g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 /* 지형 셰이딩 */
 texture2D		g_BrushTexture;
@@ -59,7 +46,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vTexUV = In.vTexUV;
 
 	Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-	Out.vNormal = mul(float4(In.vNormal, 0.f), g_WorldMatrix);
+	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
 
 	return Out;
 }
@@ -76,7 +63,9 @@ struct PS_IN
 struct PS_OUT
 {
 	/*SV_TARGET0 : 모든 정보가 결정된 픽셀이다. AND 0번째 렌더타겟에 그리기위한 색상이다. */
-	float4		vColor : SV_TARGET0;
+	float4		vDiffuse : SV_TARGET0;
+	float4		vNormal : SV_TARGET1;
+
 };
 
 
@@ -88,8 +77,6 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector		vSourDiffuse = g_DiffuseTexture[0].Sample(LinearSampler, In.vTexUV * 30.f);
 	vector		vDestDiffuse = g_DiffuseTexture[1].Sample(LinearSampler, In.vTexUV * 30.f);
 	vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
-
-	
 
 	/*vector		*/
 	vector		vBrush = (vector)0.f;
@@ -105,23 +92,10 @@ PS_OUT PS_MAIN(PS_IN In)
 		vBrush = g_BrushTexture.Sample(LinearSampler, vUV);
 	}
 
-	vector		vMtrlDiffuse = vSourDiffuse * vFilter.r + 
+	Out.vDiffuse = vSourDiffuse * vFilter.r + 
 		vDestDiffuse * (1.f - vFilter.r) + vBrush;
 		
-	vector		vDiffuse = (g_vLightDiffuse * vMtrlDiffuse);	
-
-	float		fShade = saturate(dot(normalize(g_vLightDir) * -1.f,
-		normalize(In.vNormal)));
-
-	vector		vReflect = reflect(normalize(g_vLightDir), normalize(In.vNormal));
-	vector		vLook = In.vWorldPos - g_vCamPosition;
-
-	/* 두 벡터 : 빛의 반사벡터, 정점을 바라보는 시선벡터 */
-	float		fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f,
-		normalize(vLook))), 30.f);
-
-	Out.vColor = vDiffuse * saturate(fShade + (g_vLightAmbient * g_vMtrlAmbient))
-		+ fSpecular * (g_vLightSpecular * g_vMtrlSpecular);
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	return Out;
 }

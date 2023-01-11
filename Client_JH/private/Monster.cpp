@@ -41,6 +41,14 @@ _matrix CMonster::Get_CombindMatrix(const string& strBoneName)
 	return m_pModelCom->Get_CombindMatrix(strBoneName);
 }
 
+HRESULT CMonster::Ready_UI()
+{
+
+
+	
+	return S_OK;
+}
+
 HRESULT CMonster::Initialize_Prototype()
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
@@ -51,6 +59,9 @@ HRESULT CMonster::Initialize_Prototype()
 HRESULT CMonster::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
+
+	
+
 
 	return S_OK;
 }
@@ -83,4 +94,15 @@ HRESULT CMonster::Render()
 void CMonster::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pModelCom);
+	Safe_Release(m_pState);
+	for(_uint i =0; i<COLLTYPE_END; ++i)
+	{
+		Safe_Release(m_pColliderCom[i]);
+	}
+	for(_uint i =0; i<TEXTURETYPE_END; ++i)
+	{
+		Safe_Release(m_pTextureCom[i]);
+	}
 }

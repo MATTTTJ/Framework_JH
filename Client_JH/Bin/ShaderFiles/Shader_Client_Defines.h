@@ -1,5 +1,7 @@
 float4			g_PixelOffset;
 
+float4			g_OutLineColor = float4(0.f, 0.f, 0.f, 1.f);
+
 float3x3 Kx = { -1, 0, 1,
 				-2, 0, 2,
 				-1, 0, 1 };
@@ -41,6 +43,7 @@ FrontCounterClockwise = false;
 
 RasterizerState RS_CW
 {
+	// FillMode = Solid;
 	CullMode = Front;
 	FrontCounterClockwise = false;
 };
@@ -50,6 +53,15 @@ DepthStencilState DS_Default
 	DepthEnable = true;
 	DepthWriteMask = all;	
 	DepthFunc = less_equal;
+};
+
+DepthStencilState DS_Test
+{
+	DepthEnable = true;
+DepthWriteMask = Zero;
+DepthFunc = less_equal;
+StencilEnable = true;
+
 };
 
 DepthStencilState DS_ZEnable_ZWriteEnable_FALSE

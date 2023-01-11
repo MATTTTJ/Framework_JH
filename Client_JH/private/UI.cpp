@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "..\public\UI.h"
 #include "GameInstance.h"
+#include "Model.h"
 #include "Player.h"
-
+#include "Monster.h"
+#include "VIBuffer_Point_Instancing.h"
 CUI::CUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -81,6 +83,6 @@ void CUI::Free()
 
 	for (_int i = 0; i < NUM_END; ++i)
 		Safe_Release(m_pNumberingTexCom[i]);
-
+	Safe_Release(m_pPointBuffer);
 	Safe_Release(m_pRendererCom);
 }

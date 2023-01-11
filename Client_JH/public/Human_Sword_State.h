@@ -39,6 +39,7 @@ public:
 	virtual ~CHuman_Sword_State() = default;
 
 public:
+	const _bool&				Is_DamagedState() { return m_bDamaged[HIT]; }
 	void						Set_DamagedState(DAMAGEDTYPE eType) { m_bDamaged[eType] = true; }
 	HRESULT						Initialize(CHuman_Sword* pOwner, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
 	void						Tick(_double dTimeDelta);

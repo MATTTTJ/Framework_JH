@@ -1,10 +1,39 @@
 #include "stdafx.h"
 #include "..\public\Target_Manager.h"
 #include "Render_Target.h"
+#include "Shader.h"
+#include "VIBuffer_Rect.h"
 
 IMPLEMENT_SINGLETON(CTarget_Manager);
 
 CTarget_Manager::CTarget_Manager() {}
+
+HRESULT CTarget_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+#ifdef _DEBUG
+
+	D3D11_VIEWPORT			ViewportDesc;
+	ZeroMemory(&ViewportDesc, sizeof ViewportDesc);
+
+	_uint			iNumViewports = 1;
+
+	pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
+
+	m_pShader = CShader::Create(pDevice, pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Engine_JH\\Bin\\ShaderFiles\\Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
+	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	m_pVIBuffer = CVIBuffer_Rect::Create(pDevice, pContext);
+	if (nullptr == m_pVIBuffer)
+		return E_FAIL;
+#endif
+
+
+	return S_OK;
+}
 
 HRESULT CTarget_Manager::Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,	const _tchar* pTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4* pClearColor)
 {
@@ -58,7 +87,10 @@ HRESULT CTarget_Manager::Begin_MRT(ID3D11DeviceContext* pContext, const _tchar* 
 	_uint iNumViews = 0;
 
 	for (auto& pRTV : *pMRTList)
+	{
+		pRTV->Clear();
 		pRTVs[iNumViews++] = pRTV->Get_RTV();
+	}
 
 	pContext->OMSetRenderTargets(iNumViews, pRTVs, m_pDepthStencilView);
 
@@ -74,6 +106,37 @@ HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pContext, const _tchar* pM
 
 	return S_OK;
 }
+
+#ifdef _DEBUG
+
+HRESULT CTarget_Manager::Ready_Debug(const _tchar* pTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
+{
+	CRender_Target*		pTarget = Find_RenderTarget(pTargetTag);
+
+	NULL_CHECK_RETURN(pTargetTag, E_FAIL);
+
+	return pTarget->Ready_Debug(fX, fY, fSizeX, fSizeY);
+
+}
+
+void CTarget_Manager::Render_Debug(const _tchar* pMRTTag)
+{
+	list<CRender_Target*>*		pMRTList = Find_MRT(pMRTTag);
+
+	NULL_CHECK_RETURN(pMRTList, );
+
+	if (FAILED(m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix)))
+		return;
+
+	if (FAILED(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	for (auto& pRenderTarget : *pMRTList)
+	{
+		pRenderTarget->Render(m_pShader, m_pVIBuffer);
+	}
+}
+#endif // _DEBUG
 
 CRender_Target* CTarget_Manager::Find_RenderTarget(const _tchar* pTargetTag)
 {
@@ -110,4 +173,10 @@ void CTarget_Manager::Free()
 		Safe_Release(Pair.second);
 
 	m_mapRenderTarget.clear();
+
+#ifdef _DEBUG
+	Safe_Release(m_pShader);
+	Safe_Release(m_pVIBuffer);
+
+#endif
 }

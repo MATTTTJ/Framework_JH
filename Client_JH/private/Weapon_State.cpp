@@ -18,7 +18,18 @@ const _uint& CWeapon_State::Get_CurWeaponBulletCnt(wstring WeaponName)
 	for (_int i = 0; i < WEAPONTYPE_END; ++i)
 	{
 		if (WeaponName == m_tWeaponOption[i].wstrWeaponName)
-			return m_tWeaponOption[i].iCurBullet;
+		{
+			if (m_tWeaponOption[i].iCurBullet <= 0)
+			{
+				m_tWeaponOption[i].iCurBullet = 0;
+
+				return m_tWeaponOption[i].iCurBullet;
+			}
+			else
+			{
+				return m_tWeaponOption[i].iCurBullet;
+			}
+		}
 	}
 
 	return 9999;

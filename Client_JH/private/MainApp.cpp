@@ -32,7 +32,7 @@ HRESULT CMainApp::Initialize()
 	FAILED_CHECK_RETURN(Start_Level(LEVEL_LOGO), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Font(m_pDevice, m_pContext, TEXT("Font_Comic"), TEXT("../Bin/Resources/fonts/131.SpriteFont")), E_FAIL);
-
+	// D3D11_BLEND_DESC
 	return S_OK;
 }
 void CMainApp::Tick(_double TimeDelta)

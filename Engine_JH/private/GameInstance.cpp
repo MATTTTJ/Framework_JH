@@ -60,8 +60,8 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& G
 	FAILED_CHECK_RETURN(m_pObject_Manager->Reserve_Manager(iNumLevels + 1), E_FAIL);
 	FAILED_CHECK_RETURN(m_pComponent_Manager->Reserve_Manager(iNumLevels + 1), E_FAIL);
 	FAILED_CHECK_RETURN(m_pComponent_Manager->Add_Prototype(m_iStaticLevelIndex, m_wstrPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Initialize(*ppDeviceOut, *ppContextOut), E_FAIL);
 	FAILED_CHECK_RETURN(m_pFrustum->Initialize(), E_FAIL);
-
 	return S_OK;
 }
 

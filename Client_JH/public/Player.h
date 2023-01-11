@@ -73,9 +73,10 @@ public:
 	_uint					Get_EmeraldCnt(void) { return m_PlayerOption.m_iEmeraldCnt; }
 	_uint					Get_GoldCnt(void) { return m_PlayerOption.m_iGold; }
 	_uint					Get_ThrowCnt(void) { return m_PlayerOption.m_iThrowCnt; }
-	_uint					Get_RifleBulletCnt(void) { return m_PlayerOption.m_iRifle_BulletCnt; }
-	_uint					Get_PistolBulletCnt(void) { return m_PlayerOption.m_iPistol_BulletCnt; }
-	_uint					Get_InjectorBulletCnt(void) { return m_PlayerOption.m_iInjector_BulletCnt; }
+
+	_uint					Get_RifleBulletCnt(void);  
+	_uint					Get_PistolBulletCnt(void); 
+	_uint					Get_InjectorBulletCnt(void);
 
 	void					Set_Camera(_double dTimeDelta);
 
@@ -105,7 +106,8 @@ private:
 	CNavigation*			m_pNavigationCom = nullptr;
 	_uint					m_iPoisonAttCnt = 0;
 	
-
+	// Shader CamPos
+	_float3					m_vCamPos;
 
 	// vector<CGameObject*>	m_vecPlayerParts;
 
@@ -126,6 +128,10 @@ private: // State
 	PLAYEROPTION			m_PlayerOption;
 	vector<CGameObject*>	m_vecPlayerUI;
 
+	_bool					m_bHitColor = false;
+private:
+	_float					m_fOutLineOffset = 0.003f;
+
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();
@@ -136,5 +142,7 @@ public:
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
 	virtual void			Free() override;
 };
+
+
 
 END

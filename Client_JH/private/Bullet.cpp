@@ -111,6 +111,7 @@ _bool CBullet::Collision_Body()
 		if (pMonster == nullptr)
 			return false;
 
+		pMonster->Set_HitColor();
 		pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 		m_bCollOnce = true;
 		return true;					// 총알과 몬스터 둘다에 바디와 헤드 만들어서 충돌 이벤트 던지기
@@ -130,6 +131,7 @@ _bool CBullet::Collision_Head()
 		if (pMonster == nullptr)
 			return false;
 
+		pMonster->Set_HitColor();
 		pMonster->Collision_Head(this); // 총알이 어디 충돌했는지 판단하니까 
 		m_bCollOnce = true;
 		return true;					// 총알과 몬스터 둘다에 바디와 헤드 만들어서 충돌 이벤트 던지기

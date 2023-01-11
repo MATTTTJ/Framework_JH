@@ -443,8 +443,36 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrB
 		}
 	}
 
-
 	pShader->Begin(iPassIndex);
+
+	m_vecMeshes[iMeshIndex]->Render();
+
+	return S_OK;
+}
+
+HRESULT CModel::Render_2Pass(CShader* pShader, _uint iMeshIndex, const wstring& NoRenderTag , const wstring & wstrBoneConstantName , _uint iPassIndex)
+{
+	NULL_CHECK_RETURN(pShader, E_FAIL);
+
+	if (nullptr != m_vecMeshes[iMeshIndex])
+	{
+		if (wstrBoneConstantName != L"")
+		{
+			_float4x4		BoneMatrices[256];
+
+			m_vecMeshes[iMeshIndex]->SetUp_BoneMatrix(BoneMatrices, XMLoadFloat4x4(&m_PivotMatrix));
+
+			pShader->Set_MatrixArray(wstrBoneConstantName, BoneMatrices, 256);
+		}
+	}
+
+	string tmp = CGameUtils::wstrTostr(NoRenderTag);
+	if (m_vecMeshes[iMeshIndex]->Get_MeshName().c_str() == tmp)
+	{
+		return S_OK;
+	}
+	else
+		pShader->Begin(iPassIndex);
 
 	m_vecMeshes[iMeshIndex]->Render();
 

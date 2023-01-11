@@ -2,7 +2,6 @@
 #include "..\public\PlayerUI_Base.h"
 #include "GameInstance.h"
 #include "Player.h"
-#include "UI.h"
 
 CPlayerUI_Base::CPlayerUI_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI(pDevice, pContext)
@@ -32,7 +31,7 @@ HRESULT CPlayerUI_Base::Initialize_Clone(const wstring& wstrPrototypeTag, void* 
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
-	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
+	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_fX - m_fSizeX * 0.5f, -m_fY + m_fSizeY * 0.5f, 0.f, 1.f));
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-850.f, -470.f, 0.f, 1.f));
 

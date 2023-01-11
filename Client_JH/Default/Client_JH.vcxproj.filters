@@ -187,6 +187,9 @@
     <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight\State">
       <UniqueIdentifier>{764ff002-4b6b-42ba-b3c3-670a0f79fc7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="80. Manager\Parent\Monster\MonsterUI">
+      <UniqueIdentifier>{64fb71f1-1222-4606-a8a3-dedd72070a39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -345,6 +348,7 @@
     <ClInclude Include="..\public\Elite_Knight_State.h">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight\State</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MonsterUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -491,6 +495,7 @@
     <ClCompile Include="..\private\Elite_Knight_State.cpp">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight\State</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\MonsterUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

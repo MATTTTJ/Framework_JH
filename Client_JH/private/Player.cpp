@@ -43,6 +43,30 @@ CPlayer::CPlayer(const CPlayer & rhs)
 	m_PlayerOption.m_iThrowCnt = 4;
 }
 
+ _uint CPlayer::Get_RifleBulletCnt()
+{
+	 if (m_PlayerOption.m_iRifle_BulletCnt <= 0)
+		 m_PlayerOption.m_iRifle_BulletCnt = 0;
+
+	  return m_PlayerOption.m_iRifle_BulletCnt; 
+}
+
+_uint CPlayer::Get_PistolBulletCnt()
+{
+	if (m_PlayerOption.m_iPistol_BulletCnt <= 0)
+		m_PlayerOption.m_iPistol_BulletCnt = 0;
+
+	 return m_PlayerOption.m_iPistol_BulletCnt; 
+}
+
+_uint CPlayer::Get_InjectorBulletCnt()
+{
+	if (m_PlayerOption.m_iInjector_BulletCnt <= 0)
+		m_PlayerOption.m_iInjector_BulletCnt = 0;
+
+	return m_PlayerOption.m_iInjector_BulletCnt;
+}
+
 
 _matrix CPlayer::Get_BoneMatrix(const string& strBoneName)
 {
@@ -157,7 +181,6 @@ void CPlayer::Set_On_NaviMesh()
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, PlayerPos);
 }
 
-
 void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
@@ -237,10 +260,13 @@ void CPlayer::Tick(_double dTimeDelta)
 		else 
 			m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
 	}
-
+	m_vCamPos = (Get_BoneMatrix("Bip001 Head") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix()).r[3];
 	m_pFirstAimColliderCom->Update(_matrix(R, U, L, P));
 	m_pSecondAimColliderCom->Update(_matrix(R, U, L, P));
 	static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Late_Tick(dTimeDelta);
+
+	
+
 }
 
 void CPlayer::Late_Tick(_double dTimeDelta)
@@ -276,6 +302,7 @@ HRESULT CPlayer::Render()
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices",1);
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
 	}
 
@@ -358,7 +385,7 @@ HRESULT CPlayer::SetUp_Components()
 	ColliderDesc.vSize = _float3(0.5f, 0.5f, 30.f);
 	ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vPosition = _float3(m_vAimColliderPos.x * 15.f, m_vAimColliderPos.y *15.f, m_vAimColliderPos.z * 15.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_OBB", L"Com_OBB", (CComponent**)&m_pColliderCom[COLLIDER_OBB], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_OBB", L"Com_EyesOBB", (CComponent**)&m_pColliderCom[COLLIDER_OBB], this, &ColliderDesc), E_FAIL);
 
 	// /* For.Com_SPHERE */
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
@@ -413,7 +440,12 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_PixelOffset", &(_float4(1 / (_float)g_iWinSizeX, 1 / (_float)g_iWinSizeY, 0.f, 0.f)) , sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vCameraPos", &CGameInstance::GetInstance()->Get_CamPos(), sizeof(_float3)), E_FAIL);
+	
+	m_vCamPos = static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_Transform()->Get_State(CTransform::STATE_TRANSLATION);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vCameraPos", &XMVector3Normalize(_float3(m_vCamPos.x, m_vCamPos.y, m_vCamPos.z)), sizeof(_float3)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &XMVectorSet(0.f,0.f,0.f,1.f), sizeof(_vector)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bHit", &m_bHitColor, sizeof(_bool)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_Outline_Offset", &m_fOutLineOffset, sizeof(_float)), E_FAIL);
 
 	RELEASE_INSTANCE(CGameInstance);
 

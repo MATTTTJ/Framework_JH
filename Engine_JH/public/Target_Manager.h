@@ -12,11 +12,18 @@ public:
 	virtual ~CTarget_Manager() = default;
 
 public:
+	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	HRESULT Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4* pClearColor);
 	HRESULT Add_MRT(const _tchar* pMRTTag, const _tchar* pTargetTag);
 
 	HRESULT Begin_MRT(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
 	HRESULT End_MRT(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
+
+#ifdef _DEBUG
+public:
+	HRESULT Ready_Debug(const _tchar* pTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
+	void	Render_Debug(const _tchar* pMRTTag);
+#endif // _DEBUG
 
 private:
 	map<const _tchar*, class CRender_Target*>				m_mapRenderTarget;
@@ -31,8 +38,16 @@ private:
 	ID3D11RenderTargetView*				m_pBackBufferView = nullptr;
 	ID3D11DepthStencilView*				m_pDepthStencilView = nullptr;
 
+#ifdef _DEBUG
 private:
-	class CRender_Target* Find_RenderTarget(const _tchar* pTargetTag);
+	class CVIBuffer_Rect*				m_pVIBuffer = nullptr;
+	class CShader*						m_pShader = nullptr;
+	_float4x4							m_ViewMatrix, m_ProjMatrix;
+#endif
+
+
+private:
+	class CRender_Target*		 Find_RenderTarget(const _tchar* pTargetTag);
 	list<class CRender_Target*>* Find_MRT(const _tchar* pMRTTag);
 
 public:

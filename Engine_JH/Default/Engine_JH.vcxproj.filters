@@ -635,6 +635,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl">
       <Filter>01. Utility\03. Components\09. Navigation\ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
+      <Filter>01. Utility\03. Components\11. RenderTarget</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\public\HowToUse.txt">

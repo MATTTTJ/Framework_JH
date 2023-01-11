@@ -206,6 +206,7 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Monster.h" />
+    <ClInclude Include="..\public\MonsterUI.h" />
     <ClInclude Include="..\public\NumberUI.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerUI_Base.h" />
@@ -260,6 +261,7 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
+    <ClCompile Include="..\private\MonsterUI.cpp" />
     <ClCompile Include="..\private\NumberUI.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerUI_Base.cpp" />

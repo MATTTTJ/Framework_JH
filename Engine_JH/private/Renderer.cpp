@@ -26,9 +26,19 @@ HRESULT CRenderer::Draw_RenderGroup()
 {
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlphaBlend(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonLight(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
+
+#ifdef _DEBUG
+	if (nullptr != m_pTarget_Manager)
+	{
+		m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
+		m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"));
+	}
+#endif
+
 
 	return S_OK;
 }
@@ -38,21 +48,31 @@ HRESULT CRenderer::Initialize_Prototype()
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
-	// D3D11_VIEWPORT		ViewportDesc;
-	// ZeroMemory(&ViewportDesc, sizeof(D3D11_VIEWPORT));
-	//
-	// _uint iNumViewPorts = 1;
-	//
-	// m_pContext->RSGetViewports(&iNumViewPorts, &ViewportDesc);
+	D3D11_VIEWPORT		ViewportDesc;
+	ZeroMemory(&ViewportDesc, sizeof(D3D11_VIEWPORT));
+	
+	_uint iNumViewPorts = 1;
+	
+	m_pContext->RSGetViewports(&iNumViewPorts, &ViewportDesc);
 
-	// 렌더타겟 생성 //DXGI_FORMAT_B8G8R8A8_UNORM
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Diffuse"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(1.f, 0.f, 0.f, 1.f)), E_FAIL);
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Normal"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Shade"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
-	//
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Defferd"), TEXT("Target_Diffuse")), E_FAIL);  // 디퍼드 렌더링 (빛)을 수행하기 위한 
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Defferd"), TEXT("Target_Normal")), E_FAIL);   // 필요한 데이터들을 저장한 렌더타겟들
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade")), E_FAIL); // 빛 연산의 결과를 저장할 렌더 타겟들
+	//렌더타겟 생성 //DXGI_FORMAT_B8G8R8A8_UNORM
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Diffuse"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(1.f, 0.f, 0.f, 1.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Normal"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Shade"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
+	
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Diffuse")), E_FAIL);  // 디퍼드 렌더링 (빛)을 수행하기 위한 
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Normal")), E_FAIL);   // 필요한 데이터들을 저장한 렌더타겟들
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade")), E_FAIL); // 빛 연산의 결과를 저장할 렌더 타겟들
+
+#ifdef _DEBUG
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.0f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
+#endif
+
 
 	return S_OK;
 }
@@ -63,9 +83,6 @@ HRESULT CRenderer::Initialize_Clone(CGameObject* pOwner, void* pArg)
 
 	return S_OK;
 }
-
-
-
 
 HRESULT CRenderer::Render_Priority()
 {
@@ -84,11 +101,11 @@ HRESULT CRenderer::Render_Priority()
 
 HRESULT CRenderer::Render_NonAlphaBlend()
 {
-	// NULL_CHECK_RETURN(m_pTarget_Manager, E_FAIL);
-	//
-	// // Diffuse + Normal
-	//
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Defferd")), E_FAIL);
+	NULL_CHECK_RETURN(m_pTarget_Manager, E_FAIL);
+	
+	// Diffuse + Normal
+	
+	// FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Deferred")), E_FAIL);
 
 	for (auto& pGameObject : m_RenderObjectList[RENDER_NONALPHABLEND])
 	{
@@ -100,9 +117,23 @@ HRESULT CRenderer::Render_NonAlphaBlend()
 
 	m_RenderObjectList[RENDER_NONALPHABLEND].clear();
 
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, TEXT("MRT_Defferd")), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, TEXT("MRT_Deferred")), E_FAIL);
 
 	return S_OK;
+}
+
+HRESULT CRenderer::Render_LightAcc()
+{
+	NULL_CHECK_RETURN(m_pTarget_Manager, E_FAIL);
+
+	// FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_LightAcc"), E_FAIL);
+
+	// m_Light_Manager->Render();
+
+	// FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L"MRT_LightAcc"), E_FAIL);
+
+	return S_OK;
+
 }
 
 HRESULT CRenderer::Render_NonLight()

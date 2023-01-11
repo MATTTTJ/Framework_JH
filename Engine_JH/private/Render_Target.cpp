@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Render_Target.h"
+#include "Shader.h"
+#include "VIBuffer_Rect.h"
 
 CRender_Target::CRender_Target(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -36,6 +38,43 @@ HRESULT CRender_Target::Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePix
 
 	return S_OK;
 }
+
+HRESULT CRender_Target::Clear()
+{
+	m_pContext->ClearRenderTargetView(m_pRTV, (_float*)&m_vClearColor);
+
+	return S_OK;
+}
+#ifdef _DEBUG
+HRESULT CRender_Target::Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY)
+{
+	D3D11_VIEWPORT			ViewportDesc;
+	ZeroMemory(&ViewportDesc, sizeof ViewportDesc);
+
+	_uint			iNumViewports = 1;
+
+	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
+
+	m_WorldMatrix._11 = fSizeX;
+	m_WorldMatrix._22 = fSizeY;
+	m_WorldMatrix._41 = fX - ViewportDesc.Width * 0.5f;
+	m_WorldMatrix._42 = -fY + ViewportDesc.Height * 0.5f;
+
+
+	return S_OK;
+}
+
+void CRender_Target::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
+{
+	pShader->Set_Matrix(L"g_WorldMatrix", &m_WorldMatrix);
+	pShader->Set_ShaderResourceView(L"g_Texture", m_pSRV);
+
+	pShader->Begin(0);
+	pVIBuffer->Render();
+}
+#endif
 
 CRender_Target* CRender_Target::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4* pClearColor)
 {

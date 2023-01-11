@@ -4,7 +4,7 @@
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix			g_SocketMatrix;
 float			g_fTrailCount;
-
+float2			g_vPSize;
 vector			g_vCamPosition;
 vector			g_vInitPos;
 vector			g_vLook;
@@ -60,14 +60,13 @@ void GS_MAIN( point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 {
 	GS_OUT		Out[4];
 
-	float3		vLook = normalize(In[0].vPosition.xyz - g_vCamPosition.xyz);
-	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x * 0.5f;
-	float3		vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y * 0.5f;
+	float3		vLook = g_vCamPosition.xyz - In[0].vPosition;
+	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * g_vPSize.x * 0.5f;
+	float3		vUp = normalize(cross(vLook, vRight)) * g_vPSize.y * 0.5f;
 
 	matrix		matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
 	float3		vPosition;
-
 
 	vPosition = In[0].vPosition + vRight + vUp;
 	Out[0].vPosition = mul(vector(vPosition, 1.f), matVP);
@@ -85,8 +84,6 @@ void GS_MAIN( point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 	Out[3].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[3].vTexUV = float2(0.f, 1.f);
 
-
-
 	Vertices.Append(Out[0]);
 	Vertices.Append(Out[1]);
 	Vertices.Append(Out[2]);
@@ -96,7 +93,6 @@ void GS_MAIN( point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 	Vertices.Append(Out[2]);
 	Vertices.Append(Out[3]);
 	Vertices.RestartStrip();
-
 };
 
 [maxvertexcount(6)]
@@ -168,9 +164,22 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_MonsterUI(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	// Out.vColor.rgb = float3(1.f, 0.f, 0.f);
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
-	pass Rect
+	pass Rect0
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -183,7 +192,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass Bullet
+	pass Bullet1
 	{
 		SetRasterizerState(RS_None);
 		SetDepthStencilState(DS_Default, 0);
@@ -195,5 +204,17 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
-	
+
+	pass Monster2
+	{
+		SetRasterizerState(RS_None);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_MonsterUI();
+	}
 }

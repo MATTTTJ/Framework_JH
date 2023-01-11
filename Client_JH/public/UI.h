@@ -4,10 +4,12 @@
 #include "Weapon_State.h"
 
 BEGIN(Engine)
-	class CRenderer;
+class CModel;
+class CRenderer;
 class CShader;
 class CTexture;
 class CVIBuffer_Rect;
+class CVIBuffer_Point_Instancing;
 END
 
 BEGIN(Client)
@@ -21,6 +23,12 @@ public:
 	enum NUMBUR { ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, SLASH, NUM_END };
 	enum WEAPONTYPE { WEAPON_PISTOL, WEAPON_RIFLE, WEAPON_INJECTOR, WEAPONTYPE_END };
 
+	typedef struct tagMonsterUI
+	{
+		class CMonster* pMonster = nullptr;
+		class CModel*	pModel = nullptr;
+	}MONSTERUIDESC;
+
 	typedef struct tagCountType
 	{
 		COUNTUI m_eType;
@@ -32,6 +40,7 @@ protected:
 	virtual ~CUI() = default;
 
 public:
+	void						Set_Monster(class CMonster* pMonster, class CModel* pModel) { m_pMonster = pMonster; m_pModelCom = pModel; }
 	void						Set_Owner(CGameObject* pOwner) { m_pOwner = pOwner; }
 	void						Set_Weapon_State(CWeapon_State* pState) { m_pWeapon_State = pState; }
 	virtual HRESULT				Initialize_Prototype() override;
@@ -54,10 +63,12 @@ protected:
 	CTexture*					m_pWeaponNumberCom[WEAPON_NUMEND] = { nullptr };
 	CTexture*					m_pNumberingTexCom[NUM_END] = { nullptr };
 
-
+	CVIBuffer_Point_Instancing* m_pPointBuffer = nullptr; 
 
 
 	CGameObject*				m_pOwner = nullptr;
+	CMonster*					m_pMonster = nullptr;
+	CModel*						m_pModelCom = nullptr;
 	CWeapon_State*				m_pWeapon_State = nullptr;
 
 protected:
@@ -66,7 +77,11 @@ protected:
 	_float4x4					m_ProjMatrix;
 
 	_float						m_fGlowStrength;
-
+	_float2						m_vPSize {0.f, 0.f};
+protected:
+	//For Monster
+	MONSTERUIDESC				m_tMonsterUIDesc;
+	
 public:
 	virtual CGameObject*		Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;
 	virtual void				Free() override;
