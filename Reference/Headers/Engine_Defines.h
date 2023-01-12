@@ -52,8 +52,8 @@ using namespace std;
 #include <Json/json_fwd.hpp>
 using Json = nlohmann::json;
 using namespace nlohmann;
-
 #include <Shlwapi.h>
+#pragma comment(lib, "Shlwapi.lib")
 
 #include "Engine_Macro.h"
 #include "Engine_Enum.h"

@@ -15,6 +15,12 @@ CUI::CUI(const CUI& rhs)
 {
 }
 
+void CUI::SetProgress(_int iCurHP, _uint iMaxHP)
+{
+	_float fProgress = (_float)iCurHP / (_float)iMaxHP;
+	m_fProgress = fProgress;
+}
+
 HRESULT CUI::Initialize_Prototype()
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
@@ -83,6 +89,7 @@ void CUI::Free()
 
 	for (_int i = 0; i < NUM_END; ++i)
 		Safe_Release(m_pNumberingTexCom[i]);
+	Safe_Release(m_pPointBufferOther);
 	Safe_Release(m_pPointBuffer);
 	Safe_Release(m_pRendererCom);
 }

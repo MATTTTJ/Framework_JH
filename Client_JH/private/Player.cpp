@@ -286,7 +286,18 @@ void CPlayer::Late_Tick(_double dTimeDelta)
 	}
 
 	if (nullptr != m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
+		for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
+		{
+			if (nullptr != m_pColliderCom[i])
+				m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[i]);
+		}
+		m_pRendererCom->Add_DebugRenderGroup(m_pFirstAimColliderCom);
+		m_pRendererCom->Add_DebugRenderGroup(m_pSecondAimColliderCom);
+		m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+	}
 }
 
 HRESULT CPlayer::Render()
@@ -300,25 +311,11 @@ HRESULT CPlayer::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+		// m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices",1);
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
 	}
-
-#ifdef _DEBUG
-	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
-	{
-		if (nullptr != m_pColliderCom[i])
-			m_pColliderCom[i]->Render();
-	}
-	
-
-	m_pFirstAimColliderCom->Render();
-	m_pSecondAimColliderCom->Render();
-
-	m_pNavigationCom->Render();
-#endif
 
 	return S_OK;
 }
@@ -446,6 +443,10 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &XMVectorSet(0.f,0.f,0.f,1.f), sizeof(_vector)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bHit", &m_bHitColor, sizeof(_bool)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_Outline_Offset", &m_fOutLineOffset, sizeof(_float)), E_FAIL);
+
+	const LIGHTDESC* pLightDesc = pGameInstance->Get_LightDesc(0);
+	if (nullptr == pLightDesc)
+		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -609,39 +610,4 @@ void CPlayer::Free()
 		for (_uint i = 0; i < WEAPON_END; ++i)
 			Safe_Release(m_tWeaponDesc[i].m_pWeaponModelCom);
 	}
-
-	// __super::Free();
-	//
-	// Safe_Release(m_pWeaponState);
-	//
-	// Safe_Release(m_pRendererCom);
-	// Safe_Release(m_pShaderCom);
-	// Safe_Release(m_pModelCom);
-	// Safe_Release(m_pState);
-	// for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
-	// 	Safe_Release(m_pColliderCom[i]);
-	//
-	// Safe_Release(m_pFirstAimColliderCom);
-	// Safe_Release(m_pSecondAimColliderCom);
-	//
-	// for (auto& pUI : m_vecPlayerUI)
-	// 	Safe_Release(pUI);
-	//
-	//
-	// if (m_bIsClone)
-	// {
-	// 	for (_uint i = 0; i < WEAPON_END; ++i)
-	// 	{
-	// 		Safe_Release(m_tWeaponDesc[i].m_pWeaponModelCom);
-	// 	}
-	// }
-	// Safe_Release(m_pNavigationCom);
-	//
-	//
-	// // for (_uint i = 0; i < WEAPON_END; ++i)
-	// // {
-	// // 	Safe_Release(m_tWeaponDesc[i].m_pWeaponModelCom);
-	// // }
-
-
 }

@@ -102,7 +102,16 @@ void CHuman_Sword::Late_Tick(_double TimeDelta)
 
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTPOS]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+	}
 }
 
 HRESULT CHuman_Sword::Render()
@@ -131,17 +140,6 @@ HRESULT CHuman_Sword::Render()
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 2);
 	}
 
-#ifdef _DEBUG
-	m_pColliderCom[COLLTYPE_DETECTED]->Render();
-	m_pColliderCom[COLLTYPE_HITBODY]->Render();
-	m_pColliderCom[COLLTYPE_HITHEAD]->Render();
-	m_pColliderCom[COLLTYPE_ATTPOS]->Render();
-	m_pColliderCom[COLLTYPE_ATTRANGE]->Render();
-	m_pColliderCom[COLLTYPE_ONAIM]->Render();
-	m_pNavigationCom->Render();
-
-#endif
-
 	return S_OK;
 }
 
@@ -156,6 +154,11 @@ HRESULT CHuman_Sword::Ready_UI()
 	MonsterUIDesc.pModel = m_pModelCom;
 
 	pMonsterUI = dynamic_cast<CUI*>(pInst->Clone_GameObject(L"Prototype_GameObject_MonsterUI_Base", &MonsterUIDesc));
+	NULL_CHECK_RETURN(pMonsterUI, E_FAIL);
+	pMonsterUI->Set_Monster(this, m_pModelCom);
+	m_vecMonsterUI.push_back(pMonsterUI);
+
+	pMonsterUI = dynamic_cast<CUI*>(pInst->Clone_GameObject(L"Prototype_GameObject_MonsterUI_HP_Red", &MonsterUIDesc));
 	NULL_CHECK_RETURN(pMonsterUI, E_FAIL);
 	pMonsterUI->Set_Monster(this, m_pModelCom);
 	m_vecMonsterUI.push_back(pMonsterUI);

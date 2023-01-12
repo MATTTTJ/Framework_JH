@@ -274,6 +274,7 @@ _bool CNavigation::IsMove_OnNavigation(_fvector vTargetPos, _float4& vBlockedLin
 			return false; 
 	}
 }
+#ifdef _DEBUG
 
 HRESULT CNavigation::Render_Selected_Cell(_int iIndex)
 {
@@ -288,7 +289,6 @@ HRESULT CNavigation::Render_Selected_Cell(_int iIndex)
 }
 
 
-#ifdef _DEBUG
 HRESULT CNavigation::Render()
 {
 	_float fHeight = 0.f;

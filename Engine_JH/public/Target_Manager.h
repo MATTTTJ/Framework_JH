@@ -12,7 +12,12 @@ public:
 	virtual ~CTarget_Manager() = default;
 
 public:
+	ID3D11ShaderResourceView* Get_SRV(const _tchar* pTargetTag);
+
+
+public:
 	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void	Tick(_double dTimeDelta);
 	HRESULT Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4* pClearColor);
 	HRESULT Add_MRT(const _tchar* pMRTTag, const _tchar* pTargetTag);
 
@@ -22,7 +27,7 @@ public:
 #ifdef _DEBUG
 public:
 	HRESULT Ready_Debug(const _tchar* pTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
-	void	Render_Debug(const _tchar* pMRTTag);
+	HRESULT	Render_Debug(const _tchar* pMRTTag);
 #endif // _DEBUG
 
 private:
@@ -35,6 +40,7 @@ private:
 	typedef map<const _tchar*, list<class CRender_Target*>>	MRTS;
 
 private:
+	ID3D11DeviceContext*				m_pContext = nullptr;
 	ID3D11RenderTargetView*				m_pBackBufferView = nullptr;
 	ID3D11DepthStencilView*				m_pDepthStencilView = nullptr;
 
@@ -53,5 +59,6 @@ private:
 public:
 	virtual void Free() override;
 };
+
 
 END

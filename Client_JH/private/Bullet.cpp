@@ -77,12 +77,23 @@ void CBullet::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
+
+
 	if (m_bCollOnce == false)
 	{
 		Collision_Body();
 		Collision_Head();
 		Collision_HideCollider();
 	}
+
+	if (nullptr != m_pRendererCom &&
+		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
+	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+		m_pRendererCom->Add_DebugRenderGroup(m_pBulletColliderCom);
+	}
+
+
 }
 
 HRESULT CBullet::Render()
@@ -90,13 +101,6 @@ HRESULT CBullet::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 
-#ifdef _DEBUG
-
-	if (nullptr != m_pBulletColliderCom)
-		m_pBulletColliderCom->Render();
-
-
-#endif
 	return S_OK;
 }
 

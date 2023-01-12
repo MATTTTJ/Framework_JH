@@ -77,7 +77,15 @@ void CHuman_Sword_State::Tick(_double dTimeDelta)
 		m_bDamagedAnim = true;
 	}
 	
-	
+	// if(m_pGameInstance->Key_Down(DIK_F5))
+	// {
+	// 	m_pMonster->m_tMonsterOption.MonsterDesc.m_iHP -= 50;
+	//
+	// 	if (m_pMonster->m_tMonsterOption.MonsterDesc.m_iHP - 1 < EPSILON)
+	// 	{
+	// 		m_pMonster->m_tMonsterOption.MonsterDesc.m_iHP = 0;
+	// 	}
+	// }
 
 }
 

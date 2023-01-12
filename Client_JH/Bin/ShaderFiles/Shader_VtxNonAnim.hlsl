@@ -82,9 +82,9 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	if (0.1f > vDiffuse.a)
-		discard;
+	// vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	// if (0.1f > vDiffuse.a)
+	// 	discard;
 
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
@@ -106,16 +106,25 @@ PS_OUT PS_MAIN(PS_IN In)
 	}
 	float L = sqrt((Lx*Lx) + (Ly*Ly));
 
-	if (L < 0.1)
-	{
-		Out.vDiffuse = vDiffuse;
-	}
-	else
-	{
-		Out.vDiffuse = vDiffuse * 0.3f;
-	}
+	// if (L < 0.1)
+	// {
+	// 	Out.vDiffuse = vDiffuse;
+	// 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	// }
+	// else
+	// {
+	// 	Out.vDiffuse = vDiffuse * 0.3f;
+	// 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	// }
+	//
+	//
 
-	
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	if (0.1f > vDiffuse.a)
+		discard;
+
+	Out.vDiffuse = vDiffuse;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	return Out;
 }

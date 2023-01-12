@@ -17,6 +17,7 @@ public:
 
 public:
 	HRESULT					Initialize(const LIGHTDESC& LightDesc);
+	HRESULT					Render(class CVIBuffer_Rect* pVIBuffer, class CShader* pShader);
 
 private:
 	ID3D11Device*			m_pDevice;

@@ -40,6 +40,10 @@ protected:
 	virtual ~CUI() = default;
 
 public:
+	virtual _float				Set_FollowProgress(_float Progress) { return m_fFollowProgress; }
+	virtual _float				Set_Progress(_float Progress) { return m_fProgress; }
+
+	virtual	void				SetProgress(_int iCurHP, _uint iMaxHP);
 	void						Set_Monster(class CMonster* pMonster, class CModel* pModel) { m_pMonster = pMonster; m_pModelCom = pModel; }
 	void						Set_Owner(CGameObject* pOwner) { m_pOwner = pOwner; }
 	void						Set_Weapon_State(CWeapon_State* pState) { m_pWeapon_State = pState; }
@@ -64,7 +68,7 @@ protected:
 	CTexture*					m_pNumberingTexCom[NUM_END] = { nullptr };
 
 	CVIBuffer_Point_Instancing* m_pPointBuffer = nullptr; 
-
+	CVIBuffer_Point_Instancing*	m_pPointBufferOther = nullptr;
 
 	CGameObject*				m_pOwner = nullptr;
 	CMonster*					m_pMonster = nullptr;
@@ -81,7 +85,12 @@ protected:
 protected:
 	//For Monster
 	MONSTERUIDESC				m_tMonsterUIDesc;
-	
+
+protected:
+	_float						m_fProgress = 1.f;
+	_float						m_fPreProgress = 1.f;
+	_float						m_fFollowProgress;
+
 public:
 	virtual CGameObject*		Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;
 	virtual void				Free() override;

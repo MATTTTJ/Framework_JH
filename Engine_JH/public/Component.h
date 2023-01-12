@@ -20,6 +20,10 @@ public:
 
 	virtual void				Imgui_RenderProperty() {}
 
+#ifdef _DEBUG
+public:
+	virtual HRESULT				Render() { return S_OK; };
+#endif // 
 
 protected:
 	ID3D11Device*				m_pDevice = nullptr;

@@ -58,10 +58,26 @@ DepthStencilState DS_Default
 DepthStencilState DS_Test
 {
 	DepthEnable = true;
+	DepthWriteMask = Zero;
+	DepthFunc = less_equal;
+	StencilEnable = true;
+
+};
+
+DepthStencilState DS_Test_UI_RED
+{
+	DepthEnable = true;
 DepthWriteMask = Zero;
 DepthFunc = less_equal;
 StencilEnable = true;
+};
 
+DepthStencilState DS_Test_UI_BASE
+{
+	DepthEnable = true;
+DepthWriteMask = Zero;
+DepthFunc = less_equal;
+StencilEnable = true;
 };
 
 DepthStencilState DS_ZEnable_ZWriteEnable_FALSE

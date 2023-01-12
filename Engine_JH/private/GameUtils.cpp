@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "..\public\GameUtils.h"
-
 #include "Cell.h"
 #include "GameInstance.h"
 
@@ -574,6 +574,11 @@ void CGameUtils::SortPointsByCW(_float3* vPoints)
 
 void CGameUtils::Cell_Sorting(_float3* vPoints)
 {
+}
+
+_bool CGameUtils::FloatCmp(const _float& f1, const _float& f2, _float fEpsilon)
+{
+	return fabs(f1 - f2) < fEpsilon;
 }
 
 _matrix CGameUtils::Get_PlayerPivotMatrix()

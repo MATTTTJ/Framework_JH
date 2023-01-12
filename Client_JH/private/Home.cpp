@@ -40,7 +40,10 @@ void CHome::Late_Tick(_double TimeDelta)
 	__super::Late_Tick(TimeDelta);
 
 	if (nullptr != m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+	}
 }
 
 HRESULT CHome::Render()
@@ -56,11 +59,6 @@ HRESULT CHome::Render()
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 		m_pModelCom->Render(m_pShaderCom, i);
 	}
-
-#ifdef _DEBUG
-	m_pNavigationCom->Render();
-#endif
-
 	return S_OK;
 }
 

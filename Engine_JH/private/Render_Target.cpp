@@ -34,7 +34,45 @@ HRESULT CRender_Target::Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePix
 	FAILED_CHECK_RETURN(m_pDevice->CreateRenderTargetView(m_pTexture2D, nullptr, &m_pRTV), E_FAIL);  // 장치에 바인딩해, 셰이더를 통해 바인딩된 이 텍스쳐에 픽셀을 기록
 	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pTexture2D, nullptr, &m_pSRV), E_FAIL); // 이 텍스쳐를 셰이더 전역으로 전달,
 																									//픽셀셰이더 안에서 이 텍스쳐에 저장된 픽셀의 값 (Diffuse, Normal, Shade)을 읽어온다. 
+	m_ePixelFormat = ePixelFormat;
 	m_vClearColor = *pClearColor;
+
+	return S_OK;
+}
+
+HRESULT CRender_Target::Tick(_uint iWidth, _uint iHeight)
+{
+	if (m_pTexture2D != nullptr)
+		Safe_Release(m_pTexture2D);
+
+	if (m_pRTV != nullptr)
+		Safe_Release(m_pRTV);
+
+	if (m_pSRV != nullptr)
+		Safe_Release(m_pSRV);
+
+	D3D11_TEXTURE2D_DESC		TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	TextureDesc.Width = iWidth;
+	TextureDesc.Height = iHeight;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = m_ePixelFormat;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	TextureDesc.CPUAccessFlags = 0;
+	TextureDesc.MiscFlags = 0;
+
+	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pTexture2D), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pDevice->CreateRenderTargetView(m_pTexture2D, nullptr, &m_pRTV), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pDevice->CreateShaderResourceView(m_pTexture2D, nullptr, &m_pSRV), E_FAIL);
 
 	return S_OK;
 }
@@ -49,7 +87,7 @@ HRESULT CRender_Target::Clear()
 HRESULT CRender_Target::Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY)
 {
 	D3D11_VIEWPORT			ViewportDesc;
-	ZeroMemory(&ViewportDesc, sizeof ViewportDesc);
+	ZeroMemory(&ViewportDesc, sizeof(D3D11_VIEWPORT));
 
 	_uint			iNumViewports = 1;
 
@@ -66,13 +104,18 @@ HRESULT CRender_Target::Ready_Debug(_float fX, _float fY, _float fSizeX, _float 
 	return S_OK;
 }
 
-void CRender_Target::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
+HRESULT CRender_Target::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
+	NULL_CHECK_RETURN(pShader, E_FAIL);
+	NULL_CHECK_RETURN(pVIBuffer, E_FAIL);
+
 	pShader->Set_Matrix(L"g_WorldMatrix", &m_WorldMatrix);
 	pShader->Set_ShaderResourceView(L"g_Texture", m_pSRV);
 
 	pShader->Begin(0);
 	pVIBuffer->Render();
+
+	return S_OK;
 }
 #endif
 

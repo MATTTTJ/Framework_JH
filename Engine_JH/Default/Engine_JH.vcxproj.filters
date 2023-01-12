@@ -100,9 +100,6 @@
     <Filter Include="01. Utility\03. Components\06. Model\Mesh">
       <UniqueIdentifier>{65dab559-6003-46a9-ba9b-36e88f9b80d1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\03. Components\07. Calculator">
-      <UniqueIdentifier>{d5640280-6eb6-4369-8ac4-8eec943bb887}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Utility\03. Components\06. Model\Bone">
       <UniqueIdentifier>{c6ef8b9d-5f69-4a89-96cd-15bc603a5462}</UniqueIdentifier>
     </Filter>
@@ -339,9 +336,6 @@
     <ClInclude Include="..\public\Mesh.h">
       <Filter>01. Utility\03. Components\06. Model\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Calculator.h">
-      <Filter>01. Utility\03. Components\07. Calculator</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Bone.h">
       <Filter>01. Utility\03. Components\06. Model\Bone</Filter>
     </ClInclude>
@@ -547,9 +541,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Mesh.cpp">
       <Filter>01. Utility\03. Components\06. Model\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Calculator.cpp">
-      <Filter>01. Utility\03. Components\07. Calculator</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Bone.cpp">
       <Filter>01. Utility\03. Components\06. Model\Bone</Filter>

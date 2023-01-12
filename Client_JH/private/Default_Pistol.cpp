@@ -119,11 +119,7 @@ void CDefault_Pistol::Late_Tick(_double dTimeDelta)
 	// if (nullptr != m_pBulletColliderCom)
 	// 	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
-	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
-	}
+	
 
 	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 

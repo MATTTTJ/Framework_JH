@@ -147,36 +147,23 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-	float4 TexNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	TexNormal = vector(TexNormal.xyz * 2.f - 1.f, 0.f);
-	float3 vCameraPos = normalize((-TexNormal.xyz) + (-g_vCameraPos.xyz));
-	float RimLightColor = smoothstep(0.001f, 0.5f, 1 - saturate(dot(In.vNormal.xyz, vCameraPos.xyz)));
+	// Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	//
+	// float4 TexNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	// TexNormal = vector(TexNormal.xyz * 2.f - 1.f, 0.f);
+	// float3 vCameraPos = normalize((-TexNormal.xyz) + (-g_vCameraPos.xyz));
+	// // float RimLightColor = smoothstep(0.001f, 0.5f, 1 - saturate(dot(In.vNormal.xyz, vCameraPos.xyz)));
 	// float RimLightColor = 1 - saturate(dot(In.vNormal.xyz, -vCameraPos.xyz));
-
-	if (RimLightColor > 0.85f)
-	{
-		RimLightColor = 0.85f;
-	}
-	;
-	float3 OriginNormal = normalize((-In.vNormal.xyz) + (-g_vCameraPos.xyz));
-	float OriRimLightColor = 1 - saturate(dot(In.vNormal.xyz, -OriginNormal));
-
-	float AddRim = 1 - RimLightColor * OriRimLightColor;
-
-
-
-	// if (AddRim < 0.45f)
+	//
+	// if (RimLightColor > 0.85f)
 	// {
-	// 	AddRim = 0.6f;
+	// 	RimLightColor = 0.85f;
 	// }
-
-
-	// RimLightColor = pow(RimLightColor, 3.0f);
-
-	// float3 fLimColor = float3(0.1f, 0.2f, 0.5f);
-	// RimLightColor = RimLightColor*fLimColor;
+	// ;
+	// float3 OriginNormal = normalize((-In.vNormal.xyz) + (-g_vCameraPos.xyz));
+	// float OriRimLightColor = 1 - saturate(dot(In.vNormal.xyz, -OriginNormal));
+	//
+	// float AddRim = RimLightColor * OriRimLightColor;
 
 	float Lx = 0;
 	float Ly = 0;
@@ -197,28 +184,58 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	float L = sqrt((Lx*Lx) + (Ly*Ly));
 
-	
 
-	
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	if (0.1f > vDiffuse.a)
+		discard;
+
+	Out.vDiffuse = vDiffuse;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	// float3 tmp = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz * 2.f - 1.f, 0.f);
+	// Out.vNormal.x = tmp.z;
+	// Out.vNormal.y = tmp.y;
+	// Out.vNormal.z = In.vNormal.x;
+	// Out.vNormal.w = 0.f;
+	//
+	// float3 vCameraPos = normalize((Out.vNormal.xyz) + (-g_vCameraPos.xyz));
+	// float RimLightColor = smoothstep(0.9f, 1.0f, 1 - saturate(dot(In.vNormal.xyz, g_vCameraPos.xyz)));
+	// float OriRimLightColor = 1 - saturate(dot(In.vNormal.xyz, -g_vCameraPos.xyz));
+	// OriRimLightColor = pow(OriRimLightColor, 100.f);
 
 	if(L < 0.2)
 	{
-		if (g_bHit)
-		{
-			Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * ((AddRim * 2.f )* float4(0.6f, 0.1f, 0.15f, 1.f));
-		}
-		else
-		{
-			AddRim = pow(AddRim, 1.5f);
-			Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * (AddRim);
-		}
+		// if (g_bHit)
+		// {
+		// 	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * ((AddRim * 2.f )* float4(0.6f, 0.1f, 0.15f, 1.f));
+		// 	// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz,0.f);
+		// 	// Out.vNormal = vector(Out.vNormal.xyz * 0.5f + 0.5f, 0.f);
+		//
+		// }
+		// else
+		// {
+		// RimLightColor = pow(RimLightColor, 3.f);
+		Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
+			// Out.vNormal = vector(Out.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+		// }
 	}
 	else
 	{
-		if (g_bHit)
-			Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f) * ((AddRim * 2.f)* float4(0.6f, 0.1f, 0.15f, 1.f));
-		else
-			Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f) * (AddRim);
+		// if (g_bHit)
+		// {
+			// Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f) * ((AddRim * 2.f)* float4(0.6f, 0.1f, 0.15f, 1.f));
+			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
+			// Out.vNormal = vector(Out.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+		// }
+		// else
+		// {
+			Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f);
+			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
+			// Out.vNormal = vector(Out.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+		// }
 	}
 
 
@@ -232,10 +249,10 @@ PS_OUT PS_MAIN_Monster(PS_IN In)
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
-	float4 TexNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	TexNormal = vector(TexNormal.xyz * 2.f - 1.f, 0.f);
-	float3 vCameraPos = normalize(In.vNormal.xyz + (-g_vCameraPos.xyz));
-	float RimLightColor = smoothstep(0.001f, 0.5f, 1 - saturate(dot(In.vNormal.xyz, vCameraPos.xyz)));
+	// float4 TexNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	// TexNormal = vector(TexNormal.xyz * 2.f - 1.f, 0.f);
+	// float3 vCameraPos = normalize(In.vNormal.xyz + (-g_vCameraPos.xyz));
+	// float RimLightColor = smoothstep(0.001f, 0.5f, 1 - saturate(dot(In.vNormal.xyz, vCameraPos.xyz)));
 	// float RimLightColor = 1 - saturate(dot(In.vNormal.xyz, -vCameraPos.xyz));
 
 
@@ -260,28 +277,48 @@ PS_OUT PS_MAIN_Monster(PS_IN In)
 
 
 
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	if (0.1f > vDiffuse.a)
+		discard;
 
+	// Out.vDiffuse = vDiffuse;
+	// Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	float3 tmp = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz * 2.f - 1.f, 0.f);
 
+	Out.vNormal.x = In.vNormal.x;
+	Out.vNormal.y = tmp.y;
+	Out.vNormal.z = tmp.z;  
+	Out.vNormal.w = 0.f;
+	
 	if (L < 0.2)
 	{
 		if (g_bHit)
 		{
-			Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * ((RimLightColor * 2.f)* float4(0.6f, 0.1f, 0.15f, 1.f));
+			Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) *float4(0.6f, 0.1f, 0.15f, 1.f);
+			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
 		}
 		else
 		{
-			float Rimpow = pow(RimLightColor, 3.f);
-			Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * (Rimpow);
+			//float Rimpow = pow(RimLightColor, 3.f);
+			//*(Rimpow)
+			Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
 		}
 	}
 	else
 	{
 		if (g_bHit)
-			Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f) * ((RimLightColor * 2.f)* float4(0.6f, 0.1f, 0.15f, 1.f));
+		{
+			Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f) * float4(0.6f, 0.1f, 0.15f, 1.f);
+			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
+		}
 		else
-			Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f) * (RimLightColor);
+		{
+			Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f);
+			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
+		}
 	}
-
+	
 
 
 	return Out;
@@ -292,14 +329,35 @@ PS_OUT PS_MAIN_OUTLINE(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	float4	ModelTex = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.1f;
-	float4	GlowTex = float4(1.f, 0.1f, 0.2f, 1.f);
-		
-	if (g_OutLineColor.r < 0.5f)
-		Out.vDiffuse = vector(0.f, 0.f, 0.f, 1.f);
-	else
-		Out.vDiffuse = saturate(ModelTex + g_OutLineColor);
 
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	if (0.1f > vDiffuse.a)
+		discard;
+
+	
+	// float4	ModelTex = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.1f;
+	// float4	GlowTex = float4(1.f, 0.1f, 0.2f, 1.f);
+		
+	if (g_OutLineColor.r > 0.5f)
+	{
+		Out.vDiffuse = g_OutLineColor;
+		Out.vNormal = vector(0.f, 1.f, 0.f, 0.f);
+	}
+	else
+	{
+		Out.vDiffuse = vector(0.f, 0.f, 0.f, 1.f);
+		Out.vNormal = vector(0.f, 0.f, 0.f, 0.f);
+	}
+
+		// Out.vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+		// Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	// }
+	// else
+	// {
+		// Out.vDiffuse = saturate(ModelTex + g_OutLineColor);
+		// Out.vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	// }
+	
 	if (Out.vDiffuse.a < 0.1f)
 		discard;
 
@@ -348,6 +406,6 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_Monster();
 	}
 }

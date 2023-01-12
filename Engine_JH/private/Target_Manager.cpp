@@ -8,12 +8,23 @@ IMPLEMENT_SINGLETON(CTarget_Manager);
 
 CTarget_Manager::CTarget_Manager() {}
 
+ID3D11ShaderResourceView* CTarget_Manager::Get_SRV(const _tchar* pTargetTag)
+{
+	CRender_Target*		pRenderTarget = Find_RenderTarget(pTargetTag);
+	NULL_CHECK_RETURN(pTargetTag, nullptr);
+
+	return pRenderTarget->Get_SRV();
+}
+
 HRESULT CTarget_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
+	m_pContext = pContext;
+	Safe_AddRef(m_pContext);
+
 #ifdef _DEBUG
 
 	D3D11_VIEWPORT			ViewportDesc;
-	ZeroMemory(&ViewportDesc, sizeof ViewportDesc);
+	ZeroMemory(&ViewportDesc, sizeof (D3D11_VIEWPORT));
 
 	_uint			iNumViewports = 1;
 
@@ -22,17 +33,35 @@ HRESULT CTarget_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
 
-	m_pShader = CShader::Create(pDevice, pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Engine_JH\\Bin\\ShaderFiles\\Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
-	if (nullptr == m_pShader)
-		return E_FAIL;
-
+	// m_pShader = CShader::Create(pDevice, pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Engine_JH\\Bin\\ShaderFiles\\Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
+	m_pShader = CShader::Create(pDevice, pContext, L"C:\\Users\\Hoon\\Desktop\\3D_JH\\Framework_JH\\Engine_JH\\Bin\\ShaderFiles\\Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
+	NULL_CHECK_RETURN(m_pShader, E_FAIL);
 	m_pVIBuffer = CVIBuffer_Rect::Create(pDevice, pContext);
-	if (nullptr == m_pVIBuffer)
-		return E_FAIL;
+	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 #endif
 
-
 	return S_OK;
+}
+
+void CTarget_Manager::Tick(_double dTimeDelta)
+{
+	D3D11_VIEWPORT		ViewportDesc;
+	ZeroMemory(&ViewportDesc, sizeof(D3D11_VIEWPORT));
+
+	_uint		iNumViewport = 1;
+
+	m_pContext->RSGetViewports(&iNumViewport, &ViewportDesc);
+
+	for (auto& Pair : m_mapRenderTarget)
+		Pair.second->Tick((_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height);
+
+	// XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(ViewportDesc.Width, ViewportDesc.Height, 1.f));
+	// XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	// XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
+
+#ifdef _DEBUG
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
+#endif // _DEBUG
 }
 
 HRESULT CTarget_Manager::Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,	const _tchar* pTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4* pClearColor)
@@ -112,29 +141,26 @@ HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pContext, const _tchar* pM
 HRESULT CTarget_Manager::Ready_Debug(const _tchar* pTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {
 	CRender_Target*		pTarget = Find_RenderTarget(pTargetTag);
-
 	NULL_CHECK_RETURN(pTargetTag, E_FAIL);
 
 	return pTarget->Ready_Debug(fX, fY, fSizeX, fSizeY);
 
 }
 
-void CTarget_Manager::Render_Debug(const _tchar* pMRTTag)
+HRESULT CTarget_Manager::Render_Debug(const _tchar* pMRTTag)
 {
 	list<CRender_Target*>*		pMRTList = Find_MRT(pMRTTag);
+	NULL_CHECK_RETURN(pMRTList, E_FAIL );
 
-	NULL_CHECK_RETURN(pMRTList, );
-
-	if (FAILED(m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix)))
-		return;
-
-	if (FAILED(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix)))
-		return;
+	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);
 
 	for (auto& pRenderTarget : *pMRTList)
 	{
 		pRenderTarget->Render(m_pShader, m_pVIBuffer);
 	}
+
+	return S_OK;
 }
 #endif // _DEBUG
 
@@ -173,6 +199,8 @@ void CTarget_Manager::Free()
 		Safe_Release(Pair.second);
 
 	m_mapRenderTarget.clear();
+
+	Safe_Release(m_pContext);
 
 #ifdef _DEBUG
 	Safe_Release(m_pShader);

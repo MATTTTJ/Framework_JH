@@ -25,7 +25,7 @@ public:
 
 public:
 	
-
+	void						Get_Damaged() { m_tMonsterOption.MonsterDesc.m_iHP -= 30.f; }
 	virtual HRESULT				Initialize_Prototype() override;
 	virtual HRESULT				Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double TimeDelta) override;

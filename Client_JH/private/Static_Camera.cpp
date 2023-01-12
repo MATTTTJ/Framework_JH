@@ -98,7 +98,12 @@ HRESULT CStatic_Camera::Render()
 
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
+
+#ifdef  _DEBUG
 	m_pColliderCom->Render();
+
+#endif
+
 
 	return S_OK;
 }

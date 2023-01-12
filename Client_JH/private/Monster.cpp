@@ -14,7 +14,7 @@ CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 CMonster::CMonster(const CMonster & rhs)
 	: CGameObject(rhs)
 {
-
+	m_vOnAimOutLineColor =  _float4{ 0.98f, 0.35f, 0.15f, 1.f };
 }
 
 _matrix CMonster::Get_BoneMatrix(const string& strBoneName)

@@ -18,6 +18,7 @@ public:
 
 public:
 	HRESULT				Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
+	HRESULT				Add_DebugRenderGroup(class CComponent* pComponent);
 	HRESULT				Draw_RenderGroup();
 
 private:
@@ -25,15 +26,28 @@ private:
 	typedef list<class CGameObject*>	RENDEROBJECTS;
 
 private:
+	list<class CComponent*>			m_DebugObject;
+	typedef list<class CComponent*>	DEBUGOBJECTS;
+
+private:
 	class CTarget_Manager*				m_pTarget_Manager = nullptr;
+	class CLight_Manager*				m_pLight_Manager = nullptr;
+	class CVIBuffer_Rect*				m_pVIBuffer = nullptr;
+	class CShader*						m_pShader = nullptr;
+	_float4x4							m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
+
 private:
 	HRESULT				Render_Priority();
 	HRESULT				Render_NonAlphaBlend();
 	HRESULT				Render_LightAcc();
+	HRESULT				Render_Blend();
 	HRESULT				Render_NonLight();
 	HRESULT				Render_AlphaBlend();
 	HRESULT				Render_UI();
-
+#ifdef _DEBUG
+private:
+	HRESULT				Render_DebugObject();
+#endif
 public:
 	static CRenderer*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(class CGameObject* pOwner, void* pArg = nullptr) override;

@@ -27,7 +27,7 @@ public:
 
 	static void					SortPointsByCW(_float3* vPoints);
 	static void					Cell_Sorting(_float3* vPoints);
-
+	static _bool				FloatCmp(const _float& f1, const _float& f2, _float fEpsilon);
 
 	static _matrix			Get_PlayerPivotMatrix();
 

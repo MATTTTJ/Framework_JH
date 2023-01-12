@@ -137,7 +137,7 @@ void CInput_Device::Reset_EveryKey(_double dTimeDelta)
 		if (m_bKeyState[i] == true)
 			m_dChargeTime[i] += dTimeDelta;
 		else
-			m_dChargeTime[i] == 0.0;
+			m_dChargeTime[i] = 0.0;
 
 		m_bPressThisFrame[i] = false;
 	}

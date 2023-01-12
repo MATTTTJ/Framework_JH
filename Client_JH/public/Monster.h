@@ -32,6 +32,8 @@ protected:
 	virtual ~CMonster() = default;
 
 public:
+	virtual void						Get_Damaged() { m_tMonsterOption.MonsterDesc.m_iHP -= 30; }
+	virtual MONSTEROPTION	Get_MonsterDesc() { return m_tMonsterOption; }
 	virtual CModel*			Get_ModelCom() { return m_pModelCom; }
 	virtual	void			Set_HitColor() { m_bHitColor = true; }
 	virtual _bool			Get_IsAimOmPlayer() { return m_bIsOnPlayerEyes; }
@@ -88,7 +90,7 @@ protected:
 	_bool					m_bIsOnPlayerEyes = false;
 	_float					m_fOutLineOffset = 0.02f;
 	_float4					m_vDefaultOutLineColor = { 0.f, 0.f, 0.f, 1.f };
-	_float4					m_vOnAimOutLineColor = { 0.98f, 0.1f, 0.15f, 1.f };
+	_float4					m_vOnAimOutLineColor = { 0.98f, 0.35f, 0.15f, 1.f };
 	// _float4					m_vDefaultLimLightColor = }
 	// _float4				m_vHitLimLightColor = {}
 	_float					m_fCurHitColorOnTime = 0.f;

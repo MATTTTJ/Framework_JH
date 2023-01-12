@@ -10,10 +10,13 @@ private:
 	virtual ~CRender_Target() = default;
 
 public:
-	ID3D11RenderTargetView*		Get_RTV() const { return m_pRTV; }
+	ID3D11RenderTargetView*			Get_RTV() const { return m_pRTV; }
+	ID3D11ShaderResourceView*		Get_SRV() const { return m_pSRV; }
+
 
 public:
 	HRESULT						Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4* pClearColor);
+	HRESULT						Tick(_uint iWidth, _uint iHeight);
 	HRESULT						Clear();
 
 
@@ -22,7 +25,7 @@ public:
 
 public:
 	HRESULT						Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);
-	void						Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+	HRESULT						Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 
 #endif
 
@@ -32,6 +35,7 @@ private:
 	ID3D11DeviceContext*		m_pContext = nullptr;
 
 private:
+	DXGI_FORMAT					m_ePixelFormat;
 	ID3D11Texture2D*			m_pTexture2D = nullptr;
 	ID3D11RenderTargetView*		m_pRTV = nullptr;
 	ID3D11ShaderResourceView*	m_pSRV = nullptr;

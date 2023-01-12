@@ -85,6 +85,8 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 	m_pObject_Manager->Late_Tick(TimeDelta);
 	m_pLevel_Manager->Late_Tick(TimeDelta);
 
+	m_pTarget_Manager->Tick(TimeDelta);
+
 	m_pImgui_Manager->Tick_Imgui();
 
 	m_pInput_Device->Reset_EveryKey(TimeDelta);
