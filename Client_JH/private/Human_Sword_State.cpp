@@ -313,7 +313,7 @@ void CHuman_Sword_State::Start_Hide(_double dTimeDelta)
 
 
 	 // m_pMonster->m_pColliderCom[CMonster::COLLTYPE_HITHEAD]->Get_SphereCenter();
-	if (rand() % 5 + 12 % 2 == 0)
+	if (rand() % 3 % 2 == 0)
 	{
 		m_pModelCom->Set_CurAnimIndex(SWORD_HIDE_LEFT);
 	}
@@ -386,14 +386,14 @@ void CHuman_Sword_State::Tick_Attack_A(_double dTimeDelta)
 
 void CHuman_Sword_State::Tick_Hide(_double dTimeDelta)
 {
-	if (m_pModelCom->Get_NumAnimation() == SWORD_HIDE_LEFT)
+	if (m_pModelCom->Get_CurAnimation() == SWORD_HIDE_LEFT)
 	{
 		if(m_pModelCom->Get_AnimationProgress() < 0.5f)
 		{
 			m_pTransformCom->Go_Left(dTimeDelta, CTransform::TRANS_MONSTER, m_pNavigationCom);
 		}
 	}
-	else
+	else if(m_pModelCom->Get_CurAnimation() == SWORD_HIDE_RIGHT)
 	{
 		if (m_pModelCom->Get_AnimationProgress() < 0.5f)
 		{
