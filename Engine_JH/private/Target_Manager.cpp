@@ -33,8 +33,8 @@ HRESULT CTarget_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
 
-	m_pShader = CShader::Create(pDevice, pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Engine_JH\\Bin\\ShaderFiles\\Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
-	// m_pShader = CShader::Create(pDevice, pContext, L"C:\\Users\\Hoon\\Desktop\\3D_JH\\Framework_JH\\Engine_JH\\Bin\\ShaderFiles\\Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
+	// m_pShader = CShader::Create(pDevice, pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Engine_JH\\Bin\\ShaderFiles\\Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
+	m_pShader = CShader::Create(pDevice, pContext, L"C:\\Users\\Hoon\\Desktop\\3D_JH\\Framework_JH\\Engine_JH\\Bin\\ShaderFiles\\Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
 	NULL_CHECK_RETURN(m_pShader, E_FAIL);
 	m_pVIBuffer = CVIBuffer_Rect::Create(pDevice, pContext);
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);

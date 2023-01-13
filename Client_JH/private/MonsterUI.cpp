@@ -214,7 +214,7 @@ HRESULT CMonsterUI_HP_Red::Initialize_Clone(const wstring& wstrPrototypeTag, voi
 
 void CMonsterUI_HP_Red::Tick(_double dTimeDelta)
 {
-	__super::Tick(dTimeDelta);
+	__super::Tick(dTimeDelta); 
 
 	CMonster::MONSTEROPTION MonsterDesc;
 	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));

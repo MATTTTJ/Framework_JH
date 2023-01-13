@@ -37,7 +37,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
 	Out.vTexUV = In.vTexUV;
 	Out.vTangent = (vector)0.f;
-
+	
 	return Out;
 }
 

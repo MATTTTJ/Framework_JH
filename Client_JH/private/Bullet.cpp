@@ -108,6 +108,7 @@ _bool CBullet::Collision_Body()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_HitBodySphere");
+	NULL_CHECK_RETURN(pCollider, false);
 	if (m_pBulletColliderCom->Collision(pCollider))
 	{
 		CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
