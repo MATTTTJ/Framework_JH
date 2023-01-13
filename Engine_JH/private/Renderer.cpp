@@ -185,9 +185,19 @@ HRESULT CRenderer::Render_LightAcc()
 
 }
 
-HRESULT CRenderer::Render_Blend()
+HRESULT CRenderer::Render_DOF()
+{
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Ditortion()
 {
 
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Blend()
+{
 	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_WorldMatrix", &m_WorldMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);

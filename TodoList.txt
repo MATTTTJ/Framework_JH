@@ -1,3 +1,18 @@
-총 스테이트 머신 디테일 잡기 
+피사계 심도 
+https://mgun.tistory.com/1388       // Part.1
+https://mgun.tistory.com/1434   	   // Part.2
+펄린 노이즈
 
-네비게이션 메쉬툴 작업하기
+블룸 
+
+마스크 텍스쳐 
+https://strange-cpp.tistory.com/59
+
+PBR
+https://mgun.tistory.com/2121
+
+
+
+
+공부해보면 좋은 블로그 
+https://mgun.tistory.com/category/Study/M%27s%20Lecture
