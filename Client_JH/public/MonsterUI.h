@@ -8,7 +8,6 @@ BEGIN(Engine)
 class CMonsterUI final:	public CUI
 {
 public:
-
 private:
 	CMonsterUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMonsterUI(const CMonsterUI& rhs);

@@ -54,7 +54,13 @@ HRESULT CHuman_Sword::Initialize_Clone(const wstring& wstrPrototypeTag, void* pA
 void CHuman_Sword::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-	
+
+	if (m_bIsDead)
+	{
+		Set_Dead(true);
+		return;
+	}
+
 	{
 		if(m_bHitColor)
 			m_fCurHitColorOnTime += (_float)TimeDelta;
@@ -124,9 +130,12 @@ HRESULT CHuman_Sword::Render()
 
 	_uint UISize = (_uint)m_vecMonsterUI.size();
 
-	for (_uint i = 0; i < UISize; ++i)
+	if (m_bCanUIRender)
 	{
-		m_vecMonsterUI[i]->Render();
+		for (_uint i = 0; i < UISize; ++i)
+		{
+			m_vecMonsterUI[i]->Render();
+		}
 	}
 
 	for(_uint i =0; i < iNumMeshes; ++i)
@@ -238,7 +247,7 @@ HRESULT CHuman_Sword::SetUp_Components()
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
-	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vPosition = _float3(0.f, 1.5f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_OnAimSphere", (CComponent**)&m_pColliderCom[COLLTYPE_ONAIM], this, &ColliderDesc), E_FAIL);
 
 	CNavigation::NAVIDESC		NaviDesc;
@@ -287,7 +296,10 @@ void CHuman_Sword::Collision_Body(CBullet* pBullet)
 	CBullet::BULLETOPTION BulletDesc;
 	BulletDesc = pBullet->Get_BulletOption();
 
-	m_tMonsterOption.MonsterDesc.m_iDamage -= BulletDesc.BulletDesc.m_iDamage;
+	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
+		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
+	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+		Set_Dead(true);
 
 	m_pHuman_Sword_State->Reset_Damaged();
 	m_pHuman_Sword_State->Set_DamagedState(CHuman_Sword_State::HIT);
@@ -299,7 +311,11 @@ void CHuman_Sword::Collision_Head(CBullet* pBullet)
 	CBullet::BULLETOPTION BulletDesc;
 	BulletDesc = pBullet->Get_BulletOption();
 
-	m_tMonsterOption.MonsterDesc.m_iDamage -= BulletDesc.BulletDesc.m_iDamage * 2;
+	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
+		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage * 2;
+	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+		Set_Dead(true);
+
 	m_pHuman_Sword_State->Reset_Damaged();
 	m_pHuman_Sword_State->Set_DamagedState(CHuman_Sword_State::HIT);
 	m_pHuman_Sword_State->Set_DamagedState(CHuman_Sword_State::HITHEAD);
@@ -319,9 +335,13 @@ void CHuman_Sword::Collision_PlayerEyes()
 	if (m_pColliderCom[COLLTYPE_ONAIM]->Collision(pCollider))
 	{
 		m_bIsOnPlayerEyes = true;
+		m_bCanUIRender = true;
 	}
 	else
+	{
 		m_bIsOnPlayerEyes = false;
+		m_bCanUIRender = false;
+	};
 }
 
 

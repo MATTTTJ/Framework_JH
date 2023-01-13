@@ -75,20 +75,26 @@ void CMonsterUI::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
+	if (m_pMonster->Get_MonsterUIRender())
+	{
+		if (nullptr != m_pRendererCom &&
+			true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+	}
 }
 
 HRESULT CMonsterUI::Render()
 {
-	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+	if (m_pMonster->Get_MonsterUIRender())
+	{
+		FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
-	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
-	m_pShaderCom->Begin(2);
+		m_pShaderCom->Begin(2);
 
-	m_pPointBuffer->Render();
+		m_pPointBuffer->Render();
+	}
 
 	return S_OK;
 }
@@ -234,7 +240,6 @@ void CMonsterUI_HP_Red::Tick(_double dTimeDelta)
 		m_iLastHP = m_iCurHP;
 	}
 
-
 	else if (m_fProgress >= m_fFollowProgress)
 	{
 		m_fFollowProgress = m_fProgress;
@@ -248,23 +253,28 @@ void CMonsterUI_HP_Red::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 	dynamic_cast<CMonsterUI_HP_White*>(m_pWhiteUI)->Late_Tick(dTimeDelta);
-
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+	if (m_pMonster->Get_MonsterUIRender())
+	{
+		if (nullptr != m_pRendererCom &&
+			true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+	}
 }
 
 HRESULT CMonsterUI_HP_Red::Render()
 {
-	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+	if (m_pMonster->Get_MonsterUIRender())
+	{
+		FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
-	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
-	m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(3);
 
-	// m_pWhiteUI->Render();
+		// m_pWhiteUI->Render();
 
-	m_pPointBuffer->Render();
+		m_pPointBuffer->Render();
+	}
 
 	return S_OK;
 }
@@ -345,6 +355,7 @@ CGameObject* CMonsterUI_HP_Red::Clone(const wstring& wstrPrototypeTag, void* pAr
 void CMonsterUI_HP_Red::Free()
 {
 	__super::Free();
+	Safe_Release(m_pWhiteUI);
 }
 
 // White
@@ -420,21 +431,26 @@ void CMonsterUI_HP_White::Tick(_double dTimeDelta)
 void CMonsterUI_HP_White::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
-
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+	if (m_pMonster->Get_MonsterUIRender())
+	{
+		if (nullptr != m_pRendererCom &&
+			true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+	}
 }
 
 HRESULT CMonsterUI_HP_White::Render()
 {
-	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+	if (m_pMonster->Get_MonsterUIRender())
+	{
+		FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
-	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
-	m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(3);
 
-	m_pPointBuffer->Render();
+		m_pPointBuffer->Render();
+	}
 
 	return S_OK;
 }

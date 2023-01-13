@@ -190,6 +190,15 @@
     <Filter Include="80. Manager\Parent\Monster\MonsterUI">
       <UniqueIdentifier>{64fb71f1-1222-4606-a8a3-dedd72070a39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect">
+      <UniqueIdentifier>{33eee11e-84bd-4598-abbd-c55966c7d1ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\MonsterUI">
+      <UniqueIdentifier>{4bfe0ec9-29a2-48d5-a817-53b7c6f778d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager\Parent\Effect">
+      <UniqueIdentifier>{3e307ee0-a1bf-4fba-8e8a-b9501c575777}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -348,7 +357,13 @@
     <ClInclude Include="..\public\Elite_Knight_State.h">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight\State</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MonsterUI.h" />
+    <ClInclude Include="..\public\MonsterUI.h">
+      <Filter>02. GameObjects\01. GamePlay\MonsterUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BulletEffect.h">
+      <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -495,7 +510,13 @@
     <ClCompile Include="..\private\Elite_Knight_State.cpp">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Knight\State</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\MonsterUI.cpp" />
+    <ClCompile Include="..\private\MonsterUI.cpp">
+      <Filter>02. GameObjects\01. GamePlay\MonsterUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BulletEffect.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

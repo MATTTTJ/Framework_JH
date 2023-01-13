@@ -171,9 +171,11 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Client_Defines.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Bullet.h" />
+    <ClInclude Include="..\public\BulletEffect.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\Default_Pistol.h" />
     <ClInclude Include="..\public\Dynamic_Camera.h" />
+    <ClInclude Include="..\public\Effect.h" />
     <ClInclude Include="..\public\Effect_Point_Instancing.h" />
     <ClInclude Include="..\public\Elite_Bug.h" />
     <ClInclude Include="..\public\Elite_Bug_State.h" />
@@ -225,10 +227,12 @@
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Bullet.cpp" />
+    <ClCompile Include="..\private\BulletEffect.cpp" />
     <ClCompile Include="..\private\Default_Pistol.cpp" />
     <ClCompile Include="..\private\Dynamic_Camera.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\private\Effect.cpp" />
     <ClCompile Include="..\private\Effect_Point_Instancing.cpp" />
     <ClCompile Include="..\private\Elite_Bug.cpp" />
     <ClCompile Include="..\private\Elite_Bug_State.cpp" />

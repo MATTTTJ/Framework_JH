@@ -12,7 +12,6 @@ CBullet::CBullet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CBullet::CBullet(const CBullet& rhs)
 	:CGameObject(rhs)
-	,TestCnt(rhs.TestCnt)
 {
 }
 
@@ -112,8 +111,7 @@ _bool CBullet::Collision_Body()
 	if (m_pBulletColliderCom->Collision(pCollider))
 	{
 		CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
-		if (pMonster == nullptr)
-			return false;
+		NULL_CHECK_RETURN(pMonster, false);
 
 		pMonster->Set_HitColor();
 		pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
@@ -132,8 +130,7 @@ _bool CBullet::Collision_Head()
 	if (m_pBulletColliderCom->Collision(pCollider))
 	{
 		CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
-		if (pMonster == nullptr)
-			return false;
+		NULL_CHECK_RETURN(pMonster, false);
 
 		pMonster->Set_HitColor();
 		pMonster->Collision_Head(this); // 총알이 어디 충돌했는지 판단하니까 
@@ -152,9 +149,7 @@ _bool CBullet::Collision_HideCollider()
 	if (m_pBulletColliderCom->Collision(pCollider))
 	{
 		CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
-
-		if (pMonster == nullptr)
-			return false;
+		NULL_CHECK_RETURN(pMonster, false);
 
 		pMonster->Collision_Hide(this); // 총알이 어디 충돌했는지 판단하니까
 		// m_bCollOnce = true;

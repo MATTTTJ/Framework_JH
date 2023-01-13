@@ -15,6 +15,7 @@ class CMonster abstract : public CGameObject
 {
 
 public:
+	enum MONSTERUITYPE { MONSTERUI_BASE, MONSTERUI_HP, MONSTERUI_END };
 	enum TEXTURETYPE { TEXTURE_GLOW, TEXTURE_NORMAL, TEXTURETYPE_END };
 	enum MONSTERCOLLTYPE { COLLTYPE_DETECTED, COLLTYPE_HITHEAD, COLLTYPE_HITBODY, COLLTYPE_ATTPOS,	COLLTYPE_ATTRANGE, COLLTYPE_ONAIM, COLLTYPE_END };
 	enum FIRSTSTATE { STATE_GROUNDSPAWN, STATE_NODETECTED, STATE_ALREADYSPAWN, FIRSTSTATE_END };
@@ -32,7 +33,8 @@ protected:
 	virtual ~CMonster() = default;
 
 public:
-	virtual void						Get_Damaged() { m_tMonsterOption.MonsterDesc.m_iHP -= 30; }
+	virtual const _bool&	Get_MonsterUIRender() const { return m_bCanUIRender; }
+	virtual void			Get_Damaged() { m_tMonsterOption.MonsterDesc.m_iHP -= 30; }
 	virtual MONSTEROPTION	Get_MonsterDesc() { return m_tMonsterOption; }
 	virtual CModel*			Get_ModelCom() { return m_pModelCom; }
 	virtual	void			Set_HitColor() { m_bHitColor = true; }
@@ -96,7 +98,9 @@ protected:
 	_float					m_fCurHitColorOnTime = 0.f;
 	_float					m_fHitColorOnTime = 0.3f;
 
-	_bool					m_bHitColor = false; 
+	_bool					m_bHitColor = false;
+	_bool					m_bCanUIRender = false;
+
 protected:
 	vector<CGameObject*>	m_vecMonsterUI;
 

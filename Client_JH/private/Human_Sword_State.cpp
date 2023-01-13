@@ -50,6 +50,12 @@ HRESULT CHuman_Sword_State::Initialize(CHuman_Sword* pOwner, CState* pStateMachi
 
 void CHuman_Sword_State::Tick(_double dTimeDelta)
 {
+	if(m_pMonster->m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
+		m_pMonster->Set_Dead(true);
+		return;
+	}
+
 	m_pPlayer = m_pMonster->m_pPlayer;
 	m_pPlayerState = m_pPlayer->Get_WeaponStatePtr();
 

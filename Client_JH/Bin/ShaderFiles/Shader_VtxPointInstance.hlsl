@@ -258,7 +258,7 @@ PS_OUT PS_MAIN_MonsterUI(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_Texture.Sample(PointSampler, In.vTexUV);
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 	// Out.vColor.a = g_fProgress;
 
 	// if (Out.vColor.a < 1 - g_fProgress)

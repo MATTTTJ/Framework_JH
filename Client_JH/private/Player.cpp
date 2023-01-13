@@ -329,6 +329,8 @@ void CPlayer::Set_Camera(_double dTimeDelta)
 
 _bool CPlayer::Collision_Body(CCollider* pOtherCollider)
 {
+	NULL_CHECK_RETURN(pOtherCollider, false);
+
 	return m_pColliderCom[COLLIDER_SPHERE]->Collision(pOtherCollider);
 }
 
@@ -345,6 +347,8 @@ CGameObject* CPlayer::Collision_AimBox_To_Monster()
 
 void CPlayer::Collision_Event(CMonster* pMonster)
 {
+	NULL_CHECK_RETURN(pMonster, );
+
 	CMonster::MONSTEROPTION		MonsterOption;
 	// MonsterOption.
 

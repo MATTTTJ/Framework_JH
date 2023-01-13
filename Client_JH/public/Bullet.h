@@ -79,7 +79,6 @@ protected:
 	_float4x4					m_PivotMatrix;
 
 	_bool						m_bCollOnce = false;
-	_int						TestCnt = 0;
 	_float2						m_vPSize{ 0.f, 0.f };
 public:
 	virtual CGameObject*		Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;
