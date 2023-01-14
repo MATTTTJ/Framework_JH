@@ -59,7 +59,6 @@ struct PS_IN
 
 struct PS_OUT
 {
-
 	float4		vColor : SV_TARGET0;
 };
 
@@ -92,8 +91,6 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 	Out.vShade.a = 1.f;
 
 	return Out;
-
-
 }
 
 

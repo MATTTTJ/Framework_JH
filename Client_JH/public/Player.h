@@ -81,7 +81,7 @@ public:
 
 	void					Set_Camera(_double dTimeDelta);
 
-	_bool					Collision_Body(CCollider* pOtherCollider);
+	_bool					Collision_Detected(CCollider* pOtherCollider);
 	CGameObject*			Collision_AimBox_To_Monster();
 	void					Collision_Event(class CMonster* pMonster);
 public:

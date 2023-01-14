@@ -2,11 +2,11 @@
 #include "..\public\Human_Sword_State.h"
 #include "Bullet.h"
 #include "Player.h"
-#include "Weapon_State.h"
 #include "GameInstance.h"
 
 CHuman_Sword_State::CHuman_Sword_State()
 {
+	m_bDamagedAnim = true;
 }
 
 HRESULT CHuman_Sword_State::Initialize(CHuman_Sword* pOwner, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation)
@@ -19,23 +19,23 @@ HRESULT CHuman_Sword_State::Initialize(CHuman_Sword* pOwner, CState* pStateMachi
 	m_pNavigationCom = pNavigation;
 
 
-	memcpy(&m_bFirstState, m_pMonster->m_tMonsterOption.m_bFirstSpawnType, sizeof(_bool) * 3);
+	memcpy(&m_bFirstState, m_pMonster->m_tMonsterOption.m_bFirstSpawnType, sizeof(_bool) * CHuman_Sword::FIRSTSTATE_END);
 
 	if(true == m_bFirstState[CHuman_Sword::STATE_NODETECTED])
 	{
 		FAILED_CHECK_RETURN(SetUp_State_No_Detected(), E_FAIL);
+		FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	}
 	else if( true == m_bFirstState[CHuman_Sword::STATE_GROUNDSPAWN])
 	{
 		FAILED_CHECK_RETURN(SetUp_State_GroundSpawn(), E_FAIL);
+		FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	}
-	else
+	else if(true == m_bFirstState[CHuman_Sword::STATE_ALREADYSPAWN])
 	{
 		FAILED_CHECK_RETURN(SetUp_State_JustStand(), E_FAIL);
-		m_pMonster->Set_PlayAnimation(false);
+		FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	}
-	FAILED_CHECK_RETURN(SetUp_State_No_Detected(), E_FAIL);
-	FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	// FAILED_CHECK_RETURN(SetUp_State_Run(), E_FAIL);
 	// FAILED_CHECK_RETURN(SetUp_State_JustStand(), E_FAIL);
 	// FAILED_CHECK_RETURN(SetUp_State_HitBody(), E_FAIL);
@@ -57,10 +57,10 @@ void CHuman_Sword_State::Tick(_double dTimeDelta)
 	}
 
 	m_pPlayer = m_pMonster->m_pPlayer;
-	m_pPlayerState = m_pPlayer->Get_WeaponStatePtr();
 
 	{
-		m_fCurHideCoolTime += (_float)dTimeDelta;
+		if (!m_bCanHide)
+			m_fCurHideCoolTime += (_float)dTimeDelta;
 		m_fCurAttackCoolTime += (_float)dTimeDelta;
 		m_fCurDamagedAnimCoolTime += (_float)dTimeDelta;
 	}
@@ -127,11 +127,14 @@ void CHuman_Sword_State::Late_Tick(_double dTimeDelta)
 		// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vPos);
 	}
 
-	if (m_pPlayer->Collision_Body(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_DETECTED]))
+	if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_DETECTED]))
 	{
 		m_pMonster->m_bPlayerDetected = true;
 	}
-	if (m_pPlayer->Collision_Body(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTRANGE]))
+	else
+		m_pMonster->m_bPlayerDetected = false;
+
+	if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTRANGE]))
 	{
 		m_pMonster->m_bPlayerDetectedClose = true;
 	}
@@ -177,10 +180,28 @@ HRESULT CHuman_Sword_State::SetUp_State_Detected()
 }
 HRESULT CHuman_Sword_State::SetUp_State_JustStand()
 {
+	m_pMonster->m_pState->Set_Root(L"STATE::JUST_STAND")
+		.Add_State(L"STATE::JUST_STAND")
+		.Init_Start(this, &CHuman_Sword_State::Start_JustStand)
+		.Init_Tick(this, &CHuman_Sword_State::Tick_JustStand)
+		.Init_End(this, &CHuman_Sword_State::End_JustStand)
+		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CHuman_Sword_State::Is_Damaged)
+		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CHuman_Sword_State::Player_Detected)
+		.Finish_Setting();
+
 	return S_OK;
 }
 HRESULT CHuman_Sword_State::SetUp_State_GroundSpawn()
 {
+	NULL_CHECK_RETURN(m_pMonster->m_pState, E_FAIL);
+	m_pMonster->m_pState->Set_Root(L"STATE::GROUND_SPAWN")
+		.Add_State(L"STATE::GROUND_SPAWN")
+		.Init_Start(this, &CHuman_Sword_State::Start_GroundSpawn)
+		.Init_Tick(this, &CHuman_Sword_State::Tick_GroundSpawn)
+		.Init_End(this, &CHuman_Sword_State::End_GroundSpawn)
+		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CHuman_Sword_State::Animation_Finish)
+		.Finish_Setting();
+
 	return S_OK;
 }
 
@@ -206,8 +227,6 @@ HRESULT CHuman_Sword_State::SetUp_State_Idle()
 		.Init_Changer(L"STATE::DAMAGED", this, &CHuman_Sword_State::Is_Damaged)
 		.Init_Changer(L"STATE::HIDE", this, &CHuman_Sword_State::Bullet_Hide_Collision)
 		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CHuman_Sword_State::Player_DetectedAndClose)
-
-
 
 		.Add_State(L"STATE::ATTACK_A")
 		.Init_Start(this, &CHuman_Sword_State::Start_Attack_A)
@@ -277,9 +296,9 @@ void CHuman_Sword_State::Start_Idle(_double dTimeDelta)
 
 	for (_uint i = 0; i < HIT_END; ++i)
 	{
-		memset(&m_bDamaged[i], false, sizeof(_bool));
+		memset(&m_bDamaged[i], false, sizeof(_bool)* HIT_END);
 	}
-
+	m_bDamagedAnim = false;
 	m_pModelCom->Set_CurAnimIndex(SWORD_INCOMBAT_IDLE);
 }
 
@@ -322,16 +341,12 @@ void CHuman_Sword_State::Start_Detected(_double dTimeDelta)
 {
 	m_pModelCom->Set_LerpTime(0.2f);
 
-
-
-
-
 	m_pModelCom->Set_CurAnimIndex(SWORD_DECTED);
 }
 
 void CHuman_Sword_State::Start_GroundSpawn(_double dTimeDelta)
 {
-	m_pModelCom->Set_LerpTime(0.2f);
+	m_pModelCom->Set_LerpTime(0.5f);
 
 	m_pModelCom->Set_CurAnimIndex(SWORD_GROUNDSPAWN);
 }
@@ -340,7 +355,7 @@ void CHuman_Sword_State::Start_Attack_A(_double dTimeDelta)
 {
 	m_pModelCom->Set_LerpTime(0.2f);
 
-	if (rand() % 5 + 12 % 2 == 0)
+	if ((rand() % 3) % 2 == 0)
 	{
 		m_pModelCom->Set_CurAnimIndex(SWORD_ATTACK_A);
 	}
@@ -387,18 +402,6 @@ void CHuman_Sword_State::Tick_Idle(_double dTimeDelta)
 void CHuman_Sword_State::Tick_Run(_double dTimeDelta)
 {
 	m_pTransformCom->LookAt_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
-	// m_pTransformCom->Chase_Melee(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION, dTimeDelta, 2.f);
-	// m_pTransformCom->Chase(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.f);
-	//
-	// _float3 vLook = m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION) - m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	// vLook = XMVector3Normalize(vLook);
-	//
-	// const _float2 v2Look { 0.f, 1.f };
-	// _float2 v2ToDest{ vLook.x, vLook.z };
-	//
-	// const _float fDot = v2Look.Dot(v2ToDest);
-	//
-	// m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(-acosf(fDot)));
 }
 
 void CHuman_Sword_State::Tick_JustStand(_double dTimeDelta)
@@ -422,9 +425,10 @@ void CHuman_Sword_State::Tick_GroundSpawn(_double dTimeDelta)
 
 void CHuman_Sword_State::Tick_Attack_A(_double dTimeDelta)
 {
-	if (m_pMonster->m_pPlayer->Collision_Body(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTPOS]))
+	if (m_pMonster->m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTPOS]))
 	{
 		m_pMonster->m_pPlayer->Collision_Event(m_pMonster);
+		m_bAttackOnce = true;
 	}
 }
 
@@ -462,7 +466,7 @@ void CHuman_Sword_State::End_Common(_double TimeDelta)
 void CHuman_Sword_State::End_No_Detected(_double dTimeDelta)
 {
 	for (_uint i = 0; i < HIT_END; ++i)
-		memset(&m_bDamaged[i], false, sizeof(_bool));
+		memset(&m_bDamaged[i], false, sizeof(_bool)* HIT_END);
 
 	m_fCurHideCoolTime = 0.f;
 	m_pMonster->Set_HideColl(false);
@@ -484,7 +488,7 @@ void CHuman_Sword_State::End_Damaged(_double dTimeDelta)
 {
 	for(_uint i =0; i < HIT_END; ++i)
 	{
-		memset(&m_bDamaged[i], false, sizeof(_bool));
+		memset(&m_bDamaged[i], false, sizeof(_bool)* HIT_END);
 	}
 
 	m_bDamagedAnim = false; 
@@ -493,7 +497,7 @@ void CHuman_Sword_State::End_Damaged(_double dTimeDelta)
 void CHuman_Sword_State::End_Detected(_double dTimeDelta)
 {
 	for (_uint i = 0; i < HIT_END; ++i)
-		memset(&m_bDamaged[i], false, sizeof(_bool));
+		memset(&m_bDamaged[i], false, sizeof(_bool)* HIT_END);
 }
 
 void CHuman_Sword_State::End_GroundSpawn(_double dTimeDelta)
@@ -542,8 +546,8 @@ _bool CHuman_Sword_State::Player_CloseAndCanAttack()
 	{
 		return m_pMonster->m_bPlayerDetectedClose;
 	}
-	else false;
-
+	else 
+		return false;
 }
 
 _bool CHuman_Sword_State::Bullet_Hide_Collision()
@@ -568,7 +572,11 @@ _bool CHuman_Sword_State::Is_Damaged()
 	{
 		return m_bDamaged[HIT];
 	}
-
+	else
+	{
+		memset(&m_bDamaged[HIT_END], false, sizeof(_bool) * HIT_END);
+		return false;
+	}
 	return false;
 }
 

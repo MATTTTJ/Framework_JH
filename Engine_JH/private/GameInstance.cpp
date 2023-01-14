@@ -315,8 +315,7 @@ CGameObject* CGameInstance::Clone_GameObject(const wstring& wstrPrototypeTag, vo
 	return m_pObject_Manager->Clone_GameObject(wstrPrototypeTag, pArg);
 }
 
-CComponent* CGameInstance::Get_ComponentPtr(_uint iLevelIndex, const wstring& wstrLayerTag,
-                                            const wstring& wstrComponentTag, _uint iIndex)
+CComponent* CGameInstance::Get_ComponentPtr(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrComponentTag, _uint iIndex)
 {
 	NULL_CHECK_RETURN(m_pObject_Manager, nullptr);
 

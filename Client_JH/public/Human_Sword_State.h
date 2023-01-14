@@ -63,8 +63,6 @@ private:
 
 private:
 	CPlayer*					m_pPlayer = nullptr;
-	class CWeapon_State*				m_pPlayerState = nullptr;
-
 
 	class CHuman_Sword*			m_pMonster = nullptr;
 	CState*						m_pState = nullptr;
@@ -89,6 +87,7 @@ private:					// Pattern CoolTime
 	_float						m_fCurAttackCoolTime = 0.f;
 	_float						m_fAttackCoolTime = 3.f;
 	_bool						m_bCanAttack = false;
+	_bool						m_bAttackOnce = false;
 
 	// 피격 애니메이션
 	_float						m_fCurDamagedAnimCoolTime = 0.f;

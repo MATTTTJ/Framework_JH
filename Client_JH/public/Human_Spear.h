@@ -12,7 +12,7 @@ BEGIN(Client)
 
 class CHuman_Spear final  :	public CMonster
 {
-	// friend class CHuman_Spear_State;
+	friend class CHuman_Spear_State;
 
 public:
 	CHuman_Spear(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

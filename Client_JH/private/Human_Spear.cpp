@@ -45,8 +45,18 @@ HRESULT CHuman_Spear::Initialize_Clone(const wstring& wstrPrototypeTag, void* pA
 	m_pHuman_Spear_State = CHuman_Spear_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
-	// m_pModelCom->Set_CurAnimIndex(CHuman_Spear_State::SWORD_NODETECTED);
-
+	if (m_tMonsterOption.m_bFirstSpawnType[STATE_ALREADYSPAWN] == true)
+	{
+		m_pModelCom->Set_CurAnimIndex(CHuman_Spear_State::SPEAR_JUSTSTAND);
+	}
+	else if (m_tMonsterOption.m_bFirstSpawnType[STATE_NODETECTED] == true)
+	{
+		m_pModelCom->Set_CurAnimIndex(CHuman_Spear_State::SPEAR_NODETECTED);
+	}
+	else if (m_tMonsterOption.m_bFirstSpawnType[STATE_UPSPAWN] == true)
+	{
+		m_pModelCom->Set_CurAnimIndex(CHuman_Spear_State::SPEAR_UPSPAWN);
+	}
 
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.f, 0.f, 10.f, 1.f));
 
@@ -143,7 +153,7 @@ HRESULT CHuman_Spear::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-		m_pTextureCom[TEXTURE_NORMAL]->Bind_ShaderResource(m_pShaderCom, L"g_NormalTexture");
+		// m_pTextureCom[TEXTURE_NORMAL]->Bind_ShaderResource(m_pShaderCom, L"g_NormalTexture");
 
 		// m_pModelCom->Render_2Pass(m_pShaderCom, i, L"monster_body_2001_020", L"g_BoneMatrices", 1);
 
@@ -208,9 +218,9 @@ void CHuman_Spear::Collision_Head(CBullet* pBullet)
 	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 		Set_Dead(true);
 
-	// m_pHuman_Spear_State->Reset_Damaged();
-	// m_pHuman_Spear_State->Set_DamagedState(m_pHuman_Spear_State::HIT);
-	// m_pHuman_Spear_State->Set_DamagedState(m_pHuman_Spear_State::HITHEAD);
+	m_pHuman_Spear_State->Reset_Damaged();
+	m_pHuman_Spear_State->Set_DamagedState(CHuman_Spear_State::HIT);
+	m_pHuman_Spear_State->Set_DamagedState(CHuman_Spear_State::HITHEAD);
 }
 
 void CHuman_Spear::Collision_Hide(CBullet* pBullet)
@@ -258,9 +268,9 @@ void CHuman_Spear::Collision_Body(CBullet* pBullet)
 	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 		Set_Dead(true);
 
-	// m_pHuman_Spear_State->Reset_Damaged();
-	// m_pHuman_Spear_State->Set_DamagedState(m_pHuman_Spear_State::HIT);
-	// m_pHuman_Spear_State->Set_DamagedState(m_pHuman_Spear_State::HITBODY);
+	m_pHuman_Spear_State->Reset_Damaged();
+	m_pHuman_Spear_State->Set_DamagedState(CHuman_Spear_State::HIT);
+	m_pHuman_Spear_State->Set_DamagedState(CHuman_Spear_State::HITBODY);
 }
 
 
@@ -296,11 +306,11 @@ HRESULT CHuman_Spear::SetUp_Components()
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(0.f, 0.f, 0.3f);
-	ColliderDesc.vPosition = _float3(0.f, 0.f, -0.7f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, -1.2f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_AttackPosSphere", (CComponent**)&m_pColliderCom[COLLTYPE_ATTPOS], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(4.7f, 4.7f, 4.7f);
+	ColliderDesc.vSize = _float3(5.5f, 5.5f, 5.5f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_AttackRangeSphere", (CComponent**)&m_pColliderCom[COLLTYPE_ATTRANGE], this, &ColliderDesc), E_FAIL);
 

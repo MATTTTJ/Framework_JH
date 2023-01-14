@@ -13,7 +13,7 @@ CHuman_Sword::CHuman_Sword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CHuman_Sword::CHuman_Sword(const CHuman_Sword& rhs)
-	:CMonster(rhs)
+	: CMonster(rhs)
 {
 	m_fHitColorOnTime = 0.15f;
 }
@@ -45,7 +45,18 @@ HRESULT CHuman_Sword::Initialize_Clone(const wstring& wstrPrototypeTag, void* pA
 	m_pHuman_Sword_State = CHuman_Sword_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
-	m_pModelCom->Set_CurAnimIndex(CHuman_Sword_State::SWORD_NODETECTED);
+	if (m_tMonsterOption.m_bFirstSpawnType[STATE_ALREADYSPAWN] == true)
+	{
+		m_pModelCom->Set_CurAnimIndex(CHuman_Sword_State::SWORD_JUSTSTAND);
+	}
+	else if (m_tMonsterOption.m_bFirstSpawnType[STATE_NODETECTED] == true)
+	{ 
+		m_pModelCom->Set_CurAnimIndex(CHuman_Sword_State::SWORD_NODETECTED);
+	}
+	else if (m_tMonsterOption.m_bFirstSpawnType[STATE_GROUNDSPAWN] == true)
+	{
+		m_pModelCom->Set_CurAnimIndex(CHuman_Sword_State::SWORD_GROUNDSPAWN);
+	}
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.f, 0.f, 10.f, 1.f));
 
 	return S_OK;
@@ -62,7 +73,7 @@ void CHuman_Sword::Tick(_double TimeDelta)
 	}
 
 	{
-		if(m_bHitColor)
+		if (m_bHitColor)
 			m_fCurHitColorOnTime += (_float)TimeDelta;
 	}
 
@@ -75,7 +86,7 @@ void CHuman_Sword::Tick(_double TimeDelta)
 		m_bHitColor = false;
 	}
 
-	if(m_bPlayAnimation)
+	if (m_bPlayAnimation)
 		m_pModelCom->Play_Animation(TimeDelta);
 
 	Collider_Tick(TimeDelta);
@@ -85,7 +96,7 @@ void CHuman_Sword::Tick(_double TimeDelta)
 
 	_uint UISize = (_uint)m_vecMonsterUI.size();
 
-	for(_uint i =0; i < UISize; ++i)
+	for (_uint i = 0; i < UISize; ++i)
 	{
 		m_vecMonsterUI[i]->Tick(TimeDelta);
 	}
@@ -138,11 +149,11 @@ HRESULT CHuman_Sword::Render()
 		}
 	}
 
-	for(_uint i =0; i < iNumMeshes; ++i)
+	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 		m_pTextureCom[TEXTURE_NORMAL]->Bind_ShaderResource(m_pShaderCom, L"g_NormalTexture");
-		
+
 		// m_pModelCom->Render_2Pass(m_pShaderCom, i, L"monster_body_2001_020", L"g_BoneMatrices", 1);
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 1);
@@ -221,7 +232,7 @@ HRESULT CHuman_Sword::SetUp_Components()
 	CCollider::COLLIDERDESC	ColliderDesc;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(17.f, 17.f, 17.f);
+	ColliderDesc.vSize = _float3(5.f, 5.f, 5.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_DetectedSphere", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
 
@@ -273,7 +284,7 @@ HRESULT CHuman_Sword::SetUp_ShaderResources()
 	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_Outline_Offset", &m_fOutLineOffset, sizeof(_float)), E_FAIL);
-	
+
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bHit", &m_bHitColor, sizeof(_bool)), E_FAIL);
 
 	if (m_bIsOnPlayerEyes)
@@ -282,7 +293,7 @@ HRESULT CHuman_Sword::SetUp_ShaderResources()
 	}
 	else
 	{
- 		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &m_vDefaultOutLineColor, sizeof(_float)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &m_vDefaultOutLineColor, sizeof(_float)), E_FAIL);
 	}
 
 
@@ -323,7 +334,7 @@ void CHuman_Sword::Collision_Head(CBullet* pBullet)
 
 void CHuman_Sword::Collision_Hide(CBullet* pBullet)
 {
-	m_bHideCollision = true; 
+	m_bHideCollision = true;
 }
 
 void CHuman_Sword::Collision_PlayerEyes()
@@ -374,21 +385,21 @@ CGameObject* CHuman_Sword::Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CHuman_Sword::Free()
 {
 	__super::Free();
-	
+
 	Safe_Release(m_pHuman_Sword_State);
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pState);
 
-	for(_uint i =0; i<COLLTYPE_END; ++i)
+	for (_uint i = 0; i < COLLTYPE_END; ++i)
 	{
 		Safe_Release(m_pColliderCom[i]);
 	}
-	
+
 	for (auto& pUI : m_vecMonsterUI)
 	{
 		Safe_Release(pUI);
 	}
-	
+
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);

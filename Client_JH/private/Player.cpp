@@ -217,7 +217,26 @@ void CPlayer::Tick(_double dTimeDelta)
 	{
 		m_pTransformCom->Go_Right(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
 	}
+	if (CGameInstance::GetInstance()->Key_Down(DIK_F6))
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+		CMonster*			pMonster = nullptr;
 
+		_matrix PivotMatrix = XMMatrixIdentity();
+		PivotMatrix.r[3] = XMVectorSet(-14.f, 0.f, 0.19f, 1.f);
+
+		CMonster::MONSTEROPTION			MonsterDesc;
+		MonsterDesc.m_bFirstSpawnType[CMonster::STATE_UPSPAWN] = true;
+		MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+		MonsterDesc.MonsterDesc.m_iDamage = 15;
+		MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+		MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 5.f;
+		MonsterDesc.m_iCellIndex = 40;
+		pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Human_Spear", PivotMatrix, &MonsterDesc));
+		pMonster->Set_Player(this);
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
 	Set_On_NaviMesh();
 
 	if(m_pState != nullptr)
@@ -327,7 +346,7 @@ void CPlayer::Set_Camera(_double dTimeDelta)
 		back())->Camera_Update(	dTimeDelta, m_pTransformCom->Get_WorldMatrix());
 }
 
-_bool CPlayer::Collision_Body(CCollider* pOtherCollider)
+_bool CPlayer::Collision_Detected(CCollider* pOtherCollider)
 {
 	NULL_CHECK_RETURN(pOtherCollider, false);
 

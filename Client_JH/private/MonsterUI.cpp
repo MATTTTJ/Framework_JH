@@ -427,11 +427,11 @@ void CMonsterUI_HP_White::Tick(_double dTimeDelta)
 		}
 		else if(m_fProgress / m_fFollowProgress >= 0.1f && m_fProgress / m_fFollowProgress < 0.3f)
 		{
-			m_fFollowProgress -= (_float)dTimeDelta * 0.2f;
+			m_fFollowProgress -= (_float)dTimeDelta * 0.25f;
 		}
 		else if (m_fProgress / m_fFollowProgress >= 0.3f && m_fProgress / m_fFollowProgress < 0.6f)
 		{
-			m_fFollowProgress -= (_float)dTimeDelta * 0.4f;
+			m_fFollowProgress -= (_float)dTimeDelta * 0.5f;
 		}
 		else 
 			m_fFollowProgress -= (_float)dTimeDelta * 0.1f;
