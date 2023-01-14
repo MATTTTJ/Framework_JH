@@ -108,7 +108,11 @@ _bool CBullet::Collision_Body()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_HitBodySphere");
-	NULL_CHECK_RETURN(pCollider, false);
+	if (pCollider == nullptr)
+		return false;
+
+	// NULL_CHECK_RETURN(pCollider, false);
+
 	if (m_pBulletColliderCom->Collision(pCollider))
 	{
 		CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
@@ -128,6 +132,9 @@ _bool CBullet::Collision_Head()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_HitHeadSphere");
+	if (pCollider == nullptr)
+		return false;
+
 	if (m_pBulletColliderCom->Collision(pCollider))
 	{
 		CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
@@ -147,6 +154,9 @@ _bool CBullet::Collision_HideCollider()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
 	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_AttackRangeSphere");
+	if (pCollider == nullptr)
+		return false;
+
 	if (m_pBulletColliderCom->Collision(pCollider))
 	{
 		CMonster* pMonster = (CMonster*)pCollider->Get_Owner();

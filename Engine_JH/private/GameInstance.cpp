@@ -173,6 +173,13 @@ _bool CGameInstance::Mouse_DoubleClick(MOUSEKEYSTATE MouseButton)
 	return m_pInput_Device->Mouse_DoubleClick(MouseButton);
 }
 
+_bool CGameInstance::Mouse_Pressing(MOUSEKEYSTATE MouseButton)
+{
+	NULL_CHECK_RETURN(m_pInput_Device, 0);
+
+	return m_pInput_Device->Mouse_Pressing(MouseButton);
+}
+
 _bool CGameInstance::Key_Pressing(_ubyte byKeyID)
 {
 	NULL_CHECK_RETURN(m_pInput_Device, 0);

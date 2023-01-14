@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "..\public\Monster.h"
 #include "GameInstance.h"
+#include "GameUtils.h"
 #include "State.h"
 #include "UI.h"
 #include "Collider.h"
+#include "Player.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -59,9 +61,6 @@ HRESULT CMonster::Initialize_Prototype()
 HRESULT CMonster::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
-
-	
-
 
 	return S_OK;
 }

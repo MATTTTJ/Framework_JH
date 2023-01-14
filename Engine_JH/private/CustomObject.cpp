@@ -168,7 +168,10 @@ HRESULT CCustomObject::Render()
 			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
-			m_pModelCom->Render(m_pShaderCom, i,L"g_BoneMatrices");
+			if (m_pModelCom->Get_ModelType() == CModel::MODEL_ANIM)
+				m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
+			else
+				m_pModelCom->Render(m_pShaderCom, i);
 		}
 	}
 

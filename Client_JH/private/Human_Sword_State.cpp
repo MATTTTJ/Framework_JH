@@ -97,6 +97,36 @@ void CHuman_Sword_State::Tick(_double dTimeDelta)
 
 void CHuman_Sword_State::Late_Tick(_double dTimeDelta)
 {
+	_float4	fDir;
+	if (CGameUtils::CollisionSphereSphere(m_pMonster->m_pPlayer->m_pColliderCom[CPlayer::COLLIDER_SPHERE], m_pMonster->m_pColliderCom[CMonster::COLLTYPE_HITBODY], fDir))
+	{
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+		fDir.y = 0.f;
+		_vector	vMovePos = XMVectorAdd(vPos, fDir);
+
+		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+
+		if (true == m_pNavigationCom->IsMove_OnNavigation(vPos, vBlockedLine, vBlockedLineNormal))
+			m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+		else
+		{
+			_vector vInDir = vMovePos - vPos;
+			_vector vOutDir = vPos - vMovePos;
+			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+
+			_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+
+			vMovePos = vPos + vSlidingDir;
+
+			if (m_pNavigationCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			{
+				m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+			}
+		}
+		// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vPos);
+	}
+
 	if (m_pPlayer->Collision_Body(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_DETECTED]))
 	{
 		m_pMonster->m_bPlayerDetected = true;
@@ -165,7 +195,7 @@ HRESULT CHuman_Sword_State::SetUp_State_Idle()
 		.Init_Tick(this, &CHuman_Sword_State::Tick_Idle)
 		.Init_End(this, &CHuman_Sword_State::End_Common)
 		.Init_Changer(L"STATE::RUN", this, &CHuman_Sword_State::Player_DetectedAndFar)
-		.Init_Changer(L"STATE::ATTACK_A", this, &CHuman_Sword_State::Player_DetectedAndClose)
+		.Init_Changer(L"STATE::ATTACK_A", this, &CHuman_Sword_State::Player_CloseAndCanAttack)
 		.Init_Changer(L"STATE::DAMAGED", this, &CHuman_Sword_State::Is_Damaged)
 		.Init_Changer(L"STATE::HIDE", this, &CHuman_Sword_State::Bullet_Hide_Collision)
 
@@ -174,8 +204,9 @@ HRESULT CHuman_Sword_State::SetUp_State_Idle()
 		.Init_Tick(this, &CHuman_Sword_State::Tick_Run)
 		.Init_End(this, &CHuman_Sword_State::End_Common)
 		.Init_Changer(L"STATE::DAMAGED", this, &CHuman_Sword_State::Is_Damaged)
-		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CHuman_Sword_State::Player_DetectedAndClose)
 		.Init_Changer(L"STATE::HIDE", this, &CHuman_Sword_State::Bullet_Hide_Collision)
+		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CHuman_Sword_State::Player_DetectedAndClose)
+
 
 
 		.Add_State(L"STATE::ATTACK_A")
@@ -355,8 +386,8 @@ void CHuman_Sword_State::Tick_Idle(_double dTimeDelta)
 
 void CHuman_Sword_State::Tick_Run(_double dTimeDelta)
 {
-	m_pTransformCom->LookAt_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.f);
-	m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_MONSTER, m_pMonster->m_pNavigationCom);
+	m_pTransformCom->LookAt_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
+	// m_pTransformCom->Chase_Melee(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION, dTimeDelta, 2.f);
 	// m_pTransformCom->Chase(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.f);
 	//
 	// _float3 vLook = m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION) - m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
@@ -501,12 +532,18 @@ _bool CHuman_Sword_State::Player_DetectedAndFar()
 
 _bool CHuman_Sword_State::Player_DetectedAndClose()
 {
+	
+	return m_pMonster->m_bPlayerDetectedClose;
+}
+
+_bool CHuman_Sword_State::Player_CloseAndCanAttack()
+{
 	if (m_bCanAttack)
 	{
 		return m_pMonster->m_bPlayerDetectedClose;
 	}
+	else false;
 
-	return false;
 }
 
 _bool CHuman_Sword_State::Bullet_Hide_Collision()

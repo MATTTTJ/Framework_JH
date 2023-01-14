@@ -12,6 +12,7 @@ vector			g_vRightSrc;
 vector			g_vUp;
 
 float			g_fProgress =1.f;
+float			g_fPreProgress = 1.f;
 float			g_fTest; 
 texture2D		g_Texture;
 
@@ -112,9 +113,6 @@ void GS_MAIN_UI_Red(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 
 	float3		vPosition;
 
-
-	float3		Testt;
-
 	// In[0].vPosition.x = In[0].vPosition.x - (vRight * g_fTest) ;
 	vPosition = In[0].vPosition + vRight + vUp;
 	Out[0].vPosition = mul(vector(vPosition, 1.f), matVP);
@@ -157,21 +155,23 @@ void GS_MAIN_UI_White(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 
 	float3		vPosition;
 
-	vPosition = In[0].vPosition + (vRight)+vUp;
+	// float Lerp = smoothstep((g_fPreProgress - 0.2f), g_fPreProgress, (g_fProgress)) - smoothstep((g_fPreProgress), g_fPreProgress + 0.2f, (g_fProgress));
+	// In[0].vPosition.x = In[0].vPosition.x - (vRight * g_fTest) ;
+	vPosition = In[0].vPosition + vRight + vUp;
 	Out[0].vPosition = mul(vector(vPosition, 1.f), matVP);
-	Out[0].vTexUV = float2(0.f, 0.f);
+	Out[0].vTexUV = float2((1 - g_fProgress) * 0.5f, 0.f);
 
-	vPosition = (In[0].vPosition - (vRight * g_fProgress) + vUp);
+	vPosition = ((In[0].vPosition - vRight) + vUp);
 	Out[1].vPosition = mul(vector(vPosition, 1.f), matVP);
-	Out[1].vTexUV = float2(1.f, 0.f);
+	Out[1].vTexUV = float2(0.5f + (1 - g_fProgress)*0.5f, 0.f);
 
-	vPosition = (In[0].vPosition - (vRight  * g_fProgress) - vUp);
+	vPosition = ((In[0].vPosition - vRight) - vUp);
 	Out[2].vPosition = mul(vector(vPosition, 1.f), matVP);
-	Out[2].vTexUV = float2(1.f, 1.f);
+	Out[2].vTexUV = float2(0.5f + (1 - g_fProgress)*0.5f, 1.f);
 
 	vPosition = In[0].vPosition + (vRight)-vUp;
 	Out[3].vPosition = mul(vector(vPosition, 1.f), matVP);
-	Out[3].vTexUV = float2(0.f, 1.f);
+	Out[3].vTexUV = float2((1 - g_fProgress) * 0.5f, 1.f);
 
 	Vertices.Append(Out[0]);
 	Vertices.Append(Out[1]);

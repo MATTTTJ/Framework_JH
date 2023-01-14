@@ -421,11 +421,21 @@ void CMonsterUI_HP_White::Tick(_double dTimeDelta)
 
 	if (m_fProgress < m_fFollowProgress)
 	{
-		m_fFollowProgress -= (_float)dTimeDelta * 0.1f;
+		if (m_fProgress / m_fFollowProgress < 0.1f)
+		{
+			m_fFollowProgress -= (_float)dTimeDelta * 0.1f;
+		}
+		else if(m_fProgress / m_fFollowProgress >= 0.1f && m_fProgress / m_fFollowProgress < 0.3f)
+		{
+			m_fFollowProgress -= (_float)dTimeDelta * 0.2f;
+		}
+		else if (m_fProgress / m_fFollowProgress >= 0.3f && m_fProgress / m_fFollowProgress < 0.6f)
+		{
+			m_fFollowProgress -= (_float)dTimeDelta * 0.4f;
+		}
+		else 
+			m_fFollowProgress -= (_float)dTimeDelta * 0.1f;
 	}
-
-	
-
 }
 
 void CMonsterUI_HP_White::Late_Tick(_double dTimeDelta)
@@ -447,7 +457,7 @@ HRESULT CMonsterUI_HP_White::Render()
 
 		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
-		m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(4);
 
 		m_pPointBuffer->Render();
 	}
@@ -475,6 +485,7 @@ HRESULT CMonsterUI_HP_White::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vCamPosition", &pGameInstance->Get_CamPos(), sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vPSize", &m_vPSize, sizeof(_float2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_fProgress", &m_fFollowProgress, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_fPreProgress", &m_fFollowProgress, sizeof(_float)), E_FAIL);
 
 	RELEASE_INSTANCE(CGameInstance);
 	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);

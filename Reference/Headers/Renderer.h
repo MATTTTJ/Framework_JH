@@ -40,6 +40,8 @@ private:
 	HRESULT				Render_Priority();
 	HRESULT				Render_NonAlphaBlend();
 	HRESULT				Render_LightAcc();
+	HRESULT				Render_DOF();
+	HRESULT				Render_Ditortion();
 	HRESULT				Render_Blend();
 	HRESULT				Render_NonLight();
 	HRESULT				Render_AlphaBlend();

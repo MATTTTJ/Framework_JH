@@ -25,6 +25,8 @@ public:
 public:
 	_bool		Mouse_Down(MOUSEKEYSTATE MouseButton);
 	_bool		Mouse_Up(MOUSEKEYSTATE MouseButton);
+	_bool		Mouse_Pressing(MOUSEKEYSTATE MouseButton);
+
 	_bool		Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);
 	_bool		Key_Pressing(_ubyte byKeyID);
 	_bool		Key_DoubleDown(_ubyte byKeyID);
@@ -47,6 +49,8 @@ private:
 	DIMOUSESTATE				m_MouseState;
 	_bool						m_bKeyState[256];
 	_bool						m_bPressThisFrame[256];
+	_bool						m_bPressThisFrameMouse[3];
+
 	_double						m_dChargeTime[256];
 	_bool						m_bMouseState[3];
 

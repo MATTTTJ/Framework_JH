@@ -77,8 +77,9 @@ public:
 	void Rotation(_fvector vAxis, _float fRadian); /* Static */
 	void RotateToTarget(const _vector& vTargetPos);
 	void LookAt(_fvector vTargetPos);
-	void LookAt_Monster(_fvector vTargetPos, _double TimeDelta, _float fLimitRange);
+	void LookAt_Monster(_fvector vTargetPos, _double TimeDelta, _float fLimitRange, class CNavigation* pNaviCom = nullptr);
 	void Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit = 0.1f);
+	void Chase_Melee(_fvector vTargetPos, _double TimeDelta, _float fLimit = 0.1f);
 
 	void				Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpeed);
 	void				Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir);

@@ -10,6 +10,7 @@ CInput_Device::CInput_Device()
 	ZeroMemory(&m_MouseState, sizeof(m_MouseState));
 	ZeroMemory(m_bKeyState, sizeof(_bool) * 256);
 	ZeroMemory(m_bPressThisFrame, sizeof(_bool) * 256);
+	ZeroMemory(m_bPressThisFrameMouse, sizeof(_bool) * 3);
 	ZeroMemory(m_dChargeTime, sizeof(_bool) * 256);
 	ZeroMemory(m_bMouseState, sizeof(_bool) * 3);
 }
@@ -22,7 +23,7 @@ _bool CInput_Device::Mouse_Down(MOUSEKEYSTATE MouseButton)
 	if (!m_bMouseState[MouseButton] && (m_MouseState.rgbButtons[MouseButton] & 0x80))
 	{
 		m_bMouseState[MouseButton] = true;
-		m_bPressThisFrame[MouseButton] = true;
+		m_bPressThisFrameMouse[MouseButton] = true;
 		return true;
 	}
 
@@ -34,8 +35,23 @@ _bool CInput_Device::Mouse_Up(MOUSEKEYSTATE MouseButton)
 	if(m_bMouseState[MouseButton] && !(m_MouseState.rgbButtons[MouseButton] & 0x80))
 	{
 		m_bMouseState[MouseButton] = false;
-		m_bPressThisFrame[MouseButton] = false;
+		m_bPressThisFrameMouse[MouseButton] = false;
 
+		return true;
+	}
+
+	return false;
+}
+
+_bool CInput_Device::Mouse_Pressing(MOUSEKEYSTATE MouseButton)
+{
+	if (m_bMouseState[MouseButton] == true)
+		return true;
+
+	if (Get_DIMouseState(MouseButton) & 0x80)
+	{
+		m_bMouseState[MouseButton] = true;
+		m_bPressThisFrameMouse[MouseButton] = true;
 		return true;
 	}
 

@@ -6,6 +6,7 @@
 #include "Effect_Point_Instancing.h"
 #include "ForkLift.h"
 #include "Home.h"
+#include "Human_Spear.h"
 #include "Human_Sword.h"
 #include "LaiLuo_Home.h"
 #include "Monster.h"
@@ -196,7 +197,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	m_wstrLoadingText = L"네비게이션 정보 생성중입니다.";
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Client_JH\\Bin\\Save Data\\Navigation\\Navigation_Test.json")), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"C:\\Users\\Hoon\\Desktop\\3D_JH\\Framework_JH\\Client_JH\\Bin\\Save Data\\Navigation\\Navigation_Test.json")), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"C:\\Users\\Hoon\\Desktop\\3D_JH\\Framework_JH\\Client_JH\\Bin\\Save Data\\Navigation\\Navigation_Test.json")), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/Navigation_Test.json")), E_FAIL);
 
 	m_wstrLoadingText = L"버퍼를 로딩중입니다.";
 
@@ -231,6 +233,22 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// 노말맵 몬스터 모델
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Sword", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Human_Sword/Normal_Human_Sword.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Spear", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Human_Spear/Normal_Human_Spear.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Granade", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Human_Granade/Normal_Human_Granade.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Bow", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Human_Bow/Normal_Human_Bow.model", PivotMatrix)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Exploded_Monster", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Explode_Fire/Normal_Explode_Monster.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Elite_Knight", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Knight/Normal_Elite_Knight.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Elite_Bug", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Bug/Normal_Elite_Bug.model", PivotMatrix)), E_FAIL);
+
+
+
+
+
+
+
+
+	// ~노말맵 몬스터 모델
+
 
 	m_wstrLoadingText = L"셰이더를 로딩중입니다. ";
 
@@ -274,6 +292,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// 노말맵 몬스터 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Sword", CHuman_Sword::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Spear", CHuman_Spear::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	// Bullet
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_Default_PistolTex", CDefault_Pistol::Create(m_pDevice, m_pContext)), E_FAIL);

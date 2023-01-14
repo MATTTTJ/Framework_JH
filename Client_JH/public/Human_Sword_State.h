@@ -143,6 +143,7 @@ private:
 	_bool						Player_DetectedAndFar(); // Stand State -> Player Detected (Follow)
 	// _bool						Player_DetectedAndFar_AnimFinish(); 
 	_bool						Player_DetectedAndClose(); // Ground Spawn
+	_bool						Player_CloseAndCanAttack(); // Ground Spawn
 	_bool						Bullet_Hide_Collision();
 	_bool						Player_NotDetected(); // When NoDetected (Collider)
 	_bool						Is_Damaged();

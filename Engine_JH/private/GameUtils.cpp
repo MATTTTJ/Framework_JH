@@ -585,3 +585,46 @@ _matrix CGameUtils::Get_PlayerPivotMatrix()
 {
 	return XMMatrixIdentity() * XMMatrixRotationY(XMConvertToRadians(180.f));
 }
+
+_bool CGameUtils::CollisionSphereSphere(CCollider * pColliderA, CCollider * pColliderB, _float4 & vDir)
+{
+	BoundingSphere*	pSphereA = (BoundingSphere*)pColliderA->Get_Collider(CCollider::COLLIDER_SPHERE);
+	NULL_CHECK_RETURN(pSphereA, false);
+
+	BoundingSphere*	pSphereB = (BoundingSphere*)pColliderB->Get_Collider(CCollider::COLLIDER_SPHERE);
+	NULL_CHECK_RETURN(pSphereB, false);
+
+	/* 충돌 비교 */
+	_vector	vCenterA = XMLoadFloat3(&pSphereA->Center);
+	_vector	vRadiusA = XMVectorReplicatePtr(&pSphereA->Radius);
+
+	_vector	vCenterB = XMLoadFloat3(&pSphereB->Center);
+	_vector	vRadiusB = XMVectorReplicatePtr(&pSphereB->Radius);
+
+	_vector	vDelta = vCenterB - vCenterA;
+	_vector	vDistanceSquared = XMVector3LengthSq(vDelta);
+
+	_vector	vRadiusSquared = XMVectorAdd(vRadiusA, vRadiusB);
+	vRadiusSquared = XMVectorMultiply(vRadiusSquared, vRadiusSquared);
+
+	/* 충돌됨 */
+	if (XMVector3LessOrEqual(vDistanceSquared, vRadiusSquared) == true)
+	{
+		_float P = XMVectorGetX(XMVector3Dot(vDelta, vDelta));
+		_float Q = (pSphereA->Radius * pSphereA->Radius - pSphereB->Radius * pSphereB->Radius + P) / (2.f * P);
+		_vector	vMiddlePoint = vCenterA + Q * vDelta;
+
+		_float		fMiddlePointToCenterA = pSphereB->Radius - XMVectorGetX(XMVector3Length(vMiddlePoint - XMLoadFloat3(&pSphereB->Center)));
+		_float		fMiddlePointToCenterB = pSphereA->Radius - XMVectorGetX(XMVector3Length(vMiddlePoint - XMLoadFloat3(&pSphereA->Center)));
+
+		_float		fIntersectDist = fMiddlePointToCenterA + fMiddlePointToCenterB;
+		_vector	vIntersectDir = XMVector3Normalize(vDelta);
+
+		vDir = vIntersectDir * fIntersectDist;
+
+		return true;
+	}
+
+	return false;
+}
+

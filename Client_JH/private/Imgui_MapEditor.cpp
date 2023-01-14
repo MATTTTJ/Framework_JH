@@ -5,7 +5,8 @@
 #include "GameInstance.h"
 #include "GameObject.h"
 #include "GameUtils.h"
-
+#include "Monster.h"
+#include "Player.h"
 
 CImgui_MapEditor::CImgui_MapEditor()
 {
@@ -105,8 +106,13 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 				CGameUtils::ctwc(ppLayerTags[iSelectLayer], wszBuff);
 				wstring	wstrLayerTag = wszBuff;
 
-				CGameInstance::GetInstance()->Clone_GameObject(m_iCurLevel, wstrLayerTag, wstrPrototypeTag);
+				CGameObject* pInst = CGameInstance::GetInstance()->Clone_GameObjectReturnPtr_M(m_iCurLevel, wstrLayerTag, wstrPrototypeTag);
+				dynamic_cast<CMonster*>(pInst)->Set_Player(dynamic_cast<CPlayer*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front()));
 			}
+
+
+
+
 
 			ImGui::Separator();
 

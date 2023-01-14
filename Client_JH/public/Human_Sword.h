@@ -32,13 +32,14 @@ public:
 	virtual void				Late_Tick(_double TimeDelta) override;
 	virtual HRESULT				Render() override;
 	HRESULT						Ready_UI();
+
 public:
 	virtual void				Collider_Tick(_double TimeDelta) override;
 
 public:
 	 _bool						Collision_Detected(CCollider* pOtherCollider) ;
-	 _bool						Collider_HitHead(CCollider* pOtherCollider) ;
-	 _bool						Collider_HitBody(CCollider* pOtherCollider) ;
+	 // _bool						Collider_HitHead(CCollider* pOtherCollider) ;
+	 // _bool						Collider_HitBody(CCollider* pOtherCollider) ;
 	 _bool						Collider_AttRange(CCollider* pOtherCollider) ;
 
 	// _bool						Collision_Bullet_Body(vector<CGameObject*>* pGameObject);

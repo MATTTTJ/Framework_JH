@@ -37,6 +37,7 @@ public:
 	const	COLLIDERTYPE&	Get_ColliderType() const { return m_eType; }
 
 public:
+	void*					Get_Collider(COLLIDERTYPE eType);
 	_bool					Get_IsColl() { return m_bIsColl; }
 
 	BoundingOrientedBox*	Get_OBBPtr() { return m_pOBB; }

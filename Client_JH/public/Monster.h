@@ -24,6 +24,7 @@ public:
 	{
 		CGameObject::GAMEOBJECTDESC MonsterDesc;
 		_bool		m_bFirstSpawnType[FIRSTSTATE_END] = { false, false, false };
+		_int		m_iCellIndex = 0;
 	}MONSTEROPTION;
 
 
@@ -100,7 +101,7 @@ protected:
 
 	_bool					m_bHitColor = false;
 	_bool					m_bCanUIRender = false;
-
+	_int					m_iCellIndex = 0;
 protected:
 	vector<CGameObject*>	m_vecMonsterUI;
 

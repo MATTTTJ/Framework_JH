@@ -17,6 +17,7 @@ BEGIN(Client)
 
 class CPlayer final : public CGameObject
 {
+public:
 	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_MUZZLE, COLLIDERTYPE_END };
 
 	enum PLAYERUITYPE { UI_BASE, UI_HP, UI_SHIELD, UI_BULLETCOUNT, UI_SKILL, UI_THROW, UI_DASH, UI_END };
@@ -95,7 +96,6 @@ private:
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
 
-	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
 	CCollider*				m_pFirstAimColliderCom = nullptr;
 	CCollider*				m_pSecondAimColliderCom = nullptr;
 
@@ -110,6 +110,8 @@ private:
 	_float3					m_vCamPos;
 
 	// vector<CGameObject*>	m_vecPlayerParts;
+public:
+	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
 
 private: // State
 	CModel::LERPTYPE		m_eLerpType = CModel::LERP_BEGIN;

@@ -253,7 +253,7 @@ HRESULT CHuman_Sword::SetUp_Components()
 	CNavigation::NAVIDESC		NaviDesc;
 	ZeroMemory(&NaviDesc, sizeof(CNavigation::NAVIDESC));
 
-	NaviDesc.iCurrentIndex = 40;
+	NaviDesc.iCurrentIndex = m_tMonsterOption.m_iCellIndex;
 
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this, &NaviDesc), E_FAIL);
 

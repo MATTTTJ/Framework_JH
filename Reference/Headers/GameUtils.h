@@ -30,6 +30,7 @@ public:
 	static _bool				FloatCmp(const _float& f1, const _float& f2, _float fEpsilon);
 
 	static _matrix			Get_PlayerPivotMatrix();
+	static	_bool			CollisionSphereSphere(class CCollider* pColliderA, class CCollider* pColliderB, _float4& vDir);
 
 };
 

@@ -341,28 +341,6 @@ void CTransform::Rotation(_fvector vAxis, _float fRadian)
 
 void CTransform::RotateToTarget(const _vector& vTargetPos)
 {
-	// _float3 vLook = vTargetPos - Get_State(CTransform::STATE_TRANSLATION);
-	//
-	// vLook = XMVector3Normalize(vLook);
-	//
-	// const _float2 v2Look{ 0.f, 1.f };
-	// _float2 v2ToDest{ vLook.x, vLook.z };
-	//
-	// const _float fDot = v2Look.Dot(v2ToDest);
-	//
-	// if(vLook.x < 0)
-	// {
-	// 	Set_State(CTransform::STATE_UP, XMLoadFloat(-acosf(fDot)));
-	//
-	// 	Get_State(CTransform::STATE_UP)
-	// }
-	//
-	// fDot = XMStoreFloat(&fDot, XMVector2Dot(&v2Look, &v2ToDest));
-	//
-
-
-
-
 }
 
 void CTransform::LookAt(_fvector vTargetPos)
@@ -378,26 +356,57 @@ void CTransform::LookAt(_fvector vTargetPos)
 	Set_State(CTransform::STATE_LOOK, vLook);
 }
 
-void CTransform::LookAt_Monster(_fvector vTargetPos, _double TimeDelta, _float fLimitRange)
+void CTransform::LookAt_Monster(_fvector vTargetPos, _double TimeDelta, _float fLimitRange, CNavigation* pNaviCom)
 {
+	_float4		vPosition = Get_State(CTransform::STATE_TRANSLATION);
+	vPosition = XMVectorSet(vPosition.x, 0, vPosition.z, vPosition.w);
+
 	_float3		vScale = Get_Scaled();
 
 	_float4		TargetPos = vTargetPos;
 	TargetPos = XMVectorSet(TargetPos.x, 0.f, TargetPos.z, TargetPos.w);
 
-	_float4 vDir = vTargetPos - Get_State(CTransform::STATE_TRANSLATION);
+	_float4 vDir = vTargetPos - XMLoadFloat4(&vPosition); //Get_State(CTransform::STATE_TRANSLATION);
 
 	_float	fDistance = XMVectorGetX(XMVector3Length(vDir));
 
-	if(fDistance > fLimitRange)
-	{
-		_float4		vLook = XMVector3Normalize(XMLoadFloat4(&TargetPos) - Get_State(CTransform::STATE_TRANSLATION)) * vScale.z;
-		_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
-		_vector		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
+	
+	_vector vMovePos  = XMLoadFloat4(&vPosition) + XMVector3Normalize(vDir) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+	_float4		vLook = XMVector3Normalize(XMLoadFloat4(&TargetPos) - XMLoadFloat4(&vPosition)) * vScale.z;
+	_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
+	_vector		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
 
-		Set_State(CTransform::STATE_RIGHT, vRight);
-		Set_State(CTransform::STATE_UP, vUp);
-		Set_State(CTransform::STATE_LOOK, vLook);
+	if (nullptr == pNaviCom)
+	{
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+	}
+	else if(fDistance > fLimitRange)
+	{
+		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+
+		if (true == pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+		{
+			Set_State(CTransform::STATE_RIGHT, vRight);
+			Set_State(CTransform::STATE_UP, vUp);
+			Set_State(CTransform::STATE_LOOK, vLook);
+			Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+		}
+		else
+		{
+			_vector vInDir = vMovePos - XMLoadFloat4(&vPosition);
+			_vector vOutDir = XMLoadFloat4(&vPosition) - vMovePos;
+			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+
+			_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+
+			vMovePos = XMLoadFloat4(&vPosition) + vSlidingDir;
+
+			if (pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			{
+				Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+			}
+		}
 	}
 }
 
@@ -407,6 +416,21 @@ void CTransform::Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit)
 
 	_vector		vDir = vTargetPos - vPosition;
 	
+	_float		fDistance = XMVectorGetX(XMVector3Length(vDir));
+
+	if (fDistance > fLimit)
+	{
+		vPosition += XMVector3Normalize(vDir) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+	}
+}
+
+void CTransform::Chase_Melee(_fvector vTargetPos, _double TimeDelta, _float fLimit)
+{
+	_vector		vPosition = Get_State(CTransform::STATE_TRANSLATION);
+
+	_vector		vDir = vTargetPos - vPosition;
+
 	_float		fDistance = XMVectorGetX(XMVector3Length(vDir));
 
 	if (fDistance > fLimit)
