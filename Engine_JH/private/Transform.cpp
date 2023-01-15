@@ -451,68 +451,50 @@ void CTransform::Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpee
 	fCurJumpSpeed -= fGravity;
 }
 
-void CTransform::Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld,
-	DIRECTION eDir)
+void CTransform::Dash(_double dTimeDelta, TRANSTYPE eType, CNavigation* pNaviCom)
 {
-	if (fCurDashTickCount < 0.f)
-		return;
+	m_eType = eType;
 
-	_float4	vPos;
-	XMStoreFloat4(&vPos, Get_State(CTransform::STATE_TRANSLATION));
-	_float4	vLook;
-	XMStoreFloat4(&vLook, Get_State(CTransform::STATE_LOOK));
-	_float3	vScale = Get_Scaled();
+	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
+	_float4	vLook = Get_State(CTransform::STATE_LOOK);
 
-	_float4	vDir;
+	// vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
-	if (eDir != DIR_END)
+	if (nullptr == pNaviCom && m_eType == TRANS_FIX)
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+
+	else if (m_eType == TRANS_MONSTER || m_eType == TRANS_PLAYER)
 	{
-		switch (eDir)
+		_vector vMovePos = vPosition + XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f))* (m_TransformDesc.fSpeedPerSec * 4.f) * (_float)dTimeDelta;
+
+		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+
+		if (true == pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+		else
 		{
-		case DIR_W:
-			vDir = XMVector3Normalize(matCamWorld.r[2]);
-			break;
+			_vector vInDir = vMovePos - vPosition;
+			_vector vOutDir = vPosition - vMovePos;
+			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
 
-		case DIR_A:
-			vDir = XMVector3Normalize(matCamWorld.r[0]) * -1.f;
-			break;
+			_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
 
-		case DIR_S:
-			vDir = XMVector3Normalize(matCamWorld.r[2]) * -1.f;
-			break;
+			vMovePos = vPosition + vSlidingDir;
 
-		case DIR_D:
-			vDir = XMVector3Normalize(matCamWorld.r[0]);
-			break;
-
-		case DIR_WA:
-			vDir = XMVector3Normalize(matCamWorld.r[2] + matCamWorld.r[0] * -1.f);
-			break;
-
-		case DIR_WD:
-			vDir = XMVector3Normalize(matCamWorld.r[2] + matCamWorld.r[0]);
-			break;
-
-		case DIR_SA:
-			vDir = XMVector3Normalize(matCamWorld.r[2] * -1.f + matCamWorld.r[0] * -1.f);
-			break;
-
-		case DIR_SD:
-			vDir = XMVector3Normalize(matCamWorld.r[2] * -1.f + matCamWorld.r[0]);
-			break;
+			if (pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			{
+				Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+			}
 		}
-
-		vLook = XMVector3Normalize(XMVectorSet(vDir.x, 0.f, vDir.z, 0.f)) * vScale.z;
-		_vector	vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
-		_vector	vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
-
-		Set_State(STATE_RIGHT, vRight);
-		Set_State(STATE_UP, vUp);
-		Set_State(STATE_LOOK, vLook);
 	}
 
-	vPos += XMVector3Normalize(vLook) * (_float)dTimeDelta * (_float)m_TransformDesc.fSpeedPerSec * 2.f;
-	Set_State(STATE_TRANSLATION, vPos);
+	else if (TRANS_BULLET == m_eType || TRANSTYPE_END == m_eType)
+	{
+		_vector vMovePos = vPosition + XMVector3Normalize(vLook) * (m_TransformDesc.fSpeedPerSec *4.f)* (_float)dTimeDelta;
+
+		Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+	}
 }
 
 void CTransform::Speed_Up(_bool bKeyState)

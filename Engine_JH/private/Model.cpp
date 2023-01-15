@@ -375,6 +375,97 @@ void CModel::Imgui_RenderAnimation()
 	Safe_Delete_Array(ppAnimationTag);
 }
 
+void CModel::Imgui_RenderMeshes()
+{
+	static _int	iSelectAnimation = -1;
+	CMesh*	mesh = nullptr;
+	char**			ppAnimationTag = new char*[m_iNumMeshes];
+
+	for (_uint i = 0; i < m_iNumMeshes; ++i)
+	{
+		_uint	iTagLength = (_uint)m_vecMeshes[i]->Get_MeshName().length() + 1;
+		ppAnimationTag[i] = new char[iTagLength];
+		sprintf_s(ppAnimationTag[i], sizeof(char) * iTagLength, m_vecMeshes[i]->Get_MeshName().c_str());
+	}
+
+	ImGui::BulletText("Mesh List");
+	ImGui::ListBox("Meshes", &iSelectAnimation, ppAnimationTag, (_int)m_iNumMeshes);
+
+	if (iSelectAnimation != -1)
+	{
+		static _bool	bReName = false;
+		static char	szNewName[MAX_PATH] = "";
+		mesh = m_vecMeshes[iSelectAnimation];
+
+		if (ImGui::Button("Delete"))
+		{
+			for (_uint i = 0; i < m_iNumMeshes; ++i)
+				Safe_Delete_Array(ppAnimationTag[i]);
+			Safe_Delete_Array(ppAnimationTag);
+
+			auto	iter = m_vecMeshes.begin();
+			for (_int i = 0; i < iSelectAnimation; ++i)
+				++iter;
+
+			Safe_Release(m_vecMeshes[iSelectAnimation]);
+			m_vecMeshes.erase(iter);
+
+			m_iNumMeshes--;
+			iSelectAnimation = -1;
+
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+		{
+			iSelectAnimation = -1;
+			bReName = false;
+		}
+		if (ImGui::Button("Save"))
+		{
+			string		strFilePath;
+			strFilePath.assign(m_wstrFilePath.begin(), m_wstrFilePath.end());
+			Save_Model(strFilePath.c_str());
+		}
+
+		if (bReName)
+		{
+			IMGUI_LEFT_LABEL(ImGui::InputText, "Input New Name", szNewName, MAX_PATH);
+			if (ImGui::Button("Confirm"))
+			{
+				mesh->Get_MeshName() = szNewName;
+				sprintf_s(szNewName, "");
+				bReName = false;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("UnDo"))
+			{
+				sprintf_s(szNewName, "");
+				bReName = false;
+			}
+		}
+
+		// ImGui::Separator();
+		// ImGui::Text("Loop");
+		// if (ImGui::RadioButton("Allow", m_vecAnimations[iSelectAnimation]->Get_AnimationLoop()))
+		// 	m_vecAnimations[iSelectAnimation]->Get_AnimationLoop() = !m_vecAnimations[iSelectAnimation]->Get_AnimationLoop();
+		// ImGui::SameLine();
+		// if (ImGui::RadioButton("Disallow", !m_vecAnimations[iSelectAnimation]->Get_AnimationLoop()))
+		// 	m_vecAnimations[iSelectAnimation]->Get_AnimationLoop() = !m_vecAnimations[iSelectAnimation]->Get_AnimationLoop();
+		//
+		// ImGui::Text("Animation Speed");
+		// _double&	dTickPerSecond = m_vecAnimations[iSelectAnimation]->Get_AnimationTickPerSecond();
+		// IMGUI_LEFT_LABEL(ImGui::InputDouble, "Input", &dTickPerSecond, 0.5, 1.0);
+		// ImGui::SameLine();
+		// if (ImGui::Button("Reset"))
+		// 	dTickPerSecond = 25.0;
+	}
+
+	for (_uint i = 0; i < m_iNumMeshes; ++i)
+		Safe_Delete_Array(ppAnimationTag[i]);
+	Safe_Delete_Array(ppAnimationTag);
+}
+
 void CModel::Play_Animation(_double TimeDelta, LERPTYPE eType)
 {
 	if (MODEL_NONANIM == m_eType)

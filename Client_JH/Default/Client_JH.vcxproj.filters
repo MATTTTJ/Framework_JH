@@ -363,7 +363,9 @@
     <ClInclude Include="..\public\BulletEffect.h">
       <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Effect.h" />
+    <ClInclude Include="..\public\Effect.h">
+      <Filter>80. Manager\Parent\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -516,7 +518,9 @@
     <ClCompile Include="..\private\BulletEffect.cpp">
       <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Effect.cpp" />
+    <ClCompile Include="..\private\Effect.cpp">
+      <Filter>80. Manager\Parent\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

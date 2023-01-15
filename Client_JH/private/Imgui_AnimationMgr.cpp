@@ -52,6 +52,8 @@ void CImgui_AnimationMgr::Imgui_RenderWindow()
 		{
 			ImGui::Separator();
 			pDefaultPistol->Imgui_RenderAnimation();
+			ImGui::Separator();
+			pDefaultPistol->Imgui_RenderMeshes();
 		}
 	}
 

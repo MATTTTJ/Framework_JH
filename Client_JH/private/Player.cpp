@@ -11,8 +11,11 @@ CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	, m_fGravity(0.02f)
 	, m_fInitJumpSpeed(1.5f)
 	, m_fCurJumpSpeed(0.f)
-	, m_fMaxDashTickCount(1.f)
-	, m_fCurDashTickCount(0.f)
+	, m_fDashCoolTime(3.f)
+	, m_fCurDashCoolTime(0.f)
+	, m_fDashTime(0.17f)
+	, m_fCurDashTime(0.f)
+	, m_bCanDash(true)
 {
 	
 }
@@ -22,14 +25,16 @@ CPlayer::CPlayer(const CPlayer & rhs)
 	, m_fGravity(rhs.m_fGravity)
 	, m_fInitJumpSpeed(rhs.m_fInitJumpSpeed)
 	, m_fCurJumpSpeed(rhs.m_fCurJumpSpeed)
-	, m_fMaxDashTickCount(rhs.m_fMaxDashTickCount)
-	, m_fCurDashTickCount(rhs.m_fCurDashTickCount)
+	, m_fDashCoolTime(rhs.m_fDashCoolTime)
+	, m_fCurDashCoolTime(rhs.m_fCurDashCoolTime)  
+	, m_fDashTime(rhs.m_fDashTime)
+	, m_fCurDashTime(rhs.m_fCurDashTime)
+	, m_bCanDash(rhs.m_bCanDash)
 {
 	m_tWeaponDesc[WEAPON_DEFAULT].m_wstrWeaponName = L"WEAPON_DEFAULT";
 	m_tWeaponDesc[WEAPON_FLAMEBULLET].m_wstrWeaponName = L"WEAPON_FLAMEBULLET";
 	m_tWeaponDesc[WEAPON_FIREDRAGON].m_wstrWeaponName = L"WEAPON_FIREDRAGON";
 	m_tWeaponDesc[WEAPON_POISON].m_wstrWeaponName = L"WEAPON_POISON";
-
 
 	m_PlayerOption.m_iMaxHp = 100;
 	m_PlayerOption.m_iHp = m_PlayerOption.m_iMaxHp;
@@ -43,6 +48,7 @@ CPlayer::CPlayer(const CPlayer & rhs)
 	m_PlayerOption.m_iThrowCnt = 4;
 }
 
+#pragma region Utils
  _uint CPlayer::Get_RifleBulletCnt()
 {
 	 if (m_PlayerOption.m_iRifle_BulletCnt <= 0)
@@ -108,11 +114,6 @@ _matrix CPlayer::Get_CombindMatrix(const string& strBoneName)
 	return m_pModelCom->Get_CombindMatrix(strBoneName);
 }
 
-// const _uint& CPlayer::Get_CurweaponBulletCnt()
-// {
-// 	if(m_PlayerOption.m_wstrCurWeaponName)
-// }
-
 CModel* CPlayer::Get_CurWeaponModelCom()
 {
 	for(_uint i = 0; i < WEAPON_END; ++i)
@@ -135,7 +136,7 @@ _float4x4 CPlayer::Get_HeadModelCom()
 
 	return m_tWeaponDesc[WEAPON_DEFAULT].m_pWeaponModelCom->Get_BoneMatrix("Bip001 Head");
 }
-
+#pragma endregion 
 
 HRESULT CPlayer::Initialize_Prototype()
 {
@@ -185,6 +186,28 @@ void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
+	{
+		
+		m_fCurDashCoolTime += (_float)dTimeDelta;
+
+		if(m_bNowIsDash == true)
+		{
+			m_fCurDashTime += (_float)dTimeDelta;
+		}
+	}
+
+	if(m_fCurDashCoolTime >= m_fDashCoolTime)
+	{
+		m_fCurDashCoolTime = 0.f;
+		m_bCanDash = true;
+	}
+	if(m_fCurDashTime >= m_fDashTime && m_bNowIsDash == true)
+	{
+		m_fCurDashTime = 0.f;
+		m_bNowIsDash = false;
+	}
+
+
 	if (_int TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * TurnX * 0.1f);
@@ -217,6 +240,11 @@ void CPlayer::Tick(_double dTimeDelta)
 	{
 		m_pTransformCom->Go_Right(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
 	}
+	if (CGameInstance::GetInstance()->Key_Down(DIK_LSHIFT) && m_bCanDash && m_bNowIsDash == false)
+	{
+		m_bNowIsDash = true;
+		m_bCanDash = false;
+	}
 	if (CGameInstance::GetInstance()->Key_Down(DIK_F6))
 	{
 		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
@@ -238,6 +266,11 @@ void CPlayer::Tick(_double dTimeDelta)
 		RELEASE_INSTANCE(CGameInstance);
 	}
 	Set_On_NaviMesh();
+
+	if(m_bNowIsDash)
+	{
+		m_pTransformCom->Dash(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
+	}
 
 	if(m_pState != nullptr)
 		m_pState->Tick(dTimeDelta);

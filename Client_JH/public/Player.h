@@ -56,6 +56,7 @@ private:
 	friend CWeapon_State;
 
 public:
+	_bool					Get_CanDash() { return m_bCanDash; }
 	CTransform*				Get_Transform() { return m_pTransformCom; }
 	void					Set_On_NaviMesh();
 	CCollider*				Get_OBBPtr() { return m_pColliderCom[COLLIDER_OBB]; }
@@ -91,6 +92,9 @@ public:
 	virtual void			Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 
+public :
+	void					Is_Dash(); 
+
 private:
 	CShader*				m_pShaderCom	= nullptr;
 	CRenderer*				m_pRendererCom	= nullptr;
@@ -123,10 +127,14 @@ private: // State
 	_float					m_fInitJumpSpeed;
 	_float					m_fCurJumpSpeed;
 
-	_bool					m_bDash = false;
-	_float					m_fMaxDashTickCount;
-	_float					m_fCurDashTickCount;
+	_bool					m_bNowIsDash = false;
+	_float					m_fDashTime = 1.f;
+	_float					m_fCurDashTime = 0.f;
 
+	// ´ë½¬ ÄðÅ¸ÀÓ
+	_float					m_fDashCoolTime = 3.f;
+	_float					m_fCurDashCoolTime = 0.f;
+	_bool					m_bCanDash = false;
 	PLAYEROPTION			m_PlayerOption;
 	vector<CGameObject*>	m_vecPlayerUI;
 

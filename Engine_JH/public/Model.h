@@ -43,6 +43,7 @@ public:
 	virtual HRESULT				Initialize_Clone(class CGameObject* pOwner, void* pArg);
 	virtual void				Imgui_RenderProperty() override;
 	void						Imgui_RenderAnimation();
+	void						Imgui_RenderMeshes();
 public:
 	void						Play_Animation(_double TimeDelta, LERPTYPE eType = LERP_BEGIN);
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);

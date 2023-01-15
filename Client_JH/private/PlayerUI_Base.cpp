@@ -810,7 +810,10 @@ HRESULT CPlayer_UI_Dash::SetUp_ShaderResources()
 	m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix");
 	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
 	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
-	m_pOnTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
+	if(dynamic_cast<CPlayer*>(m_pOwner)->Get_CanDash() == true)
+		m_pOnTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
+	else
+		m_pOffTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
 
 	return S_OK;
 }

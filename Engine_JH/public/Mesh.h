@@ -16,7 +16,7 @@ public:
 	HRESULT					Save_MeshBones(HANDLE& hFile, DWORD& dwByte);
 	HRESULT					Load_Mesh(HANDLE& hFile, DWORD& dwByte);
 	const _uint&			Get_MaterialIndex() const {return m_iMaterialIndex;}
-	const string&			Get_MeshName() const { return m_strName; }
+	string&					Get_MeshName() { return m_strName; }
 	void					Check_MeshSize(_float& Xmin, _float& Xmax, _float& Ymin, _float& Ymax, _float& Zmin, _float& Zmax);
 
 

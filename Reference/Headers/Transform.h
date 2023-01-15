@@ -82,7 +82,7 @@ public:
 	void Chase_Melee(_fvector vTargetPos, _double TimeDelta, _float fLimit = 0.1f);
 
 	void				Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpeed);
-	void				Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir);
+	void				Dash(_double dTimeDelta, TRANSTYPE eType = TRANSTYPE_END, CNavigation* pNaviCom = nullptr);
 
 	void Speed_Up(_bool bKeyState);
 public:

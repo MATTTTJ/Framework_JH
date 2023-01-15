@@ -87,24 +87,24 @@ PS_OUT PS_MAIN(PS_IN In)
 	// 	discard;
 
 
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-	float Lx = 0;
-	float Ly = 0;
-
-	for (int y = -1; y <= 1; ++y)
-	{
-		for (int x = -1; x <= 1; ++x)
-		{
-			float2 offset = float2(x, y) * float2(1 / 1280.f, 1 / 720.f);
-			float3 tex = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + offset).rgb;
-			float luminance = dot(tex, float3(0.3, 0.59, 0.11));
-
-			Lx += luminance * Kx[y + 1][x + 1];
-			Ly += luminance * Ky[y + 1][x + 1];
-		}
-	}
-	float L = sqrt((Lx*Lx) + (Ly*Ly));
+	// Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	//
+	// float Lx = 0;
+	// float Ly = 0;
+	//
+	// for (int y = -1; y <= 1; ++y)
+	// {
+	// 	for (int x = -1; x <= 1; ++x)
+	// 	{
+	// 		float2 offset = float2(x, y) * float2(1 / 1280.f, 1 / 720.f);
+	// 		float3 tex = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + offset).rgb;
+	// 		float luminance = dot(tex, float3(0.3, 0.59, 0.11));
+	//
+	// 		Lx += luminance * Kx[y + 1][x + 1];
+	// 		Ly += luminance * Ky[y + 1][x + 1];
+	// 	}
+	// }
+	// float L = sqrt((Lx*Lx) + (Ly*Ly));
 
 	// if (L < 0.1)
 	// {
