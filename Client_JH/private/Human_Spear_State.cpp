@@ -379,7 +379,7 @@ void CHuman_Spear_State::Tick_Idle(_double dTimeDelta)
 
 void CHuman_Spear_State::Tick_Run(_double dTimeDelta)
 {
-	m_pTransformCom->LookAt_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
+	m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
 }
 
 void CHuman_Spear_State::Tick_JustStand(_double dTimeDelta)
@@ -422,6 +422,7 @@ void CHuman_Spear_State::Tick_Attack_A(_double dTimeDelta)
 		if (m_pModelCom->Get_AnimationProgress() > 0.5f &&m_pModelCom->Get_AnimationProgress() < 0.68f)
 		{
 			m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_MONSTER, m_pNavigationCom);
+			m_bAttackOnce = true;
 		}
 	}
 }
@@ -500,6 +501,7 @@ void CHuman_Spear_State::End_UpSpawn(_double dTimeDelta)
 void CHuman_Spear_State::End_Attack_A(_double dTimeDelta)
 {
 	m_bCanAttack = false;
+	m_bAttackOnce = false;
 }
 
 void CHuman_Spear_State::End_Hide(_double dTimeDelta)

@@ -77,7 +77,8 @@ public:
 	void Rotation(_fvector vAxis, _float fRadian); /* Static */
 	void RotateToTarget(const _vector& vTargetPos);
 	void LookAt(_fvector vTargetPos);
-	void LookAt_Monster(_fvector vTargetPos, _double TimeDelta, _float fLimitRange, class CNavigation* pNaviCom = nullptr);
+	void LookAt_Move_Monster(_fvector vTargetPos, _double TimeDelta, _float fLimitRange, class CNavigation* pNaviCom = nullptr);
+	void LookAt_Monster(_fvector vTargetPos, _double TimeDelta);
 	void Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit = 0.1f);
 	void Chase_Melee(_fvector vTargetPos, _double TimeDelta, _float fLimit = 0.1f);
 

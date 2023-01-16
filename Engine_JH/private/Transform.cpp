@@ -356,7 +356,7 @@ void CTransform::LookAt(_fvector vTargetPos)
 	Set_State(CTransform::STATE_LOOK, vLook);
 }
 
-void CTransform::LookAt_Monster(_fvector vTargetPos, _double TimeDelta, _float fLimitRange, CNavigation* pNaviCom)
+void CTransform::LookAt_Move_Monster(_fvector vTargetPos, _double TimeDelta, _float fLimitRange, CNavigation* pNaviCom)
 {
 	_float4		vPosition = Get_State(CTransform::STATE_TRANSLATION);
 	vPosition = XMVectorSet(vPosition.x, 0, vPosition.z, vPosition.w);
@@ -408,6 +408,26 @@ void CTransform::LookAt_Monster(_fvector vTargetPos, _double TimeDelta, _float f
 			}
 		}
 	}
+}
+
+void CTransform::LookAt_Monster(_fvector vTargetPos, _double TimeDelta)
+{
+	_float4		vPosition = Get_State(CTransform::STATE_TRANSLATION);
+	vPosition = XMVectorSet(vPosition.x, 0, vPosition.z, vPosition.w);
+
+	_float3		vScale = Get_Scaled();
+
+	_float4		TargetPos = vTargetPos;
+	TargetPos = XMVectorSet(TargetPos.x, 0.f, TargetPos.z, TargetPos.w);
+
+	_float4		vLook = XMVector3Normalize(XMLoadFloat4(&TargetPos) - Get_State(CTransform::STATE_TRANSLATION)) * vScale.z;
+	_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
+	_vector		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
+
+	Set_State(CTransform::STATE_RIGHT, vRight);
+	Set_State(CTransform::STATE_UP, vUp);
+	Set_State(CTransform::STATE_LOOK, vLook);
+
 }
 
 void CTransform::Chase(_fvector vTargetPos, _double TimeDelta, _float fLimit)

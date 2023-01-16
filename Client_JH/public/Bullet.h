@@ -9,6 +9,7 @@ class CTexture;
 class CVIBuffer_Rect;
 class CCollider;
 class CVIBuffer_Point_Instancing;
+class CModel;
 END
 
 BEGIN(Client)
@@ -16,20 +17,24 @@ class CBullet abstract:	public CGameObject
 {
 
 
+protected:
+	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_MUZZLE, COLLIDERTYPE_END };
+
 public:
+	enum BULLETOWNERTYPE { OWNER_PLAYER, OWNER_MONSTER, OWNER_END };
 
 	typedef	struct tagBulletOption
 	{
 		enum ELEMENTS { TYPE_NONE, TYPE_FIRE, TYPE_POISON, TYPE_THUNDER, TYPE_END };
 
 		CGameObject::GAMEOBJECTDESC BulletDesc;
-
 		ELEMENTS m_eType = TYPE_END;
+
+		CGameObject*	m_pOwner = nullptr;
+		BULLETOWNERTYPE m_eOwner = OWNER_END;
 	}BULLETOPTION;
 
-protected:
-	enum BULLETOWNERTYPE { OWNER_PLAYER, OWNER_MONSTER, OWNER_END };
-	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_MUZZLE, COLLIDERTYPE_END };
+
 
 protected:
 	CBullet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -49,7 +54,7 @@ public:
 	virtual _bool				Collision_Body();
 	virtual _bool				Collision_Head();
 	virtual _bool				Collision_HideCollider();
-
+	virtual _bool				Collision_Player();
 private:
 	HRESULT						SetUp_Components();
 	HRESULT						SetUp_ShaderResources();
@@ -64,10 +69,10 @@ protected:
 	CGameObject*				m_pOwner = nullptr;
 	CCollider*					m_pBulletColliderCom = nullptr;
 	CVIBuffer_Point_Instancing*	m_pPointBuffer = nullptr;
-
+	CModel*						m_pModelCom = nullptr;
 protected:
 	BULLETOPTION				m_tBulletOption;
-
+	
 
 	_float						m_fTrailCount;
 	_bool						m_bTrailConvertOnce = false;

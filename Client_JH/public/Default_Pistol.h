@@ -2,10 +2,7 @@
 #include "Client_Defines.h"
 #include "Bullet.h"
 
-BEGIN(Engine)
-class CVIBuffer_Point_Instancing;
 
-END
 BEGIN(Client)
 class CDefault_Pistol final : public CBullet
 {

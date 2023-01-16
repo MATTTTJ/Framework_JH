@@ -59,6 +59,7 @@ struct PS_IN
 
 struct PS_OUT
 {
+
 	float4		vColor : SV_TARGET0;
 };
 
@@ -87,10 +88,13 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 	/* 0 ~ 1 => -1 ~ 1 */
 	vector		vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 
-	Out.vShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)));
+	Out.vShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal))) + vector(0.3f,0.3f,0.3f,0.3f);
+
 	Out.vShade.a = 1.f;
 
 	return Out;
+
+
 }
 
 

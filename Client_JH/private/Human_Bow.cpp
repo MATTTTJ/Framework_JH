@@ -46,16 +46,20 @@ HRESULT CHuman_Bow::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg
 
 	if (m_tMonsterOption.m_bFirstSpawnType[STATE_ALREADYSPAWN] == true)
 	{
-		// m_pModelCom->Set_CurAnimIndex(CHuman_Bow_State::SPEAR_JUSTSTAND);
+		m_pModelCom->Set_CurAnimIndex(CHuman_Bow_State::BOW_JUSTSTAND);
 	}
-	else if (m_tMonsterOption.m_bFirstSpawnType[STATE_NODETECTED] == true)
+	else if(m_tMonsterOption.m_bFirstSpawnType[STATE_NODETECTED] == true)
 	{
-		// m_pModelCom->Set_CurAnimIndex(CHuman_Bow_State::SPEAR_NODETECTED);
+		m_pModelCom->Set_CurAnimIndex(CHuman_Bow_State::BOW_RUN_PATROL);
 	}
-	else if (m_tMonsterOption.m_bFirstSpawnType[STATE_UPSPAWN] == true)
-	{
-		// m_pModelCom->Set_CurAnimIndex(CHuman_Bow_State::SPEAR_UPSPAWN);
-	}
+	// else if (m_tMonsterOption.m_bFirstSpawnType[STATE_NODETECTED] == true)
+	// {
+	// 	// m_pModelCom->Set_CurAnimIndex(CHuman_Bow_State::SPEAR_NODETECTED);
+	// }
+	// else if (m_tMonsterOption.m_bFirstSpawnType[STATE_UPSPAWN] == true)
+	// {
+	// 	// m_pModelCom->Set_CurAnimIndex(CHuman_Bow_State::SPEAR_UPSPAWN);
+	// }
 
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.f, 0.f, 10.f, 1.f));
 
@@ -191,7 +195,7 @@ void CHuman_Bow::Collider_Tick(_double TimeDelta)
 	m_pColliderCom[COLLTYPE_DETECTED]->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pColliderCom[COLLTYPE_HITBODY]->Update(Get_BoneMatrix("Bip001 Spine") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pColliderCom[COLLTYPE_HITHEAD]->Update(Get_BoneMatrix("Bip001 Head") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
-	m_pColliderCom[COLLTYPE_ATTPOS]->Update(Get_BoneMatrix("Bip001 Prop1") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pColliderCom[COLLTYPE_ATTPOS]->Update(Get_BoneMatrix("Gun_01") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pColliderCom[COLLTYPE_ATTRANGE]->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pColliderCom[COLLTYPE_ONAIM]->Update(m_pTransformCom->Get_WorldMatrix());
 }
@@ -221,24 +225,47 @@ void CHuman_Bow::Collision_Body(CBullet* pBullet)
 	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 		Set_Dead(true);
 
-	// m_pHuman_Bow_State->Reset_Damaged();
-	// m_pHuman_Bow_State->Set_DamagedState(CHuman_Bow_State::HIT);
-	// m_pHuman_Bow_State->Set_DamagedState(CHuman_Bow_State::HITHEAD);
+	m_pHuman_Bow_State->Reset_Damaged();
+	m_pHuman_Bow_State->Set_DamagedState(CHuman_Bow_State::HIT);
+	m_pHuman_Bow_State->Set_DamagedState(CHuman_Bow_State::HITHEAD);
 }
 
 void CHuman_Bow::Collision_Head(CBullet* pBullet)
 {
-	CMonster::Collision_Head(pBullet);
+	CBullet::BULLETOPTION BulletDesc;
+	BulletDesc = pBullet->Get_BulletOption();
+
+	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
+		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage * 2;
+	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+		Set_Dead(true);
+
+	m_pHuman_Bow_State->Reset_Damaged();
+	m_pHuman_Bow_State->Set_DamagedState(CHuman_Bow_State::HIT);
+	m_pHuman_Bow_State->Set_DamagedState(CHuman_Bow_State::HITHEAD);
 }
 
 void CHuman_Bow::Collision_Hide(CBullet* pBullet)
 {
-	CMonster::Collision_Hide(pBullet);
+	m_bHideCollision = true;
 }
 
 void CHuman_Bow::Collision_PlayerEyes()
 {
-	CMonster::Collision_PlayerEyes();
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_EyesOBB");
+	NULL_CHECK(pCollider);
+	if (m_pColliderCom[COLLTYPE_ONAIM]->Collision(pCollider))
+	{
+		m_bIsOnPlayerEyes = true;
+		m_bCanUIRender = true;
+	}
+	else
+	{
+		m_bIsOnPlayerEyes = false;
+		m_bCanUIRender = false;
+	};
 }
 
 HRESULT CHuman_Bow::SetUp_Components()
@@ -246,7 +273,7 @@ HRESULT CHuman_Bow::SetUp_Components()
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_State", L"Com_State", (CComponent**)&m_pState, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxAnimModel", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Spear", L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Bow", L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
 	// FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Sword_NormalTex", L"Com_NormalTextrueCom", (CComponent**)&m_pTextureCom[TEXTURE_NORMAL], this), E_FAIL);
 
 
@@ -261,7 +288,7 @@ HRESULT CHuman_Bow::SetUp_Components()
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_DetectedSphere", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(0.7f, 0.1f, 0.1f);
+	ColliderDesc.vSize = _float3(1.f, 0.1f, 0.1f);
 	ColliderDesc.vPosition = _float3(0.25f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_HitBodySphere", (CComponent**)&m_pColliderCom[COLLTYPE_HITBODY], this, &ColliderDesc), E_FAIL);
 
@@ -272,7 +299,7 @@ HRESULT CHuman_Bow::SetUp_Components()
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(0.f, 0.f, 0.3f);
-	ColliderDesc.vPosition = _float3(0.f, 0.f, -1.2f);
+	ColliderDesc.vPosition = _float3(1.2f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_AttackPosSphere", (CComponent**)&m_pColliderCom[COLLTYPE_ATTPOS], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
@@ -327,7 +354,7 @@ CHuman_Bow* CHuman_Bow::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Create : CHuman_Spear");
+		MSG_BOX("Failed to Create : CHuman_Bow");
 		Safe_Release(pInstance);
 	}
 
@@ -340,7 +367,7 @@ CGameObject* CHuman_Bow::Clone(const wstring& wstrPrototypeTag, void* pArg)
 
 	if (FAILED(pInstance->Initialize_Clone(wstrPrototypeTag, pArg)))
 	{
-		MSG_BOX("Failed to Clone : CHuman_Spear");
+		MSG_BOX("Failed to Clone : CHuman_Bow");
 		Safe_Release(pInstance);
 	}
 

@@ -401,7 +401,7 @@ void CHuman_Sword_State::Tick_Idle(_double dTimeDelta)
 
 void CHuman_Sword_State::Tick_Run(_double dTimeDelta)
 {
-	m_pTransformCom->LookAt_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
+	m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
 }
 
 void CHuman_Sword_State::Tick_JustStand(_double dTimeDelta)
@@ -506,7 +506,9 @@ void CHuman_Sword_State::End_GroundSpawn(_double dTimeDelta)
 
 void CHuman_Sword_State::End_Attack_A(_double dTimeDelta)
 {
-	m_bCanAttack = false; 
+	m_bCanAttack = false;
+	m_bAttackOnce = false;
+
 }
 
 void CHuman_Sword_State::End_Hide(_double dTimeDelta)

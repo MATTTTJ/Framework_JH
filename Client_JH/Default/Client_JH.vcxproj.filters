@@ -199,6 +199,12 @@
     <Filter Include="80. Manager\Parent\Effect">
       <UniqueIdentifier>{3e307ee0-a1bf-4fba-8e8a-b9501c575777}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Bullet\Player">
+      <UniqueIdentifier>{83dc4d83-c468-4935-aa09-226cfb1358ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Bullet\Monster">
+      <UniqueIdentifier>{c2afb720-e2a8-4cfa-9911-f8184c42d10d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -309,9 +315,6 @@
     <ClInclude Include="..\public\Bullet.h">
       <Filter>80. Manager\Parent\Bullet</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Default_Pistol.h">
-      <Filter>02. GameObjects\01. GamePlay\Bullet</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Monster.h">
       <Filter>80. Manager\Parent\Monster</Filter>
     </ClInclude>
@@ -363,8 +366,14 @@
     <ClInclude Include="..\public\BulletEffect.h">
       <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Default_Pistol.h">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Player</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Effect.h">
       <Filter>80. Manager\Parent\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Arrow.h">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -464,9 +473,6 @@
     <ClCompile Include="..\private\Bullet.cpp">
       <Filter>80. Manager\Parent\Bullet</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Default_Pistol.cpp">
-      <Filter>02. GameObjects\01. GamePlay\Bullet</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Monster.cpp">
       <Filter>80. Manager\Parent\Monster</Filter>
     </ClCompile>
@@ -518,8 +524,14 @@
     <ClCompile Include="..\private\BulletEffect.cpp">
       <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Default_Pistol.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Player</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\Effect.cpp">
       <Filter>80. Manager\Parent\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Arrow.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

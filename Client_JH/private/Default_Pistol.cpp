@@ -6,7 +6,7 @@
 #include "Static_Camera.h"
 
 CDefault_Pistol::CDefault_Pistol(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CBullet(pDevice,pContext)
+	:CBullet(pDevice, pContext)
 {
 }
 
@@ -24,17 +24,18 @@ HRESULT CDefault_Pistol::Initialize_Prototype()
 
 HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
-	m_tBulletOption = *(BULLETOPTION*)pArg;
-
-	m_tBulletOption.BulletDesc.TransformDesc.fSpeedPerSec = 70.f;
-	m_tBulletOption.m_eType = CBullet::BULLETOPTION::TYPE_FIRE;
-	m_tBulletOption.BulletDesc.m_iDamage = 30;
-
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
-	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	if (nullptr != pArg)
 	{
+		m_tBulletOption = *(BULLETOPTION*)pArg;
+
+		m_tBulletOption.BulletDesc.TransformDesc.fSpeedPerSec = 70.f;
+		m_tBulletOption.m_eType = CBullet::BULLETOPTION::TYPE_FIRE;
+		m_tBulletOption.BulletDesc.m_iDamage = 30;
+		m_pOwner = m_tBulletOption.m_pOwner;
+		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
+		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
+
 		m_vPSize = _float2{ 1.f, 1.f };
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tBulletOption.BulletDesc.TransformDesc.vInitPos.x, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.y, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.z, 1.f));
 
@@ -47,8 +48,8 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 
 		m_vDir = vDir;
 
-		_float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_CamLook();
-		_float4 fPlayerLook =	dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK);
+		// _float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_CamLook();
+		// _float4 fPlayerLook = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK);
 
 		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMLoadFloat4(&m_tBulletOption.BulletDesc.m_vBulletLook));
 	}
@@ -66,7 +67,7 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 	_vector S, R, P;
 	XMMatrixDecompose(&S, &R, &P, matTransform);
 	_float4 vPosition;
-	 XMStoreFloat4(&vPosition, (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+	XMStoreFloat4(&vPosition, (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
 	XMStoreFloat4(&m_vCamPos, P);
 
 	matTransform = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1202_Bone009") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4());
@@ -106,7 +107,7 @@ void CDefault_Pistol::Tick(_double dTimeDelta)
 void CDefault_Pistol::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
-	
+
 	m_vTest = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_UP);
 
 	// if (Collision_Body())
@@ -119,7 +120,7 @@ void CDefault_Pistol::Late_Tick(_double dTimeDelta)
 	// if (nullptr != m_pBulletColliderCom)
 	// 	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
-	
+
 
 	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
@@ -220,6 +221,6 @@ void CDefault_Pistol::Free()
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pBulletColliderCom);
 	Safe_Release(m_pPointBuffer);
-	
+
 
 }

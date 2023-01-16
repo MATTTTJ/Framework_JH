@@ -603,9 +603,22 @@ void CImgui_ProtoMgr::Component_Editor()
 					return;
 				}
 
-				for (auto& Pair : m_mapProtoComponenets[iLevelIndex])
-					Safe_Release(Pair.second);
-				m_mapProtoComponenets[iLevelIndex].clear();
+				// for (auto& Pair : m_mapProtoComponenets[iLevelIndex])
+				// 	Safe_Release(Pair.second);
+				// m_mapProtoComponenets[iLevelIndex].clear();
+
+				for (auto iter = m_mapProtoComponenets[iLevelIndex].begin(); iter != m_mapProtoComponenets[iLevelIndex].end();)
+				{
+					COMPONENTTYPE eType = CheckComponentType(iter->second);
+					if (eType == COM_COLLIDER || eType == COMPONENTTYPE_END)
+					{
+						iter++;
+						continue;
+					}
+
+					Safe_Release(iter->second);
+					iter = m_mapProtoComponenets[iLevelIndex].erase(iter);
+				}
 
 				for (auto& Com : jLevel["Components"])
 				{

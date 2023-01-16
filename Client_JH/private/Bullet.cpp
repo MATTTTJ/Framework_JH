@@ -26,18 +26,18 @@ HRESULT CBullet::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
 
-	if (nullptr == m_pOwner)
-	{
-		m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front();
-	}
-	else
-	{
-		if (CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->empty())
-		{
-			m_pOwner = nullptr;
-			return E_FAIL;
-		}
-	}
+	// if (nullptr == m_pOwner)
+	// {
+	// 	m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front();
+	// }
+	// else
+	// {
+	// 	if (CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->empty())
+	// 	{
+	// 		m_pOwner = nullptr;
+	// 		return E_FAIL;
+	// 	}
+	// }
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
 
@@ -49,18 +49,18 @@ void CBullet::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	if (nullptr == m_pOwner)
-	{
-		m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front();
-	}
-	else
-	{
-		if(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->empty())
-		{
-			m_pOwner = nullptr;
-			return;
-		}
-	}
+	// if (nullptr == m_pOwner)
+	// {
+	// 	m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front();
+	// }
+	// else
+	// {
+	// 	if(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->empty())
+	// 	{
+	// 		m_pOwner = nullptr;
+	// 		return;
+	// 	}
+	// }
 
 	_float4 tmp = m_vInitPos -= m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 
@@ -78,12 +78,13 @@ void CBullet::Late_Tick(_double dTimeDelta)
 
 
 
-	if (m_bCollOnce == false)
+	if (m_bCollOnce == false && m_tBulletOption.m_eOwner == OWNER_PLAYER)
 	{
 		Collision_Body();
 		Collision_Head();
 		Collision_HideCollider();
 	}
+
 
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
@@ -225,6 +226,22 @@ _bool CBullet::Collision_HideCollider()
 	// 	return false;
 }
 
+_bool CBullet::Collision_Player()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_BODYSPHERE");
+	NULL_CHECK_RETURN(pCollider, false);
+
+	if (m_pBulletColliderCom->Collision(pCollider))
+	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pCollider->Get_Owner());
+		NULL_CHECK_RETURN(pPlayer, false);
+		pPlayer->Collision_Event(dynamic_cast<CMonster*>(m_pOwner));
+		return true;
+	}
+	return false;
+}
+
 HRESULT CBullet::SetUp_Components()
 {
 
@@ -256,13 +273,12 @@ void CBullet::Free()
 {
 	__super::Free();
 
-	
+	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pBulletColliderCom);
 	Safe_Release(m_pPointBuffer);
-	
 
 }

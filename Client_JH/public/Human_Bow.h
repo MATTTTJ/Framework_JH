@@ -53,7 +53,6 @@ private:
 	CNavigation*				m_pNavigationCom = nullptr;
 	class CHuman_Bow_State*		m_pHuman_Bow_State = nullptr;
 
-
 public:
 	static CHuman_Bow*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;

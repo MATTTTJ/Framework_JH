@@ -265,6 +265,7 @@ void CPlayer::Tick(_double dTimeDelta)
 
 		RELEASE_INSTANCE(CGameInstance);
 	}
+
 	Set_On_NaviMesh();
 
 	if(m_bNowIsDash)
