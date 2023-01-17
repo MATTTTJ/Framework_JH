@@ -20,6 +20,8 @@ Knight
 18. KNIGHT_ATTACK_HIDE
 19. KNIGHT_SHIELD_SHIELD
 
+// 2122 // 3381 // 
+
 Bug
 
 1. BUG_STAND
@@ -36,17 +38,17 @@ Bug
 12. BUG_RUSH_LOOP
 13. BUG_RUSH_END
 
-EXPLODE
-1. EXPLODE_EXPLODE
-2. EXPLODE_HIDE_L
-3. EXPLODE_HIDE_R
-4. EXPLODE_PATROL
-5. EXPLODE_RUN
-6. EXPLODE_IN_COMBAT_IDLE
+Little Bug
+// 부모가 소환 || 몬스터 처치 시 벌레로 부활
+1. LITTLE_ATTACK // 근접했을 때 
+2. LITTLE_HITBODY // 바디에 콜라이더 달기
+3. LITTLE_JUMPSTART // 사용안함
+4. LITTLE_LAND // 사용안함
+5. LITTLE_PATROL // 플레이어 감지 못했을 때 (보스맵에 좀 깔아두기)
+6. LITTLE_RUN // 플레이어 감지 시 
+7. LITTLE_STAND // 사용안함 
+8. LITTLE_IN_COMBAT_IDLE // 부모에게 소환됐을 때 
 
-
-
-
-
+부모자리에서 생성하고 각자 밀어내게 한다. 
 
 
