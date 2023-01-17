@@ -50,10 +50,6 @@ public:
 	void						Late_Tick(_double dTimeDelta);
 	void						Reset_Damaged();
 
-
-public:
-
-
 private:
 	HRESULT						SetUp_State_Idle();
 	HRESULT						SetUp_State_Run();

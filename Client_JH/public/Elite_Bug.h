@@ -12,7 +12,7 @@ BEGIN(Client)
 
 class CElite_Bug final  :	public CMonster
 {
-	// friend class CElite_Bug_State;
+	friend class CElite_Bug_State;
 
 public:
 	CElite_Bug(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
