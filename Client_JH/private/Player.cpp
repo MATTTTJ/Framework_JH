@@ -404,7 +404,6 @@ void CPlayer::Collision_Event(CMonster* pMonster)
 
 	CMonster::MONSTEROPTION		MonsterOption;
 	// MonsterOption.
-
 	// TODO :: 몬스터 옵션 지역변수로 저장하고 플레이어에 적용하기 
 }
 

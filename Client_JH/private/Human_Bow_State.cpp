@@ -28,20 +28,11 @@ HRESULT CHuman_Bow_State::Initialize(CHuman_Bow* pOwner, CState* pStateMachineCo
 		FAILED_CHECK_RETURN(SetUp_State_Patrol(), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	}
-	// else if (true == m_bFirstState[CHuman_Bow::STATE_UPSPAWN])
-	// {
-	// 	FAILED_CHECK_RETURN(SetUp_State_UpSpawn(), E_FAIL);
-	// 	FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
-	// } 
 	else if (true == m_bFirstState[CHuman_Bow::STATE_ALREADYSPAWN])
 	{
 		FAILED_CHECK_RETURN(SetUp_State_JustStand(), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	}
-	// FAILED_CHECK_RETURN(SetUp_State_Patrol(), E_FAIL);
-	// FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
-
-
 
 	return S_OK;
 }
@@ -91,11 +82,6 @@ void CHuman_Bow_State::Tick(_double dTimeDelta)
 	{
 		m_fCurPatrolTurnTime = 0.f;
 		m_bTurnPatrolDirection = true;
-		m_iTurnint = -1;
-	}
-	else
-	{
-		m_iTurnint = 1;
 	}
 
 	if(m_pGameInstance->Key_Down(DIK_F7))

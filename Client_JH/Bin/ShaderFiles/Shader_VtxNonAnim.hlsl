@@ -6,7 +6,6 @@ matrix			g_SocketMatrix;
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
 
-
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -22,7 +21,6 @@ struct VS_OUT
 	float2		vTexUV : TEXCOORD0;
 	float4		vTangent : TANGENT;
 };
-
 
 VS_OUT VS_MAIN(VS_IN In)
 {

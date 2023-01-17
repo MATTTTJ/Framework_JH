@@ -54,7 +54,7 @@ public:
 	virtual _bool				Collision_Body();
 	virtual _bool				Collision_Head();
 	virtual _bool				Collision_HideCollider();
-	virtual _bool				Collision_Player();
+	virtual _bool				Collision_To_Player(CCollider* pBulletCollider);
 private:
 	HRESULT						SetUp_Components();
 	HRESULT						SetUp_ShaderResources();
@@ -68,6 +68,7 @@ protected:
 	CVIBuffer_Rect*				m_pVIBufferCom = nullptr;
 	CGameObject*				m_pOwner = nullptr;
 	CCollider*					m_pBulletColliderCom = nullptr;
+	CCollider*					m_pBoomColliderCom = nullptr;
 	CVIBuffer_Point_Instancing*	m_pPointBuffer = nullptr;
 	CModel*						m_pModelCom = nullptr;
 protected:

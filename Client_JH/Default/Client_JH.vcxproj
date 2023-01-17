@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Client_Defines.h" />
+    <ClInclude Include="..\private\Boom.h" />
     <ClInclude Include="..\public\Arrow.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Bullet.h" />
@@ -277,6 +278,7 @@
     <ClCompile Include="..\private\UI.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\Weapon_State.cpp" />
+    <ClCompile Include="..\public\Boom.cpp" />
     <ClCompile Include="Client_JH.cpp" />
     <ClCompile Include="Imgui_Setting.cpp" />
     <ClCompile Include="stdafx.cpp">

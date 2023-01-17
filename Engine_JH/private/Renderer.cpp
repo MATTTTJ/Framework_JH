@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Target_Manager.h"
 #include "Light_Manager.h"
+#include "PipeLine.h"
 #include "VIBuffer_Rect.h"
 #include "Shader.h"
 
@@ -69,8 +70,10 @@ HRESULT CRenderer::Draw_RenderGroup()
 	{
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f), E_FAIL);
+		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f), E_FAIL);
+
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.0f, 100.f, 200.f, 200.f), E_FAIL);
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.0f, 300.f, 200.f, 200.f), E_FAIL);
+		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.0f, 300.f, 200.f, 200.f), E_FAIL);
 
 		m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
 		m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"));
@@ -94,18 +97,18 @@ HRESULT CRenderer::Initialize_Prototype()
 	m_pContext->RSGetViewports(&iNumViewPorts, &ViewportDesc);
 
 	//·»´õÅ¸°Ù »ý¼º //DXGI_FORMAT_B8G8R8A8_UNORM
-	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Diffuse"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Diffuse"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.0f, 0.0f, 0.0f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Normal"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Shade"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Depth"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Specular"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.0f, 0.0f, 0.0f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Shade"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, &_float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Depth"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, &_float4(0.0f, 0.0f, 0.0f, 1.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Specular"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.0f, 0.0f, 0.0f, 0.f)), E_FAIL);
 
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Diffuse")), E_FAIL);  // µðÆÛµå ·»´õ¸µ (ºû)À» ¼öÇàÇÏ±â À§ÇÑ 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Normal")), E_FAIL);   // ÇÊ¿äÇÑ µ¥ÀÌÅÍµéÀ» ÀúÀåÇÑ ·»´õÅ¸°Ùµé
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Depth")), E_FAIL); // ºû ¿¬»êÀÇ °á°ú¸¦ ÀúÀåÇÒ ·»´õ Å¸°Ùµé
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Depth")), E_FAIL); // ºû ¿¬»êÀÇ °á°ú¸¦ ÀúÀåÇÒ ·»´õ Å¸°Ùµé
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade")), E_FAIL); // ºû ¿¬»êÀÇ °á°ú¸¦ ÀúÀåÇÒ ·»´õ Å¸°Ùµé
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specula")), E_FAIL); // ºû ¿¬»êÀÇ °á°ú¸¦ ÀúÀåÇÒ ·»´õ Å¸°Ùµé
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specular")), E_FAIL); // ºû ¿¬»êÀÇ °á°ú¸¦ ÀúÀåÇÒ ·»´õ Å¸°Ùµé
 
 
 
@@ -123,8 +126,11 @@ HRESULT CRenderer::Initialize_Prototype()
 #ifdef _DEBUG
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f), E_FAIL);
+
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.0f, 100.f, 200.f, 200.f), E_FAIL);
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.0f, 300.f, 200.f, 200.f), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.0f, 300.f, 200.f, 200.f), E_FAIL);
+
 #endif
 
 
@@ -187,6 +193,17 @@ HRESULT CRenderer::Render_LightAcc()
 	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_NormalTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Normal"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_DepthTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Depth"))), E_FAIL);
+
+	CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
+
+	if (FAILED(m_pShader->Set_Matrix(L"g_ProjMatrixInv", &pPipeLine->Get_TransformFloat4x4_Inverse(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+	if (FAILED(m_pShader->Set_Matrix(L"g_ViewMatrixInv", &pPipeLine->Get_TransformFloat4x4_Inverse(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShader->Set_RawValue(L"g_vCamPosition", &pPipeLine->Get_CamPosition(), sizeof(_float4))))
+		return E_FAIL;
+	RELEASE_INSTANCE(CPipeLine);
 
 	m_pLight_Manager->Render_Light(m_pVIBuffer, m_pShader);
 
@@ -214,6 +231,7 @@ HRESULT CRenderer::Render_Blend()
 	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_DiffuseTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Diffuse"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_ShadeTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Shade"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_SpecularTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Specular"))), E_FAIL);
 
 	m_pShader->Begin(3);
 	m_pVIBuffer->Render();

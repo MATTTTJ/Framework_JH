@@ -90,7 +90,6 @@ private:					// Pattern CoolTime
 	_float						m_fPatrolTurnTime = 2.5f;
 	_float						m_fCurPatrolTurnTime = 0.f;
 	_bool						m_bTurnPatrolDirection = false; 
-	_int						m_iTurnint = 0;
 	// АјАн
 	_float						m_fCurAttackCoolTime = 0.f;
 	_float						m_fAttackCoolTime = 3.f;

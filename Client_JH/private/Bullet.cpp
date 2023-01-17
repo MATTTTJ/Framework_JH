@@ -25,22 +25,7 @@ HRESULT CBullet::Initialize_Prototype()
 HRESULT CBullet::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
-
-	// if (nullptr == m_pOwner)
-	// {
-	// 	m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front();
-	// }
-	// else
-	// {
-	// 	if (CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->empty())
-	// 	{
-	// 		m_pOwner = nullptr;
-	// 		return E_FAIL;
-	// 	}
-	// }
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
-
-
 
 	return S_OK;
 }
@@ -48,35 +33,11 @@ HRESULT CBullet::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CBullet::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
-
-	// if (nullptr == m_pOwner)
-	// {
-	// 	m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front();
-	// }
-	// else
-	// {
-	// 	if(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->empty())
-	// 	{
-	// 		m_pOwner = nullptr;
-	// 		return;
-	// 	}
-	// }
-
-	_float4 tmp = m_vInitPos -= m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-
-	if(	tmp.x + tmp.y + tmp.z  / 3.f > 500.f)
-	{
-		Set_Dead(true);
-	}
-	
-
 }
 
 void CBullet::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
-
-
 
 	if (m_bCollOnce == false && m_tBulletOption.m_eOwner == OWNER_PLAYER)
 	{
@@ -85,21 +46,18 @@ void CBullet::Late_Tick(_double dTimeDelta)
 		Collision_HideCollider();
 	}
 
-
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
 		m_pRendererCom->Add_DebugRenderGroup(m_pBulletColliderCom);
+		
 	}
-
-
 }
 
 HRESULT CBullet::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
-
 
 	return S_OK;
 }
@@ -108,34 +66,41 @@ _bool CBullet::Collision_Body()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	// 몬스터 리스트를 가져와서 순회해야할것같음
-	m_MonsterList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
-	_int ListSize = 0;
-	ListSize = (_int)m_MonsterList.size();
-
-	if (ListSize != 0)
-	{
-		auto iter = m_MonsterList.begin();
-		for (auto& iter = m_MonsterList.begin(); iter != m_MonsterList.end();)
-		{
-			CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_HitBodySphere");
-
-			if (pCollider == nullptr)
-				++iter;
-			else if (m_pBulletColliderCom->Collision(pCollider))
-			{
-				CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
-				NULL_CHECK_RETURN(pMonster, false);
-
-				pMonster->Set_HitColor();
-				pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
-				m_bCollOnce = true;
-				return true;
-			}
-			else
-				++iter;
-		}
+	NULL_CHECK_RETURN(pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster"),false);
+	if (pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster")->empty())
 		return false;
+	else
+	{
+		m_MonsterList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
+		_int ListSize = 0;
+		ListSize = (_int)m_MonsterList.size();
+
+		if (ListSize != 0)
+		{
+			auto iter = m_MonsterList.begin();
+			for (auto& iter = m_MonsterList.begin(); iter != m_MonsterList.end();)
+			{
+				CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_HitBodySphere");
+
+				if (pCollider == nullptr)
+					++iter;
+				else if (m_pBulletColliderCom->Collision(pCollider))
+				{
+					CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+					NULL_CHECK_RETURN(pMonster, false);
+
+					pMonster->Set_HitColor();
+					pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+					m_bCollOnce = true;
+					return true;
+				}
+				else
+					++iter;
+			}
+			return false;
+		}
 	}
+	
 	return false;
 }
 
@@ -143,7 +108,12 @@ _bool CBullet::Collision_Head()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	// 몬스터 리스트를 가져와서 순회해야할것같음
+	NULL_CHECK_RETURN(pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster"), false);
+
 	m_MonsterList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
+	if (m_MonsterList.empty())
+		return false;
+
 	_int ListSize = 0;
 	ListSize = (_int)m_MonsterList.size();
 
@@ -178,7 +148,12 @@ _bool CBullet::Collision_HideCollider()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	// 몬스터 리스트를 가져와서 순회해야할것같음
+	NULL_CHECK_RETURN(pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster"), false);
+
 	m_MonsterList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
+	if (m_MonsterList.empty())
+		return false;
+
 	_int ListSize = 0;
 	ListSize = (_int)m_MonsterList.size();
 
@@ -206,33 +181,15 @@ _bool CBullet::Collision_HideCollider()
 	}
 	return false;
 
-	//
-	// CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	//
-	// CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Monster", L"Com_AttackRangeSphere");
-	// if (pCollider == nullptr)
-	// 	return false;
-	//
-	// if (m_pBulletColliderCom->Collision(pCollider))
-	// {
-	// 	CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
-	// 	NULL_CHECK_RETURN(pMonster, false);
-	//
-	// 	pMonster->Collision_Hide(this); // 총알이 어디 충돌했는지 판단하니까
-	// 	// m_bCollOnce = true;
-	// 	return true;					// 총알과 몬스터 둘다에 바디와 헤드 만들어서 충돌 이벤트 던지기
-	// }
-	// else
-	// 	return false;
 }
 
-_bool CBullet::Collision_Player()
+_bool CBullet::Collision_To_Player(CCollider* pBulletCollider)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_BODYSPHERE");
 	NULL_CHECK_RETURN(pCollider, false);
 
-	if (m_pBulletColliderCom->Collision(pCollider))
+	if (pBulletCollider->Collision(pCollider))
 	{
 		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pCollider->Get_Owner());
 		NULL_CHECK_RETURN(pPlayer, false);
@@ -279,6 +236,7 @@ void CBullet::Free()
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pBulletColliderCom);
+	Safe_Release(m_pBoomColliderCom);
 	Safe_Release(m_pPointBuffer);
 
 }

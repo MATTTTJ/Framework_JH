@@ -20,14 +20,28 @@ HRESULT CLight::Initialize(const LIGHTDESC& LightDesc)
 
 HRESULT CLight::Render(CVIBuffer_Rect* pVIBuffer, CShader* pShader)
 {
-	FAILED_CHECK_RETURN(pShader->Set_RawValue(L"g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4)), E_FAIL);
+	_uint		iPassIndex = 1;
 
-	pShader->Begin(1);
+	if (LIGHTDESC::LIGHT_DIRECTIONAL == m_LightDesc.eType)
+	{
+		FAILED_CHECK_RETURN(pShader->Set_RawValue(L"g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4)), E_FAIL);
+		iPassIndex = 1;
+	}
+	else if(LIGHTDESC::LIGHT_POINT == m_LightDesc.eType)
+	{
+		FAILED_CHECK_RETURN(pShader->Set_RawValue(L"g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4)), E_FAIL);
+		FAILED_CHECK_RETURN(pShader->Set_RawValue(L"g_fLightRange", &m_LightDesc.fRange, sizeof(_float)), E_FAIL);
+		iPassIndex = 2;
+	}
+	FAILED_CHECK_RETURN(pShader->Set_RawValue(L"g_vLightDiffuse", &m_LightDesc.vDiffuse, sizeof(_float4)), E_FAIL);
+	FAILED_CHECK_RETURN(pShader->Set_RawValue(L"g_vLightAmbient", &m_LightDesc.vAmbient, sizeof(_float4)), E_FAIL);
+	FAILED_CHECK_RETURN(pShader->Set_RawValue(L"g_vLightSpecular", &m_LightDesc.vSpecular, sizeof(_float4)), E_FAIL);
+
+	pShader->Begin(iPassIndex);
 
 	pVIBuffer->Render();
 
 	return S_OK;
-	
 }
 
 CLight* CLight::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc)

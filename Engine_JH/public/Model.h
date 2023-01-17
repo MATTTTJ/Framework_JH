@@ -44,6 +44,7 @@ public:
 	virtual void				Imgui_RenderProperty() override;
 	void						Imgui_RenderAnimation();
 	void						Imgui_RenderMeshes();
+	void						Imgui_RenderTexture();
 public:
 	void						Play_Animation(_double TimeDelta, LERPTYPE eType = LERP_BEGIN);
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);

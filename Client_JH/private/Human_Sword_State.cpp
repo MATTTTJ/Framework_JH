@@ -36,14 +36,6 @@ HRESULT CHuman_Sword_State::Initialize(CHuman_Sword* pOwner, CState* pStateMachi
 		FAILED_CHECK_RETURN(SetUp_State_JustStand(), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	}
-	// FAILED_CHECK_RETURN(SetUp_State_Run(), E_FAIL);
-	// FAILED_CHECK_RETURN(SetUp_State_JustStand(), E_FAIL);
-	// FAILED_CHECK_RETURN(SetUp_State_HitBody(), E_FAIL);
-	// FAILED_CHECK_RETURN(SetUp_State_Detected(), E_FAIL);
-	// FAILED_CHECK_RETURN(SetUp_State_GroundSpawn(), E_FAIL);
-	// FAILED_CHECK_RETURN(SetUp_State_Attack_A(), E_FAIL);
-	// FAILED_CHECK_RETURN(SetUp_State_Hide(), E_FAIL);
-	// FAILED_CHECK_RETURN(SetUp_State_Death(), E_FAIL);
 
 	return S_OK;
 }

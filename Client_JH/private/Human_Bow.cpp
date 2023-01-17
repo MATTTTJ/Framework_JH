@@ -52,16 +52,6 @@ HRESULT CHuman_Bow::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg
 	{
 		m_pModelCom->Set_CurAnimIndex(CHuman_Bow_State::BOW_RUN_PATROL);
 	}
-	// else if (m_tMonsterOption.m_bFirstSpawnType[STATE_NODETECTED] == true)
-	// {
-	// 	// m_pModelCom->Set_CurAnimIndex(CHuman_Bow_State::SPEAR_NODETECTED);
-	// }
-	// else if (m_tMonsterOption.m_bFirstSpawnType[STATE_UPSPAWN] == true)
-	// {
-	// 	// m_pModelCom->Set_CurAnimIndex(CHuman_Bow_State::SPEAR_UPSPAWN);
-	// }
-
-	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.f, 0.f, 10.f, 1.f));
 
 	return S_OK;
 }
@@ -212,7 +202,13 @@ _bool CHuman_Bow::Collider_AttRange(CCollider* pOtherCollider)
 
 void CHuman_Bow::Set_On_NaviMesh()
 {
-	CMonster::Set_On_NaviMesh();
+	_float fCellHeight = m_pNavigationCom->Get_CellHeight();
+
+	_vector vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+
+	vMonsterPos = vMonsterPos + XMVectorSet(0.f, fCellHeight, 0.f, 0.f);
+
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMonsterPos);
 }
 
 void CHuman_Bow::Collision_Body(CBullet* pBullet)
@@ -227,7 +223,7 @@ void CHuman_Bow::Collision_Body(CBullet* pBullet)
 
 	m_pHuman_Bow_State->Reset_Damaged();
 	m_pHuman_Bow_State->Set_DamagedState(CHuman_Bow_State::HIT);
-	m_pHuman_Bow_State->Set_DamagedState(CHuman_Bow_State::HITHEAD);
+	m_pHuman_Bow_State->Set_DamagedState(CHuman_Bow_State::HITBODY);
 }
 
 void CHuman_Bow::Collision_Head(CBullet* pBullet)

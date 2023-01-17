@@ -102,7 +102,6 @@ PS_OUT PS_MAIN_Number(PS_IN In)
 		Out.vColor = g_vNumColor;
 	}
 
-
 	return Out;
 }
 

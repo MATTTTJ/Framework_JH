@@ -375,6 +375,9 @@
     <ClInclude Include="..\public\Arrow.h">
       <Filter>02. GameObjects\01. GamePlay\Bullet\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\private\Boom.h">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -531,6 +534,9 @@
       <Filter>80. Manager\Parent\Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Arrow.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Boom.cpp">
       <Filter>02. GameObjects\01. GamePlay\Bullet\Monster</Filter>
     </ClCompile>
   </ItemGroup>
