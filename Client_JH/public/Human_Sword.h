@@ -38,15 +38,10 @@ public:
 
 public:
 	 _bool						Collision_Detected(CCollider* pOtherCollider) ;
-	 // _bool						Collider_HitHead(CCollider* pOtherCollider) ;
-	 // _bool						Collider_HitBody(CCollider* pOtherCollider) ;
 	 _bool						Collider_AttRange(CCollider* pOtherCollider) ;
 
-	// _bool						Collision_Bullet_Body(vector<CGameObject*>* pGameObject);
-	// _bool						Collision_Bullet_Head(vector<CGameObject*>* pGameObject);
-
+public:
 	virtual void				Set_On_NaviMesh() override;
-
 	virtual void				Collision_Body(CBullet* pBullet) override;
 	virtual void				Collision_Head(CBullet* pBullet) override;
 	virtual void				Collision_Hide(CBullet* pBullet) override;

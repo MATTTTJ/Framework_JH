@@ -73,7 +73,8 @@ public:
 	virtual void			Collision_Head(class CBullet* pBullet) {} // 구현해도되고 안해도되고 
 	virtual void			Collision_Hide(class CBullet* pBullet) {} // 구현해도되고 안해도되고 
 	virtual void			Collision_PlayerEyes() {} // 구현해도되고 안해도되고 
-
+	virtual void			Collision_Shield(class CBullet* pBullet) {}
+	virtual void			Collision_Armor(class CBullet* pBullet) {}
 
 protected:
 	CModel*					m_pModelCom = nullptr;

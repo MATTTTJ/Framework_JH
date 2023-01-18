@@ -15,6 +15,7 @@
 #include "Human_Spear.h"
 #include "Human_Sword.h"
 #include "Elite_Bug.h"
+#include "Elite_Knight.h"
 #include "LaiLuo_Home.h"
 #include "Little_Bug.h"
 #include "Monster.h"
@@ -319,6 +320,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Explode", CHuman_Explode::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Elite_Bug", CElite_Bug::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Little_Bug", CLittle_Bug::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Elite_Knight", CElite_Knight::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	// Bullet
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_Default_PistolTex", CDefault_Pistol::Create(m_pDevice, m_pContext)), E_FAIL);

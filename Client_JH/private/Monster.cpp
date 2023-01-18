@@ -45,9 +45,6 @@ _matrix CMonster::Get_CombindMatrix(const string& strBoneName)
 
 HRESULT CMonster::Ready_UI()
 {
-
-
-	
 	return S_OK;
 }
 

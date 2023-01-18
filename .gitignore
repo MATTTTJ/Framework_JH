@@ -269,6 +269,7 @@ Client_JH/Bin/*
 !Client_JH/Bin/ShaderFiles
 !Client_JH/Bin/Resources
 !Client_JH/Bin/Save Data
+!Engine_JH/Bin/ShaderFiles
 Client_JH/Bin/Resources/DonotCommit(home)
 Engine_JH/Default/Debug
 Engine_JH/Default/Debug

@@ -54,6 +54,10 @@ public:
 	virtual _bool				Collision_Body();
 	virtual _bool				Collision_Head();
 	virtual _bool				Collision_HideCollider();
+	virtual _bool				Collision_Shield();
+	virtual _bool				Collision_LArm();
+	virtual _bool				Collision_RArm();
+
 	virtual _bool				Collision_To_Player(CCollider* pBulletCollider);
 private:
 	HRESULT						SetUp_Components();

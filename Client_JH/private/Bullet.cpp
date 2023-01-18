@@ -44,6 +44,9 @@ void CBullet::Late_Tick(_double dTimeDelta)
 		Collision_Body();
 		Collision_Head();
 		Collision_HideCollider();
+		Collision_Shield();
+		Collision_LArm();
+		Collision_RArm();
 	}
 
 	if (nullptr != m_pRendererCom &&
@@ -80,10 +83,14 @@ _bool CBullet::Collision_Body()
 			auto iter = m_MonsterList.begin();
 			for (auto& iter = m_MonsterList.begin(); iter != m_MonsterList.end();)
 			{
+				if (iter == m_MonsterList.end())
+					return false;
+
 				CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_HitBodySphere");
 
 				if (pCollider == nullptr)
 					++iter;
+
 				else if (m_pBulletColliderCom->Collision(pCollider))
 				{
 					CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
@@ -91,6 +98,8 @@ _bool CBullet::Collision_Body()
 
 					pMonster->Set_HitColor();
 					pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+					Set_Dead(true);
+
 					m_bCollOnce = true;
 					return true;
 				}
@@ -122,8 +131,12 @@ _bool CBullet::Collision_Head()
 		auto iter = m_MonsterList.begin();
 		for (auto& iter = m_MonsterList.begin(); iter != m_MonsterList.end();)
 		{
+			if (iter == m_MonsterList.end())
+				return false;
+
 			CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_HitHeadSphere");
 
+			
 			if (pCollider == nullptr)
 				++iter;
 			else if (m_pBulletColliderCom->Collision(pCollider))
@@ -132,7 +145,9 @@ _bool CBullet::Collision_Head()
 				NULL_CHECK_RETURN(pMonster, false);
 
 				pMonster->Set_HitColor();
-				pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+				pMonster->Collision_Head(this); // 총알이 어디 충돌했는지 판단하니까
+				Set_Dead(true);
+
 				m_bCollOnce = true;
 				return true;
 			}
@@ -162,6 +177,9 @@ _bool CBullet::Collision_HideCollider()
 		auto iter = m_MonsterList.begin();
 		for (auto& iter = m_MonsterList.begin(); iter != m_MonsterList.end();)
 		{
+			if (iter == m_MonsterList.end())
+				return false;
+
 			CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_AttackRangeSphere");
 
 			if (pCollider == nullptr)
@@ -172,6 +190,7 @@ _bool CBullet::Collision_HideCollider()
 				NULL_CHECK_RETURN(pMonster, false);
 
 				pMonster->Collision_Hide(this); // 총알이 어디 충돌했는지 판단하니까
+
 				return true;
 			}
 			else
@@ -181,6 +200,137 @@ _bool CBullet::Collision_HideCollider()
 	}
 	return false;
 
+}
+
+_bool CBullet::Collision_Shield()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	// 몬스터 리스트를 가져와서 순회해야할것같음
+	NULL_CHECK_RETURN(pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster"), false);
+
+	m_MonsterList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
+	if (m_MonsterList.empty())
+		return false;
+
+	_int ListSize = 0;
+	ListSize = (_int)m_MonsterList.size();
+
+	if (ListSize != 0)
+	{
+		auto iter = m_MonsterList.begin();
+		for (auto& iter = m_MonsterList.begin(); iter != m_MonsterList.end();)
+		{
+			if (iter == m_MonsterList.end())
+				return false;
+
+			CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_Shield");
+
+			if (pCollider == nullptr)
+				++iter;
+			else if (m_pBulletColliderCom->Collision(pCollider))
+			{
+				CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+				NULL_CHECK_RETURN(pMonster, false);
+
+				pMonster->Collision_Shield(this); // 총알이 어디 충돌했는지 판단하니까
+				Set_Dead(true);
+				m_bCollOnce = true;
+
+				return true;
+			}
+			else
+				++iter;
+		}
+		return false;
+	}
+	return false;
+}
+
+_bool CBullet::Collision_LArm()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	// 몬스터 리스트를 가져와서 순회해야할것같음
+	NULL_CHECK_RETURN(pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster"), false);
+
+	m_MonsterList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
+	if (m_MonsterList.empty())
+		return false;
+
+	_int ListSize = 0;
+	ListSize = (_int)m_MonsterList.size();
+
+	if (ListSize != 0)
+	{
+		auto iter = m_MonsterList.begin();
+		for (auto& iter = m_MonsterList.begin(); iter != m_MonsterList.end();)
+		{
+			if (iter == m_MonsterList.end())
+				return false;
+
+			CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_LArmSphere");
+
+			if (pCollider == nullptr)
+				++iter;
+			else if (m_pBulletColliderCom->Collision(pCollider))
+			{
+				CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+				NULL_CHECK_RETURN(pMonster, false);
+
+				pMonster->Collision_Armor(this); // 총알이 어디 충돌했는지 판단하니까
+				Set_Dead(true);
+				m_bCollOnce = true;
+
+				return true;
+			}
+			else
+				++iter;
+		}
+		return false;
+	}
+	return false;
+}
+
+_bool CBullet::Collision_RArm()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	// 몬스터 리스트를 가져와서 순회해야할것같음
+	NULL_CHECK_RETURN(pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster"), false);
+
+	m_MonsterList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
+	if (m_MonsterList.empty())
+		return false;
+
+	_int ListSize = 0;
+	ListSize = (_int)m_MonsterList.size();
+
+	if (ListSize != 0)
+	{
+		auto iter = m_MonsterList.begin();
+		for (auto& iter = m_MonsterList.begin(); iter != m_MonsterList.end();)
+		{
+			if (iter == m_MonsterList.end())
+				return false;
+
+			CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_RArmSphere");
+
+			if (pCollider == nullptr)
+				++iter;
+			else if (m_pBulletColliderCom->Collision(pCollider))
+			{
+				CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+				NULL_CHECK_RETURN(pMonster, false);
+
+				pMonster->Collision_Armor(this); // 총알이 어디 충돌했는지 판단하니까
+				m_bCollOnce = true;
+
+				return true;
+			}
+			else
+				++iter;
+		}
+		return false;
+	}
+	return false;
 }
 
 _bool CBullet::Collision_To_Player(CCollider* pBulletCollider)

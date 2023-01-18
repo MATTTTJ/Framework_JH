@@ -422,7 +422,7 @@ void CTransform::LookAt_Move_Monster(_fvector vTargetPos, _double TimeDelta, _fl
 	_float	fDistance = XMVectorGetX(XMVector3Length(vDir));
 
 	
-	_vector vMovePos  = XMLoadFloat4(&vPosition) + XMVector3Normalize(vDir) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+	_vector		vMovePos  = XMLoadFloat4(&vPosition) + XMVector3Normalize(vDir) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 	_float4		vLook = XMVector3Normalize(XMLoadFloat4(&TargetPos) - XMLoadFloat4(&vPosition)) * vScale.z;
 	_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
 	_vector		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
@@ -471,12 +471,14 @@ void CTransform::LookAt_Monster(_fvector vTargetPos, _double TimeDelta)
 	_float4		TargetPos = vTargetPos;
 	TargetPos = XMVectorSet(TargetPos.x, 0.f, TargetPos.z, TargetPos.w);
 
+
+	_matrix		RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f,0.f, 0.f), m_TransformDesc.fRotationPerSec * (_float)TimeDelta);
 	_float4		vLook = XMVector3Normalize(XMLoadFloat4(&TargetPos) - Get_State(CTransform::STATE_TRANSLATION)) * vScale.z;
 	_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
 	_vector		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
 
 	Set_State(CTransform::STATE_RIGHT, vRight);
-	Set_State(CTransform::STATE_UP, vUp);
+	Set_State(CTransform::STATE_UP, XMVector4Transform(vUp, RotationMatrix));
 	Set_State(CTransform::STATE_LOOK, vLook);
 
 }
