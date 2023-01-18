@@ -49,6 +49,15 @@ Little Bug
 7. LITTLE_STAND // 사용안함 
 8. LITTLE_IN_COMBAT_IDLE // 부모에게 소환됐을 때 
 
+1. Run
+2. Combat
+3. Stand
+4. JumpStart
+5. Patrol
+6. Land
+7. Attack
+8. hitbody
+
 부모자리에서 생성하고 각자 밀어내게 한다. 
 
 
