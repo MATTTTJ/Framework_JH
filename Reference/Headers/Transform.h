@@ -70,6 +70,8 @@ public:
 public:
 	// void Go_Straight(_double TimeDelta, class CNavigation* pNaviCom = nullptr);
 	void Go_Straight(_double TimeDelta, TRANSTYPE eType = TRANSTYPE_END, class CNavigation* pNaviCom = nullptr);
+	void Rush(_double TimeDelta, TRANSTYPE eType = TRANSTYPE_END, class CNavigation* pNaviCom = nullptr);
+
 	void Go_Backward(_double TimeDelta,TRANSTYPE eType = TRANSTYPE_END, class CNavigation* pNaviCom = nullptr);
 	void Go_Left(_double TimeDelta, TRANSTYPE eType = TRANSTYPE_END, class CNavigation* pNaviCom = nullptr);
 	void Go_Right(_double TimeDelta, TRANSTYPE eType = TRANSTYPE_END, class CNavigation* pNaviCom = nullptr);

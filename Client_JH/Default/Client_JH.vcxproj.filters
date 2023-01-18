@@ -205,6 +205,12 @@
     <Filter Include="02. GameObjects\01. GamePlay\Bullet\Monster">
       <UniqueIdentifier>{c2afb720-e2a8-4cfa-9911-f8184c42d10d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior">
+      <UniqueIdentifier>{dbee30e0-afea-470d-94b0-b63964962d20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior\State">
+      <UniqueIdentifier>{440f49ea-0a71-443a-9267-0a299fa8806c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -378,6 +384,12 @@
     <ClInclude Include="..\private\Boom.h">
       <Filter>02. GameObjects\01. GamePlay\Bullet\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Little_Bug.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Little_Bug_State.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -538,6 +550,12 @@
     </ClCompile>
     <ClCompile Include="..\public\Boom.cpp">
       <Filter>02. GameObjects\01. GamePlay\Bullet\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Little_Bug.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Little_Bug_State.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

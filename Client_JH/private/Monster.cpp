@@ -73,6 +73,53 @@ void CMonster::Tick(_double TimeDelta)
 void CMonster::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
+
+	_float4	fDir;
+
+
+	list<CGameObject*>* CloneMonsters = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
+	if (CloneMonsters == nullptr || CloneMonsters->size() == 0)
+		return;
+	else
+	{
+		for (auto& pMonster : *CloneMonsters)
+		{
+			CMonster* ppMonster = dynamic_cast<CMonster*>(pMonster);
+
+			if (ppMonster == this)
+				continue;
+
+			if (CGameUtils::CollisionSphereSphere(ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY), m_pColliderCom[CMonster::COLLTYPE_HITBODY], fDir))
+			{
+				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+				fDir.y = 0.f;
+				_vector	vMovePos = XMVectorAdd(vPos, fDir);
+
+				_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+				_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+
+				if (true == m_pNavigationCom->IsMove_OnNavigation(vPos, vBlockedLine, vBlockedLineNormal))
+					m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+				else
+				{
+					_vector vInDir = vMovePos - vPos;
+					_vector vOutDir = vPos - vMovePos;
+					_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+
+					_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+
+					vMovePos = vPos + vSlidingDir;
+
+					if (m_pNavigationCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+					{
+						m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+					}
+				}
+			}
+		}
+
+	}
+
 }
 
 HRESULT CMonster::Render()

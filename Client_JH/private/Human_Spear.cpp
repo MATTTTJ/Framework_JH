@@ -91,7 +91,7 @@ void CHuman_Spear::Tick(_double TimeDelta)
 		m_pModelCom->Play_Animation(TimeDelta);
 
 	Collider_Tick(TimeDelta);
-
+	Set_On_NaviMesh();
 	Collision_PlayerEyes(); // When Have Hide Anim
 
 
@@ -208,6 +208,22 @@ _bool CHuman_Spear::Collider_AttRange(CCollider* pOtherCollider)
 	return m_pColliderCom[COLLTYPE_HITBODY]->Collision(pOtherCollider);
 }
 
+
+void CHuman_Spear::Collision_Body(CBullet* pBullet)
+{
+	CBullet::BULLETOPTION BulletDesc;
+	BulletDesc = pBullet->Get_BulletOption();
+
+	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
+		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
+	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+		Set_Dead(true);
+
+	m_pHuman_Spear_State->Reset_Damaged();
+	m_pHuman_Spear_State->Set_DamagedState(CHuman_Spear_State::HIT);
+	m_pHuman_Spear_State->Set_DamagedState(CHuman_Spear_State::HITBODY);
+}
+
 void CHuman_Spear::Collision_Head(CBullet* pBullet)
 {
 	CBullet::BULLETOPTION BulletDesc;
@@ -249,29 +265,13 @@ void CHuman_Spear::Collision_PlayerEyes()
 
 void CHuman_Spear::Set_On_NaviMesh()
 {
-	_float fCellHeight = m_pNavigationCom->Get_CellHeight();
-
-	_vector vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-
-	vMonsterPos = vMonsterPos + XMVectorSet(0.f, fCellHeight, 0.f, 0.f);
+	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
+	_float4 vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	vMonsterPos.y = m_fHeight;
 
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMonsterPos);
 }
 
-void CHuman_Spear::Collision_Body(CBullet* pBullet)
-{
-	CBullet::BULLETOPTION BulletDesc;
-	BulletDesc = pBullet->Get_BulletOption();
-
-	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
-		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
-	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
-		Set_Dead(true);
-
-	m_pHuman_Spear_State->Reset_Damaged();
-	m_pHuman_Spear_State->Set_DamagedState(CHuman_Spear_State::HIT);
-	m_pHuman_Spear_State->Set_DamagedState(CHuman_Spear_State::HITBODY);
-}
 
 
 

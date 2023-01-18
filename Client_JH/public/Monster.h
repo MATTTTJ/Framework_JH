@@ -34,6 +34,7 @@ protected:
 	virtual ~CMonster() = default;
 
 public:
+	virtual CNavigation*	Get_NaviCom() { return m_pNavigationCom; }
 	virtual const _bool&	Get_MonsterUIRender() const { return m_bCanUIRender; }
 	virtual void			Get_Damaged() { m_tMonsterOption.MonsterDesc.m_iHP -= 30; }
 	virtual MONSTEROPTION	Get_MonsterDesc() { return m_tMonsterOption; }
@@ -82,6 +83,7 @@ protected:
 	CTexture*				m_pTextureCom[TEXTURETYPE_END] = {nullptr};
 	_bool					m_bPlayAnimation = true;
 	MONSTEROPTION			m_tMonsterOption;
+	CNavigation*			m_pNavigationCom = nullptr;
 
 	// State 판단 불변수
 	_bool					m_bPlayerDetected = false;

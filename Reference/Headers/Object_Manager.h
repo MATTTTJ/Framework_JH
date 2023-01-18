@@ -19,7 +19,7 @@ public:
 	class CComponent*						Get_ComponentPtr(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& pComponentTag, _uint iIndex);
 	map<const wstring, class CGameObject*>*	Get_Prototypes() { return &m_mapPrototypes; }
 	map<const wstring, class CLayer*>*		Get_Layers(_uint iLevelIndex) { return &m_pLayers[iLevelIndex]; }
-	list<class CGameObject*>*				Get_CloneObjectList(_uint iLevelIndex, const wstring& wstrLayerTag) { return Find_Layer(iLevelIndex, wstrLayerTag)->Get_GameObject(); }
+	list<class CGameObject*>*				Get_CloneObjectList(_uint iLevelIndex, const wstring& wstrLayerTag);
 	vector<class CGameObject*>*				Get_AnimObjects() { return &m_vecAnimObjects; }
 
 public:

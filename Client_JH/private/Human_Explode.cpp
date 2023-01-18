@@ -84,7 +84,7 @@ void CHuman_Explode::Tick(_double TimeDelta)
 		m_pModelCom->Play_Animation(TimeDelta);
 
 	Collider_Tick(TimeDelta);
-
+	Set_On_NaviMesh();
 	Collision_PlayerEyes();
 
 	_uint UISize = (_uint)m_vecMonsterUI.size();
@@ -201,11 +201,9 @@ _bool CHuman_Explode::Collider_AttRange(CCollider* pOtherCollider)
 
 void CHuman_Explode::Set_On_NaviMesh()
 {
-	_float fCellHeight = m_pNavigationCom->Get_CellHeight();
-
-	_vector vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-
-	vMonsterPos = vMonsterPos + XMVectorSet(0.f, fCellHeight, 0.f, 0.f);
+	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
+	_float4 vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	vMonsterPos.y = m_fHeight;
 
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMonsterPos);
 }

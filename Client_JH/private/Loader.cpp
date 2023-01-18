@@ -14,7 +14,9 @@
 #include "Human_Granade.h"
 #include "Human_Spear.h"
 #include "Human_Sword.h"
+#include "Elite_Bug.h"
 #include "LaiLuo_Home.h"
+#include "Little_Bug.h"
 #include "Monster.h"
 #include "MonsterUI.h"
 #include "NumberUI.h"
@@ -176,6 +178,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// 몬스터 체력 베이스 텍스쳐
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_MonsterUI_Base", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/HP_Base.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_MonsterUI_Base_Elite", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/HP_Base_Elite.png", 1)), E_FAIL);
+
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_MonsterUI_HP_Red", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/HP_RED_AlphaTest.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_MonsterUI_HP_White", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/HP_White_AlphaTest.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_MonsterUI_Shield_Blue", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/Bar_Character_SFBar_1.png", 1)), E_FAIL);
@@ -245,6 +249,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Explode", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Explode_Fire/Normal_Explode_Fire.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Elite_Knight", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Knight/Normal_Elite_Knight.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Elite_Bug", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Bug/Normal_Elite_Bug.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Little_Bug", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Bug/Little_Bug/Little_Bug.model", PivotMatrix)), E_FAIL);
 
 
 
@@ -298,6 +303,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_EmeraldTex", CPlayerUI_Emerald::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_Skill_BaseTex", CPlayerUI_Skill_Base::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_MonsterUI_Base", CMonsterUI::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_MonsterUI_Base_Elite", CMonsterUI_Elite::Create(m_pDevice, m_pContext)), E_FAIL);
+
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_MonsterUI_HP_Red", CMonsterUI_HP_Red::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_MonsterUI_HP_White", CMonsterUI_HP_White::Create(m_pDevice, m_pContext)), E_FAIL);
 
@@ -310,6 +317,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Granade", CHuman_Granade::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Granade_Boom", CBoom::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Explode", CHuman_Explode::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Elite_Bug", CElite_Bug::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Little_Bug", CLittle_Bug::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	// Bullet
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_Default_PistolTex", CDefault_Pistol::Create(m_pDevice, m_pContext)), E_FAIL);

@@ -33,6 +33,35 @@ public:
 	virtual void Free() override;
 };
 
+// Base_Elite
+class CMonsterUI_Elite final : public CUI
+{
+public:
+private:
+	CMonsterUI_Elite(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CMonsterUI_Elite(const CMonsterUI_Elite& rhs);
+	virtual ~CMonsterUI_Elite() = default;
+
+protected:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
+	virtual void	Tick(_double dTimeDelta) override;
+	virtual void	Late_Tick(_double dTimeDelta) override;
+	virtual HRESULT Render() override;
+
+private:
+	_float			m_fFixProgress = 1.f;
+
+private:
+	HRESULT			SetUp_Component();
+	HRESULT			SetUp_ShaderResources();
+
+public:
+	static CMonsterUI_Elite*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject*		Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
+	virtual void				Free() override;
+};
+
 // HP
 
 class CMonsterUI_HP_Red final : public CUI

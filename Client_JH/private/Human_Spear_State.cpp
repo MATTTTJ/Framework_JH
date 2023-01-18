@@ -154,8 +154,6 @@ HRESULT CHuman_Spear_State::SetUp_State_Idle()
 		.Init_Changer(L"STATE::HIDE", this, &CHuman_Spear_State::Bullet_Hide_Collision)
 		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CHuman_Spear_State::Player_DetectedAndClose)
 
-
-
 		.Add_State(L"STATE::ATTACK_A")
 		.Init_Start(this, &CHuman_Spear_State::Start_Attack_A)
 		.Init_Tick(this, &CHuman_Spear_State::Tick_Attack_A)

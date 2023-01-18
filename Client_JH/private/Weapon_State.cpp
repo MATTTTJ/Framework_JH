@@ -242,92 +242,92 @@ void CWeapon_State::Start_Weapon_Idle(_double TimeDelta)
 
 void CWeapon_State::Start_Fire(_double TimeDelta)
 {
-	if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName &&
-		m_pPlayer->Get_PistolBulletCnt() > 1)
-	{
-		m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
-		m_tWeaponOption[DEFAULT_PISTOL].iCurBullet -= 1;
-	
-		// TODO:: 카메라 룩 설정할 수 있게 작업하기 
-		CBullet::BULLETOPTION BulletDesc;
-		_float4 Position;
-		XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
-	
-		if (nullptr != m_pPlayer->Collision_AimBox_To_Monster())
-		{
-			if (nullptr == m_pPlayer->m_pFirstAimColliderCom)
-				return;
-	
-			_float4x4 fmatrix = m_pPlayer->Collision_AimBox_To_Monster()->Get_WorldFloat4x4();
-	
-			_vector MonsterPos = fmatrix.Translation();
-	
-			_vector FirstAimSpherePos = m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter();
-	
-			_vector SecondAimSpherePos = m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter();
-	
-			_float MonsterToFirstAim, MonsterToSecondAim;
-	
-			XMStoreFloat(&MonsterToFirstAim, XMVector3Length(MonsterPos - FirstAimSpherePos));
-			XMStoreFloat(&MonsterToSecondAim, XMVector3Length(MonsterPos - SecondAimSpherePos));
-	
-			
-	
-			if (fabsf(MonsterToFirstAim) - fabsf(MonsterToSecondAim) < EPSILON)
-			{
-				BulletDesc.BulletDesc.TransformDesc.vInitPos  = _float3(Position.x, Position.y, Position.z);
-				BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter());
-				BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
-				BulletDesc.m_pOwner = m_pPlayer;
-				CBullet*		pBullet = nullptr;
-				pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
-				NULL_CHECK_RETURN(pBullet, );
-				m_vecBullet.push_back(pBullet);
-			}
-			else
-			{
-				BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-				BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter());
-				BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
-				BulletDesc.m_pOwner = m_pPlayer;
-				CBullet*		pBullet = nullptr;
-				pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
-				NULL_CHECK_RETURN(pBullet, );
-				m_vecBullet.push_back(pBullet);
-			}
-		}
-		else
-		{
-			BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-			BulletDesc.BulletDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
-			BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
-			BulletDesc.m_pOwner = m_pPlayer;
-			CBullet*		pBullet = nullptr;
-			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
-			NULL_CHECK_RETURN(pBullet, );
-		}
-	}
-	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName)
-	{
-		m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_FIRE);
-		m_tWeaponOption[FLAME_BULLET].iCurBullet -= 1;
-	}
-	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FIRE_DRAGON].wstrWeaponName)
-	{
-		m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_FIRE);
-		m_tWeaponOption[FIRE_DRAGON].iCurBullet -= 1;
-	
-	}
-	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[POISON].wstrWeaponName)
-	{
-		if (m_pPlayer->m_iPoisonAttCnt == POISON_IDLE)
-			m_pPlayer->m_iPoisonAttCnt = 0;
-	
-		m_pModelCom->Set_CurAnimIndex(POISON_FIRE_A + m_pPlayer->m_iPoisonAttCnt);
-		m_tWeaponOption[POISON].iCurBullet -= 1;
-	
-		m_pPlayer->m_iPoisonAttCnt++;
-	}
+	// if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName &&
+	// 	m_pPlayer->Get_PistolBulletCnt() > 1)
+	// {
+	// 	m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
+	// 	m_tWeaponOption[DEFAULT_PISTOL].iCurBullet -= 1;
+	//
+	// 	// TODO:: 카메라 룩 설정할 수 있게 작업하기 
+	// 	CBullet::BULLETOPTION BulletDesc;
+	// 	_float4 Position;
+	// 	XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
+	//
+	// 	if (nullptr != m_pPlayer->Collision_AimBox_To_Monster())
+	// 	{
+	// 		if (nullptr == m_pPlayer->m_pFirstAimColliderCom)
+	// 			return;
+	//
+	// 		_float4x4 fmatrix = m_pPlayer->Collision_AimBox_To_Monster()->Get_WorldFloat4x4();
+	//
+	// 		_vector MonsterPos = fmatrix.Translation();
+	//
+	// 		_vector FirstAimSpherePos = m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter();
+	//
+	// 		_vector SecondAimSpherePos = m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter();
+	//
+	// 		_float MonsterToFirstAim, MonsterToSecondAim;
+	//
+	// 		XMStoreFloat(&MonsterToFirstAim, XMVector3Length(MonsterPos - FirstAimSpherePos));
+	// 		XMStoreFloat(&MonsterToSecondAim, XMVector3Length(MonsterPos - SecondAimSpherePos));
+	//
+	// 		
+	//
+	// 		if (fabsf(MonsterToFirstAim) - fabsf(MonsterToSecondAim) < EPSILON)
+	// 		{
+	// 			BulletDesc.BulletDesc.TransformDesc.vInitPos  = _float3(Position.x, Position.y, Position.z);
+	// 			BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter());
+	// 			BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
+	// 			BulletDesc.m_pOwner = m_pPlayer;
+	// 			CBullet*		pBullet = nullptr;
+	// 			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
+	// 			NULL_CHECK_RETURN(pBullet, );
+	// 			m_vecBullet.push_back(pBullet);
+	// 		}
+	// 		else
+	// 		{
+	// 			BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	// 			BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter());
+	// 			BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
+	// 			BulletDesc.m_pOwner = m_pPlayer;
+	// 			CBullet*		pBullet = nullptr;
+	// 			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
+	// 			NULL_CHECK_RETURN(pBullet, );
+	// 			m_vecBullet.push_back(pBullet);
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	// 		BulletDesc.BulletDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
+	// 		BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
+	// 		BulletDesc.m_pOwner = m_pPlayer;
+	// 		CBullet*		pBullet = nullptr;
+	// 		pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
+	// 		NULL_CHECK_RETURN(pBullet, );
+	// 	}
+	// }
+	// else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName)
+	// {
+	// 	m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_FIRE);
+	// 	m_tWeaponOption[FLAME_BULLET].iCurBullet -= 1;
+	// }
+	// else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FIRE_DRAGON].wstrWeaponName)
+	// {
+	// 	m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_FIRE);
+	// 	m_tWeaponOption[FIRE_DRAGON].iCurBullet -= 1;
+	//
+	// }
+	// else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[POISON].wstrWeaponName)
+	// {
+	// 	if (m_pPlayer->m_iPoisonAttCnt == POISON_IDLE)
+	// 		m_pPlayer->m_iPoisonAttCnt = 0;
+	//
+	// 	m_pModelCom->Set_CurAnimIndex(POISON_FIRE_A + m_pPlayer->m_iPoisonAttCnt);
+	// 	m_tWeaponOption[POISON].iCurBullet -= 1;
+	//
+	// 	m_pPlayer->m_iPoisonAttCnt++;
+	// }
 }
 
 void CWeapon_State::Start_Reload(_double TimeDelta)

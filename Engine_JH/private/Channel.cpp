@@ -156,6 +156,10 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 		{
 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 		}
+		if ("3001_model" == m_strName)
+		{
+			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		}
 	
 	}
 	// 백터들을 받아서 행렬로 만들어주는 함수. 2번째 인자는 기준점인데 원점이 들어간다.
@@ -230,7 +234,10 @@ _bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* CurrentC
 	{
 		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	}
-
+	if ("3001_model" == m_strName)
+	{
+		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	}
 	TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 
 	m_pBone->Set_TransformMatrix(TransformMatrix);
@@ -290,7 +297,10 @@ void CChannel::Update_Blend(_double dPlayTime, _float fRatio)
 	{
 		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	}
-
+	if ("3001_model" == m_strName)
+	{
+		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	}
 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 
 	m_pBone->Set_TransformMatrix(matTransform);
@@ -346,6 +356,10 @@ void CChannel::Update_Additive(_double dPlayTime, _float fRatio)
 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 		}
 		if ("Bip001 Footsteps001" == m_strName)
+		{
+			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		}
+		if ("3001_model" == m_strName)
 		{
 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 		}

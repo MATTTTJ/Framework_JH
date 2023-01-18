@@ -22,6 +22,22 @@ CComponent* CObject_Manager::Get_ComponentPtr(_uint iLevelIndex, const wstring& 
 	return pLayer->Get_ComponentPtr(pComponentTag, iIndex);
 }
 
+list<CGameObject*>* CObject_Manager::Get_CloneObjectList(_uint iLevelIndex, const wstring& wstrLayerTag)
+{
+	CLayer*		pLayer = nullptr;
+
+	pLayer = Find_Layer(iLevelIndex, wstrLayerTag);
+
+	if (pLayer == nullptr)
+	{
+		return nullptr;
+	}
+	else
+	{
+		return pLayer->Get_GameObject();
+	}
+}
+
 HRESULT CObject_Manager::Reserve_Manager(_uint iNumLevels)
 {
 	if (nullptr != m_pLayers)

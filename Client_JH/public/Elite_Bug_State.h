@@ -62,35 +62,59 @@ private:
 	CTransform*					m_pTransformCom = nullptr;
 	CNavigation*				m_pNavigationCom = nullptr;
 
-	_bool						m_bPlayAnimation = true;
-	_bool						m_bDeadOnce = false;
+	_bool						m_bPlayAnimation = {true};
+	_bool						m_bDeadOnce = {false};
 	_bool						m_bFirstState[CElite_Bug::FIRSTSTATE_END] = { false, false, false };
 
 	_bool						m_bDamaged[HIT_END] = { false, false, false };
-
+	_float4						m_fLastPos;
 private:
+	// 리틀 버그 생성 한번씩만
+	_bool						m_bSpawnOnce = false;
+
+	//Patrol
+	_float						m_fPatrolTurnTime = 2.5f;
+	_float						m_fCurPatrolTurnTime = 0.f;
+	_bool						m_bTurnPatrolDirection = false;
+
+	// 리틀 버그 생성
+	_float						m_fCurSpawnJuniorCoolTime = {0.f};
+	_float						m_fSpawnJuniorCoolTime = { 15.f };
+	_bool						m_bCanSpawnJunior = {false};
+
+	// 차징 시간
+	_float						m_fCurChargingTime = 0.f;
+	_float						m_fChargingTime = 3.f;
+	_bool						m_bCanRushStart = false;
+
+	// 러쉬 시간
+	_float						m_fCurRushTime = 0.f;
+	_float						m_fRushTime = 1.0f;
+	_bool						m_bStopRush = false;
+
+
 	// 패턴 쿨타임
-	_float						m_fCurHideCoolTime = 0.f;
-	_float						m_fHideCoolTime = 8.f;
-	_bool						m_bCanHide = false;
+	_float						m_fCurHideCoolTime = {0.f};
+	_float						m_fHideCoolTime = {8.f};
+	_bool						m_bCanHide = {false};
 
 	// 공격
-	_float						m_fCurAttackCoolTime = 0.f;
-	_float						m_fAttackCoolTime = 3.f;
-	_bool						m_bCanAttack = false;
-	_bool						m_bAttackOnce = false;
+	_float						m_fCurAttackCoolTime = {0.f};
+	_float						m_fAttackCoolTime = {10.f};
+	_bool						m_bCanAttack = {false};
+	_bool						m_bAttackOnce = {false};
 	// 피격 애니메이션
-	_float						m_fCurDamagedAnimCoolTime = 0.f;
-	_float						m_fDamagedAnimCoolTime = 5.f;
-	_bool						m_bDamagedAnim = false;
+	_float						m_fCurDamagedAnimCoolTime = {0.f};
+	_float						m_fDamagedAnimCoolTime = {5.f};
+	_bool						m_bDamagedAnim = {false};
 
 private:
 	void						Start_Idle(_double dTimeDelta);
 	void						Start_Run(_double dTimeDelta);
 	void						Start_No_Detected(_double dTimeDelta);
 	void						Start_Death(_double dTimeDelta);
-	void						Start_Prepare_Rush(_double dTimeDelta);
 	void						Start_Ready_Rush(_double dTimeDelta);
+	void						Start_Ready_Rush_Loop(_double dTimeDelta);
 	void						Start_Starting_Rush(_double dTimeDelta);
 	void						Start_Rush_Loop(_double dTimeDelta);
 	void						Start_Ending_Rush(_double dTimeDelta);
@@ -99,10 +123,10 @@ private:
 private:
 	void						Tick_Idle(_double dTimeDelta);
 	void						Tick_Run(_double dTimeDelta);
-	void						Tick_No_Detected(_double dTimeDelta);
+	void						Tick_Patrol(_double dTimeDelta);
 	void						Tick_Death(_double dTimeDelta);
-	void						Tick_Prepare_Rush(_double dTimeDelta);
 	void						Tick_Ready_Rush(_double dTimeDelta);
+	void						Tick_Ready_Rush_Loop(_double dTimeDelta);
 	void						Tick_Starting_Rush(_double dTimeDelta);
 	void						Tick_Rush_Loop(_double dTimeDelta);
 	void						Tick_Ending_Rush(_double dTimeDelta);
@@ -112,10 +136,10 @@ private:
 	void						End_Common(_double TimeDelta);
 	void						End_Idle(_double dTimeDelta);
 	void						End_Run(_double dTimeDelta);
-	void						End_No_Detected(_double dTimeDelta);
+	void						End_Patrol(_double dTimeDelta);
 	void						End_Death(_double dTimeDelta);
-	void						End_Prepare_Rush(_double dTimeDelta);
 	void						End_Ready_Rush(_double dTimeDelta);
+	void						End_Ready_Rush_Loop(_double dTimeDelta);
 	void						End_Starting_Rush(_double dTimeDelta);
 	void						End_Rush_Loop(_double dTimeDelta);
 	void						End_Ending_Rush(_double dTimeDelta);
@@ -132,6 +156,9 @@ private:
 	_bool						Player_NotDetected(); // When NoDetected (Collider)
 	_bool						Is_Damaged();
 	_bool						IS_Dead();
+	_bool						Is_CanSpawnJunior();
+	_bool						Is_ChargingTimeForRush();
+	_bool						Is_StopRush();
 	// _bool					Check_IdleFinishCount();
 	// _bool					Check_WalkTime();
 public:

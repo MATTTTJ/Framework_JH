@@ -158,10 +158,34 @@ _bool CCell::IsIn(_fvector vTargetPos, _int& pNeighborIndex, _float4 & vBlockedL
 _float4 CCell::Get_CellHeight(_float4 fTargetPos)
 {
 
-	// 플레이어 위치에서 위로 수직인 위치를 빼서 광선을 만들고, 그 광선으로 셀에 쏜다. 
-	_float4 fTargetPosUpper = _float4(fTargetPos.x, fTargetPos.y + 10.f, fTargetPos.z, 1.f);
-	_float4 fDir = fTargetPos - fTargetPosUpper;
-	fDir.Normalize();
+	// 플레이어 위치에서 위로 수직인 위치를 빼서 광선을 만들고, 그 광선으로 셀에 쏜다.
+	
+	//
+	// _float4 fTargetPosUpper = _float4(fTargetPos.x, fTargetPos.y + 10.f, fTargetPos.z, 1.f);
+	// _float4 fDir = fTargetPos - fTargetPosUpper;
+	// fDir.Normalize();
+
+	// _float4	vRayPos, vRayDir;
+	// ZeroMemory(&vRayPos, sizeof(_float4));
+	// ZeroMemory(&vRayDir, sizeof(_float4));
+	//
+	// vRayPos = fTargetPos;
+	// vRayPos.y += 50.f;
+	//
+	// vRayDir = fTargetPos - vRayPos;
+	// vRayDir.Normalize();
+
+	_vector vRayPos, vRayDir;
+
+
+	vRayPos = XMLoadFloat4(&fTargetPos);
+	vRayPos += XMVectorSet(0.f, 50.f, 0.f, 0.f);
+
+	vRayDir = XMLoadFloat4(&fTargetPos) - vRayPos;
+	vRayDir = XMVector3Normalize(vRayDir);
+	// vRayDir -= XMVectorSet(0.f, 0.f, 0.f, XMVectorGetW(vRayDir));
+	_vector tmp = vRayDir;
+	_vector dest = vRayPos;
 
 	_float fDist = 0.f;
 
@@ -169,11 +193,10 @@ _float4 CCell::Get_CellHeight(_float4 fTargetPos)
 	_vector	vPointB = XMVectorSetW(m_vPoints[POINT_B], 1.f);
 	_vector	vPointC = XMVectorSetW(m_vPoints[POINT_C], 1.f);
 
-	if (TriangleTests::Intersects(XMLoadFloat4(&fTargetPosUpper), XMLoadFloat4(&fDir),
-		vPointA, vPointB, vPointC, fDist))
+	if (TriangleTests::Intersects(dest, vRayDir,	vPointA, vPointB, vPointC, fDist))
 	{
 		_float4 vDest;
-		XMStoreFloat4(&vDest, XMLoadFloat4(&fTargetPosUpper) + XMLoadFloat4(&fDir) * fDist);
+		XMStoreFloat4(&vDest, vRayPos + vRayDir * fDist);
 		return vDest;
 	}
 

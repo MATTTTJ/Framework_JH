@@ -18,7 +18,6 @@ public:
 	_int*							Get_NeighbotIndex() { return m_iNeighborIndices; }
 	void							Set_Neighbor(NEIGHBOR eNeighbor, CCell* pNeighbor) { m_iNeighborIndices[eNeighbor] = pNeighbor->m_iIndex;  }
 
-
 public:
 	HRESULT							Initialize(const _float3* pPoints, _int iIndex);
 	void							ImGui_RenderProperty();

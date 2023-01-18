@@ -207,6 +207,8 @@
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\public\Level_MapEditor.h" />
+    <ClInclude Include="..\public\Little_Bug.h" />
+    <ClInclude Include="..\public\Little_Bug_State.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Monster.h" />
@@ -265,6 +267,8 @@
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Level_MapEditor.cpp" />
+    <ClCompile Include="..\private\Little_Bug.cpp" />
+    <ClCompile Include="..\private\Little_Bug_State.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />

@@ -53,6 +53,7 @@ void CHuman_Sword_State::Tick(_double dTimeDelta)
 	{
 		if (!m_bCanHide)
 			m_fCurHideCoolTime += (_float)dTimeDelta;
+
 		m_fCurAttackCoolTime += (_float)dTimeDelta;
 		m_fCurDamagedAnimCoolTime += (_float)dTimeDelta;
 	}
@@ -74,65 +75,57 @@ void CHuman_Sword_State::Tick(_double dTimeDelta)
 		m_fCurDamagedAnimCoolTime = 0.f;
 		m_bDamagedAnim = true;
 	}
-	
-	// if(m_pGameInstance->Key_Down(DIK_F5))
-	// {
-	// 	m_pMonster->m_tMonsterOption.MonsterDesc.m_iHP -= 50;
-	//
-	// 	if (m_pMonster->m_tMonsterOption.MonsterDesc.m_iHP - 1 < EPSILON)
-	// 	{
-	// 		m_pMonster->m_tMonsterOption.MonsterDesc.m_iHP = 0;
-	// 	}
-	// }
-
 }
 
 void CHuman_Sword_State::Late_Tick(_double dTimeDelta)
 {
-	_float4	fDir;
-	if (CGameUtils::CollisionSphereSphere(m_pMonster->m_pPlayer->m_pColliderCom[CPlayer::COLLIDER_SPHERE], m_pMonster->m_pColliderCom[CMonster::COLLTYPE_HITBODY], fDir))
+	// _float4	fDir;
+	// if (CGameUtils::CollisionSphereSphere(m_pMonster->m_pPlayer->m_pColliderCom[CPlayer::COLLIDER_SPHERE], m_pMonster->m_pColliderCom[CMonster::COLLTYPE_HITBODY], fDir))
+	// {
+	// 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	// 	fDir.y = 0.f;
+	// 	_vector	vMovePos = XMVectorAdd(vPos, fDir);
+	//
+	// 	_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+	// 	_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+	//
+	// 	if (true == m_pNavigationCom->IsMove_OnNavigation(vPos, vBlockedLine, vBlockedLineNormal))
+	// 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+	// 	else
+	// 	{
+	// 		_vector vInDir = vMovePos - vPos;
+	// 		_vector vOutDir = vPos - vMovePos;
+	// 		_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+	//
+	// 		_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+	//
+	// 		vMovePos = vPos + vSlidingDir;
+	//
+	// 		if (m_pNavigationCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+	// 		{
+	// 			m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+	// 		}
+	// 	}
+	// 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vPos);
+	// }
+
+	if (m_pPlayer != nullptr)
 	{
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-		fDir.y = 0.f;
-		_vector	vMovePos = XMVectorAdd(vPos, fDir);
+		if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_DETECTED]))
+		{
+			m_pMonster->m_bPlayerDetected = true;
+		}
+		else
+			m_pMonster->m_bPlayerDetected = false;
 
-		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
-		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
-
-		if (true == m_pNavigationCom->IsMove_OnNavigation(vPos, vBlockedLine, vBlockedLineNormal))
-			m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+		if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTRANGE]))
+		{
+			m_pMonster->m_bPlayerDetectedClose = true;
+		}
 		else
 		{
-			_vector vInDir = vMovePos - vPos;
-			_vector vOutDir = vPos - vMovePos;
-			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
-
-			_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
-
-			vMovePos = vPos + vSlidingDir;
-
-			if (m_pNavigationCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
-			{
-				m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
-			}
+			m_pMonster->m_bPlayerDetectedClose = false;
 		}
-		// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vPos);
-	}
-
-	if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_DETECTED]))
-	{
-		m_pMonster->m_bPlayerDetected = true;
-	}
-	else
-		m_pMonster->m_bPlayerDetected = false;
-
-	if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTRANGE]))
-	{
-		m_pMonster->m_bPlayerDetectedClose = true;
-	}
-	else
-	{
-		m_pMonster->m_bPlayerDetectedClose = false;
 	}
 }
 
@@ -530,7 +523,6 @@ _bool CHuman_Sword_State::Player_DetectedAndFar()
 
 _bool CHuman_Sword_State::Player_DetectedAndClose()
 {
-	
 	return m_pMonster->m_bPlayerDetectedClose;
 }
 

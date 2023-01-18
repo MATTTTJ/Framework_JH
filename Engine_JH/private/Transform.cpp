@@ -171,6 +171,57 @@ void CTransform::Go_Straight(_double TimeDelta, TRANSTYPE eType, CNavigation* pN
 
 }
 
+void CTransform::Rush(_double TimeDelta, TRANSTYPE eType, CNavigation* pNaviCom)
+{
+	m_eType = eType;
+
+	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
+	_float4	vLook = Get_State(CTransform::STATE_LOOK);
+
+	// vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
+	if (nullptr == pNaviCom && m_eType == TRANS_FIX)
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+
+	else if (m_eType == TRANS_MONSTER || m_eType == TRANS_PLAYER)
+	{
+		_vector vMovePos = vPosition + XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f))* m_TransformDesc.fSpeedPerSec * 1.5f * (_float)TimeDelta;
+
+		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+
+		if (true == pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+		else
+		{
+			_vector vInDir = vMovePos - vPosition;
+			_vector vOutDir = vPosition - vMovePos;
+			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+
+			_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+
+			vMovePos = vPosition + vSlidingDir;
+
+			if (pNaviCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+			{
+				Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+			}
+		}
+	}
+
+	else if (TRANS_BULLET == m_eType || TRANSTYPE_END == m_eType)
+	{
+		_vector vMovePos = vPosition + XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
+		Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+	}
+
+
+
+
+}
+
+
 void CTransform::Go_Backward(_double TimeDelta, TRANSTYPE eType, CNavigation* pNaviCom)
 {
 	m_eType = eType;
