@@ -49,7 +49,6 @@ public:
 private:
 	CRenderer*					m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;
-	CNavigation*				m_pNavigationCom = nullptr;
 	class CElite_Knight_State*	m_pElite_Knight_State = nullptr;
 
 	CCollider*					m_pShieldColliderCom = nullptr;

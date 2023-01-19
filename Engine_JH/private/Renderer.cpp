@@ -308,14 +308,17 @@ HRESULT CRenderer::Render_OutLine()
 #ifdef _DEBUG
 HRESULT CRenderer::Render_DebugObject()
 {
-	for(auto & pComponent : m_DebugObject)
+	if (m_bRender_Collider)
 	{
-		if (nullptr != pComponent)
-			pComponent->Render();
+		for (auto & pComponent : m_DebugObject)
+		{
+			if (nullptr != pComponent)
+				pComponent->Render();
 
-		Safe_Release(pComponent);
+			Safe_Release(pComponent);
+		}
+		m_DebugObject.clear();
 	}
-	m_DebugObject.clear();
 
 	return S_OK;
 }

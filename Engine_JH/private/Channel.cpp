@@ -110,7 +110,7 @@ HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel, CModel* pModel)
 	return S_OK;
 }
 
-void CChannel::Update_TransformMatrix(_double dPlayTime)
+void CChannel::Update_TransformMatrix(_double dPlayTime, const wstring& wstrRootBoneName)
 {
 	// 애니메이션을 재생하는 특정 뼈들의 상태 행렬을 연산해주는 함수
 
@@ -148,19 +148,17 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition), (_float)dRatio);
 		vPosition = XMVectorSetW(vPosition, 1.f);
 
-		if("Bip001 Footsteps" == m_strName)
+		if (wstrRootBoneName != L"")
 		{
-			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+			string	strRootBoneName = "";
+			strRootBoneName.assign(wstrRootBoneName.begin(), wstrRootBoneName.end());
+
+			if (m_pBone->Get_Name() == strRootBoneName)
+			{
+				vPosition = XMVectorSet(0.f, XMVectorGetY(vPosition), 0.f, 1.f);
+				//vRotation = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+			}
 		}
-		if ("Bip001 Footsteps001" == m_strName)
-		{
-			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		}
-		if ("3001_model" == m_strName)
-		{
-			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		}
-	
 	}
 	// 백터들을 받아서 행렬로 만들어주는 함수. 2번째 인자는 기준점인데 원점이 들어간다.
 	TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
@@ -168,98 +166,14 @@ void CChannel::Update_TransformMatrix(_double dPlayTime)
 	m_pBone->Set_TransformMatrix(TransformMatrix);
 }
 
-_bool CChannel::Update_TransformLerpMatrix(_double dPlayTime, CChannel* CurrentChannel, CChannel* NextChannel,_double LerpSpeed, _bool bFinish)
-{
-	_vector vScale;
-	_vector vRotation;
-	_vector vPosition;
-	_matrix TransformMatrix;
-
-	if(-1 == m_iLerpFrameIndex) // 절대 나올 수 없는 인덱스 값인 음수로 초기화 
-	{
-		while(dPlayTime >= CurrentChannel->m_vecKeyframes[m_iLerpFrameIndex + 1].dTime)
-		{
-			m_iLerpFrameIndex++;
-
-			if((_int)m_iNumKeyframes <= m_iLerpFrameIndex +1)
-			{
-				m_iLerpFrameIndex -= 1;
-				break;
-			}
-		}
-	}
-
-	_uint iSour = 0;
-
-	if(bFinish)
-	{
-		iSour = m_iNumKeyframes - 1;
-	}
-	else
-	{
-		iSour = m_iLerpFrameIndex;
-	}
-
-	_uint iDest = 0;
-
-	if (CurrentChannel->m_vecKeyframes.size() <= iSour)
-		iSour = (_uint)CurrentChannel->m_vecKeyframes.size() - 1;
-
-	m_dLerpRatio += LerpSpeed;
-
-	_vector	vLastScale, vCurScale;
-	_vector vLastRotation, vCurRotation;
-	_vector vLastPosition, vCurPosition;
-
-	vLastScale = XMLoadFloat3(&CurrentChannel->m_vecKeyframes[iSour].vScale);
-	vCurScale = XMLoadFloat3(&NextChannel->m_vecKeyframes[iDest].vScale);
-
-	vLastRotation = XMLoadFloat4(&CurrentChannel->m_vecKeyframes[iSour].vRotation);
-	vCurRotation = XMLoadFloat4(&NextChannel->m_vecKeyframes[iDest].vRotation);
-
-	vLastPosition = XMLoadFloat3(&CurrentChannel->m_vecKeyframes[iSour].vPosition);
-	vCurPosition = XMLoadFloat3(&NextChannel->m_vecKeyframes[iDest].vPosition);
-
-	vScale = XMVectorLerp(vLastScale, vCurScale, static_cast<_float>(m_dLerpRatio));
-	vRotation = XMQuaternionSlerp(vLastRotation, vCurRotation, static_cast<_float>(m_dLerpRatio));
-	vPosition = XMVectorLerp(vLastPosition, vCurPosition, static_cast<_float>(m_dLerpRatio));
-	vPosition = XMVectorSetW(vPosition, 1.f);
-
-	if ("Bip001 Footsteps001" == m_strName)
-	{
-		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	}
-	
-	if ("Bip001 Footsteps" == m_strName)
-	{
-		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	}
-	if ("3001_model" == m_strName)
-	{
-		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	}
-	TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
-
-	m_pBone->Set_TransformMatrix(TransformMatrix);
-
-	if (1.f <= m_dLerpRatio)
-	{
-		m_dLerpRatio = 0.0;
-		m_iLerpFrameIndex = -1;
-		return true;
-	}
-
-	return false;
-}
-
-void CChannel::Update_Blend(_double dPlayTime, _float fRatio)
+void CChannel::Update_TransformLerpMatrix(_double dPlayTime, _float fRatio, const wstring & wstrRootBoneName)
 {
 	_vector	vBaseScale, vBaseRotation, vBasePosition;
 	_vector	vScale, vRotation, vPosition;
 	_matrix	matTransform = m_pBone->Get_TransformMatrix();
 
 	XMMatrixDecompose(&vBaseScale, &vBaseRotation, &vBasePosition, matTransform);
-
+	
 	if (dPlayTime >= m_vecKeyframes.back().dTime)
 	{
 		vScale = XMLoadFloat3(&m_vecKeyframes.back().vScale);
@@ -279,105 +193,245 @@ void CChannel::Update_Blend(_double dPlayTime, _float fRatio)
 		vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex].vRotation), XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vRotation), fTmp);
 		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition), fTmp);
 		vPosition = XMVectorSetW(vPosition, 1.f);
-
 	}
-
-	
 
 	vScale = XMVectorLerp(vBaseScale, vScale, fRatio);
 	vRotation = XMQuaternionSlerp(vBaseRotation, vRotation, fRatio);
 	vPosition = XMVectorLerp(vBasePosition, vPosition, fRatio);
 	vPosition = XMVectorSetW(vPosition, 1.f);
-	
-	if ("Bip001 Footsteps001" == m_strName)
+
+	if (wstrRootBoneName != L"")
 	{
-		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		string	strRootBoneName = "";
+		strRootBoneName.assign(wstrRootBoneName.begin(), wstrRootBoneName.end());
+
+		if (m_pBone->Get_Name() == strRootBoneName)
+		{
+			vPosition = XMVectorSet(0.f, XMVectorGetY(vPosition), 0.f, 1.f);
+		}
 	}
-	if ("Bip001 Footsteps" == m_strName)
-	{
-		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	}
-	if ("3001_model" == m_strName)
-	{
-		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-	}
+
 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 
 	m_pBone->Set_TransformMatrix(matTransform);
+
+
+	// _vector vScale;
+	// _vector vRotation;
+	// _vector vPosition;
+	// _matrix TransformMatrix;
+	//
+	// if(-1 == m_iLerpFrameIndex) // 절대 나올 수 없는 인덱스 값인 음수로 초기화 
+	// {
+	// 	while(dPlayTime >= CurrentChannel->m_vecKeyframes[m_iLerpFrameIndex + 1].dTime)
+	// 	{
+	// 		m_iLerpFrameIndex++;
+	//
+	// 		if((_int)m_iNumKeyframes <= m_iLerpFrameIndex +1)
+	// 		{
+	// 			m_iLerpFrameIndex -= 1;
+	// 			break;
+	// 		}
+	// 	}
+	// }
+	//
+	// _uint iSour = 0;
+	//
+	// if(bFinish)
+	// {
+	// 	iSour = m_iNumKeyframes - 1;
+	// }
+	// else
+	// {
+	// 	iSour = m_iLerpFrameIndex;
+	// }
+	//
+	// _uint iDest = 0;
+	//
+	// if (CurrentChannel->m_vecKeyframes.size() <= iSour)
+	// 	iSour = (_uint)CurrentChannel->m_vecKeyframes.size() - 1;
+	//
+	// m_dLerpRatio += LerpSpeed;
+	//
+	// _vector	vLastScale, vCurScale;
+	// _vector vLastRotation, vCurRotation;
+	// _vector vLastPosition, vCurPosition;
+	//
+	// vLastScale = XMLoadFloat3(&CurrentChannel->m_vecKeyframes[iSour].vScale);
+	// vCurScale = XMLoadFloat3(&NextChannel->m_vecKeyframes[iDest].vScale);
+	//
+	// vLastRotation = XMLoadFloat4(&CurrentChannel->m_vecKeyframes[iSour].vRotation);
+	// vCurRotation = XMLoadFloat4(&NextChannel->m_vecKeyframes[iDest].vRotation);
+	//
+	// vLastPosition = XMLoadFloat3(&CurrentChannel->m_vecKeyframes[iSour].vPosition);
+	// vCurPosition = XMLoadFloat3(&NextChannel->m_vecKeyframes[iDest].vPosition);
+	//
+	// vScale = XMVectorLerp(vLastScale, vCurScale, static_cast<_float>(m_dLerpRatio));
+	// vRotation = XMQuaternionSlerp(vLastRotation, vCurRotation, static_cast<_float>(m_dLerpRatio));
+	// vPosition = XMVectorLerp(vLastPosition, vCurPosition, static_cast<_float>(m_dLerpRatio));
+	// vPosition = XMVectorSetW(vPosition, 1.f);
+	//
+	// if ("Bip001 Footsteps001" == m_strName)
+	// {
+	// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	// }
+	//
+	// if ("Bip001 Footsteps" == m_strName)
+	// {
+	// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	// }
+	// if ("3001_model" == m_strName)
+	// {
+	// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	// }
+	// if ("3909_body_Bip001 Spine" == m_strName)
+	// {
+	// 	vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	// }
+	// TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+	//
+	// m_pBone->Set_TransformMatrix(TransformMatrix);
+	//
+	// if (1.f <= m_dLerpRatio)
+	// {
+	// 	m_dLerpRatio = 0.0;
+	// 	m_iLerpFrameIndex = -1;
+	// 	return true;
+	// }
+	//
+	// return false;
 }
-
-void CChannel::Update_Additive(_double dPlayTime, _float fRatio)
-{
-	_vector vBaseScale, vBaseRot, vBasePos;
-	XMMatrixDecompose(&vBaseScale, &vBaseRot, &vBasePos, m_pBone->Get_TransformMatrix());
-
-	_vector			vScale;
-	_vector			vRotation;
-	_vector			vPosition;
-
-	/* 현재 재생된 시간이 마지막 키프레임시간보다 커지며.ㄴ */
-	if (dPlayTime >= m_vecKeyframes.back().dTime)
-	{
-		vScale = XMLoadFloat3(&m_vecKeyframes.back().vScale);
-		vRotation = XMLoadFloat4(&m_vecKeyframes.back().vRotation);
-		vPosition = XMLoadFloat3(&m_vecKeyframes.back().vPosition);
-		vPosition = XMVectorSetW(vPosition, 1.f);
-	}
-	else
-	{
-		while (dPlayTime >= m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime)
-		{
-			++m_iCurrentKeyframeIndex;
-		}
-
-		_double			Ratio = (dPlayTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime) /
-			(m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime);
-
-		_vector			vSourScale, vDestScale;
-		_vector			vSourRotation, vDestRotation;
-		_vector			vSourPosition, vDestPosition;
-
-		vSourScale = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vScale);
-		vSourRotation = XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex].vRotation);
-		vSourPosition = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition);
-
-		vDestScale = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vScale);
-		vDestRotation = XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vRotation);
-		vDestPosition = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition);
-
-		vScale = XMVectorLerp(vSourScale, vDestScale, (_float)Ratio);
-		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, (_float)Ratio);
-		vPosition = XMVectorLerp(vSourPosition, vDestPosition, (_float)Ratio);
-		vPosition = XMVectorSetW(vPosition, 1.f);
-
-
-		if ("Bip001 Footsteps" == m_strName)
-		{
-			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		}
-		if ("Bip001 Footsteps001" == m_strName)
-		{
-			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		}
-		if ("3001_model" == m_strName)
-		{
-			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-		}
-	}
-
-
-	vScale = XMVectorLerp(vBaseScale, vScale, fRatio);
-	vRotation = XMQuaternionSlerp(vBaseRot, vRotation, fRatio);
-	vRotation = XMQuaternionSlerp(XMQuaternionIdentity(), vRotation, fRatio);
-	vRotation = XMQuaternionMultiply(vBaseRot, vRotation);
-
-	vPosition = XMVectorLerp(vBasePos, vPosition, fRatio);
-	vPosition = XMVectorSetW(vPosition, 1.f);
-
-	_matrix TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
-
-	m_pBone->Set_TransformMatrix(TransformMatrix);
-}
+//
+// void CChannel::Update_Blend(_double dPlayTime, _float fRatio)
+// {
+// 	_vector	vBaseScale, vBaseRotation, vBasePosition;
+// 	_vector	vScale, vRotation, vPosition;
+// 	_matrix	matTransform = m_pBone->Get_TransformMatrix();
+//
+// 	XMMatrixDecompose(&vBaseScale, &vBaseRotation, &vBasePosition, matTransform);
+//
+// 	if (dPlayTime >= m_vecKeyframes.back().dTime)
+// 	{
+// 		vScale = XMLoadFloat3(&m_vecKeyframes.back().vScale);
+// 		vRotation = XMLoadFloat4(&m_vecKeyframes.back().vRotation);
+// 		vPosition = XMLoadFloat3(&m_vecKeyframes.back().vPosition);
+// 		vPosition = XMVectorSetW(vPosition, 1.f);
+// 	}
+// 	else
+// 	{
+// 		while (dPlayTime >= m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime)
+// 			++m_iCurrentKeyframeIndex;
+//
+// 		_float fTmp = _float((dPlayTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime)
+// 			/ (m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime));
+//
+// 		vScale = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vScale), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vScale), fTmp);
+// 		vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex].vRotation), XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vRotation), fTmp);
+// 		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition), XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition), fTmp);
+// 		vPosition = XMVectorSetW(vPosition, 1.f);
+//
+// 	}
+//
+// 	
+//
+// 	vScale = XMVectorLerp(vBaseScale, vScale, fRatio);
+// 	vRotation = XMQuaternionSlerp(vBaseRotation, vRotation, fRatio);
+// 	vPosition = XMVectorLerp(vBasePosition, vPosition, fRatio);
+// 	vPosition = XMVectorSetW(vPosition, 1.f);
+// 	
+// 	if ("Bip001 Footsteps001" == m_strName)
+// 	{
+// 		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+// 	}
+// 	if ("Bip001 Footsteps" == m_strName)
+// 	{
+// 		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+// 	}
+// 	if ("3001_model" == m_strName)
+// 	{
+// 		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+// 	}
+// 	if ("3909_body_Bip001 Spine" == m_strName)
+// 	{
+// 		vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+// 	}
+// 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+//
+// 	m_pBone->Set_TransformMatrix(matTransform);
+// }
+//
+// void CChannel::Update_Additive(_double dPlayTime, _float fRatio)
+// {
+// 	_vector vBaseScale, vBaseRot, vBasePos;
+// 	XMMatrixDecompose(&vBaseScale, &vBaseRot, &vBasePos, m_pBone->Get_TransformMatrix());
+//
+// 	_vector			vScale;
+// 	_vector			vRotation;
+// 	_vector			vPosition;
+//
+// 	/* 현재 재생된 시간이 마지막 키프레임시간보다 커지며.ㄴ */
+// 	if (dPlayTime >= m_vecKeyframes.back().dTime)
+// 	{
+// 		vScale = XMLoadFloat3(&m_vecKeyframes.back().vScale);
+// 		vRotation = XMLoadFloat4(&m_vecKeyframes.back().vRotation);
+// 		vPosition = XMLoadFloat3(&m_vecKeyframes.back().vPosition);
+// 		vPosition = XMVectorSetW(vPosition, 1.f);
+// 	}
+// 	else
+// 	{
+// 		while (dPlayTime >= m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime)
+// 		{
+// 			++m_iCurrentKeyframeIndex;
+// 		}
+//
+// 		_double			Ratio = (dPlayTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime) /
+// 			(m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime - m_vecKeyframes[m_iCurrentKeyframeIndex].dTime);
+//
+// 		_vector			vSourScale, vDestScale;
+// 		_vector			vSourRotation, vDestRotation;
+// 		_vector			vSourPosition, vDestPosition;
+//
+// 		vSourScale = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vScale);
+// 		vSourRotation = XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex].vRotation);
+// 		vSourPosition = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex].vPosition);
+//
+// 		vDestScale = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vScale);
+// 		vDestRotation = XMLoadFloat4(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vRotation);
+// 		vDestPosition = XMLoadFloat3(&m_vecKeyframes[m_iCurrentKeyframeIndex + 1].vPosition);
+//
+// 		vScale = XMVectorLerp(vSourScale, vDestScale, (_float)Ratio);
+// 		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, (_float)Ratio);
+// 		vPosition = XMVectorLerp(vSourPosition, vDestPosition, (_float)Ratio);
+// 		vPosition = XMVectorSetW(vPosition, 1.f);
+//
+//
+// 		if ("Bip001 Footsteps" == m_strName)
+// 		{
+// 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+// 		}
+// 		if ("Bip001 Footsteps001" == m_strName)
+// 		{
+// 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+// 		}
+// 		if ("3001_model" == m_strName)
+// 		{
+// 			vPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+// 		}
+// 	}
+//
+//
+// 	vScale = XMVectorLerp(vBaseScale, vScale, fRatio);
+// 	vRotation = XMQuaternionSlerp(vBaseRot, vRotation, fRatio);
+// 	vRotation = XMQuaternionSlerp(XMQuaternionIdentity(), vRotation, fRatio);
+// 	vRotation = XMQuaternionMultiply(vBaseRot, vRotation);
+//
+// 	vPosition = XMVectorLerp(vBasePos, vPosition, fRatio);
+// 	vPosition = XMVectorSetW(vPosition, 1.f);
+//
+// 	_matrix TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+//
+// 	m_pBone->Set_TransformMatrix(TransformMatrix);
+// }
 
 
 CChannel* CChannel::Create(aiNodeAnim* pAIChannel, CModel* pModel)

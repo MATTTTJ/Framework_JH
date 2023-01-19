@@ -28,7 +28,7 @@ HRESULT CNormal_BossMap::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 	// PivotMatrix.r[3] = XMVectorSet(82.f, 0.f, -30.f, 117.f);
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(120.f, 0.f, 135.f, 1.f));
-
+	m_pTransformCom->Set_Scaled(_float3(0.67f, 0.67f, 0.67f));
 	return S_OK;
 }
 

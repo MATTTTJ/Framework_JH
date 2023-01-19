@@ -99,7 +99,7 @@ HRESULT CAnimation::Initialize(aiAnimation* pAIAnimation, CModel* pModel)
 	return S_OK;
 }
 
-void CAnimation::Update_Bones(_double dTimeDelta)
+void CAnimation::Update_Bones(_double dTimeDelta, const wstring& wstrRootBoneName)
 {
 	if (m_bIsFinished)
 	{
@@ -121,48 +121,15 @@ void CAnimation::Update_Bones(_double dTimeDelta)
 		if (m_bIsFinished == true)
 			m_vecChannels[i]->Reset_KeyFrameIndex();
 
-		m_vecChannels[i]->Update_TransformMatrix(m_dPlayTime);
+		m_vecChannels[i]->Update_TransformMatrix(m_dPlayTime, wstrRootBoneName);
 	}
 
 	if (m_bIsFinished && m_bIsLooping)
 		m_dPlayTime = 0.0;
 }
 
-_bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation* pNextAnim, _double LerpSpeed, _bool bFinish)
-{
-	if (m_bIsLerpEnd)
-	{
-		m_dPlayTime = 0.f;
 
-		for (auto iter : m_vecChannels)
-		{
-			iter->Reset_KeyFrameIndex();
-			iter->Reset_LerpIndex();
-		}
-		m_bIsLerpEnd = false;
-
-		return false;
-	}
-	else
-	{
-		for (auto Current : m_vecChannels)
-		{
-			for (auto Next : pNextAnim->m_vecChannels)
-			{
-				if (Current->Get_ChannelName() == Next->Get_ChannelName())
-				{
-					m_bIsLerpEnd = Current->Update_TransformLerpMatrix(m_dPlayTime, Current, Next, LerpSpeed, bFinish);
-					break;
-				}
-			}
-			// 특정 뼈의 이동을 멈추고 싶으면 여기서 위치 고정
-		}
-		return true;
-	}
-	return true;
-}
-
-void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
+void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio, const wstring& wstrRootBoneName)
 {
 	if (m_bIsFinished)
 	{
@@ -187,36 +154,9 @@ void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
 		if (m_bIsFinished == true)
 			m_vecChannels[i]->Reset_KeyFrameIndex();
 
-		m_vecChannels[i]->Update_Blend(m_dPlayTime, fRatio);
+		m_vecChannels[i]->Update_TransformLerpMatrix(m_dPlayTime, fRatio, wstrRootBoneName);
 	}
 
-}
-
-void CAnimation::Update_Additive(_double dTimeDelta, _float fRatio)
-{
-	if (!m_bIsLooping && m_bIsFinished)
-		return;
-
-	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
-
-	if (m_dPlayTime >= m_dDuration)
-	{
-		m_dPlayTime = 0.0;
-		m_bIsFinished = true;
-	}
-
-	for (_uint i = 0; i < m_iNumChannels; ++i)
-	{
-		if (m_bIsFinished == true)
-			m_vecChannels[i]->Reset_KeyFrameIndex();
-
-		m_vecChannels[i]->Update_Additive(m_dPlayTime, fRatio);
-
-
-	}
-
-	if (m_bIsFinished)
-		m_bIsFinished = false;
 }
 
 CAnimation* CAnimation::Create(aiAnimation* pAIAnimation, CModel* pModel)

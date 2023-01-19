@@ -201,11 +201,9 @@ _bool CElite_Knight::Collider_AttRange(CCollider* pOtherCollider)
 
 void CElite_Knight::Set_On_NaviMesh()
 {
-	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
-	_float4 vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	vMonsterPos.y = m_fHeight;
-
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMonsterPos);
+	_float4 MonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	MonsterPos = m_pNavigationCom->Get_CellHeight(MonsterPos);
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, MonsterPos);
 }
 
 void CElite_Knight::Collision_Body(CBullet* pBullet)
@@ -266,7 +264,7 @@ void CElite_Knight::Collision_Shield(CBullet* pBullet)
 	BulletDesc = pBullet->Get_BulletOption();
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
-		m_tMonsterOption.MonsterDesc.m_iHP -= (_int)BulletDesc.BulletDesc.m_iDamage * 0.5f;
+		m_tMonsterOption.MonsterDesc.m_iHP -= (_int)(BulletDesc.BulletDesc.m_iDamage * 0.5f);
 	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 		Set_Dead(true);
 
@@ -281,7 +279,7 @@ void CElite_Knight::Collision_Armor(CBullet* pBullet)
 	BulletDesc = pBullet->Get_BulletOption();
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
-		m_tMonsterOption.MonsterDesc.m_iHP -= (_int)BulletDesc.BulletDesc.m_iDamage * 0.7f;
+		m_tMonsterOption.MonsterDesc.m_iHP -= (_int)(BulletDesc.BulletDesc.m_iDamage * 0.7f);
 	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 		Set_Dead(true);
 
@@ -375,14 +373,16 @@ HRESULT CElite_Knight::SetUp_ShaderResources()
 
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bHit", &m_bHitColor, sizeof(_bool)), E_FAIL);
 
-	if (m_bIsOnPlayerEyes)
-	{
-		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &m_vOnAimOutLineColor, sizeof(_float)), E_FAIL);
-	}
-	else
-	{
-		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &m_vDefaultOutLineColor, sizeof(_float)), E_FAIL);
-	}
+
+
+	// if (m_bIsOnPlayerEyes)
+	// {
+	// 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &m_vOnAimOutLineColor, sizeof(_float)), E_FAIL);
+	// }
+	// else
+	// {
+	// 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &m_vDefaultOutLineColor, sizeof(_float)), E_FAIL);
+	// }
 
 
 	Safe_Release(pGameInstance);

@@ -50,7 +50,6 @@ private:
 private:
 	CRenderer*					m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;
-	CNavigation*				m_pNavigationCom = nullptr;
 	class CHuman_Granade_State*		m_pHuman_Granade_State = nullptr;
 
 public:

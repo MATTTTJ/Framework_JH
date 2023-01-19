@@ -15,10 +15,12 @@ public:
 	const string&		Get_ChannelName() const { return m_strName; }
 public:
 	HRESULT				Initialize(aiNodeAnim* pAIChannel, class CModel* pModel);
-	void				Update_TransformMatrix(_double dPlayTime);
-	_bool				Update_TransformLerpMatrix(_double dPlayTime, CChannel* CurrentChannel, CChannel* NextChannel,_double LerpSpeed, _bool bFinish = false );
-	void				Update_Blend(_double dPlayTime, _float fRatio);
-	void				Update_Additive(_double dPlayTime, _float fRatio);
+	void				Update_TransformMatrix(_double dPlayTime, const wstring& wstrRootBoneName);
+	void				Update_TransformLerpMatrix(_double dPlayTime, _float fRatio, const wstring & wstrRootBoneName);
+
+
+	// void				Update_Blend(_double dPlayTime, _float fRatio);
+	// void				Update_Additive(_double dPlayTime, _float fRatio);
 	void				Reset_KeyFrameIndex() { m_iCurrentKeyframeIndex = 0; }
 	void				Reset_LerpIndex() { m_iLerpFrameIndex = -1; }
 

@@ -79,7 +79,7 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 	m_pObject_Manager->Tick(TimeDelta);
 	m_pLevel_Manager->Tick(TimeDelta);
 	m_pPipeLine->Tick();
-
+	
 	m_pFrustum->Transform_ToWorldSpace();
 
 	m_pObject_Manager->Late_Tick(TimeDelta);

@@ -22,6 +22,7 @@
 #include "Monster.h"
 #include "MonsterUI.h"
 #include "NormalMap.h"
+#include "Normal_Boss.h"
 #include "Normal_BossMap.h"
 #include "NumberUI.h"
 #include "Player.h"
@@ -270,7 +271,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Elite_Knight", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Knight/Normal_Elite_Knight.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Elite_Bug", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Bug/Normal_Elite_Bug.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Little_Bug", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Bug/Little_Bug/Little_Bug.model", PivotMatrix)), E_FAIL);
-
+	// ³ë¸»¸Ê º¸½º
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Normal_Boss", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/Normal_Boss.model", PivotMatrix)), E_FAIL);
 
 
 
@@ -341,6 +343,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Elite_Bug", CElite_Bug::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Little_Bug", CLittle_Bug::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Elite_Knight", CElite_Knight::Create(m_pDevice, m_pContext)), E_FAIL);
+
+	// ³ë¸»¸Ê º¸½º
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss", CNormal_Boss::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	// ³ë¸»¸Ê ÃÑ¾Ë °ÔÀÓ ¿ÀºêÁ§Æ®
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Bow_Arrow", CArrow::Create(m_pDevice, m_pContext)), E_FAIL);

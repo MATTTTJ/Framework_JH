@@ -152,12 +152,22 @@ struct PS_OUT
 	float4		vSpecularMap : SV_TARGET3;
 };
 
+struct PS_OUT_UNNORM
+{
+	/*SV_TARGET0 : 모든 정보가 결정된 픽셀이다. AND 0번째 렌더타겟에 그리기위한 색상이다. */
+	float4		vDiffuse : SV_TARGET0;
+	float4		vNormal : SV_TARGET1;
+	float4		vDepth : SV_TARGET2;
+};
+
 //PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
 	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vSpecularMap = g_ModelSpecularTexture.Sample(LinearSampler, In.vTexUV);
+
 	if (0.1f > vDiffuse.a)
 		discard;
 	vDiffuse.a = 1.f;
@@ -208,36 +218,43 @@ PS_OUT PS_MAIN_PLAYER_ARM(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_MAIN_Monster(PS_IN In)
+PS_OUT PS_MAIN_Monster_Normal(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
 	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	if (0.1f > vDiffuse.a)
 		discard;
-	vector		vNormalDesc; 
-	vector		SwapNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	vNormalDesc.x = SwapNormal.z;
-	vNormalDesc.y = SwapNormal.y;
-	vNormalDesc.z = SwapNormal.x;
-	vNormalDesc.z = SwapNormal.w;
+	vector		SwapNormal;
+	vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	SwapNormal.x = vNormalDesc.z;
+	SwapNormal.y = vNormalDesc.y;
+	SwapNormal.z = vNormalDesc.x;
+	SwapNormal.w = 0;
 
-	float3		vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3		vNormal = SwapNormal.xyz * 2.f - 1.f;
 	float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal, In.vNormal.xyz);
 	vNormal = normalize(mul(vNormal, WorldMatrix));
 
 	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
+	Out.vDiffuse = vDiffuse;
 
-	if (g_bHit)
-	{
-		Out.vDiffuse = vDiffuse *float4(0.6f, 0.1f, 0.15f, 1.f);
-	}
-	else
-	{
-		Out.vDiffuse = vDiffuse;
-	}
+	return Out;
+}
 
+PS_OUT_UNNORM PS_MAIN_Monster_UnNormal(PS_IN In)
+{
+	PS_OUT_UNNORM			Out = (PS_OUT_UNNORM)0;
+
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	if (0.1f > vDiffuse.a)
+		discard;
+
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
+	Out.vDiffuse = vDiffuse;
 
 	return Out;
 }
@@ -301,7 +318,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_OUTLINE();
 	}
 
-	pass Monster2
+	pass MonsterNormal2
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -312,10 +329,10 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_Monster();
+		PixelShader = compile ps_5_0 PS_MAIN_Monster_Normal();
 	}
 
-	pass Weapon3
+	pass MonsterUnNormal3
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -326,6 +343,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_Monster_UnNormal();
 	}
+
 }

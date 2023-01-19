@@ -45,6 +45,8 @@ void CMainApp::Tick(_double TimeDelta)
 
 
 	m_pGameInstance->Tick_Engine(TimeDelta);
+
+
 }
 
 HRESULT CMainApp::Render()
@@ -57,6 +59,8 @@ HRESULT CMainApp::Render()
 	m_pRenderer->Draw_RenderGroup();
 	m_pGameInstance->Render_Update_ImGui();
 	m_pGameInstance->Render_Level();
+
+	
 
 #ifdef _DEBUG
 	++m_iNumCallDraw;

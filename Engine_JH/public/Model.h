@@ -46,7 +46,7 @@ public:
 	void						Imgui_RenderMeshes();
 	void						Imgui_RenderTexture();
 public:
-	void						Play_Animation(_double TimeDelta, LERPTYPE eType = LERP_BEGIN);
+	void						Play_Animation(_double dTimeDelta, LERPTYPE eType = LERP_BEGIN, const wstring& wstrRootBoneName = L"");
 	HRESULT						Bind_Material(class CShader* pShader, _uint iMeshIndex, aiTextureType eType, const wstring& pConstantName);
 	HRESULT						Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrBoneConstantName = L"", _uint iPassIndex = 0);
 	HRESULT						Render_2Pass(CShader* pShader, _uint iMeshIndex, const wstring& NoRenderTag = L"", const wstring & wstrBoneConstantName = L"", _uint iPassIndex = 0);
@@ -76,8 +76,8 @@ private:
 	_float						m_fAnimBlendingTime = 1.f;
 	_float						m_fCurAnimBlendingTime = 1.f;
 	// AnimChange
-	_float						m_fAnimChangeTime = 0.05f;
-	_float						m_fCurAnimChangeTime = 0.05f;
+	_float						m_fAnimChangeTime = 0.2f;
+	_float						m_fCurAnimChangeTime = 0.2f;
 
 	_uint						m_iNumAnimation = 0; // 애니메이션의 갯수 
 	vector<class CAnimation*>	m_vecAnimations;

@@ -370,6 +370,11 @@ void CWeapon_State::Tick_Idle(_double TimeDelta)
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FIRE_DRAGON].wstrWeaponName)
 	{
+		// if (m_pModelCom->Get_LastAnimationIndex() == FIRE_DRAGON_IDLE)
+		// 	m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
+		// else
+		// 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+
 		m_pModelCom->Set_CurAnimIndex(FIRE_DRAGON_IDLE);
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[POISON].wstrWeaponName)
@@ -553,8 +558,8 @@ _bool CWeapon_State::MouseInput_None()
 
 _bool CWeapon_State::MouseInput_LB()
 {
-	if (m_pGameInstance->Mouse_Down(DIM_LB))
-		return true;
+	// if (m_pGameInstance->Mouse_Pressing(DIM_LB))
+	// 	return true;
 
 	return false;
 }

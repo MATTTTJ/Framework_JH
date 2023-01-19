@@ -194,13 +194,9 @@ _float4 CCell::Get_CellHeight(_float4 fTargetPos)
 	_vector	vPointC = XMVectorSetW(m_vPoints[POINT_C], 1.f);
 
 	if (TriangleTests::Intersects(dest, vRayDir,	vPointA, vPointB, vPointC, fDist))
-	{
-		_float4 vDest;
-		XMStoreFloat4(&vDest, vRayPos + vRayDir * fDist);
-		return vDest;
-	}
+		return vRayPos + vRayDir * fDist;
 
-	return _float4(0.f,0.f,0.f,1);
+	return XMLoadFloat4(&fTargetPos);
 }
 
 CCell* CCell::Picking_Cell()

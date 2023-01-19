@@ -41,6 +41,10 @@ CModel::CModel(const CModel & rhs)
 		for(_uint i = 0; i<AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(Material.pTexture[i]);
 	}
+
+	m_fAnimChangeTime = 0.05f;
+	m_fCurAnimChangeTime = 0.05f;
+
 }
 
 CMesh* CModel::Get_Mesh(const string& strMeshName)
@@ -451,25 +455,25 @@ void CModel::Imgui_RenderMeshes()
 	Safe_Delete_Array(ppAnimationTag);
 }
 
-void CModel::Play_Animation(_double TimeDelta, LERPTYPE eType)
+void CModel::Play_Animation(_double dTimeDelta, LERPTYPE eType, const wstring & wstrRootBoneName)
 {
 	if (MODEL_NONANIM == m_eType)
 		return;
 
 	if(m_fCurAnimChangeTime < m_fAnimChangeTime)
 	{		
-		m_vecAnimations[m_iLastAnimIndex]->Update_Bones(TimeDelta);
+		m_vecAnimations[m_iLastAnimIndex]->Update_Bones(dTimeDelta, wstrRootBoneName);
 
 		if (eType == LERP_BEGIN)
-			m_vecAnimations[m_iCurAnimIndex]->Update_Lerp(0.0, m_fCurAnimChangeTime / m_fAnimChangeTime);
+			m_vecAnimations[m_iCurAnimIndex]->Update_Lerp(0.0, m_fCurAnimChangeTime / m_fAnimChangeTime, wstrRootBoneName);
 		else if (eType == LERP_CONTINUE)
-			m_vecAnimations[m_iCurAnimIndex]->Update_Lerp((_double)m_vecAnimations[m_iLastAnimIndex]->Get_AnimationProgress(), m_fCurAnimChangeTime / m_fAnimChangeTime);
+			m_vecAnimations[m_iCurAnimIndex]->Update_Lerp((_double)m_vecAnimations[m_iLastAnimIndex]->Get_AnimationProgress(), m_fCurAnimChangeTime / m_fAnimChangeTime, wstrRootBoneName);
 
-		m_fCurAnimChangeTime += (_float)TimeDelta;
+		m_fCurAnimChangeTime += (_float)dTimeDelta;
 	}
 	else
 	{
-		m_vecAnimations[m_iCurAnimIndex]->Update_Bones(TimeDelta);
+		m_vecAnimations[m_iCurAnimIndex]->Update_Bones(dTimeDelta, wstrRootBoneName);
 		m_iLastAnimIndex = m_iCurAnimIndex;
 	}
 

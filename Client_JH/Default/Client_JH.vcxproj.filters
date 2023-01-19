@@ -217,6 +217,12 @@
     <Filter Include="02. GameObjects\00. Public\NormalBossMap">
       <UniqueIdentifier>{d74ce085-23ee-48c1-8458-b7750f3f389d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Boss">
+      <UniqueIdentifier>{1e52aad6-d990-46c6-a7a7-81264af5e2e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Boss\State">
+      <UniqueIdentifier>{3e13ae87-3237-40ca-a4d8-2432f10bb4f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -396,12 +402,20 @@
     <ClInclude Include="..\public\Little_Bug_State.h">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior\State</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Blade.h" />
     <ClInclude Include="..\public\NormalMap.h">
       <Filter>02. GameObjects\00. Public\NormalMap</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Normal_BossMap.h">
       <Filter>02. GameObjects\00. Public\NormalBossMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Normal_Boss.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Blade.h">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss_Golem_State.h">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Boss\State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -570,12 +584,20 @@
     <ClCompile Include="..\private\Little_Bug_State.cpp">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior\State</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Blade.cpp" />
     <ClCompile Include="..\private\NormalMap.cpp">
       <Filter>02. GameObjects\00. Public\NormalMap</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Normal_BossMap.cpp">
       <Filter>02. GameObjects\00. Public\NormalBossMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Normal_Boss.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Blade.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Golem_State.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Boss\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

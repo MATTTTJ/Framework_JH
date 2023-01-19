@@ -83,10 +83,10 @@ void CMonster::Late_Tick(_double TimeDelta)
 		{
 			CMonster* ppMonster = dynamic_cast<CMonster*>(pMonster);
 
-			if (ppMonster == this)
+			if (ppMonster == this || ppMonster== nullptr)
 				continue;
 
-			if (CGameUtils::CollisionSphereSphere(ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY), m_pColliderCom[CMonster::COLLTYPE_HITBODY], fDir))
+			if (CGameUtils::CollisionSphereSphere(m_pColliderCom[CMonster::COLLTYPE_HITBODY], ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY), fDir))
 			{
 				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 				fDir.y = 0.f;
@@ -94,6 +94,12 @@ void CMonster::Late_Tick(_double TimeDelta)
 
 				_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
 				_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+
+				if(m_pNavigationCom == nullptr)
+				{
+					m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vPos);
+					continue;
+				}
 
 				if (true == m_pNavigationCom->IsMove_OnNavigation(vPos, vBlockedLine, vBlockedLineNormal))
 					m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);

@@ -274,6 +274,7 @@ void CHuman_Sword_State::Start_JustStand(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.2f);
 
 	m_pModelCom->Set_CurAnimIndex(SWORD_JUSTSTAND);
+	m_pMonster->Set_On_NaviMesh();
 }
 
 
@@ -357,6 +358,7 @@ void CHuman_Sword_State::Tick_Idle(_double dTimeDelta)
 void CHuman_Sword_State::Tick_Run(_double dTimeDelta)
 {
 	m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
+	m_pMonster->Set_On_NaviMesh();
 }
 
 void CHuman_Sword_State::Tick_JustStand(_double dTimeDelta)

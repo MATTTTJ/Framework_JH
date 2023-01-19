@@ -18,7 +18,7 @@ private:
 
 public:
 	NAVIDESC					Get_NaviDesc() { return m_tNaviDesc; }
-	const _float&				Get_CellHeight() const { return m_fCellHeight.y; }
+	_vector						Get_CellHeight(_float4 vTargetPos);
 	_uint						Get_CellCount() { return (_uint)m_vecCell.size(); }
 	class CCell*				Get_Cell(_int iIndex) { return m_vecCell[iIndex]; }
 	vector<class CCell*>*		Get_vecCell() { return &m_vecCell; }
@@ -27,6 +27,7 @@ public:
 public:
 	virtual HRESULT			Initialize_Prototype(const wstring& wstrFilePath);
 	virtual HRESULT			Initialize_Clone(CGameObject* pOwner, void* pArg) override;
+	
 	// virtual void			Imgui_RenderProperty() override;
 
 public:

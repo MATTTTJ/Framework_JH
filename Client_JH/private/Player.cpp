@@ -174,9 +174,9 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 void CPlayer::Set_On_NaviMesh()
 {
-	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
 	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	PlayerPos.y = m_fHeight + 1.5f;
+	PlayerPos = m_pNavigationCom->Get_CellHeight(PlayerPos);
+	PlayerPos.y += 1.5f;
 	// 2.644
 
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, PlayerPos);
@@ -216,6 +216,11 @@ void CPlayer::Tick(_double dTimeDelta)
 	if (_int TurnY  = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
 	{
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * TurnY * 0.1f);
+	}
+
+	if (CGameInstance::GetInstance()->Key_Down(DIK_F2))
+	{
+		m_pRendererCom->Switch_Collider_Render();
 	}
 
 	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_F1))
@@ -279,7 +284,7 @@ void CPlayer::Tick(_double dTimeDelta)
 	if(m_pWeaponState != nullptr)
 		m_pWeaponState->Tick(dTimeDelta);
 
-	m_pModelCom->Play_Animation(dTimeDelta, m_eLerpType);
+	m_pModelCom->Play_Animation(dTimeDelta, m_eLerpType, L"Bip001 Footsteps");
 
 	for (_uint i = 0; i < m_vecPlayerUI.size(); ++i)
 	{

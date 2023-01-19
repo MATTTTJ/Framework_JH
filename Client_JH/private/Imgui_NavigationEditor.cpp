@@ -7,6 +7,7 @@
 #include <fstream>
 #include "Cell.h"
 #include "Home.h"
+#include "NormalMap.h"
 #include "Player.h"
 #include "Static_Camera.h"
 
@@ -152,7 +153,7 @@ void CImgui_NavigationEditor::Imgui_RenderWindow()
 	if (bDrawCell && m_pGameInstance->Get_CurLevelIndex() == LEVEL_GAMEPLAY)
 	{
 		// Mesh Picking
-		if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_SPACE))
+		if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_F9))
 		{
 			list<CGameObject*>*	MeshList = m_pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_BackGround");
 
@@ -180,23 +181,23 @@ void CImgui_NavigationEditor::Imgui_RenderWindow()
 			}
 		}
 
-		// else if (m_pGameInstance->Mouse_Down(DIM_LB))
-		// {
-		// 	CNavigation* pNavigation = dynamic_cast<CNavigation*>(m_pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_BackGround", L"Com_Navigation"));
-		// 	vector<CCell*>* vecCell = pNavigation->Get_vecCell();
-		// 	CHome*			pHome = dynamic_cast<CHome*>(m_pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_BackGround")->front());
-		//
-		// 	D3D11_VIEWPORT		ViewPort;
-		// 	ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
-		// 	_uint	iNumViewport = 1;
-		//
-		// 	m_pContext->RSGetViewports(&iNumViewport, &ViewPort);
-		//
-		// 	pair<_bool, _int> tmp =  CGameUtils::Picking_Cell(g_hWnd, ViewPort.Width, ViewPort.Height, pHome->Get_Transform(), pNavigation);
-		//
-		// 	m_iSelectedCell = m_iCellIndex = tmp.second;
-		// 	
-		// }
+		else if (m_pGameInstance->Key_Down(DIK_F8))
+		{
+			CNavigation* pNavigation = dynamic_cast<CNavigation*>(m_pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_BackGround", L"Com_Navigation"));
+			vector<CCell*>* vecCell = pNavigation->Get_vecCell();
+			CNormalMap*			pHome = dynamic_cast<CNormalMap*>(m_pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_BackGround")->front());
+		
+			D3D11_VIEWPORT		ViewPort;
+			ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
+			_uint	iNumViewport = 1;
+		
+			m_pContext->RSGetViewports(&iNumViewport, &ViewPort);
+		
+			pair<_bool, _int> tmp =  CGameUtils::Picking_Cell(g_hWnd, ViewPort.Width, ViewPort.Height, pHome->Get_Transform(), pNavigation);
+		
+			m_iSelectedCell = m_iCellIndex = tmp.second;
+			
+		}
 
 
 		// Undo

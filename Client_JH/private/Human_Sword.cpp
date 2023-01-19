@@ -66,6 +66,7 @@ HRESULT CHuman_Sword::Initialize_Clone(const wstring& wstrPrototypeTag, void* pA
 void CHuman_Sword::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+	Set_On_NaviMesh();
 
 	if (m_bIsDead)
 	{
@@ -91,7 +92,6 @@ void CHuman_Sword::Tick(_double TimeDelta)
 		m_pModelCom->Play_Animation(TimeDelta);
 
 	Collider_Tick(TimeDelta);
-	Set_On_NaviMesh();
 	Collision_PlayerEyes();
 
 
@@ -209,11 +209,9 @@ _bool CHuman_Sword::Collider_AttRange(CCollider* pOtherCollider)
 
 void CHuman_Sword::Set_On_NaviMesh()
 {
-	_float m_fHeight = m_pNavigationCom->Get_CellHeight();
-	_float4 vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	vMonsterPos.y = m_fHeight;
-
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMonsterPos);
+	_float4 MonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	MonsterPos = m_pNavigationCom->Get_CellHeight(MonsterPos);
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, MonsterPos);
 }
 
 HRESULT CHuman_Sword::SetUp_Components()

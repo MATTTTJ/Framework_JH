@@ -17,6 +17,7 @@ public:
 	virtual HRESULT		Initialize_Clone(class CGameObject* pOwner, void* pArg) override;
 
 public:
+	void				Switch_Collider_Render() { m_bRender_Collider = !m_bRender_Collider; }
 	HRESULT				Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
 	HRESULT				Add_DebugRenderGroup(class CComponent* pComponent);
 	HRESULT				Draw_RenderGroup();
@@ -35,7 +36,7 @@ private:
 	class CVIBuffer_Rect*				m_pVIBuffer = nullptr;
 	class CShader*						m_pShader = nullptr;
 	_float4x4							m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
-
+	_bool								m_bRender_Collider;
 private:
 	HRESULT				Render_Priority();
 	HRESULT				Render_NonAlphaBlend();

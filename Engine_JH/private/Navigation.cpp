@@ -29,6 +29,14 @@ CNavigation::CNavigation(const CNavigation& rhs)
 
 }
 
+_vector CNavigation::Get_CellHeight(_float4 vTargetPos)
+{
+	if (m_tNaviDesc.iCurrentIndex == -1)
+		return XMLoadFloat4(&vTargetPos);
+
+	return m_vecCell[m_tNaviDesc.iCurrentIndex]->Get_CellHeight(vTargetPos);
+}
+
 HRESULT CNavigation::Initialize_Prototype(const wstring& wstrFilePath)
 {
 	if (wstrFilePath != L"")

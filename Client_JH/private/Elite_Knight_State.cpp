@@ -70,29 +70,29 @@ void CElite_Knight_State::Tick(_double dTimeDelta)
 		m_bDamagedAnim = true;
 	}
 
-	if(m_pGameInstance->Key_Down(DIK_F7))
-	{
-		CBullet::BULLETOPTION BulletDesc;
-		_float4 Position;
-		_matrix pivot = XMMatrixIdentity();
-		pivot = XMMatrixRotationZ(XMConvertToRadians(180.f));
-
-		XMStoreFloat4(&Position, (m_pMonster->Get_BoneMatrix("Bip001 Prop1") * CGameUtils::Get_PlayerPivotMatrix() * m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]);
-
-		BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-		_float4 PlayerPos = m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION);
-		PlayerPos = _float4(PlayerPos.x, PlayerPos.y, PlayerPos.z, PlayerPos.w);
-		BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(PlayerPos - Position);
-		// BulletDesc.BulletDesc.m_vBulletLook = m_pMonster->m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-
-		BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_MONSTER;
-		BulletDesc.m_pOwner = m_pMonster;
-		CBullet*		pBullet = nullptr;
-		pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Normal_Elite_Knight_Blade", &BulletDesc));
-		NULL_CHECK(pBullet);
-
-		m_bAttackOnce = true;
-	}
+	// if(m_pGameInstance->Key_Down(DIK_F7))
+	// {
+	// 	CBullet::BULLETOPTION BulletDesc;
+	// 	_float4 Position;
+	// 	_matrix pivot = XMMatrixIdentity();
+	// 	pivot = XMMatrixRotationZ(XMConvertToRadians(180.f));
+	//
+	// 	XMStoreFloat4(&Position, (m_pMonster->Get_BoneMatrix("Bip001 Prop1") * CGameUtils::Get_PlayerPivotMatrix() * m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]);
+	//
+	// 	BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	// 	_float4 PlayerPos = m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION);
+	// 	PlayerPos = _float4(PlayerPos.x, PlayerPos.y, PlayerPos.z, PlayerPos.w);
+	// 	BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(PlayerPos - Position);
+	// 	// BulletDesc.BulletDesc.m_vBulletLook = m_pMonster->m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	//
+	// 	BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_MONSTER;
+	// 	BulletDesc.m_pOwner = m_pMonster;
+	// 	CBullet*		pBullet = nullptr;
+	// 	pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Normal_Elite_Knight_Blade", &BulletDesc));
+	// 	NULL_CHECK(pBullet);
+	//
+	// 	m_bAttackOnce = true;
+	// }
 
 }
 

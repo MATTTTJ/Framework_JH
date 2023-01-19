@@ -47,7 +47,6 @@ public:
 private:
 	CRenderer*					m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;
-	CNavigation*				m_pNavigationCom = nullptr;
 	class CHuman_Explode_State*	m_pHuman_Explode_State = nullptr;
 
 private:
