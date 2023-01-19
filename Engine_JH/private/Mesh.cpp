@@ -42,7 +42,9 @@ HRESULT CMesh::Save_Mesh(HANDLE& hFile, DWORD& dwByte)
 	if (m_eType == CModel::MODEL_NONANIM)
 	{
 		for (_uint i = 0; i < m_iNumVertices; ++i)
+		{
 			WriteFile(hFile, &m_pNonAnimVertices[i], sizeof(VTXMODEL), &dwByte, nullptr);
+		}
 	}
 	else if (m_eType == CModel::MODEL_ANIM)
 	{
@@ -96,8 +98,9 @@ HRESULT CMesh::Load_Mesh(HANDLE& hFile, DWORD& dwByte)
 		m_pNonAnimVertices = new VTXMODEL[m_iNumVertices];
 
 		for (_uint i = 0; i < m_iNumVertices; ++i)
+		{
 			ReadFile(hFile, &m_pNonAnimVertices[i], sizeof(VTXMODEL), &dwByte, nullptr);
-
+		}
 		ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 		m_tSubResourceData.pSysMem = m_pNonAnimVertices;
 	}
@@ -106,7 +109,10 @@ HRESULT CMesh::Load_Mesh(HANDLE& hFile, DWORD& dwByte)
 		m_pAnimVertices = new VTXANIMMODEL[m_iNumVertices];
 
 		for (_uint i = 0; i < m_iNumVertices; ++i)
+		{
 			ReadFile(hFile, &m_pAnimVertices[i], sizeof(VTXANIMMODEL), &dwByte, nullptr);
+			XMStoreFloat3(&m_pAnimVertices[i].vTangent, XMVector3TransformNormal(XMLoadFloat3(&m_pAnimVertices[i].vNormal), XMMatrixIdentity()));
+		}
 
 		ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 		m_tSubResourceData.pSysMem = m_pAnimVertices;
@@ -374,7 +380,9 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh, CModel* pModel)
 		XMStoreFloat3(&m_pNonAnimVertices[i].vNormal, XMVector3TransformNormal(XMLoadFloat3(&m_pNonAnimVertices[i].vNormal), PivotMatrix));
 
 		memcpy(&m_pNonAnimVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
+
 		memcpy(&m_pNonAnimVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
+		XMStoreFloat3(&m_pNonAnimVertices[i].vTangent, XMVector3TransformNormal(XMLoadFloat3(&m_pNonAnimVertices[i].vTangent), PivotMatrix));
 	}
 
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
@@ -414,6 +422,7 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 		else
 			m_pAnimVertices[i].vTexUV = _float2(0.f, 0.f);
 		memcpy(&m_pAnimVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
+		XMStoreFloat3(&m_pAnimVertices[i].vTangent, XMVector3TransformNormal(XMLoadFloat3(&m_pAnimVertices[i].vTangent), XMMatrixIdentity()));
 	}
 
 	/* 메시에 영향ㅇ르 준다.ㅏ */

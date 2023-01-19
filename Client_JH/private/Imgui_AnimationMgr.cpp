@@ -20,6 +20,8 @@ HRESULT CImgui_AnimationMgr::Initialize(void* pArg)
 
 void CImgui_AnimationMgr::Imgui_RenderWindow()
 {
+	m_vecAnimObjects = CGameInstance::GetInstance()->Get_AnimObject();
+
 	_uint		iObjectCount = (_uint)m_vecAnimObjects->size();
 
 	ImGui::BulletText("Animation Objects");
@@ -46,7 +48,7 @@ void CImgui_AnimationMgr::Imgui_RenderWindow()
 	{
 		CGameObject*	pGameObject = (*m_vecAnimObjects)[iSelectObject];
 
-		CModel*	pDefaultPistol = dynamic_cast<CModel*>(pGameObject->Get_Component(L"Com_Model"));
+		CModel*	pDefaultPistol = dynamic_cast<CModel*>(pGameObject->Get_Component(L"Com_Flame_Bullet_Model"));
 
 		if (pDefaultPistol != nullptr)
 		{

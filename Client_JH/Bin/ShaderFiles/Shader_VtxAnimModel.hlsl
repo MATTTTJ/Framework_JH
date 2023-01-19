@@ -10,6 +10,10 @@ texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
 texture2D		g_ModelGlowTexture;
 texture2D		g_ModelTestTexture;
+texture2D		g_ModelSpecularTexture;
+
+bool			g_bNormalTexOn;
+
 bool			g_bHit = false;
 float4			g_vLimColor; 
 float			g_Outline_Offset = 0.03f;
@@ -31,7 +35,9 @@ struct VS_OUT
 	float4		vPosition : SV_POSITION; // SV_POSITION
 	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
 	float4		vTangent : TANGENT;
+	float3		vBinormal : BINORMAL;
 };
 
 float4 CreateOutline(float4 vertPos, float Outline)
@@ -83,7 +89,9 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vPosition = mul(vPosition, matWVP);
 	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
 	Out.vTexUV = In.vTexUV;
-	Out.vTangent = (vector)0.f;
+	Out.vProjPos = Out.vPosition;
+	Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix));
+	Out.vBinormal = normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
 
 	return Out;
 }
@@ -130,16 +138,18 @@ struct PS_IN
 	float4		vPosition : SV_POSITION;
 	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
 	float4		vTangent : TANGENT;
+	float3		vBinormal : BINORMAL;
 };
-
-
 
 struct PS_OUT
 {
 	/*SV_TARGET0 : 모든 정보가 결정된 픽셀이다. AND 0번째 렌더타겟에 그리기위한 색상이다. */
 	float4		vDiffuse : SV_TARGET0;
 	float4		vNormal : SV_TARGET1;
+	float4		vDepth : SV_TARGET2;
+	float4		vSpecularMap : SV_TARGET3;
 };
 
 //PS_OUT
@@ -147,43 +157,44 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	// Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	//
-	// float4 TexNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	// TexNormal = vector(TexNormal.xyz * 2.f - 1.f, 0.f);
-	// float3 vCameraPos = normalize((-TexNormal.xyz) + (-g_vCameraPos.xyz));
-	// // float RimLightColor = smoothstep(0.001f, 0.5f, 1 - saturate(dot(In.vNormal.xyz, vCameraPos.xyz)));
-	// float RimLightColor = 1 - saturate(dot(In.vNormal.xyz, -vCameraPos.xyz));
-	//
-	// if (RimLightColor > 0.85f)
-	// {
-	// 	RimLightColor = 0.85f;
-	// }
-	// ;
-	// float3 OriginNormal = normalize((-In.vNormal.xyz) + (-g_vCameraPos.xyz));
-	// float OriRimLightColor = 1 - saturate(dot(In.vNormal.xyz, -OriginNormal));
-	//
-	// float AddRim = RimLightColor * OriRimLightColor;
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	if (0.1f > vDiffuse.a)
+		discard;
+	vDiffuse.a = 1.f;
 
-	float Lx = 0;
-	float Ly = 0;
 
-	for( int y = -1; y <= 1; ++y)
+	if (g_bNormalTexOn)
 	{
-		for(int x = -1; x<= 1; ++x)
-		{
-			float2 offset = float2(x, y) * float2(1/1280.f, 1/720.f);
-			float3 tex = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + offset).rgb;
+		vector		SwapNormal;
+		vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+		SwapNormal.x = vNormalDesc.z;
+		SwapNormal.y = vNormalDesc.y;
+		SwapNormal.z = vNormalDesc.x;
+		SwapNormal.w = 0;
 
-			float luminance = dot(tex, float3(0.3, 0.59, 0.11));
-
-			Lx += luminance * Kx[y + 1][x + 1];
-			Ly += luminance * Ky[y + 1][x + 1];
-		}
+		float3		vNormal = SwapNormal.xyz * 2.f - 1.f;
+		float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal, In.vNormal.xyz);
+		vNormal = normalize(mul(vNormal, WorldMatrix));
+		Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	}
+	else
+	{
+		Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	}
 
-	float L = sqrt((Lx*Lx) + (Ly*Ly));
+	Out.vDiffuse = vDiffuse;
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
 
+	vector SpecularMap = g_ModelSpecularTexture.Sample(LinearSampler, In.vTexUV);
+	
+	// float3		vNormal = SpecularMap.xyz * 2.f - 1.f;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_PLAYER_ARM(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
 
 	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	if (0.1f > vDiffuse.a)
@@ -191,55 +202,9 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vDiffuse = vDiffuse;
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	// float3 tmp = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz * 2.f - 1.f, 0.f);
-	// Out.vNormal.x = tmp.z;
-	// Out.vNormal.y = tmp.y;
-	// Out.vNormal.z = In.vNormal.x;
-	// Out.vNormal.w = 0.f;
-	//
-	// float3 vCameraPos = normalize((Out.vNormal.xyz) + (-g_vCameraPos.xyz));
-	// float RimLightColor = smoothstep(0.9f, 1.0f, 1 - saturate(dot(In.vNormal.xyz, g_vCameraPos.xyz)));
-	// float OriRimLightColor = 1 - saturate(dot(In.vNormal.xyz, -g_vCameraPos.xyz));
-	// OriRimLightColor = pow(OriRimLightColor, 100.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
+	Out.vSpecularMap = g_ModelSpecularTexture.Sample(LinearSampler, In.vTexUV);
 
-	if(L < 0.2)
-	{
-		// if (g_bHit)
-		// {
-		// 	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * ((AddRim * 2.f )* float4(0.6f, 0.1f, 0.15f, 1.f));
-		// 	// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz,0.f);
-		// 	// Out.vNormal = vector(Out.vNormal.xyz * 0.5f + 0.5f, 0.f);
-		//
-		// }
-		// else
-		// {
-		// RimLightColor = pow(RimLightColor, 3.f);
-		Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
-			// Out.vNormal = vector(Out.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-		// }
-	}
-	else
-	{
-		// if (g_bHit)
-		// {
-			// Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f) * ((AddRim * 2.f)* float4(0.6f, 0.1f, 0.15f, 1.f));
-			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
-			// Out.vNormal = vector(Out.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-		// }
-		// else
-		// {
-			Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f);
-			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
-			// Out.vNormal = vector(Out.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-		// }
-	}
-
-
-	
 	return Out;
 }
 
@@ -247,78 +212,31 @@ PS_OUT PS_MAIN_Monster(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
-	// float4 TexNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	// TexNormal = vector(TexNormal.xyz * 2.f - 1.f, 0.f);
-	// float3 vCameraPos = normalize(In.vNormal.xyz + (-g_vCameraPos.xyz));
-	// float RimLightColor = smoothstep(0.001f, 0.5f, 1 - saturate(dot(In.vNormal.xyz, vCameraPos.xyz)));
-	// float RimLightColor = 1 - saturate(dot(In.vNormal.xyz, -vCameraPos.xyz));
-
-
-	float Lx = 0;
-	float Ly = 0;
-
-	for (int y = -1; y <= 1; ++y)
-	{
-		for (int x = -1; x <= 1; ++x)
-		{
-			float2 offset = float2(x, y) * float2(1 / 1280.f, 1 / 720.f);
-			float3 tex = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + offset).rgb;
-
-			float luminance = dot(tex, float3(0.3, 0.59, 0.11));
-
-			Lx += luminance * Kx[y + 1][x + 1];
-			Ly += luminance * Ky[y + 1][x + 1];
-		}
-	}
-
-	float L = sqrt((Lx*Lx) + (Ly*Ly));
-
-
-
 	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	if (0.1f > vDiffuse.a)
 		discard;
+	vector		vNormalDesc; 
+	vector		SwapNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	vNormalDesc.x = SwapNormal.z;
+	vNormalDesc.y = SwapNormal.y;
+	vNormalDesc.z = SwapNormal.x;
+	vNormalDesc.z = SwapNormal.w;
 
-	// Out.vDiffuse = vDiffuse;
-	// Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	float3 tmp = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz * 2.f - 1.f, 0.f);
+	float3		vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal, In.vNormal.xyz);
+	vNormal = normalize(mul(vNormal, WorldMatrix));
 
-	Out.vNormal.x = In.vNormal.x;
-	Out.vNormal.y = tmp.y;
-	Out.vNormal.z = tmp.z;  
-	Out.vNormal.w = 0.f;
-	
-	if (L < 0.2)
+	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
+
+	if (g_bHit)
 	{
-		if (g_bHit)
-		{
-			Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) *float4(0.6f, 0.1f, 0.15f, 1.f);
-			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
-		}
-		else
-		{
-			//float Rimpow = pow(RimLightColor, 3.f);
-			//*(Rimpow)
-			Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
-		}
+		Out.vDiffuse = vDiffuse *float4(0.6f, 0.1f, 0.15f, 1.f);
 	}
 	else
 	{
-		if (g_bHit)
-		{
-			Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f) * float4(0.6f, 0.1f, 0.15f, 1.f);
-			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
-		}
-		else
-		{
-			Out.vDiffuse = (g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.5f);
-			// Out.vNormal = vector(g_NormalTexture.Sample(LinearSampler, In.vTexUV).xyz, 0.f);
-		}
+		Out.vDiffuse = vDiffuse;
 	}
-	
 
 
 	return Out;
@@ -329,34 +247,22 @@ PS_OUT PS_MAIN_OUTLINE(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-
 	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	if (0.1f > vDiffuse.a)
 		discard;
-
-	
-	// float4	ModelTex = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.1f;
-	// float4	GlowTex = float4(1.f, 0.1f, 0.2f, 1.f);
 		
 	if (g_OutLineColor.r > 0.5f)
 	{
 		Out.vDiffuse = g_OutLineColor;
 		Out.vNormal = vector(0.f, 1.f, 0.f, 0.f);
+		Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
 	}
 	else
 	{
 		Out.vDiffuse = vector(0.f, 0.f, 0.f, 1.f);
 		Out.vNormal = vector(0.f, 0.f, 0.f, 0.f);
+		Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
 	}
-
-		// Out.vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-		// Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	// }
-	// else
-	// {
-		// Out.vDiffuse = saturate(ModelTex + g_OutLineColor);
-		// Out.vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	// }
 	
 	if (Out.vDiffuse.a < 0.1f)
 		discard;
@@ -367,7 +273,7 @@ PS_OUT PS_MAIN_OUTLINE(PS_IN In)
 
 technique11 DefaultTechnique
 {
-	pass Default0
+	pass PlayerArm0
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
@@ -407,5 +313,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_Monster();
+	}
+
+	pass Weapon3
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 }

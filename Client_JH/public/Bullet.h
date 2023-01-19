@@ -73,6 +73,9 @@ protected:
 	CGameObject*				m_pOwner = nullptr;
 	CCollider*					m_pBulletColliderCom = nullptr;
 	CCollider*					m_pBoomColliderCom = nullptr;
+	CCollider*					m_pBladeColliderCom = nullptr;
+
+
 	CVIBuffer_Point_Instancing*	m_pPointBuffer = nullptr;
 	CModel*						m_pModelCom = nullptr;
 protected:

@@ -180,23 +180,23 @@ void CImgui_NavigationEditor::Imgui_RenderWindow()
 			}
 		}
 
-		else if (m_pGameInstance->Mouse_Down(DIM_LB))
-		{
-			CNavigation* pNavigation = dynamic_cast<CNavigation*>(m_pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_BackGround", L"Com_Navigation"));
-			vector<CCell*>* vecCell = pNavigation->Get_vecCell();
-			CHome*			pHome = dynamic_cast<CHome*>(m_pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_BackGround")->front());
-
-			D3D11_VIEWPORT		ViewPort;
-			ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
-			_uint	iNumViewport = 1;
-
-			m_pContext->RSGetViewports(&iNumViewport, &ViewPort);
-
-			pair<_bool, _int> tmp =  CGameUtils::Picking_Cell(g_hWnd, ViewPort.Width, ViewPort.Height, pHome->Get_Transform(), pNavigation);
-
-			m_iSelectedCell = m_iCellIndex = tmp.second;
-			
-		}
+		// else if (m_pGameInstance->Mouse_Down(DIM_LB))
+		// {
+		// 	CNavigation* pNavigation = dynamic_cast<CNavigation*>(m_pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_BackGround", L"Com_Navigation"));
+		// 	vector<CCell*>* vecCell = pNavigation->Get_vecCell();
+		// 	CHome*			pHome = dynamic_cast<CHome*>(m_pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_BackGround")->front());
+		//
+		// 	D3D11_VIEWPORT		ViewPort;
+		// 	ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
+		// 	_uint	iNumViewport = 1;
+		//
+		// 	m_pContext->RSGetViewports(&iNumViewport, &ViewPort);
+		//
+		// 	pair<_bool, _int> tmp =  CGameUtils::Picking_Cell(g_hWnd, ViewPort.Width, ViewPort.Height, pHome->Get_Transform(), pNavigation);
+		//
+		// 	m_iSelectedCell = m_iCellIndex = tmp.second;
+		// 	
+		// }
 
 
 		// Undo

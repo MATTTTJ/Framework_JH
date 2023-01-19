@@ -172,6 +172,7 @@
     <ClInclude Include="..\private\Boom.h" />
     <ClInclude Include="..\public\Arrow.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\Blade.h" />
     <ClInclude Include="..\public\Bullet.h" />
     <ClInclude Include="..\public\BulletEffect.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
@@ -213,6 +214,8 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Monster.h" />
     <ClInclude Include="..\public\MonsterUI.h" />
+    <ClInclude Include="..\public\NormalMap.h" />
+    <ClInclude Include="..\public\Normal_BossMap.h" />
     <ClInclude Include="..\public\NumberUI.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerUI_Base.h" />
@@ -231,6 +234,7 @@
   <ItemGroup>
     <ClCompile Include="..\private\Arrow.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\Blade.cpp" />
     <ClCompile Include="..\private\Bullet.cpp" />
     <ClCompile Include="..\private\BulletEffect.cpp" />
     <ClCompile Include="..\private\Default_Pistol.cpp" />
@@ -273,6 +277,8 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
     <ClCompile Include="..\private\MonsterUI.cpp" />
+    <ClCompile Include="..\private\NormalMap.cpp" />
+    <ClCompile Include="..\private\Normal_BossMap.cpp" />
     <ClCompile Include="..\private\NumberUI.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerUI_Base.cpp" />

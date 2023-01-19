@@ -355,16 +355,27 @@ void CPlayer::Late_Tick(_double dTimeDelta)
 
 HRESULT CPlayer::Render()
 {
-
+	
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
-	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-		// m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+		HRESULT hr = m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+		if(hr == S_FALSE)
+		{
+			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+			m_pSpecularMap_Arm->Bind_ShaderResource(m_pShaderCom, L"g_ModelSpecularTexture");
+			m_bNormalTexOn = false;
+		}
+		else if (hr == S_OK)
+		{
+			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+			m_pSpecularMap_Weapon->Bind_ShaderResource(m_pShaderCom, L"g_ModelSpecularTexture");
+			m_bNormalTexOn = true;
+		}
+		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices",1);
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
@@ -416,6 +427,10 @@ HRESULT CPlayer::SetUp_Components()
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fire_Dragon", L"Com_Fire_Dragon_Model", (CComponent**)&m_tWeaponDesc[WEAPON_FIREDRAGON].m_pWeaponModelCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", L"Com_Flame_Bullet_Model", (CComponent**)&m_tWeaponDesc[WEAPON_FLAMEBULLET].m_pWeaponModelCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Poison", L"Com_Poison_Model", (CComponent**)&m_tWeaponDesc[WEAPON_POISON].m_pWeaponModelCom, this), E_FAIL);
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Arm_s", L"Com_ArmSTextureCom", (CComponent**)&m_pSpecularMap_Arm, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Default_Pistol_s", L"Com_WeaponSTextureCom", (CComponent**)&m_pSpecularMap_Weapon, this), E_FAIL);
+
 
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_State", L"Com_State", (CComponent**)&m_pState, this), E_FAIL);
 
@@ -490,6 +505,9 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	XMStoreFloat3(&tmp, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
+
+
+
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_PixelOffset", &(_float4(1 / (_float)g_iWinSizeX, 1 / (_float)g_iWinSizeY, 0.f, 0.f)) , sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
@@ -499,6 +517,7 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &XMVectorSet(0.f,0.f,0.f,1.f), sizeof(_vector)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bHit", &m_bHitColor, sizeof(_bool)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_Outline_Offset", &m_fOutLineOffset, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bNormalTexOn", &m_bNormalTexOn, sizeof(_bool)), E_FAIL);
 
 	const LIGHTDESC* pLightDesc = pGameInstance->Get_LightDesc(0);
 	if (nullptr == pLightDesc)
@@ -656,6 +675,8 @@ void CPlayer::Free()
 
 	for (auto& pUI : m_vecPlayerUI)
 		Safe_Release(pUI);
+	Safe_Release(m_pSpecularMap_Arm);
+	Safe_Release(m_pSpecularMap_Weapon);
 
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pState);

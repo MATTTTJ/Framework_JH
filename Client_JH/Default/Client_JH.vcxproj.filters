@@ -211,6 +211,12 @@
     <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior\State">
       <UniqueIdentifier>{440f49ea-0a71-443a-9267-0a299fa8806c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\00. Public\NormalMap">
+      <UniqueIdentifier>{e7ea96ac-a3a4-47cc-bbea-15278d857643}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\00. Public\NormalBossMap">
+      <UniqueIdentifier>{d74ce085-23ee-48c1-8458-b7750f3f389d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -390,6 +396,13 @@
     <ClInclude Include="..\public\Little_Bug_State.h">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior\State</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Blade.h" />
+    <ClInclude Include="..\public\NormalMap.h">
+      <Filter>02. GameObjects\00. Public\NormalMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Normal_BossMap.h">
+      <Filter>02. GameObjects\00. Public\NormalBossMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -556,6 +569,13 @@
     </ClCompile>
     <ClCompile Include="..\private\Little_Bug_State.cpp">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Elite_Bug\Junior\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Blade.cpp" />
+    <ClCompile Include="..\private\NormalMap.cpp">
+      <Filter>02. GameObjects\00. Public\NormalMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Normal_BossMap.cpp">
+      <Filter>02. GameObjects\00. Public\NormalBossMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

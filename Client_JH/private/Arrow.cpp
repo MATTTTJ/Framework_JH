@@ -33,8 +33,6 @@ HRESULT CArrow::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 		m_pOwner = m_tBulletOption.m_pOwner;
 		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
-		// _matrix pivot = XMMatrixIdentity();
-		// pivot = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToDegrees(180.f));
 
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tBulletOption.BulletDesc.TransformDesc.vInitPos.x, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.y, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.z, 1.f));
 		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMVector4Normalize((XMLoadFloat4(&m_tBulletOption.BulletDesc.m_vBulletLook))));

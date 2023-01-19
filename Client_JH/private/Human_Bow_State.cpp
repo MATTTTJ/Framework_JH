@@ -412,7 +412,7 @@ void CHuman_Bow_State::Tick_Detected(_double dTimeDelta)
 
 void CHuman_Bow_State::Tick_Attack_A(_double dTimeDelta)
 {
-	if (!m_bShotOnce && m_pModelCom->Get_AnimationProgress() > 0.1f)
+	if (m_bShotOnce == false && m_pModelCom->Get_AnimationProgress() > 0.1f)
 	{
 		CBullet::BULLETOPTION BulletDesc;
 		_float4 Position;

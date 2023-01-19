@@ -1255,7 +1255,7 @@ void CImgui_ProtoMgr::CloneObject_Editor()
 						list<CGameObject*>* CloneObjects = CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, Pair.first);
 						if (CloneObjects->size() == 0 || CloneObjects == nullptr)
 							continue;
-
+							
 						string	strLayerTag = "";
 						strLayerTag.assign(Pair.first.begin(), Pair.first.end());
 						jLayer["Layer Tag"] = strLayerTag;

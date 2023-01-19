@@ -62,6 +62,7 @@ HRESULT CRenderer::Draw_RenderGroup()
 	FAILED_CHECK_RETURN(Render_NonLight(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_OutLine(), E_FAIL);
 
 #ifdef _DEBUG
 	FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
@@ -71,6 +72,7 @@ HRESULT CRenderer::Draw_RenderGroup()
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f), E_FAIL);
+		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_SpecularMap"), 100.0f, 700.f, 200.f, 200.f), E_FAIL);
 
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.0f, 100.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.0f, 300.f, 200.f, 200.f), E_FAIL);
@@ -102,11 +104,14 @@ HRESULT CRenderer::Initialize_Prototype()
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Shade"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, &_float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Depth"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, &_float4(0.0f, 0.0f, 0.0f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Specular"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.0f, 0.0f, 0.0f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_SpecularMap"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.0f, 0.0f, 0.0f, 0.f)), E_FAIL);
 
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Diffuse")), E_FAIL);  // µðÆÛµå ·»´õ¸µ (ºû)À» ¼öÇàÇÏ±â À§ÇÑ 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Normal")), E_FAIL);   // ÇÊ¿äÇÑ µ¥ÀÌÅÍµéÀ» ÀúÀåÇÑ ·»´õÅ¸°Ùµé
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Depth")), E_FAIL); // ºû ¿¬»êÀÇ °á°ú¸¦ ÀúÀåÇÒ ·»´õ Å¸°Ùµé
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_SpecularMap")), E_FAIL); // ºû ¿¬»êÀÇ °á°ú¸¦ ÀúÀåÇÒ ·»´õ Å¸°Ùµé
+
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade")), E_FAIL); // ºû ¿¬»êÀÇ °á°ú¸¦ ÀúÀåÇÒ ·»´õ Å¸°Ùµé
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specular")), E_FAIL); // ºû ¿¬»êÀÇ °á°ú¸¦ ÀúÀåÇÒ ·»´õ Å¸°Ùµé
 
@@ -127,6 +132,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_SpecularMap"), 100.0f, 700.f, 200.f, 200.f), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.0f, 100.f, 200.f, 200.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.0f, 300.f, 200.f, 200.f), E_FAIL);
@@ -194,6 +200,7 @@ HRESULT CRenderer::Render_LightAcc()
 
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_NormalTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Normal"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_DepthTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Depth"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_SpecularMapTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_SpecularMap"))), E_FAIL);
 
 	CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
 
@@ -280,6 +287,21 @@ HRESULT CRenderer::Render_UI()
 	}
 
 	m_RenderObjectList[RENDER_UI].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_OutLine()
+{
+	for (auto& pGameObject : m_RenderObjectList[RENDER_OUTLINE])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObjectList[RENDER_OUTLINE].clear();
 
 	return S_OK;
 }

@@ -121,6 +121,8 @@ HRESULT CBoom::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+
 		m_pModelCom->Render(m_pShaderCom, i);
 	}
 	return S_OK;

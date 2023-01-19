@@ -7,6 +7,9 @@ vector			g_vSlashColor = (vector)0.f;
 float			g_glowStrength = 1.f;
 texture2D		g_Texture;
 texture2D       g_SkillGlowTexture;
+
+texture2D		g_DepthTexture;
+
 /* 샘플링 해오는 함수 */
 /* dx9 : tex2D(DefaultSampler, In.vTexUV);*/
 /* dx11 : g_Texture.Sample(DefaultSampler, In.vTexUV); */
@@ -21,6 +24,7 @@ struct VS_OUT
 {
 	float4		vPosition : SV_POSITION;
 	float2		vTexUV : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -35,6 +39,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
 
 	return Out;
 }
@@ -43,6 +48,7 @@ struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
 	float2		vTexUV : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
 };
 
 struct PS_OUT
@@ -59,6 +65,28 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	if (Out.vColor.a < 0.1f)
 		discard;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_EFFECT(PS_IN In)
+{
+	//Soft Effect
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+
+	float2		vTexUV;
+
+	vTexUV.x = (In.vProjPos.x / In.vProjPos.w) * 0.5f + 0.5f;
+	vTexUV.y = (In.vProjPos.y / In.vProjPos.w) * -0.5f + 0.5f;
+
+	vector		vDepthDesc = g_DepthTexture.Sample(LinearSampler, vTexUV);
+
+	float		fOldViewZ = vDepthDesc.y * 300.f;
+	float		fViewZ = In.vProjPos.w;
+
+	Out.vColor.a = Out.vColor.a * (saturate(fOldViewZ - fViewZ) * 2.5f);
 
 	return Out;
 }
@@ -206,5 +234,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_GLOW();
+	}
+
+	pass Rect6
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_EFFECT();
 	}
 }

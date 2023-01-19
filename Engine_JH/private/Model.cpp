@@ -444,21 +444,6 @@ void CModel::Imgui_RenderMeshes()
 				bReName = false;
 			}
 		}
-
-		// ImGui::Separator();
-		// ImGui::Text("Loop");
-		// if (ImGui::RadioButton("Allow", m_vecAnimations[iSelectAnimation]->Get_AnimationLoop()))
-		// 	m_vecAnimations[iSelectAnimation]->Get_AnimationLoop() = !m_vecAnimations[iSelectAnimation]->Get_AnimationLoop();
-		// ImGui::SameLine();
-		// if (ImGui::RadioButton("Disallow", !m_vecAnimations[iSelectAnimation]->Get_AnimationLoop()))
-		// 	m_vecAnimations[iSelectAnimation]->Get_AnimationLoop() = !m_vecAnimations[iSelectAnimation]->Get_AnimationLoop();
-		//
-		// ImGui::Text("Animation Speed");
-		// _double&	dTickPerSecond = m_vecAnimations[iSelectAnimation]->Get_AnimationTickPerSecond();
-		// IMGUI_LEFT_LABEL(ImGui::InputDouble, "Input", &dTickPerSecond, 0.5, 1.0);
-		// ImGui::SameLine();
-		// if (ImGui::Button("Reset"))
-		// 	dTickPerSecond = 25.0;
 	}
 
 	for (_uint i = 0; i < m_iNumMeshes; ++i)

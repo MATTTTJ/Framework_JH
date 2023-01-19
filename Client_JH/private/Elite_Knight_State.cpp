@@ -69,6 +69,31 @@ void CElite_Knight_State::Tick(_double dTimeDelta)
 		m_fCurDamagedAnimCoolTime = 0.f;
 		m_bDamagedAnim = true;
 	}
+
+	if(m_pGameInstance->Key_Down(DIK_F7))
+	{
+		CBullet::BULLETOPTION BulletDesc;
+		_float4 Position;
+		_matrix pivot = XMMatrixIdentity();
+		pivot = XMMatrixRotationZ(XMConvertToRadians(180.f));
+
+		XMStoreFloat4(&Position, (m_pMonster->Get_BoneMatrix("Bip001 Prop1") * CGameUtils::Get_PlayerPivotMatrix() * m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]);
+
+		BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+		_float4 PlayerPos = m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION);
+		PlayerPos = _float4(PlayerPos.x, PlayerPos.y, PlayerPos.z, PlayerPos.w);
+		BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(PlayerPos - Position);
+		// BulletDesc.BulletDesc.m_vBulletLook = m_pMonster->m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+		BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_MONSTER;
+		BulletDesc.m_pOwner = m_pMonster;
+		CBullet*		pBullet = nullptr;
+		pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Normal_Elite_Knight_Blade", &BulletDesc));
+		NULL_CHECK(pBullet);
+
+		m_bAttackOnce = true;
+	}
+
 }
 
 void CElite_Knight_State::Late_Tick(_double dTimeDelta)
@@ -253,6 +278,9 @@ void CElite_Knight_State::Start_Attack_WIND(_double dTimeDelta)
 	// 거리가 멀면 (Bow 활 쏘는 조건) 
 
 	m_pModelCom->Set_CurAnimIndex(KNIGHT_ATTACK_WIND);
+
+
+
 }
 
 void CElite_Knight_State::Start_Attack_IN_SHIELD(_double dTimeDelta)
@@ -339,12 +367,33 @@ void CElite_Knight_State::Tick_Run(_double dTimeDelta)
 
 void CElite_Knight_State::Tick_Attack_WIND(_double dTimeDelta)
 {
-	if (m_pMonster->m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTPOS]))
+	// BOW 화살 쏘는거랑 똑같음 
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.5f && m_bAttackOnce == false)
 	{
-		// BOW 화살 쏘는거랑 똑같음 
-		m_pMonster->m_pPlayer->Collision_Event(m_pMonster);
+		CBullet::BULLETOPTION BulletDesc;
+		_float4 Position;
+		_matrix pivot = XMMatrixIdentity();
+		pivot = XMMatrixRotationZ(XMConvertToRadians(180.f));
+
+		XMStoreFloat4(&Position, (m_pMonster->Get_BoneMatrix("Bip001 Prop1") * CGameUtils::Get_PlayerPivotMatrix() * m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]);
+
+		BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+		_float4 PlayerPos = m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION);
+		PlayerPos = _float4(PlayerPos.x, PlayerPos.y, PlayerPos.z, PlayerPos.w);
+		BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(PlayerPos - Position);
+		// BulletDesc.BulletDesc.m_vBulletLook = m_pMonster->m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+		BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_MONSTER;
+		BulletDesc.m_pOwner = m_pMonster;
+		CBullet*		pBullet = nullptr;
+		pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Normal_Elite_Knight_Blade", &BulletDesc));
+		NULL_CHECK(pBullet);
+
 		m_bAttackOnce = true;
 	}
+
+
 }
 
 void CElite_Knight_State::Tick_Attack_IN_SHIELD(_double dTimeDelta)
@@ -472,6 +521,8 @@ _bool CElite_Knight_State::Player_DetectedAndClose()
 		return m_pMonster->m_bPlayerDetectedClose;
 	else
 		false;
+
+	return false;
 }
 
 _bool CElite_Knight_State::Player_CloseAndCanAttack()

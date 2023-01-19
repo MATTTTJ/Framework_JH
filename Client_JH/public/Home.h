@@ -31,6 +31,8 @@ private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CNavigation*			m_pNavigationCom = nullptr;
+	_bool						m_bNormalTexOn = false;
+	
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();

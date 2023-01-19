@@ -13,6 +13,7 @@ https://mgun.tistory.com/2121
 
 트레일
 
+정반사 매핑 렌더타겟 추가
 
 
 

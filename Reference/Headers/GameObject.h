@@ -72,7 +72,6 @@ protected:
 protected:
 	_bool					m_bHasModel = false; 
 	_bool					m_bIsClone = false;
-
 	_bool					m_bIsDead = false;
 
 	wstring					m_wstrPrototypeGameObjectTag = L"";

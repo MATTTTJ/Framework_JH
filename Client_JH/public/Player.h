@@ -99,6 +99,8 @@ private:
 	CShader*				m_pShaderCom	= nullptr;
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
+	CTexture*				m_pSpecularMap_Arm = nullptr;
+	CTexture*				m_pSpecularMap_Weapon = nullptr;
 
 	CCollider*				m_pFirstAimColliderCom = nullptr;
 	CCollider*				m_pSecondAimColliderCom = nullptr;
@@ -112,7 +114,7 @@ private:
 	
 	// Shader CamPos
 	_float3					m_vCamPos;
-
+	_bool					m_bNormalTexOn;
 	// vector<CGameObject*>	m_vecPlayerParts;
 public:
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
