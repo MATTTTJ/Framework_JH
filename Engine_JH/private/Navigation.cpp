@@ -275,6 +275,7 @@ _bool CNavigation::IsMove_OnNavigation(_fvector vTargetPos, _float4& vBlockedLin
 						}
 						return true;
 					}
+					return false;
 				}
 			}
 		}

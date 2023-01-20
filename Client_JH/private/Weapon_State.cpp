@@ -107,7 +107,7 @@ void CWeapon_State::Tick(_double dTimeDelta)
 
 	m_bDeadOnce = false;
 
-
+	// m_pPlayer->Set_On_NaviMesh();
 }
 
 void CWeapon_State::Late_Tick(_double dTimeDelta)

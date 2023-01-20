@@ -166,8 +166,9 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(0.5f, 0.5f, 0.5f));
-	
-
+	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(PlayerPos.x, PlayerPos.y + 1.5f, PlayerPos.z, 1.f));
+	// Set_On_NaviMesh();
 
 	return S_OK;
 }
@@ -175,17 +176,18 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 void CPlayer::Set_On_NaviMesh()
 {
 	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	PlayerPos = m_pNavigationCom->Get_CellHeight(PlayerPos);
-	PlayerPos.y += 1.5f;
-	// 2.644
+	_float4 tmp = _float4(PlayerPos.x, PlayerPos.y - 1.5f, PlayerPos.z, 1.f);
+	_float4 CellPos = m_pNavigationCom->Get_CellHeight(tmp);
 
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, PlayerPos);
+	// PlayerPos.y  = PlayerPos.y + 1.5f;
+	// 2.644
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(CellPos.x, CellPos.y +1.5f, CellPos.z, 1.f));
 }
 
 void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
-
+	Set_On_NaviMesh();
 	{
 		
 		m_fCurDashCoolTime += (_float)dTimeDelta;
@@ -250,33 +252,42 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_bNowIsDash = true;
 		m_bCanDash = false;
 	}
-	if (CGameInstance::GetInstance()->Key_Down(DIK_F6))
+	// if (CGameInstance::GetInstance()->Key_Down(DIK_F6))
+	// {
+	// 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+	// 	CMonster*			pMonster = nullptr;
+	//
+	// 	_matrix PivotMatrix = XMMatrixIdentity();
+	// 	PivotMatrix.r[3] = XMVectorSet(-14.f, 0.f, 0.19f, 1.f);
+	//
+	// 	CMonster::MONSTEROPTION			MonsterDesc;
+	// 	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_UPSPAWN] = true;
+	// 	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// 	MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// 	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// 	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 5.f;
+	// 	MonsterDesc.m_iCellIndex = 40;
+	// 	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Human_Spear", PivotMatrix, &MonsterDesc));
+	// 	pMonster->Set_Player(this);
+	//
+	// 	RELEASE_INSTANCE(CGameInstance);
+	// }
+
+	_bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Get_RenderState();
+	_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_RenderState();
+
+	if (CGameInstance::GetInstance()->Key_Down(DIK_F4))
 	{
-		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-		CMonster*			pMonster = nullptr;
-
-		_matrix PivotMatrix = XMMatrixIdentity();
-		PivotMatrix.r[3] = XMVectorSet(-14.f, 0.f, 0.19f, 1.f);
-
-		CMonster::MONSTEROPTION			MonsterDesc;
-		MonsterDesc.m_bFirstSpawnType[CMonster::STATE_UPSPAWN] = true;
-		MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-		MonsterDesc.MonsterDesc.m_iDamage = 15;
-		MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-		MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 5.f;
-		MonsterDesc.m_iCellIndex = 40;
-		pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Human_Spear", PivotMatrix, &MonsterDesc));
-		pMonster->Set_Player(this);
-
-		RELEASE_INSTANCE(CGameInstance);
+		DynamicCamera = !DynamicCamera;
+		StaticCamera = !StaticCamera;
 	}
-
-	Set_On_NaviMesh();
 
 	if(m_bNowIsDash)
 	{
 		m_pTransformCom->Dash(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
 	}
+
+
 
 	if(m_pState != nullptr)
 		m_pState->Tick(dTimeDelta);
@@ -284,7 +295,7 @@ void CPlayer::Tick(_double dTimeDelta)
 	if(m_pWeaponState != nullptr)
 		m_pWeaponState->Tick(dTimeDelta);
 
-	m_pModelCom->Play_Animation(dTimeDelta, m_eLerpType, L"Bip001 Footsteps");
+	m_pModelCom->Play_Animation(dTimeDelta, m_eLerpType);
 
 	for (_uint i = 0; i < m_vecPlayerUI.size(); ++i)
 	{

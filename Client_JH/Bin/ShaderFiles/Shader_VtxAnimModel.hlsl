@@ -178,7 +178,7 @@ PS_OUT PS_MAIN(PS_IN In)
 		vector		SwapNormal;
 		vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 		SwapNormal.x = vNormalDesc.z;
-		SwapNormal.y = vNormalDesc.y;
+		SwapNormal.y = In.vNormal.y;
 		SwapNormal.z = vNormalDesc.x;
 		SwapNormal.w = 0;
 
@@ -198,22 +198,6 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector SpecularMap = g_ModelSpecularTexture.Sample(LinearSampler, In.vTexUV);
 	
 	// float3		vNormal = SpecularMap.xyz * 2.f - 1.f;
-
-	return Out;
-}
-
-PS_OUT PS_MAIN_PLAYER_ARM(PS_IN In)
-{
-	PS_OUT			Out = (PS_OUT)0;
-
-	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	if (0.1f > vDiffuse.a)
-		discard;
-
-	Out.vDiffuse = vDiffuse;
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
-	Out.vSpecularMap = g_ModelSpecularTexture.Sample(LinearSampler, In.vTexUV);
 
 	return Out;
 }

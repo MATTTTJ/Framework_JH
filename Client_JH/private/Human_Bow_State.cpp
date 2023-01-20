@@ -84,11 +84,11 @@ void CHuman_Bow_State::Tick(_double dTimeDelta)
 		m_bTurnPatrolDirection = true;
 	}
 
-	if(m_pGameInstance->Key_Down(DIK_F7))
-	{
-		// 위치잡기 
-		
-	}
+	// if(m_pGameInstance->Key_Down(DIK_F7))
+	// {
+	// 	// 위치잡기 
+	// 	
+	// }
 
 }
 

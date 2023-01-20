@@ -21,5 +21,5 @@ https://mgun.tistory.com/2121
 https://mgun.tistory.com/category/Study/M%27s%20Lecture
 
 
-// 몬스터 키작은애 bow 빼고 키큰애 넣어 
-내일 바로작업
+// 플레이어 UI, 보스 UI, 보스 패턴 스킬 등등
+//  포탈, 트리거, 다 끝나면 이펙트

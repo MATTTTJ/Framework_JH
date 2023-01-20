@@ -24,6 +24,12 @@ void CImgui_Setting::Imgui_RenderWindow()
 		_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_ZCamera")->back())->Get_RenderState();
 		_bool		bSelect = false;
 
+		if(CGameInstance::GetInstance()->Key_Down(DIK_F4))
+		{
+			DynamicCamera = !DynamicCamera;
+			StaticCamera = !StaticCamera;
+		}
+
 
 		if (ImGui::RadioButton("Editor Cam", bSelect))
 		{

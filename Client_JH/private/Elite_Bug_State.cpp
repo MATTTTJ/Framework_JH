@@ -90,24 +90,24 @@ void CElite_Bug_State::Tick(_double dTimeDelta)
 		m_bCanAttack = true;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_F7))
-	{
-		CMonster::MONSTEROPTION			MonsterDesc;
-		MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-		MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-		MonsterDesc.MonsterDesc.m_iDamage = 15;
-		MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-		MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-		MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-		MonsterDesc.m_iCellIndex = m_pNavigationCom->Get_NaviDesc().iCurrentIndex;
-
-		_matrix PivotMatrix = XMMatrixIdentity();
-		// PivotMatrix = PivotMatrix * XMMatrixScaling(0.4f, 0.4f, 0.4f);
-		PivotMatrix.r[3] = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-		CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
-		NULL_CHECK_RETURN(pMonster, );
-		pMonster->Set_Player(m_pPlayer);
-	}
+	// if (m_pGameInstance->Key_Down(DIK_F7))
+	// {
+	// 	CMonster::MONSTEROPTION			MonsterDesc;
+	// 	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// 	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// 	MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// 	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// 	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// 	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// 	MonsterDesc.m_iCellIndex = m_pNavigationCom->Get_NaviDesc().iCurrentIndex;
+	//
+	// 	_matrix PivotMatrix = XMMatrixIdentity();
+	// 	// PivotMatrix = PivotMatrix * XMMatrixScaling(0.4f, 0.4f, 0.4f);
+	// 	PivotMatrix.r[3] = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	// 	CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
+	// 	NULL_CHECK_RETURN(pMonster, );
+	// 	pMonster->Set_Player(m_pPlayer);
+	// }
 
 }
 
