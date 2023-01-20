@@ -177,9 +177,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	{
 		vector		SwapNormal;
 		vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-		SwapNormal.x = vNormalDesc.z;
-		SwapNormal.y = In.vNormal.y;
-		SwapNormal.z = vNormalDesc.x;
+		SwapNormal.x = vNormalDesc.x;
+		SwapNormal.y = vNormalDesc.y;
+		SwapNormal.z = vNormalDesc.z;
 		SwapNormal.w = 0;
 
 		float3		vNormal = SwapNormal.xyz * 2.f - 1.f;
@@ -207,22 +207,33 @@ PS_OUT PS_MAIN_Monster_Normal(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
 	if (0.1f > vDiffuse.a)
 		discard;
-	vector		SwapNormal;
-	vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-	SwapNormal.x = vNormalDesc.z;
-	SwapNormal.y = vNormalDesc.y;
-	SwapNormal.z = vNormalDesc.x;
-	SwapNormal.w = 0;
+	vDiffuse.a = 1.f;
 
-	float3		vNormal = SwapNormal.xyz * 2.f - 1.f;
-	float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal, In.vNormal.xyz);
-	vNormal = normalize(mul(vNormal, WorldMatrix));
 
-	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
+	if (g_bNormalTexOn)
+	{
+		vector		SwapNormal;
+		vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+		SwapNormal.x = vNormalDesc.x;
+		SwapNormal.y = vNormalDesc.y;
+		SwapNormal.z = vNormalDesc.z;
+		SwapNormal.w = 0;
+
+		float3		vNormal = SwapNormal.xyz * 2.f - 1.f;
+		float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal, In.vNormal.xyz);
+		vNormal = normalize(mul(vNormal, WorldMatrix));
+		Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	}
+	else
+	{
+		Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	}
+
 	Out.vDiffuse = vDiffuse;
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
 
 	return Out;
 }

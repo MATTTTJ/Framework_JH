@@ -145,22 +145,41 @@ HRESULT CHuman_Bow::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-
-		if(iNumMeshes == 0)
+		HRESULT hr = m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+		if (hr == S_FALSE)
 		{
-			m_pTextureCom[TEXTURE_NORMAL]->Bind_ShaderResource(m_pShaderCom, L"g_NormalTexture");
+			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+			m_bNormalTexOn = false;
 		}
-		else
+		else if (hr == S_OK)
 		{
-			m_pTextureCom[TEXTURE_GLOW]->Bind_ShaderResource(m_pShaderCom, L"g_NormalTexture");
+			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+			m_bNormalTexOn = true;
 		}
-
-		// m_pModelCom->Render_2Pass(m_pShaderCom, i, L"monster_body_2001_020", L"g_BoneMatrices", 1);
+		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 1);
-		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 2);
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices",2);
 	}
+
+	// for (_uint i = 0; i < iNumMeshes; ++i)
+	// {
+	// 	m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+	//
+	// 	if(iNumMeshes == 0)
+	// 	{
+	// 		m_pTextureCom[TEXTURE_NORMAL]->Bind_ShaderResource(m_pShaderCom, L"g_NormalTexture");
+	// 	}
+	// 	else
+	// 	{
+	// 		m_pTextureCom[TEXTURE_GLOW]->Bind_ShaderResource(m_pShaderCom, L"g_NormalTexture");
+	// 	}
+	//
+	// 	// m_pModelCom->Render_2Pass(m_pShaderCom, i, L"monster_body_2001_020", L"g_BoneMatrices", 1);
+	//
+	// 	m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 1);
+	// 	m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 2);
+	// }
 
 	return S_OK;
 }
@@ -345,6 +364,7 @@ HRESULT CHuman_Bow::SetUp_ShaderResources()
 	{
 		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &m_vDefaultOutLineColor, sizeof(_float)), E_FAIL);
 	}
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bNormalTexOn", &m_bNormalTexOn, sizeof(_bool)), E_FAIL);
 
 	return S_OK;
 }

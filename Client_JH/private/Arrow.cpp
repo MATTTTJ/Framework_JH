@@ -36,7 +36,7 @@ HRESULT CArrow::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tBulletOption.BulletDesc.TransformDesc.vInitPos.x, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.y, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.z, 1.f));
 		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMVector4Normalize((XMLoadFloat4(&m_tBulletOption.BulletDesc.m_vBulletLook))));
-		m_pTransformCom->Set_Scaled(XMVectorSet(0.1f,0.1f,0.1f,1.f));
+		m_pTransformCom->Set_Scaled(XMVectorSet(0.01f,0.01f,0.01f,1.f));
 		
 	}
 	else

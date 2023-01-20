@@ -518,20 +518,20 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	//
 	// CMonster::MONSTEROPTION			MonsterDesc;
 
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-15.7f, 0.f, 26.f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 188;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-	
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-15.7f, 0.f, 26.f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 188;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
 	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
 	PivotMatrix.r[3] = XMVectorSet(-12.2f, 0.f, 57.4f, 1.f);
 	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
@@ -543,92 +543,92 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	MonsterDesc.m_iCellIndex = 220;
 	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
 	pMonster->Set_Player(pPlayer);
-
+	
 	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-34.2f, 0.f, 37.8f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 256;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-21.6f, 0.f, 65.7f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 282;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-45.3f, 0.f, 66.4f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 291;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(17.f, 0.f, 44.2f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 403;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-62.4f, -0.9f, 79.65f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 449;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-63.2f, 0.95f, 99.3f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 466;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-34.2f, 0.f, 37.8f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 256;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-21.6f, 0.f, 65.7f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 282;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-45.3f, 0.f, 66.4f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 291;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(17.f, 0.f, 44.2f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 403;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-62.4f, -0.9f, 79.65f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 449;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-63.2f, 0.95f, 99.3f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 466;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 	// ~BOW
 	////////////////////
 	// Granade
@@ -647,103 +647,103 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 	//
 	//
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-15.3f, 0.f, 15.7f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 71;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-	
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(4.f, 0.f, 13.7f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 135;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(11.f, 1.6f, 22.1f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 158;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(12.9f, 1.6f, 23.6f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 159;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(3.9f, 1.6f, 26.7f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 172;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-20.1f, 0.f, 37.6f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 243;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-30.1f, 1.4f, 47.0f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 265;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-15.3f, 0.f, 15.7f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 71;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(4.f, 0.f, 13.7f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 135;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(11.f, 1.6f, 22.1f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 158;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(12.9f, 1.6f, 23.6f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 159;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(3.9f, 1.6f, 26.7f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 172;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-20.1f, 0.f, 37.6f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 243;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-30.1f, 1.4f, 47.0f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 265;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 
 	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION)); // 위치 확인 필요
 	// PivotMatrix.r[3] = XMVectorSet(-30.1f, 1.4f, 47.0f, 1.f);
@@ -759,19 +759,19 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	//
 	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-51.5f, -0.94f, 85.2f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 452;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-51.5f, -0.94f, 85.2f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 452;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 
 	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
 	// PivotMatrix.r[3] = XMVectorSet(-70.f, 1.49f, 102.3f, 1.f);
@@ -787,19 +787,19 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	//
 	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(13.f, 0.f, 35.1f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 388;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(13.f, 0.f, 35.1f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 388;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 	// ~ Granade
 	///////////////////
 	// // Normal Explode
@@ -817,178 +817,178 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	//
 	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 	//
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(11.4f, 1.f, 12.9f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 140;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-	
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(13.6f, 1.f, 17.f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 151;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(2.2f, 0.f, 22.1f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 163;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-7.7f, -0.85f, 42.f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 201;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-20.7f, 0.f, 51.8f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 232;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-29.8f, -1.4f, 81.1f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 328;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(7.38f, 0.f, 33.9f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 378;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
-
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-68.9f, -0.9f, 83.5f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 455;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(11.4f, 1.f, 12.9f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 140;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(13.6f, 1.f, 17.f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 151;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(2.2f, 0.f, 22.1f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 163;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-7.7f, -0.85f, 42.f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 201;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-20.7f, 0.f, 51.8f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 232;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-29.8f, -1.4f, 81.1f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 328;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(7.38f, 0.f, 33.9f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 378;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
+	//
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-68.9f, -0.9f, 83.5f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 455;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	//
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 	// ~Normal Explode
 
 	// Elite Monster_Bug
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-70.7f, 1.49f, 102.3f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 451;
-	// MonsterDesc.MonsterDesc.TransformDesc.vInitPos = _float3( -14.f, 0.f, 0.19f );
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Elite_Bug", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-70.7f, 1.49f, 102.3f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 451;
+	// // MonsterDesc.MonsterDesc.TransformDesc.vInitPos = _float3( -14.f, 0.f, 0.19f );
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Elite_Bug", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 
 	// Little_Bug
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-22.85f, -1.4f, 79.5f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 313;
-	// MonsterDesc.MonsterDesc.TransformDesc.vInitPos = _float3( -14.f, 0.f, 0.19f );
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-22.85f, -1.4f, 79.5f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 313;
+	// // MonsterDesc.MonsterDesc.TransformDesc.vInitPos = _float3( -14.f, 0.f, 0.19f );
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-20.6f, -1.4f, 79.5f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 313;
-	// MonsterDesc.MonsterDesc.TransformDesc.vInitPos = _float3( -14.f, 0.f, 0.19f );
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-	NULL_CHECK_RETURN(pMonster, E_FAIL);
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-20.6f, -1.4f, 79.5f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 313;
+	// // MonsterDesc.MonsterDesc.TransformDesc.vInitPos = _float3( -14.f, 0.f, 0.19f );
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	// NULL_CHECK_RETURN(pMonster, E_FAIL);
 	//~Little_BUG
 
 	////////
 	//Elite_Knight
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(24.f, 0.f, 46.f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_UPSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex =421;
-	// MonsterDesc.MonsterDesc.TransformDesc.vInitPos = _float3(-14.f, 0.f, 0.19f);
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Elite_Knight", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(24.f, 0.f, 46.f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_UPSPAWN] = true;
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex =421;
+	// // MonsterDesc.MonsterDesc.TransformDesc.vInitPos = _float3(-14.f, 0.f, 0.19f);
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Elite_Knight", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
 	//~ Elite Knight
 	/////////////////////////
 	// NULL_CHECK_RETURN(pMonster, E_FAIL);

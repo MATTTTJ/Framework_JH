@@ -111,7 +111,7 @@ HRESULT CMesh::Load_Mesh(HANDLE& hFile, DWORD& dwByte)
 		for (_uint i = 0; i < m_iNumVertices; ++i)
 		{
 			ReadFile(hFile, &m_pAnimVertices[i], sizeof(VTXANIMMODEL), &dwByte, nullptr);
-			XMStoreFloat3(&m_pAnimVertices[i].vTangent, XMVector3TransformNormal(XMLoadFloat3(&m_pAnimVertices[i].vNormal), XMMatrixIdentity()));
+			XMStoreFloat3(&m_pAnimVertices[i].vTangent, XMVector3TransformNormal(XMLoadFloat3(&m_pAnimVertices[i].vTangent), XMMatrixIdentity()));
 		}
 
 		ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
@@ -412,17 +412,22 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, CModel* pModel)
 
 	ZeroMemory(m_pAnimVertices, sizeof(VTXANIMMODEL) * m_iNumVertices);
 
+	_matrix PivotMatrix = pModel->Get_PivotMatrix();
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		memcpy(&m_pAnimVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
+
 		memcpy(&m_pAnimVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
+		// XMStoreFloat3(&m_pAnimVertices[i].vNormal, XMVector3TransformCoord(XMLoadFloat3(&m_pAnimVertices[i].vNormal), PivotMatrix));
+
 		if (pAIMesh->mTextureCoords[0] != nullptr)
 			memcpy(&m_pAnimVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
 		else
 			m_pAnimVertices[i].vTexUV = _float2(0.f, 0.f);
+
 		memcpy(&m_pAnimVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
-		XMStoreFloat3(&m_pAnimVertices[i].vTangent, XMVector3TransformNormal(XMLoadFloat3(&m_pAnimVertices[i].vTangent), XMMatrixIdentity()));
+		// XMStoreFloat3(&m_pAnimVertices[i].vTangent, XMVector3TransformNormal(XMLoadFloat3(&m_pAnimVertices[i].vTangent), PivotMatrix));
 	}
 
 	/* 메시에 영향ㅇ르 준다.ㅏ */

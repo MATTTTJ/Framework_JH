@@ -101,7 +101,7 @@ protected:
 	// _float4				m_vHitLimLightColor = {}
 	_float					m_fCurHitColorOnTime = 0.f;
 	_float					m_fHitColorOnTime = 0.3f;
-
+	_bool					m_bNormalTexOn = false;
 	_bool					m_bHitColor = false;
 	_bool					m_bCanUIRender = false;
 	_int					m_iCellIndex = 0;
