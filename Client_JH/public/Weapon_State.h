@@ -42,8 +42,8 @@ public:
 
 	struct WEAPON_OPTION
 	{
-		_uint		iCurBullet = 0;
-		_uint		iMaxBullet = 0;
+		_int		iCurBullet = 0;
+		_int		iMaxBullet = 0;
 
 		_uint		iAttack = 0;
 		wstring		wstrWeaponName = L"";

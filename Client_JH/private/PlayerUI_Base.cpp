@@ -22,8 +22,8 @@ HRESULT CPlayerUI_Base::Initialize_Prototype()
 
 HRESULT CPlayerUI_Base::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
-	m_fSizeX = 570.f;
-	m_fSizeY = 570.f;
+	m_fSizeX = 512.f;
+	m_fSizeY = 512.f;
 	m_fX = m_fSizeX * 0.5f;
 	m_fY = m_fSizeY * 0.5f;
 
@@ -116,6 +116,272 @@ void CPlayerUI_Base::Free()
 {
 	__super::Free();
 }
+
+// Player_HP
+
+
+CPlayerUI_Hp_Red::CPlayerUI_Hp_Red(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CUI(pDevice, pContext)
+{
+}
+
+CPlayerUI_Hp_Red::CPlayerUI_Hp_Red(const CPlayerUI_Hp_Red& rhs)
+	: CUI(rhs)
+{
+}
+
+HRESULT CPlayerUI_Hp_Red::Initialize_Prototype()
+{
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CPlayerUI_Hp_Red::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
+{
+	m_fSizeX = 274.f;
+	m_fSizeY = 512.f;
+	m_fX = m_fSizeX * 0.5f;
+	m_fY = m_fSizeY * 0.5f;
+
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
+
+	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
+
+	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_fX - m_fSizeX * 0.5f, -m_fY + m_fSizeY * 0.5f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-784.f, -470.f, 0.f, 1.f));
+	
+	m_fProgress = 1.f;
+	
+	return S_OK;
+}
+
+void CPlayerUI_Hp_Red::Tick(_double dTimeDelta)
+{
+	__super::Tick(dTimeDelta);
+	
+	
+		m_PlayerOption = dynamic_cast<CPlayer*>(m_pOwner)->Get_PlayerStat();
+		m_iCurHP = m_PlayerOption.m_iHp;
+		if (m_iCurHP != m_iLastHP)
+		{
+			SetProgress(m_PlayerOption.m_iHp, m_PlayerOption.m_iMaxHp);
+			m_fDist = ((m_fSizeX * (1 - m_fProgress)) * 0.5f);
+			m_iLastHP = m_iCurHP;
+		}
+
+		m_pTransformCom->Set_Scaled(_float3(m_fSizeX * m_fProgress, m_fSizeY, 1.f));
+		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-784.f - m_fDist, -470.f, 0.f, 1.f));
+
+}
+
+void CPlayerUI_Hp_Red::Late_Tick(_double dTimeDelta)
+{
+	__super::Late_Tick(dTimeDelta);
+
+	if (nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+}
+
+HRESULT CPlayerUI_Hp_Red::Render()
+{
+	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+
+	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+
+	m_pShaderCom->Begin(1);
+
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CPlayerUI_Hp_Red::SetUp_Component()
+{
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Shader_VtxTex", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerHp", L"Com_Texture", (CComponent**)&m_pTextureCom, this), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CPlayerUI_Hp_Red::SetUp_ShaderResources()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix");
+	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
+	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
+	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
+	// m_pShaderCom->Set_RawValue(L"g_fTime", &m_fTime, sizeof(_float));
+
+	// m_fTime
+	return S_OK;
+}
+
+CPlayerUI_Hp_Red* CPlayerUI_Hp_Red::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CPlayerUI_Hp_Red*	pInstance = new CPlayerUI_Hp_Red(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed to Create : CPlayerUI_Hp_Red");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject* CPlayerUI_Hp_Red::Clone(const wstring& wstrPrototypeTag, void* pArg)
+{
+	CPlayerUI_Hp_Red*	pInstance = new CPlayerUI_Hp_Red(*this);
+
+	if (FAILED(pInstance->Initialize_Clone(wstrPrototypeTag, pArg)))
+	{
+		MSG_BOX("Failed to Create : CPlayerUI_Hp_Red");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CPlayerUI_Hp_Red::Free()
+{
+	__super::Free();
+}
+
+// Player Shield
+
+CPlayerUI_Hp_Shield::CPlayerUI_Hp_Shield(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CUI(pDevice, pContext)
+{
+}
+
+CPlayerUI_Hp_Shield::CPlayerUI_Hp_Shield(const CPlayerUI_Hp_Shield& rhs)
+	: CUI(rhs)
+{
+}
+
+HRESULT CPlayerUI_Hp_Shield::Initialize_Prototype()
+{
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CPlayerUI_Hp_Shield::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
+{
+	m_fSizeX = 270.f;
+	m_fSizeY = 512.f;
+	m_fX = m_fSizeX * 0.5f;
+	m_fY = m_fSizeY * 0.5f;
+
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
+
+	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
+
+	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-779.f, -470.f, 0.f, 1.f));
+	m_fProgress = 1.f;
+	return S_OK;
+}
+
+void CPlayerUI_Hp_Shield::Tick(_double dTimeDelta)
+{
+	__super::Tick(dTimeDelta);
+
+	m_PlayerOption = dynamic_cast<CPlayer*>(m_pOwner)->Get_PlayerStat();
+	m_iCurHP = m_PlayerOption.m_iShieldPoint;
+
+	if (m_iCurHP != m_iLastHP)
+	{
+		SetProgress(m_PlayerOption.m_iShieldPoint, m_PlayerOption.m_iMaxShieldPoint);
+		m_fDist = ((m_fSizeX * (1 - m_fProgress)) * 0.5f);
+		m_iLastHP = m_iCurHP;
+	}
+
+	m_pTransformCom->Set_Scaled(_float3(m_fSizeX * m_fProgress, m_fSizeY, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-779.f - m_fDist, -470.f, 0.f, 1.f));
+}
+
+void CPlayerUI_Hp_Shield::Late_Tick(_double dTimeDelta)
+{
+	__super::Late_Tick(dTimeDelta);
+
+	if (nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+}
+
+HRESULT CPlayerUI_Hp_Shield::Render()
+{
+	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+
+	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+
+	m_pShaderCom->Begin(1);
+
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CPlayerUI_Hp_Shield::SetUp_Component()
+{
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Shader_VtxTex", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerShield", L"Com_Texture", (CComponent**)&m_pTextureCom, this), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CPlayerUI_Hp_Shield::SetUp_ShaderResources()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix");
+	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
+	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
+	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
+	// m_pShaderCom->Set_RawValue(L"g_fTime", &m_fTime, sizeof(_float));
+
+	// m_fTime
+	return S_OK;
+}
+
+CPlayerUI_Hp_Shield* CPlayerUI_Hp_Shield::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CPlayerUI_Hp_Shield*	pInstance = new CPlayerUI_Hp_Shield(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed to Create : CPlayerUI_Hp_Shield");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject* CPlayerUI_Hp_Shield::Clone(const wstring& wstrPrototypeTag, void* pArg)
+{
+	CPlayerUI_Hp_Shield*	pInstance = new CPlayerUI_Hp_Shield(*this);
+
+	if (FAILED(pInstance->Initialize_Clone(wstrPrototypeTag, pArg)))
+	{
+		MSG_BOX("Failed to Create : CPlayerUI_Hp_Shield");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CPlayerUI_Hp_Shield::Free()
+{
+	__super::Free();
+}
+
 
 // Player Skill
 

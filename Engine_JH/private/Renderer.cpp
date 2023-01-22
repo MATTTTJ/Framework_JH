@@ -63,6 +63,7 @@ HRESULT CRenderer::Draw_RenderGroup()
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_OutLine(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Fade(), E_FAIL);
 
 #ifdef _DEBUG
 	FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
@@ -263,6 +264,11 @@ HRESULT CRenderer::Render_NonLight()
 
 HRESULT CRenderer::Render_AlphaBlend()
 {
+	m_RenderObjectList[RENDER_ALPHABLEND].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	{
+		return pSour->Get_CamDistance() > pDest->Get_CamDistance();
+	});
+
 	for (auto& pGameObject : m_RenderObjectList[RENDER_ALPHABLEND])
 	{
 		if (nullptr != pGameObject)
@@ -278,6 +284,8 @@ HRESULT CRenderer::Render_AlphaBlend()
 
 HRESULT CRenderer::Render_UI()
 {
+
+
 	for (auto& pGameObject : m_RenderObjectList[RENDER_UI])
 	{
 		if (nullptr != pGameObject)
@@ -302,6 +310,21 @@ HRESULT CRenderer::Render_OutLine()
 	}
 
 	m_RenderObjectList[RENDER_OUTLINE].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Fade()
+{
+	for (auto& pGameObject : m_RenderObjectList[RENDER_FADE])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObjectList[RENDER_FADE].clear();
 
 	return S_OK;
 }

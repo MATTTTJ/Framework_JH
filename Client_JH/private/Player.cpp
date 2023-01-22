@@ -158,16 +158,27 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
-	m_pWeaponState = CWeapon_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
-	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
 
 	m_pModelCom->Set_CurAnimIndex(CWeapon_State::DEFAULT_PISTOL_IDLE);
 
-	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(0.5f, 0.5f, 0.5f));
 	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(PlayerPos.x, PlayerPos.y + 1.5f, PlayerPos.z, 1.f));
+
+	//Elite_Bug
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-59.f, -0.9f + 1.5f, 64.6f, 1.f));
+	// m_pNavigationCom->Set_CellIndex(442);
+	// Normal_Boss
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(114.f, 1.5f, 87.8f, 1.f));
+	m_pNavigationCom->Set_CellIndex(501);
+	// Elite_Knight
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.7f, 0.36f, 36.5f, 1.f));
+	// m_pNavigationCom->Set_CellIndex(360);
+	m_pWeaponState = CWeapon_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
+	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
+	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
+
 	// Set_On_NaviMesh();
 
 	return S_OK;
@@ -187,6 +198,17 @@ void CPlayer::Set_On_NaviMesh()
 void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	if (m_PlayerOption.m_iHp <= 0)
+		m_PlayerOption.m_iHp = 0;
+	if (m_PlayerOption.m_iShieldPoint <= 0)
+		m_PlayerOption.m_iShieldPoint = 0;
+
+	m_PlayerOption.m_iShieldPoint += (_int)(dTimeDelta * 30);
+
+	if (m_PlayerOption.m_iMaxShieldPoint <= m_PlayerOption.m_iShieldPoint)
+		m_PlayerOption.m_iShieldPoint = m_PlayerOption.m_iMaxShieldPoint;
+
 	Set_On_NaviMesh();
 	{
 		
@@ -334,8 +356,25 @@ void CPlayer::Tick(_double dTimeDelta)
 	m_pSecondAimColliderCom->Update(_matrix(R, U, L, P));
 	static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Late_Tick(dTimeDelta);
 
-	
-
+	// if (CGameInstance::GetInstance()->Key_Down(DIK_F5))
+	// {
+	// 	_int tmp = m_PlayerOption.m_iHp + m_PlayerOption.m_iShieldPoint;
+	// 	_int Damage = 30;
+	// 	_int ShieldPoint = m_PlayerOption.m_iShieldPoint;
+	//
+	// 	_int result = m_PlayerOption.m_iShieldPoint - Damage;
+	//
+	// 	if (result < 0)
+	// 	{
+	// 		m_PlayerOption.m_iShieldPoint = 0;
+	//
+	// 		m_PlayerOption.m_iHp += result;
+	// 	}
+	// 	else if (result >= 0)
+	// 	{
+	// 		m_PlayerOption.m_iShieldPoint = result;
+	// 	}
+	// }
 }
 
 void CPlayer::Late_Tick(_double dTimeDelta)
@@ -378,18 +417,29 @@ HRESULT CPlayer::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		HRESULT hr = m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
-		if(hr == S_FALSE)
+		HRESULT hNormal = m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+		if(hNormal == S_FALSE)
 		{
 			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 			m_pSpecularMap_Arm->Bind_ShaderResource(m_pShaderCom, L"g_ModelSpecularTexture");
 			m_bNormalTexOn = false;
 		}
-		else if (hr == S_OK)
+		else if (hNormal == S_OK)
 		{
 			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-			m_pSpecularMap_Weapon->Bind_ShaderResource(m_pShaderCom, L"g_ModelSpecularTexture");
+
+			// m_pSpecularMap_Weapon->Bind_ShaderResource(m_pShaderCom, L"g_ModelSpecularTexture");
 			m_bNormalTexOn = true;
+		}
+
+		HRESULT hSpecular = m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_OPACITY, L"g_ModelSpecularTexture");
+		if(hSpecular == S_FALSE)
+		{
+			m_bSpecularTexOn = false;
+		}
+		if(hSpecular== S_OK)
+		{
+			m_bSpecularTexOn = true;
 		}
 		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
@@ -556,6 +606,18 @@ HRESULT CPlayer::Ready_UI()
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
+	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Hp"));
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Weapon_State(m_pWeaponState);
+	m_vecPlayerUI.push_back(pPlayerUI);
+	
+	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Shield"));
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Weapon_State(m_pWeaponState);
+	m_vecPlayerUI.push_back(pPlayerUI);
+
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_Player_Skill_BaseTex"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
 	pPlayerUI->Set_Owner(this);
@@ -615,6 +677,8 @@ HRESULT CPlayer::Ready_UI()
 	pPlayerUI->Set_Owner(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
+
+
 
 	CUI::COUNTDESC eType;
 	eType.m_eType = CUI::CNT_BULLET;

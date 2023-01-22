@@ -129,9 +129,9 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 
 	vector		vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
 	vector		vLook = vWorldPos - g_vCamPosition;
-
-	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * saturate(dot(normalize(vLook) * -1.f, normalize(vReflect)));
-
+	vector		Specular = g_SpecularMapTexture_Deferred.Sample(LinearSampler, In.vTexUV);
+	Out.vSpecular = (g_vLightSpecular * Specular) * saturate(dot(normalize(vLook) * -1.f, normalize(vReflect)));
+	
 	Out.vSpecular.a = 0.f;
 
 	return Out;
@@ -192,7 +192,9 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 
 	vector		vDiffuse = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
 	vector		vShade = g_ShadeTexture_Deferred.Sample(LinearSampler, In.vTexUV);
-	Out.vColor = vDiffuse * vShade;
+	vector		vSpecular = g_SpecularTexture_Deferred.Sample(LinearSampler, In.vTexUV);
+
+	Out.vColor = (vDiffuse * vShade) + (vSpecular);
 
 	if (0.0f == Out.vColor.a)
 		discard;

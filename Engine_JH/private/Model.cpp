@@ -515,11 +515,11 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, const wstring & wstrB
 	{
 		if(wstrBoneConstantName != L"")
 		{
-			_float4x4		BoneMatrices[256];
+			_float4x4		BoneMatrices[512];
 	
 			m_vecMeshes[iMeshIndex]->SetUp_BoneMatrix(BoneMatrices, XMLoadFloat4x4(&m_PivotMatrix));
 	
-			pShader->Set_MatrixArray(wstrBoneConstantName, BoneMatrices, 256);
+			pShader->Set_MatrixArray(wstrBoneConstantName, BoneMatrices, 512);
 		}
 	}
 

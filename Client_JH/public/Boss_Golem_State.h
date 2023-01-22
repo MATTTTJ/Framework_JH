@@ -24,6 +24,7 @@ public:
 		GOLEM_INCOMBAT_IDLE,
 		GOLEM_INTRO2,
 		GOLEM_INTRO1,
+		GOLEM_INTRO0,
 		GOLEM_FIRE_LAZER, GOLEM_READY_LAZER,
 		GOLEM_FIRE_RIGHTARM, GOLEM_FIRE_LEFTARM, GOLEM_END_FIREARM, GOLEM_READY_ARMFIRE,
 		GOLEM_END_MAGICSTONE, GOLEM_START_MAGICSTONE, GOLEM_START_SPAWNPILLARS, GOLEM_MELEE_N_SPAWNPILLARS,
@@ -65,19 +66,20 @@ private:
 	class CGameInstance*		m_pGameInstance = nullptr;
 private:
 	CPlayer*					m_pPlayer = nullptr;
-
+	class CFadeInOut*			m_pFadeInOut = nullptr;
 	class CNormal_Boss*			m_pMonster = nullptr;
 	CState*						m_pState = nullptr;
 	CModel*						m_pModelCom = nullptr;
 	CTransform*					m_pTransformCom = nullptr;
 	CNavigation*				m_pNavigationCom = nullptr;
+	class CDynamic_Camera*		m_pDynamic_Camera = nullptr;
 
 	_bool						m_bPlayAnimation = true;
 	_bool						m_bDeadOnce = false;
 	_bool						m_bFirstState[CNormal_Boss::FIRSTSTATE_END] = { false, false, false };
 
 	_bool						m_bDamaged[HIT_END] = { false, false, false };
-
+	_bool						m_bCamSet = false;
 private:					// Pattern CoolTime 
 							// ±¸¸£±â
 	_float						m_fCurHideCoolTime = 0.f;
@@ -100,6 +102,7 @@ private:
 
 private:
 	void						Start_Common(_double dTimeDelta) {}
+	void						Start_Intro0(_double dTimeDelta);
 	void						Start_Intro1(_double dTimeDelta);
 	void						Start_Intro2(_double dTimeDelta);
 	void						Start_Idle(_double dTimeDelta);
@@ -120,6 +123,7 @@ private:
 
 private:
 	void						Tick_Common(_double dTimeDelta);
+	void						Tick_Intro0(_double dTimeDelta);
 	void						Tick_Intro1(_double dTimeDelta);
 	void						Tick_Intro2(_double dTimeDelta);
 	void						Tick_Idle(_double dTimeDelta);
@@ -137,6 +141,7 @@ private:
 
 private:
 	void						End_Common(_double TimeDelta);
+	void						End_Intro0(_double TimeDelta);
 	void						End_Intro1(_double dTimeDelta);
 	void						End_Intro2(_double dTimeDelta);
 	void						End_Idle(_double dTimeDelta);

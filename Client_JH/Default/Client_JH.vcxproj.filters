@@ -223,6 +223,9 @@
     <Filter Include="02. GameObjects\01. GamePlay\Monster\00. NormalMap\Boss\State">
       <UniqueIdentifier>{3e13ae87-3237-40ca-a4d8-2432f10bb4f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\00. Public\FadeInOut">
+      <UniqueIdentifier>{b291933a-ddcf-46b5-bec8-9175a9a5d79d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -417,6 +420,9 @@
     <ClInclude Include="..\public\Boss_Golem_State.h">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Boss\State</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FadeInOut.h">
+      <Filter>02. GameObjects\00. Public\FadeInOut</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -598,6 +604,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Boss_Golem_State.cpp">
       <Filter>02. GameObjects\01. GamePlay\Monster\00. NormalMap\Boss\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FadeInOut.cpp">
+      <Filter>02. GameObjects\00. Public\FadeInOut</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

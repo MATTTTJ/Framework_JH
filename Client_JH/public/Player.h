@@ -34,17 +34,17 @@ public:
 
 	typedef struct tagPlayerOption
 	{
-		_uint							m_iHp;
+		_int							m_iHp;
 		_uint							m_iMaxHp;
-		_uint							m_iShieldPoint;
+		_int							m_iShieldPoint;
 		_uint							m_iMaxShieldPoint;
 		_uint							m_iEmeraldCnt;
-		_uint							m_iGold;
+		_int							m_iGold;
 
-		_uint							m_iPistol_BulletCnt; // DEFAULT, FLAME, POISON 종류 
-		_uint							m_iInjector_BulletCnt; // DRAGON 종류 
-		_uint							m_iRifle_BulletCnt; // Rifle 종류
-		_uint							m_iThrowCnt;
+		_int							m_iPistol_BulletCnt; // DEFAULT, FLAME, POISON 종류 
+		_int							m_iInjector_BulletCnt; // DRAGON 종류 
+		_int							m_iRifle_BulletCnt; // Rifle 종류
+		_int							m_iThrowCnt;
 		wstring							m_wstrWeaponNumber;
 		wstring							m_wstrCurWeaponName;
 	}PLAYEROPTION;
@@ -56,6 +56,9 @@ private:
 	friend CWeapon_State;
 
 public:
+	void					Get_Damaged() { m_PlayerOption.m_iHp -= 30; }
+	PLAYEROPTION			Get_PlayerStat() { return m_PlayerOption; }
+
 	_bool					Get_CanDash() { return m_bCanDash; }
 	CTransform*				Get_Transform() { return m_pTransformCom; }
 	void					Set_On_NaviMesh();
@@ -115,6 +118,7 @@ private:
 	// Shader CamPos
 	_float3					m_vCamPos;
 	_bool					m_bNormalTexOn;
+	_bool					m_bSpecularTexOn;
 	// vector<CGameObject*>	m_vecPlayerParts;
 public:
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };

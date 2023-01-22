@@ -17,6 +17,7 @@
 #include "Human_Sword.h"
 #include "Elite_Bug.h"
 #include "Elite_Knight.h"
+#include "FadeInOut.h"
 #include "LaiLuo_Home.h"
 #include "Little_Bug.h"
 #include "Monster.h"
@@ -108,16 +109,18 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Default_Pistol_s", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Weapon/Default_Pistol/Test.png", 1)), E_FAIL);
 
 	// 플레이어 스페큘러 텍스쳐
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerInfo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/PlayerInfo.png", 1)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerInfo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/PlayerInfo.png", 1)), E_FAIL);
 
 
 	//플레이어 배경
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerInfo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/PlayerInfo.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerInfo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/PlayerInfo_Base.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerHp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/PlayerInfo_HP.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerShield", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/PlayerInfo_Shield.png", 1)), E_FAIL);
 
 	//플레이어 체력
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerHp_BaseGrey", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/Bar_Character_HPBar_Grey.png", 1)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerHp_White", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/Bar_Character_HPBar_White.png", 1)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerHp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/Bar_Character_HPBar_2.png", 1)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerHp_BaseGrey", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/Bar_Character_HPBar_Grey.png", 1)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerHp_White", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/Bar_Character_HPBar_White.png", 1)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerHp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/Bar_Character_HPBar_2.png", 1)), E_FAIL);
 
 	//플레이어 실드
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerShield_BaseGrey", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/Bar_Character_SFBar_Grey.png", 1)), E_FAIL);
@@ -194,8 +197,14 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_MonsterUI_HP_White", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/HP_White_AlphaTest.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_MonsterUI_Shield_Blue", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/Bar_Character_SFBar_1.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_MonsterUI_Shield_White", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/Bar_Character_SFBar_White.png", 1)), E_FAIL);
+	// 보스 텍스쳐
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_BossUI_Base", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/Boss_Base.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_BossUI_Red", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/Boss_Hp.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_BossUI_White", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/BOSS_WHITE.png", 1)), E_FAIL);
 
-	
+	//페이드 텍스쳐
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Fade_In_Out", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/FadeInOut.png", 1)), E_FAIL);
+
 
 	// 몬스터 노말 텍스쳐
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Monster_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Human_Sword/monster_body_2001_s.png", 1)), E_FAIL);
@@ -222,8 +231,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 	m_wstrLoadingText = L"네비게이션 정보 생성중입니다.";
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Client_JH\\Bin\\Save Data\\Navigation\\Navigation_Test.json")), E_FAIL);
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"C:\\Users\\Hoon\\Desktop\\3D_JH\\Framework_JH\\Client_JH\\Bin\\Save Data\\Navigation\\Navigation_Test.json")), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/Navigation_Test.json")), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation_Boss", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/3909NaviData_Fin.json")), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/Navigation_With3909.json")), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation_Boss", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/3909NaviData_Fin.json")), E_FAIL);
 
 	m_wstrLoadingText = L"버퍼를 로딩중입니다.";
 
@@ -257,9 +266,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LaiHome", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/LaiLuo_Home/LaiHome2.fbx", PivotMatrix)), E_FAIL);
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Default_Pistol", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Default_Pistol/Default_Pistol_Tangent7.model", PivotMatrix)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Flame_Bullet/Flame_Bullet_Fix.model", PivotMatrix)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fire_Dragon", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Fire_Dragon/Fire_Dragon_Fix.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Default_Pistol", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Default_Pistol/Default_Pistol_Alpha.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Flame_Bullet/Flame_Bullet_Spec.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fire_Dragon", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Fire_Dragon/Fire_Dragon_Alpha0.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Poison", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Poison/Poison_Normal.model", PivotMatrix)), E_FAIL);
 
 	// 노말맵 몬스터 모델
@@ -272,13 +281,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Elite_Bug", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Bug/Normal_Elite_Bug.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Little_Bug", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Bug/Little_Bug/Little_Bug.model", PivotMatrix)), E_FAIL);
 	// 노말맵 보스
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Normal_Boss", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/Normal_Boss.model", PivotMatrix)), E_FAIL);
-
-
-
-
-
-
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Normal_Boss", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/3909_Fix_Test.model", PivotMatrix)), E_FAIL);
 
 	// ~노말맵 몬스터 모델
 
@@ -312,6 +315,12 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sky", CSky::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Point_Instancing", CEffect_Point_Instancing::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Base", CPlayerUI_Base::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Hp", CPlayerUI_Hp_Red::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Shield", CPlayerUI_Hp_Shield::Create(m_pDevice, m_pContext)), E_FAIL);
+
+
+
+
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Skill", CPlayerUI_Skill::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Throw", CPlayer_UI_Throw::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Dash", CPlayer_UI_Dash::Create(m_pDevice, m_pContext)), E_FAIL);
@@ -333,6 +342,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_MonsterUI_HP_Red", CMonsterUI_HP_Red::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_MonsterUI_HP_White", CMonsterUI_HP_White::Create(m_pDevice, m_pContext)), E_FAIL);
 
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_BossUI_Base", CBoss_UI_Base::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_BossUI_Red", CBoss_UI_Red::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_BossUI_White", CBoss_UI_White::Create(m_pDevice, m_pContext)), E_FAIL);
+
 
 	// 노말맵 몬스터 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Sword", CHuman_Sword::Create(m_pDevice, m_pContext)), E_FAIL);
@@ -346,6 +359,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// 노말맵 보스
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss", CNormal_Boss::Create(m_pDevice, m_pContext)), E_FAIL);
+
+	// FadeInOut
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Fade_In_Out", CFadeInOut::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	// 노말맵 총알 게임 오브젝트
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Bow_Arrow", CArrow::Create(m_pDevice, m_pContext)), E_FAIL);

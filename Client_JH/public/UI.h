@@ -1,6 +1,7 @@
 #pragma once
 #include "Client_Defines.h"
 #include "GameObject.h"
+#include "Player.h"
 #include "Weapon_State.h"
 
 BEGIN(Engine)
@@ -33,6 +34,11 @@ public:
 	{
 		COUNTUI m_eType;
 	}COUNTDESC;
+
+	typedef	struct tagFadeOption
+	{
+		_bool	m_bFadeIn = false;
+	}FADEDESC;
 
 protected:
 	CUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -74,7 +80,7 @@ protected:
 	CMonster*					m_pMonster = nullptr;
 	CModel*						m_pModelCom = nullptr;
 	CWeapon_State*				m_pWeapon_State = nullptr;
-
+	CPlayer::PLAYEROPTION		m_PlayerOption;
 protected:
 	_float						m_fX, m_fY, m_fSizeX, m_fSizeY;
 	_float4x4					m_ViewMatrix;

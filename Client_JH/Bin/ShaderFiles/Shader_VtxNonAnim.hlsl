@@ -129,9 +129,8 @@ PS_OUT PS_MAIN(PS_IN In)
 	{
 		vector		SwapNormal;
 		vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-
-		SwapNormal.x = vNormalDesc.y;
-		SwapNormal.y = In.vNormal.y;
+		SwapNormal.x = vNormalDesc.z;
+		SwapNormal.y = vNormalDesc.y;
 		SwapNormal.z = vNormalDesc.x;
 		SwapNormal.w = 0;
 
@@ -139,7 +138,7 @@ PS_OUT PS_MAIN(PS_IN In)
 		float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal, In.vNormal.xyz);
 		vNormal = normalize(mul(vNormal, WorldMatrix));
 		Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
-
+		// Out.vNormal = SwapNormal;
 	}
 	else
 	{

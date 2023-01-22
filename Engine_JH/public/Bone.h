@@ -19,7 +19,10 @@ public:
 
 	void			Set_TransformMatrix(_fmatrix TransformMatrix) { XMStoreFloat4x4(&m_TransformMatrix, TransformMatrix); }
 	void			Set_OffsetMatrix(_float4x4 OffsetMatrix) { m_OffsetMatrix = OffsetMatrix; }
-
+	void			Set_Transform_Fix(_float4 vPos)
+	{
+		m_TransformMatrix.Translation(_float3(vPos.x, vPos.y, vPos.z));
+	}
 public:
 	HRESULT			Initialize(aiNode* pAINode, CBone* pParent, _uint iNumChild);
 	void			compute_CombindTransformationMatrix();

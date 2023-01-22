@@ -29,6 +29,12 @@ public:
 		_float4					m_vBulletLook = { 0.f, 0.f, 0.f, 0.f }; 
 	}GAMEOBJECTDESC;
 
+
+public:
+	_float Get_CamDistance() const
+	{
+		return m_fCamDistance;
+	}
 protected:
 	CGameObject(ID3D11Device*	pDevice, ID3D11DeviceContext* pContext);
 	CGameObject(const CGameObject& rhs);
@@ -64,7 +70,7 @@ public:
 
 protected:
 	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppOut, class CGameObject* pOwner, void* pArg = nullptr);
-
+	void					Compute_CamDistance();
 protected:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pContext = nullptr;
@@ -73,6 +79,7 @@ protected:
 	_bool					m_bHasModel = false; 
 	_bool					m_bIsClone = false;
 	_bool					m_bIsDead = false;
+	_float					m_fCamDistance = { 0.0 };
 
 	wstring					m_wstrPrototypeGameObjectTag = L"";
 

@@ -4,7 +4,7 @@
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 /* 1. 모델의 전체의 뼈를 받아온다. */
 /* 2. 모델 중, 현재 그릴려고 하는 메시에 뼈를 받아온다. */
-matrix			g_BoneMatrices[256];
+matrix			g_BoneMatrices[512];
 float3			g_vCameraPos;
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
@@ -13,7 +13,7 @@ texture2D		g_ModelTestTexture;
 texture2D		g_ModelSpecularTexture;
 
 bool			g_bNormalTexOn;
-
+bool			g_bSpecularTexOn;
 bool			g_bHit = false;
 float4			g_vLimColor; 
 float			g_Outline_Offset = 0.03f;
@@ -166,7 +166,6 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	Out.vSpecularMap = g_ModelSpecularTexture.Sample(LinearSampler, In.vTexUV);
 
 	if (0.1f > vDiffuse.a)
 		discard;
@@ -177,28 +176,36 @@ PS_OUT PS_MAIN(PS_IN In)
 	{
 		vector		SwapNormal;
 		vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-		SwapNormal.x = vNormalDesc.x;
+		SwapNormal.x = vNormalDesc.z;
 		SwapNormal.y = vNormalDesc.y;
-		SwapNormal.z = vNormalDesc.z;
+		SwapNormal.z = vNormalDesc.x;
 		SwapNormal.w = 0;
 
 		float3		vNormal = SwapNormal.xyz * 2.f - 1.f;
 		float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal, In.vNormal.xyz);
 		vNormal = normalize(mul(vNormal, WorldMatrix));
 		Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+		// Out.vNormal = SwapNormal;
 	}
 	else
 	{
 		Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	}
+	vector SpecularMap;
+	if(g_bSpecularTexOn)
+	{
+		SpecularMap = g_ModelSpecularTexture.Sample(LinearSampler, In.vTexUV);
+	}
+	else
+	{
+		SpecularMap = vector(0.f, 0.f, 0.f, 1.f);
+	}
 
+
+
+	Out.vSpecularMap = SpecularMap;
 	Out.vDiffuse = vDiffuse;
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
-
-	vector SpecularMap = g_ModelSpecularTexture.Sample(LinearSampler, In.vTexUV);
-	
-	// float3		vNormal = SpecularMap.xyz * 2.f - 1.f;
-
 	return Out;
 }
 
@@ -217,9 +224,9 @@ PS_OUT PS_MAIN_Monster_Normal(PS_IN In)
 	{
 		vector		SwapNormal;
 		vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-		SwapNormal.x = vNormalDesc.x;
+		SwapNormal.x = vNormalDesc.z;
 		SwapNormal.y = vNormalDesc.y;
-		SwapNormal.z = vNormalDesc.z;
+		SwapNormal.z = vNormalDesc.x;
 		SwapNormal.w = 0;
 
 		float3		vNormal = SwapNormal.xyz * 2.f - 1.f;

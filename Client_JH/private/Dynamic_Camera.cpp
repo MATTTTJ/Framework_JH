@@ -12,6 +12,11 @@ CDynamic_Camera::CDynamic_Camera(const CDynamic_Camera & rhs)
 {
 }
 
+void CDynamic_Camera::Set_Boss_IntroCam(_matrix camWorld)
+{
+	m_pTransformCom->Set_WorldMatrix(camWorld);
+}
+
 HRESULT CDynamic_Camera::Initialize_Prototype()
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
@@ -48,6 +53,8 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 {
 	if (!m_bRender)
 		return;
+
+	m_pTransformCom->Go_Straight(TimeDelta * 0.1f, CTransform::TRANS_BULLET);
 
 	if (GetKeyState(VK_UP) & 0x8000)
 	{

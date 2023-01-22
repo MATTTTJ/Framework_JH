@@ -17,6 +17,7 @@ private:
 	virtual ~CNavigation() = default;
 
 public:
+	void						Set_CellIndex(_uint iIndex) { m_tNaviDesc.iCurrentIndex = iIndex; }
 	NAVIDESC					Get_NaviDesc() { return m_tNaviDesc; }
 	_vector						Get_CellHeight(_float4 vTargetPos);
 	_uint						Get_CellCount() { return (_uint)m_vecCell.size(); }

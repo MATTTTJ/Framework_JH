@@ -7,9 +7,9 @@ vector			g_vSlashColor = (vector)0.f;
 float			g_glowStrength = 1.f;
 texture2D		g_Texture;
 texture2D       g_SkillGlowTexture;
-
+float			g_fTime = 1.f;
 texture2D		g_DepthTexture;
-
+float			g_fFadeAlpha = 0.f;
 /* 샘플링 해오는 함수 */
 /* dx9 : tex2D(DefaultSampler, In.vTexUV);*/
 /* dx11 : g_Texture.Sample(DefaultSampler, In.vTexUV); */
@@ -62,6 +62,26 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_FADE(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+
+	Out.vColor.a = g_fFadeAlpha;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_HP_RED(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, float2(In.vTexUV.x + g_fTime, In.vTexUV.y));
 
 	if (Out.vColor.a < 0.1f)
 		discard;
@@ -175,7 +195,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
@@ -248,4 +268,31 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_EFFECT();
 	}
+
+	pass Rect7
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_HP_RED();
+	}
+
+	pass FADE8
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FADE();
+	}
+	
 }

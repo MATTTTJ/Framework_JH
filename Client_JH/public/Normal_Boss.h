@@ -1,6 +1,7 @@
 #pragma once
 #include "Client_Defines.h"
 #include "Monster.h"
+#include "Model.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -23,6 +24,7 @@ public:
 	virtual ~CNormal_Boss() = default;
 
 public:
+	HRESULT						Render_UI();
 	void						Get_Damaged() { m_tMonsterOption.MonsterDesc.m_iHP -= 30; }
 	virtual HRESULT				Initialize_Prototype() override;
 	virtual HRESULT				Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
@@ -52,12 +54,12 @@ private:
 	CShader*					m_pShaderCom = nullptr;
 	CNavigation*				m_pNavigationCom = nullptr;
 	class CBoss_Golem_State*	m_pGolem_State = nullptr;
+	CModel::LERPTYPE			m_eLerpType = CModel::LERP_BEGIN;
 
 	CCollider*					m_pShieldColliderCom = nullptr;
 	CCollider*					m_pLeftArmColliderCom = nullptr;
 	CCollider*					m_pRightArmColliderCom = nullptr;
-
-
+	_bool						m_bRenderUI = false;
 private:
 	HRESULT						SetUp_Components();
 	HRESULT						SetUp_ShaderResources();

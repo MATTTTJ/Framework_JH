@@ -185,6 +185,7 @@
     <ClInclude Include="..\public\Elite_Bug_State.h" />
     <ClInclude Include="..\public\Elite_Knight.h" />
     <ClInclude Include="..\public\Elite_Knight_State.h" />
+    <ClInclude Include="..\public\FadeInOut.h" />
     <ClInclude Include="..\public\ForkLift.h" />
     <ClInclude Include="..\public\Home.h" />
     <ClInclude Include="..\public\Home_Deco.h" />
@@ -250,6 +251,7 @@
     <ClCompile Include="..\private\Elite_Bug_State.cpp" />
     <ClCompile Include="..\private\Elite_Knight.cpp" />
     <ClCompile Include="..\private\Elite_Knight_State.cpp" />
+    <ClCompile Include="..\private\FadeInOut.cpp" />
     <ClCompile Include="..\private\ForkLift.cpp" />
     <ClCompile Include="..\private\Home.cpp" />
     <ClCompile Include="..\private\Home_Deco.cpp" />

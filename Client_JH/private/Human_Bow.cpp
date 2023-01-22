@@ -133,15 +133,15 @@ HRESULT CHuman_Bow::Render()
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-	_uint UISize = (_uint)m_vecMonsterUI.size();
+	// _uint UISize = (_uint)m_vecMonsterUI.size();
 
-	if (m_bCanUIRender)
-	{
-		for (_uint i = 0; i < UISize; ++i)
-		{
-			m_vecMonsterUI[i]->Render();
-		}
-	}
+	// if (m_bCanUIRender)
+	// {
+	// 	for (_uint i = 0; i < UISize; ++i)
+	// 	{
+	// 		m_vecMonsterUI[i]->Render();
+	// 	}
+	// }
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{

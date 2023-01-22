@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "..\public\Boss_Golem_State.h"
 #include "Bullet.h"
+#include "FadeInOut.h"
 #include "Player.h"
 #include "GameInstance.h"
+#include "Dynamic_Camera.h"
 
 CBoss_Golem_State::CBoss_Golem_State()
 {
@@ -21,7 +23,7 @@ HRESULT CBoss_Golem_State::Initialize(CNormal_Boss* pOwner, CState* pStateMachin
 	m_pTransformCom = pTransform;
 	m_pNavigationCom = pNavigation;
 
-
+	m_pDynamic_Camera = static_cast<CDynamic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front());
 	memcpy(&m_bFirstState, m_pMonster->m_tMonsterOption.m_bFirstSpawnType, sizeof(_bool) * CNormal_Boss::FIRSTSTATE_END);
 
 	if (true == m_bFirstState[CNormal_Boss::STATE_NODETECTED])
@@ -73,7 +75,9 @@ void CBoss_Golem_State::Tick(_double dTimeDelta)
 	if(m_pGameInstance->Key_Down(DIK_F7))
 	{
 		m_pMonster->m_bPlayerDetected = true;
-
+		m_pMonster->Set_PlayAnimation(true);
+		m_pFadeInOut = dynamic_cast<CFadeInOut*>(m_pGameInstance->Clone_GameObject(L"Prototype_GameObject_Fade_In_Out"));
+		NULL_CHECK_RETURN(m_pFadeInOut, );
 		// CBullet::BULLETOPTION BulletDesc;
 		// _float4 Position;
 		// _matrix pivot = XMMatrixIdentity();
@@ -94,6 +98,26 @@ void CBoss_Golem_State::Tick(_double dTimeDelta)
 		// NULL_CHECK(pBullet);
 		//
 		// m_bAttackOnce = true;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_F3))
+	{
+		_float scale[3], Rot[3], Pos[3];
+		Pos[0] = {111.4f}; Pos[1] = { 11.47f }; Pos[2] = { 129.6f };
+		Rot[0] = { -12.84f }; Rot[1] = { -34.574f }; Rot[2] = { 0.0f };
+		scale[0] = { 1.f }; scale[1] = { 1.f }; scale[2] = { 1.f };
+		_matrix camWorld;
+		ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
+		m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
+	}
+	// if (m_pGameInstance->Key_Down(DIK_F4))
+	// {
+	// 	m_pFadeInOut->Fade_Out(true);
+	// }
+
+	if(m_pFadeInOut != nullptr)
+	{
+		m_pFadeInOut->Tick(dTimeDelta);
 	}
 
 }
@@ -118,6 +142,11 @@ void CBoss_Golem_State::Late_Tick(_double dTimeDelta)
 		// 	m_pMonster->m_bPlayerDetectedClose = false;
 		// }
 	}
+
+	if (m_pFadeInOut != nullptr)
+	{
+		m_pFadeInOut->Late_Tick(dTimeDelta);
+	}
 }
 
 void CBoss_Golem_State::Reset_Damaged()
@@ -129,9 +158,9 @@ HRESULT CBoss_Golem_State::SetUp_State_No_Detected()
 	NULL_CHECK_RETURN(m_pMonster->m_pState, E_FAIL);
 	m_pMonster->m_pState->Set_Root(L"STATE::NO_DETECTED")
 		.Add_State(L"STATE::NO_DETECTED")
-		.Init_Start(this, &CBoss_Golem_State::Start_Common)
-		.Init_Tick(this, &CBoss_Golem_State::Tick_Common)
-		.Init_End(this, &CBoss_Golem_State::End_Common)
+		.Init_Start(this, &CBoss_Golem_State::Start_Intro0)
+		.Init_Tick(this, &CBoss_Golem_State::Tick_Intro0)
+		.Init_End(this, &CBoss_Golem_State::End_Intro0)
 		.Init_Changer(L"STATE::INTRO1", this, &CBoss_Golem_State::Player_Detected)
 
 		.Add_State(L"STATE::INTRO1")
@@ -139,7 +168,7 @@ HRESULT CBoss_Golem_State::SetUp_State_No_Detected()
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Intro1)
 		.Init_End(this, &CBoss_Golem_State::End_Intro1)
 		.Init_Changer(L"STATE::INTRO2", this, &CBoss_Golem_State::Animation_Finish)
-
+		//
 		.Add_State(L"STATE::INTRO2")
 		.Init_Start(this, &CBoss_Golem_State::Start_Intro2)
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Intro2)
@@ -251,31 +280,58 @@ HRESULT CBoss_Golem_State::SetUp_State_Idle()
 
 		.Finish_Setting();
 
+	return S_OK;
+
 }
 
+void CBoss_Golem_State::Start_Intro0(_double dTimeDelta)
+{
+	m_pModelCom->Set_CurAnimIndex(GOLEM_INTRO0);
+	m_pModelCom->Reset_Animation();
+}
 
 void CBoss_Golem_State::Start_Intro1(_double dTimeDelta)
 {
-	m_pModelCom->Set_LerpTime(0.2f);
-
-
 	m_pModelCom->Set_CurAnimIndex(GOLEM_INTRO1);
+
+
+	// _bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Get_RenderState();
+	// _bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_RenderState();
+	//
+	//
+	// DynamicCamera = !DynamicCamera;
+	// StaticCamera = !StaticCamera;
+	//
+	//
+	// _float scale[3], Rot[3], Pos[3];
+	// Pos[0] = { 111.4f }; Pos[1] = { 11.47f }; Pos[2] = { 129.6f };
+	// Rot[0] = { -12.84f }; Rot[1] = { -34.574f }; Rot[2] = { 0.0f };
+	// scale[0] = { 1.f }; scale[1] = { 1.f }; scale[2] = { 1.f };
+	// _matrix camWorld;
+	// ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
+	// m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
 }
 
 void CBoss_Golem_State::Start_Intro2(_double dTimeDelta)
 {
-	m_pModelCom->Set_LerpTime(0.2f);
+	_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ -6.549f,3.192f,0.0f }, Pos[3]{ 116.f ,10.77f,124.94f };
+	_matrix camWorld;
+	ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
+	m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
 
+
+	m_pModelCom->Set_LerpTime(0.4f);
 
 	m_pModelCom->Set_CurAnimIndex(GOLEM_INTRO2);
+	m_pMonster->Set_PlayAnimation(true);
 }
 
 void CBoss_Golem_State::Start_Idle(_double dTimeDelta)
 {
-	m_pModelCom->Set_LerpTime(0.3f);
-
+	m_pModelCom->Set_LerpTime(0.6f);
 
 	m_pModelCom->Set_CurAnimIndex(GOLEM_INCOMBAT_IDLE);
+	m_pModelCom->Reset_Animation();
 }
 
 void CBoss_Golem_State::Start_Ready_Arm_Fire(_double dTimeDelta)
@@ -365,12 +421,48 @@ void CBoss_Golem_State::Tick_Common(_double dTimeDelta)
 {
 }
 
+void CBoss_Golem_State::Tick_Intro0(_double dTimeDelta)
+{
+	// // m_pModelCom->Set_CurAnimIndex(GOLEM_INTRO0);
+	// if (m_pModelCom->Get_LastAnimationIndex() == GOLEM_INTRO0)
+	// 	m_pMonster->m_eLerpType = CModel::LERP_CONTINUE;
+	// else
+	// 	m_pMonster->m_eLerpType = CModel::LERP_BEGIN;
+}
+
 void CBoss_Golem_State::Tick_Intro1(_double dTimeDelta)
 {
+	if(m_pModelCom->Get_AnimationProgress() > 0.2f && m_pModelCom->Get_AnimationProgress() < 0.22f && m_bCamSet == false)
+	{
+		_bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Get_RenderState();
+		_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_RenderState();
+		DynamicCamera = !DynamicCamera;
+		StaticCamera = !StaticCamera;
+		_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ -12.84f ,-34.574f , 0.0f }, Pos[3]{ 111.4f ,11.47f, 129.6f };
+		_matrix camWorld;
+		ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
+		m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
+		m_bCamSet = true;
+		m_pFadeInOut->Fade_Out(true);
+	}
+
+	if(m_pModelCom->Get_AnimationProgress() > 0.95f)
+	{
+		m_pFadeInOut->Fade_Out(false);
+	}
 }
 
 void CBoss_Golem_State::Tick_Intro2(_double dTimeDelta)
 {
+	if(m_pModelCom->Get_AnimationProgress() > 0.01f)
+	{
+		m_pFadeInOut->Fade_Out(true);
+	}
+
+	if(m_pModelCom->Get_AnimationProgress() > 0.975f)
+	{
+		m_pFadeInOut->Fade_Out(false);
+	}
 }
 
 void CBoss_Golem_State::Tick_Idle(_double dTimeDelta)
@@ -378,8 +470,15 @@ void CBoss_Golem_State::Tick_Idle(_double dTimeDelta)
 	// m_pModelCom->Set_CurAnimIndex(GOLEM_INCOMBAT_IDLE);
 
 	// 磊气捍, 局扁 国饭 家券
+	// if (m_pModelCom->Get_LastAnimationIndex() == GOLEM_INCOMBAT_IDLE)
+	// 	m_pMonster->m_eLerpType = CModel::LERP_CONTINUE;
+	// else
+	// 	m_pMonster->m_eLerpType = CModel::LERP_BEGIN;
 
-
+	if(m_pModelCom->Get_AnimationProgress() > 0.1f)
+	{
+		m_pFadeInOut->Fade_Out(true);
+	}
 
 	//~ 磊气捍, 局扁 国饭 家券
 }
@@ -432,12 +531,26 @@ void CBoss_Golem_State::End_Common(_double TimeDelta)
 {
 }
 
+void CBoss_Golem_State::End_Intro0(_double TimeDelta)
+{
+	// m_pFadeInOut->Fade_Out(false);
+	// 其捞靛酒眶
+}
+
 void CBoss_Golem_State::End_Intro1(_double dTimeDelta)
 {
 }
 
 void CBoss_Golem_State::End_Intro2(_double dTimeDelta)
 {
+	_bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Get_RenderState();
+	_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_RenderState();
+
+
+	DynamicCamera = !DynamicCamera;
+	StaticCamera = !StaticCamera;
+
+	m_pMonster->Render_UI();
 }
 
 void CBoss_Golem_State::End_Idle(_double dTimeDelta)
@@ -595,4 +708,5 @@ CBoss_Golem_State* CBoss_Golem_State::Create(CNormal_Boss* pOwner, CState* pStat
 
 void CBoss_Golem_State::Free()
 {
+	Safe_Release(m_pFadeInOut);
 }

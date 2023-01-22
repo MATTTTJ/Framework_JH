@@ -28,6 +28,65 @@ public:
 	virtual void Free() override;
 };
 
+
+class CPlayerUI_Hp_Red final : public CUI
+{
+private:
+	CPlayerUI_Hp_Red(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CPlayerUI_Hp_Red(const CPlayerUI_Hp_Red& rhs);
+	virtual ~CPlayerUI_Hp_Red() = default;
+
+protected:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
+	virtual void	Tick(_double dTimeDelta) override;
+	virtual void	Late_Tick(_double dTimeDelta) override;
+	virtual HRESULT Render() override;
+
+private:
+	HRESULT			SetUp_Component();
+	HRESULT			SetUp_ShaderResources();
+	_int			m_iCurHP;
+	_int			m_iLastHP;
+	_float			m_fDist = 1.f;
+	_float			m_fTime = 0.f;
+	_float			m_fReduceSum = 0.f;
+public:
+	static CPlayerUI_Hp_Red*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
+	virtual void Free() override;
+};
+
+class CPlayerUI_Hp_Shield final : public CUI
+{
+private:
+	CPlayerUI_Hp_Shield(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CPlayerUI_Hp_Shield(const CPlayerUI_Hp_Shield& rhs);
+	virtual ~CPlayerUI_Hp_Shield() = default;
+
+protected:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
+	virtual void	Tick(_double dTimeDelta) override;
+	virtual void	Late_Tick(_double dTimeDelta) override;
+	virtual HRESULT Render() override;
+
+private:
+	HRESULT			SetUp_Component();
+	HRESULT			SetUp_ShaderResources();
+	_int			m_iCurHP = 0;
+	_int			m_iLastHP = 0;
+	_float			m_fDist = 1.f;
+	_float			m_fFollowDist = 0.f;
+	_float			m_fTime = 0.f;
+	_float			m_fReduceSum = 0.f;
+public:
+	static CPlayerUI_Hp_Shield*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
+	virtual void Free() override;
+};
+
+
 class CPlayerUI_Skill final : public CUI
 {
 private:

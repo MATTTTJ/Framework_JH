@@ -11,6 +11,8 @@ public:
 	CDynamic_Camera(const CDynamic_Camera& rhs);
 	virtual ~CDynamic_Camera() = default;
 
+	void					Set_Boss_IntroCam(_matrix camWorld);
+
 	virtual HRESULT			Initialize_Prototype()		 override;
 	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void			Tick(_double TimeDelta)		 override;
