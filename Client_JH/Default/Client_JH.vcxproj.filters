@@ -232,13 +232,13 @@
     <Filter Include="02. GameObjects\01. GamePlay\Bullet\Boss\LaserBullet">
       <UniqueIdentifier>{a53e3803-2b8b-422b-8081-96fb92b22659}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\01. GamePlay\Bullet\StonePillar">
-      <UniqueIdentifier>{ee4242b9-568a-478b-a730-eb645f6af8d6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObjects\01. GamePlay\Bullet\Boss\MagicStone">
       <UniqueIdentifier>{705568e0-b9c3-4737-a582-626f02666e7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\01. GamePlay\Bullet\StonePillar\Ring">
+    <Filter Include="02. GameObjects\01. GamePlay\Bullet\Boss\StonePillar">
+      <UniqueIdentifier>{ee4242b9-568a-478b-a730-eb645f6af8d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Bullet\Boss\StonePillar\Ring">
       <UniqueIdentifier>{814cd913-e203-4f16-bdc9-cc713a4be07e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -445,10 +445,13 @@
       <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\LaserBullet</Filter>
     </ClInclude>
     <ClInclude Include="..\public\StonePillar.h">
-      <Filter>02. GameObjects\01. GamePlay\Bullet\StonePillar</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\StonePillar</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DangerRing.h">
-      <Filter>02. GameObjects\01. GamePlay\Bullet\StonePillar\Ring</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\StonePillar\Ring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MagicStone.h">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\MagicStone</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -642,10 +645,13 @@
       <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\LaserBullet</Filter>
     </ClCompile>
     <ClCompile Include="..\private\StonePillar.cpp">
-      <Filter>02. GameObjects\01. GamePlay\Bullet\StonePillar</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\StonePillar</Filter>
     </ClCompile>
     <ClCompile Include="..\private\DangerRing.cpp">
-      <Filter>02. GameObjects\01. GamePlay\Bullet\StonePillar\Ring</Filter>
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\StonePillar\Ring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MagicStone.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\MagicStone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
