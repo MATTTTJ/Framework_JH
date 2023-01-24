@@ -15,7 +15,7 @@ float			g_fProgress =1.f;
 float			g_fPreProgress = 1.f;
 float			g_fTest; 
 texture2D		g_Texture;
-
+float			g_fLaserAlpha = 0.f;
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -229,6 +229,51 @@ void GS_MAIN_BULLET(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 
 };
 
+[maxvertexcount(6)]
+void GS_MAIN_LASER(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
+{
+	GS_OUT		Out[4];
+
+
+	float3		vLook = g_vLook.xyz;
+
+	float3		vRight = normalize(cross(g_vUp.xyz, vLook))* g_vPSize.x * 0.5f;
+
+	float3		vUp = normalize(cross(vLook, vRight)) *g_vPSize.y  * 0.5f;
+
+	matrix		matVP = mul(g_ViewMatrix, g_ProjMatrix);
+
+	float3		vPosition;
+
+	vPosition = In[0].vPosition + vRight + vUp;
+	Out[0].vPosition = mul(vector(vPosition, 1.f), matVP);
+	Out[0].vTexUV = float2(0.f, 0.f);
+
+	vPosition = (In[0].vPosition - vRight + vUp);
+	Out[1].vPosition = mul(vector(vPosition, 1.f), matVP);
+	Out[1].vTexUV = float2(1.f - (1.f - g_fLaserAlpha), 0.f);
+
+	vPosition = (In[0].vPosition - vRight - vUp);
+	Out[2].vPosition = mul(vector(vPosition, 1.f), matVP);
+	Out[2].vTexUV = float2(1.f - (1.f - g_fLaserAlpha), 1.f);
+
+	vPosition = In[0].vPosition + vRight - vUp;
+	Out[3].vPosition = mul(vector(vPosition, 1.f), matVP);
+	Out[3].vTexUV = float2(0.f, 1.f);
+
+	Vertices.Append(Out[0]);
+	Vertices.Append(Out[1]);
+	Vertices.Append(Out[2]);
+	Vertices.RestartStrip();
+
+	Vertices.Append(Out[0]);
+	Vertices.Append(Out[2]);
+	Vertices.Append(Out[3]);
+	Vertices.RestartStrip();
+
+};
+
+
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
@@ -269,6 +314,22 @@ PS_OUT PS_MAIN_MonsterUI(PS_IN In)
 
 	// if (Out.vColor.a < 0.1f)
 	// 	discard;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_Laser(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	// Out.vColor.rgb = float3(1.f, 0.f, 0.f);
+	//
+	// if (Out.vColor.a < 0.1f)
+	// 	discard;
+	//
+
+	Out.vColor.a = g_fLaserAlpha;
 
 	return Out;
 }
@@ -338,5 +399,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MonsterUI();
+	}
+
+	pass Laser5
+	{
+		SetRasterizerState(RS_None);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_LASER();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_Laser();
 	}
 }

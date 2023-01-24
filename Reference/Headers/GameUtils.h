@@ -31,6 +31,9 @@ public:
 
 	static _matrix			Get_PlayerPivotMatrix();
 	static	_bool			CollisionSphereSphere(class CCollider* pColliderA, class CCollider* pColliderB, _float4& vDir);
+	static _float			GetRandomFloat(_float lowBound, _float highBound);
+	static void				GetRandomVector(_float4* out, _float4* min, _float4* max);
+
 
 };
 

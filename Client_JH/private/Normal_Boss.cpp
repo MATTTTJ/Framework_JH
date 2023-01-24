@@ -66,7 +66,7 @@ HRESULT CNormal_Boss::Initialize_Clone(const wstring& wstrPrototypeTag, void* pA
 
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(116.f, 1.3f, 179.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(110.f, 1.3f, 179.f, 1.f));
 
 	if (m_tMonsterOption.m_bFirstSpawnType[STATE_NODETECTED] == true)
 	{
@@ -101,11 +101,7 @@ void CNormal_Boss::Tick(_double TimeDelta)
 	if (m_bPlayAnimation)
 		m_pModelCom->Play_Animation(TimeDelta, m_eLerpType, L"Bip001");
 
-	// m_pModelCom->Get_BonePtr("Bip001")->Set_Transform_Fix(XMVectorSet(116.f, 1.3f, 179.f, 1.f));
-
-
 	Collider_Tick(TimeDelta);
-	// Set_On_NaviMesh();
 
 	_uint UISize = (_uint)m_vecMonsterUI.size();
 	
@@ -145,7 +141,6 @@ void CNormal_Boss::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pLeftArmColliderCom);
 		m_pRendererCom->Add_DebugRenderGroup(m_pRightArmColliderCom);
-		// m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 	}
 }
 
@@ -184,7 +179,7 @@ HRESULT CNormal_Boss::Ready_UI()
 void CNormal_Boss::Collider_Tick(_double TimeDelta)
 {
 	m_pColliderCom[COLLTYPE_DETECTED]->Update(m_pTransformCom->Get_WorldMatrix());
-	m_pColliderCom[COLLTYPE_HITBODY]->Update(Get_BoneMatrix("Bip001 Spine") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	// m_pColliderCom[COLLTYPE_HITBODY]->Update(Get_BoneMatrix("Bip001 Spine") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pColliderCom[COLLTYPE_HITHEAD]->Update(Get_BoneMatrix("Bip001 Head") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pLeftArmColliderCom->Update(Get_BoneMatrix("Bip001 L UpperArm") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pRightArmColliderCom->Update(Get_BoneMatrix("Bip001 R UpperArm") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
@@ -288,7 +283,7 @@ HRESULT CNormal_Boss::SetUp_Components()
 	CCollider::COLLIDERDESC	ColliderDesc;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(15.f, 15.f, 15.f);
+	ColliderDesc.vSize = _float3(165.f, 15.f, 15.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_DetectedSphere", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
 

@@ -628,3 +628,20 @@ _bool CGameUtils::CollisionSphereSphere(CCollider * pColliderA, CCollider * pCol
 	return false;
 }
 
+_float CGameUtils::GetRandomFloat(_float lowBound, _float highBound)
+{
+	if (lowBound >= highBound)
+		return lowBound;
+
+	float f = (rand() % 10000) * 0.0001f;
+
+	return (f * (highBound - lowBound)) + lowBound;
+}
+
+
+void CGameUtils::GetRandomVector(_float4* out, _float4* min, _float4* max)
+{
+	out->x = GetRandomFloat(min->x, max->x);
+	out->y = GetRandomFloat(min->y, max->y);
+	out->z = GetRandomFloat(min->z, max->z);
+}

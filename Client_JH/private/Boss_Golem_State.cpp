@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "GameInstance.h"
 #include "Dynamic_Camera.h"
+#include "Laser.h"
+#include "StonePillar.h"
 
 CBoss_Golem_State::CBoss_Golem_State()
 {
@@ -47,17 +49,17 @@ void CBoss_Golem_State::Tick(_double dTimeDelta)
 	m_pPlayer = m_pMonster->m_pPlayer;
 
 	{
-		if (!m_bCanHide)
-			m_fCurHideCoolTime += (_float)dTimeDelta;
+		if (!m_bShotLazer && m_pState->Get_CurState() == L"STATE::IN_COMBAT_IDLE")
+			m_fCurLazerCoolTime += (_float)dTimeDelta;
 
 		m_fCurAttackCoolTime += (_float)dTimeDelta;
 		m_fCurDamagedAnimCoolTime += (_float)dTimeDelta;
 	}
 
-	if (m_fCurHideCoolTime >= m_fHideCoolTime && m_bCanHide == false)
+	if (m_fCurLazerCoolTime >= m_fLazerCoolTime && m_bShotLazer == false)
 	{
-		m_fCurHideCoolTime = 0.f;
-		m_bCanHide = true;
+		m_fCurLazerCoolTime = 0.f;
+		m_bShotLazer = true;
 	}
 
 	if (m_fCurAttackCoolTime >= m_fAttackCoolTime && m_bCanAttack == false)
@@ -75,9 +77,7 @@ void CBoss_Golem_State::Tick(_double dTimeDelta)
 	if(m_pGameInstance->Key_Down(DIK_F7))
 	{
 		m_pMonster->m_bPlayerDetected = true;
-		m_pMonster->Set_PlayAnimation(true);
-		m_pFadeInOut = dynamic_cast<CFadeInOut*>(m_pGameInstance->Clone_GameObject(L"Prototype_GameObject_Fade_In_Out"));
-		NULL_CHECK_RETURN(m_pFadeInOut, );
+	
 		// CBullet::BULLETOPTION BulletDesc;
 		// _float4 Position;
 		// _matrix pivot = XMMatrixIdentity();
@@ -120,18 +120,52 @@ void CBoss_Golem_State::Tick(_double dTimeDelta)
 		m_pFadeInOut->Tick(dTimeDelta);
 	}
 
+	if(m_pBullet != nullptr)
+	{
+		_float4 Position;
+		XMStoreFloat4(&Position, (m_pMonster->Get_BoneMatrix("muzzle") *CGameUtils::Get_PlayerPivotMatrix()*  m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]);
+		// XMStoreFloat4(&Position, m_pMonster->m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+		Position.y += 0.5f;
+		_float4 AddPos;
+			AddPos = ((m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION) - (m_pMonster->Get_BoneMatrix("muzzle") *CGameUtils::Get_PlayerPivotMatrix()*  m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]));
+		_float3 pSize = _float3(AddPos.x, AddPos.y, AddPos.z);
+		// AddPos.y -= 2.5f;
+		AddPos.w = 0.f;
+		AddPos = AddPos * 0.5f;
+		Position += AddPos;//(XMVectorSet(AddPos.x, AddPos.y, AddPos.z, 0.f) * 0.5f);
+		dynamic_cast<CLaser*>(m_pBullet)->Set_Pos(Position);
+
+		_float SizeY = XMVectorGetX(XMVector3Length(pSize));
+
+
+		dynamic_cast<CLaser*>(m_pBullet)->Set_PSize(SizeY + 30.f);
+		_float4 OriginPos = (m_pMonster->Get_BoneMatrix("muzzle") *CGameUtils::Get_PlayerPivotMatrix()*  m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3];
+		_float4 PlayerPos = m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION);
+		PlayerPos.y -= 2.5f;
+		_float4 Look = XMVector3Normalize(PlayerPos - OriginPos);
+		_float4 Right = XMVector3Normalize(m_pMonster->Get_TransformState(CTransform::STATE_RIGHT));
+			_float4 Up = XMVector3Cross(Right, Look );
+		dynamic_cast<CLaser*>(m_pBullet)->Set_Look(Up);
+
+		_float4 PlayerPosS = m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION);
+		// PlayerPosS.y -= 4.5f;
+		// OriginPos.y += 3.5f;
+		_float4 Test = XMVector3Cross(PlayerPosS - OriginPos, XMVector3Normalize(m_pMonster->Get_TransformState(CTransform::STATE_UP)));
+		dynamic_cast<CLaser*>(m_pBullet)->Set_Up(Test);
+	}
+
 }
 
 void CBoss_Golem_State::Late_Tick(_double dTimeDelta)
 {
 	if (m_pPlayer != nullptr)
 	{
-		// if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_DETECTED]))
-		// {
-		// 	m_pMonster->m_bPlayerDetected = true;
-		// }
-		// else
-		// 	m_pMonster->m_bPlayerDetected = false;
+		if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_DETECTED]))
+		{
+			m_pMonster->m_bPlayerDetected = true;
+		}
+		else
+			m_pMonster->m_bPlayerDetected = false;
 		//
 		// if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTRANGE]))
 		// {
@@ -193,7 +227,7 @@ HRESULT CBoss_Golem_State::SetUp_State_Idle()
 		.Init_Changer(L"STATE::MELEE_AND_READY_SPAWN", this, &CBoss_Golem_State::Is_Can_Spawn_Pillars)
 		.Init_Changer(L"STATE::READY_LAZER", this, &CBoss_Golem_State::Is_Can_Fire_Lazer)
 		.Init_Changer(L"STATE::READY_ARMFIRE", this, &CBoss_Golem_State::Is_Can_Fire_Arm)
-		.Init_Changer(L"STATE::SPAWN_MAGICSTONE", this, &CBoss_Golem_State::Is_Can_Spawn_MagicStone)
+		.Init_Changer(L"STATE::READY_MAGICSTONE", this, &CBoss_Golem_State::Is_Can_Spawn_MagicStone)
 		.Init_Changer(L"STATE::SPAWN_MONSTER", this, &CBoss_Golem_State::Is_Can_Spawn_Monster)
 		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
 
@@ -202,7 +236,7 @@ HRESULT CBoss_Golem_State::SetUp_State_Idle()
 		.Init_Start(this, &CBoss_Golem_State::Start_Melee_And_Ready_SpawnPillars)
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Melee_And_Ready_SpawnPillars)
 		.Init_End(this, &CBoss_Golem_State::End_Melee_And_Ready_SpawnPillars)
-		.Init_Changer(L"STATE::START_SPAWNPILLARS", this, &CBoss_Golem_State::Is_Pillars_Empty)
+		.Init_Changer(L"STATE::START_SPAWNPILLARS", this, &CBoss_Golem_State::Animation_Finish)
 	// 돌기둥 전부 파괴되면 스테이트 넘어옴
 		.Add_State(L"STATE::START_SPAWNPILLARS")
 		.Init_Start(this, &CBoss_Golem_State::Start_Start_SpawnPillars)
@@ -314,10 +348,31 @@ void CBoss_Golem_State::Start_Intro1(_double dTimeDelta)
 
 void CBoss_Golem_State::Start_Intro2(_double dTimeDelta)
 {
-	_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ -6.549f,3.192f,0.0f }, Pos[3]{ 116.f ,10.77f,124.94f };
+	_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ -2.172f,-5.205f,0.0f }, Pos[3]{ 109.373f ,11.078f, 118.908f };
 	_matrix camWorld;
 	ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
 	m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
+
+
+
+	// 레이저 생성
+	CBullet::BULLETOPTION BulletDesc;
+	_float4 Position;
+	// _float4 AddPositonToPlayer = ((m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION) - (m_pMonster->Get_BoneMatrix("muzzle") * CGameUtils::Get_PlayerPivotMatrix() * m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]) * 0.5f);
+	// XMStoreFloat4(&Position, (m_pMonster->Get_BoneMatrix("muzzle") * CGameUtils::Get_PlayerPivotMatrix() * m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3] 
+	// 							+ XMVectorSet(AddPositonToPlayer.x, AddPositonToPlayer.y, AddPositonToPlayer.z, 0.f));
+	XMStoreFloat4(&Position, (m_pMonster->Get_BoneMatrix("muzzle") *  m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]);
+	BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	BulletDesc.BulletDesc.m_vBulletLook = ((m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION) - (m_pMonster->Get_BoneMatrix("muzzle") *  m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]) * 0.5f);
+	BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_MONSTER;
+	BulletDesc.m_pOwner = m_pMonster;
+	m_pBullet = (CLaser*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Normal_Boss_Laser", &BulletDesc));
+	NULL_CHECK_RETURN(m_pBullet, );
+	dynamic_cast<CLaser*>(m_pBullet)->Set_Laser_Alpha_Zero(false);
+	
+	// ~레이저 생성
+
+
 
 
 	m_pModelCom->Set_LerpTime(0.4f);
@@ -328,7 +383,7 @@ void CBoss_Golem_State::Start_Intro2(_double dTimeDelta)
 
 void CBoss_Golem_State::Start_Idle(_double dTimeDelta)
 {
-	m_pModelCom->Set_LerpTime(0.6f);
+	m_pModelCom->Set_LerpTime(0.2f);
 
 	m_pModelCom->Set_CurAnimIndex(GOLEM_INCOMBAT_IDLE);
 	m_pModelCom->Reset_Animation();
@@ -371,13 +426,31 @@ void CBoss_Golem_State::Start_Ready_Lazer(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.2f);
 
 	m_pModelCom->Set_CurAnimIndex(GOLEM_READY_LAZER);
+
+	// 레이저 생성
+
 }
 
 void CBoss_Golem_State::Start_Fire_Lazer(_double dTimeDelta)
 {
-	m_pModelCom->Set_LerpTime(0.2f);
+	m_pModelCom->Set_LerpTime(0.1f);
 
 	m_pModelCom->Set_CurAnimIndex(GOLEM_FIRE_LAZER);
+
+	CBullet::BULLETOPTION BulletDesc;
+	_float4 Position;
+
+	XMStoreFloat4(&Position, (m_pMonster->Get_BoneMatrix("muzzle") * CGameUtils::Get_PlayerPivotMatrix() * m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]);
+
+	BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	_float4 PlayerPos = m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION);
+	PlayerPos = _float4(PlayerPos.x, PlayerPos.y, PlayerPos.z, PlayerPos.w);
+	BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(PlayerPos - Position);
+	BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_MONSTER;
+	BulletDesc.m_pOwner = m_pMonster;
+	CBullet*		pBullet = nullptr;
+	pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Normal_Boss_Laser_Bullet", &BulletDesc));
+	NULL_CHECK(pBullet);
 }
 
 void CBoss_Golem_State::Start_Ready_MagicStone(_double dTimeDelta)
@@ -398,6 +471,8 @@ void CBoss_Golem_State::Start_Start_SpawnPillars(_double dTimeDelta)
 {
 	m_pModelCom->Set_LerpTime(0.2f);
 	m_pModelCom->Set_CurAnimIndex(GOLEM_START_SPAWNPILLARS);
+
+	Spawn_StonePillars(); 
 }
 
 void CBoss_Golem_State::Start_Melee_And_Ready_SpawnPillars(_double dTimeDelta)
@@ -432,13 +507,13 @@ void CBoss_Golem_State::Tick_Intro0(_double dTimeDelta)
 
 void CBoss_Golem_State::Tick_Intro1(_double dTimeDelta)
 {
-	if(m_pModelCom->Get_AnimationProgress() > 0.2f && m_pModelCom->Get_AnimationProgress() < 0.22f && m_bCamSet == false)
+	if(m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.06f && m_bCamSet == false)
 	{
 		_bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Get_RenderState();
 		_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_RenderState();
 		DynamicCamera = !DynamicCamera;
 		StaticCamera = !StaticCamera;
-		_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ -12.84f ,-34.574f , 0.0f }, Pos[3]{ 111.4f ,11.47f, 129.6f };
+		_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ -0.554f ,-35.983f , 0.0f }, Pos[3]{ 113.96f ,15.386f,141.191f  };
 		_matrix camWorld;
 		ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
 		m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
@@ -457,6 +532,12 @@ void CBoss_Golem_State::Tick_Intro2(_double dTimeDelta)
 	if(m_pModelCom->Get_AnimationProgress() > 0.01f)
 	{
 		m_pFadeInOut->Fade_Out(true);
+	}
+
+	if(m_pModelCom->Get_AnimationProgress() > 0.76f && m_bSpawnOnce == false)
+	{
+		Spawn_StonePillars();
+		m_bSpawnOnce = true;
 	}
 
 	if(m_pModelCom->Get_AnimationProgress() > 0.975f)
@@ -501,10 +582,18 @@ void CBoss_Golem_State::Tick_End_Arm_Fire(_double dTimeDelta)
 
 void CBoss_Golem_State::Tick_Ready_Lazer(_double dTimeDelta)
 {
+	if (m_pModelCom->Get_AnimationProgress() > 0.5f)
+	{
+		dynamic_cast<CLaser*>(m_pBullet)->Set_Laser_Alpha_Zero(true);
+	}
 }
 
 void CBoss_Golem_State::Tick_Fire_Lazer(_double dTimeDelta)
 {
+	if(m_pModelCom->Get_AnimationProgress() > 0.1f)
+	{
+		dynamic_cast<CLaser*>(m_pBullet)->Set_Laser_Alpha_Zero(false);
+	}
 }
 
 void CBoss_Golem_State::Tick_Ready_MagicStone(_double dTimeDelta)
@@ -580,6 +669,10 @@ void CBoss_Golem_State::End_Ready_Lazer(_double dTimeDelta)
 
 void CBoss_Golem_State::End_Fire_Lazer(_double dTimeDelta)
 {
+	m_bShotLazer = false;
+	m_iLazerCount += 1;
+
+	// 레이저 제거
 }
 
 void CBoss_Golem_State::End_Ready_MagicStone(_double dTimeDelta)
@@ -592,6 +685,7 @@ void CBoss_Golem_State::End_End_MagicStone(_double dTimeDelta)
 
 void CBoss_Golem_State::End_Start_SpawnPillars(_double dTimeDelta)
 {
+	m_iSpawnStonePillarsCount += 1;
 }
 
 void CBoss_Golem_State::End_Melee_And_Ready_SpawnPillars(_double dTimeDelta)
@@ -613,7 +707,17 @@ _bool CBoss_Golem_State::Animation_Finish()
 
 _bool CBoss_Golem_State::Player_Detected()
 {
-	return m_pMonster->m_bPlayerDetected;
+	if (m_pMonster->m_bPlayerDetected)
+	{
+		m_pMonster->Set_PlayAnimation(true);
+		m_pFadeInOut = dynamic_cast<CFadeInOut*>(m_pGameInstance->Clone_GameObject(L"Prototype_GameObject_Fade_In_Out"));
+		NULL_CHECK_RETURN(m_pFadeInOut,false );
+		return true;
+	}
+	else
+		return false;
+
+	return false;
 }
 
 _bool CBoss_Golem_State::Player_DetectedAndFar()
@@ -663,17 +767,33 @@ _bool CBoss_Golem_State::IS_Dead()
 
 _bool CBoss_Golem_State::Is_Can_Spawn_Pillars()
 {
+	if (m_iLazerCount == 3)
+	{
+		m_iLazerCount = 0;
+		return true;
+	}
+	else
+		return false;
 	return false;
 }
 
 _bool CBoss_Golem_State::Is_Can_Spawn_MagicStone()
 {
+	if (m_iSpawnStonePillarsCount == 2)
+	{
+		m_iSpawnStonePillarsCount = 0;
+
+		return true;
+	}
+	else
+		return false;
+
 	return false;
 }
 
 _bool CBoss_Golem_State::Is_Can_Fire_Lazer()
 {
-	return false;
+	return m_bShotLazer;
 }
 
 _bool CBoss_Golem_State::Is_Can_Fire_Arm()
@@ -689,6 +809,36 @@ _bool CBoss_Golem_State::Is_Can_Spawn_Monster()
 _bool CBoss_Golem_State::Is_Pillars_Empty()
 {
 	return false;
+}
+
+void CBoss_Golem_State::Spawn_StonePillars()
+{
+	CGameObject::GAMEOBJECTDESC GameObjectDesc;
+	// 1번째줄  97.75, 110, 124,19
+	GameObjectDesc.TransformDesc.vInitPos = _float3(110.4f, 0.f, 140.2f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+	GameObjectDesc.TransformDesc.vInitPos = _float3(97.75f, 0.f, 140.2f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+	GameObjectDesc.TransformDesc.vInitPos = _float3(124.19f, 0.f, 140.2f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+	// 2번째줄  90.8, 104,19, 117.12, 131.5
+	GameObjectDesc.TransformDesc.vInitPos = _float3(90.8f, 0.f, 128.67f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+	GameObjectDesc.TransformDesc.vInitPos = _float3(104.19f, 0.f, 128.67f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+	GameObjectDesc.TransformDesc.vInitPos = _float3(117.12f, 0.f, 128.67f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+	GameObjectDesc.TransformDesc.vInitPos = _float3(131.5f, 0.f, 128.67f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+	// 3번째 줄 94.58, 109.98, 122,134.5
+	GameObjectDesc.TransformDesc.vInitPos = _float3(94.58f, 0.f, 116.558f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+	GameObjectDesc.TransformDesc.vInitPos = _float3(109.98f, 0.f, 116.558f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+	GameObjectDesc.TransformDesc.vInitPos = _float3(122.f, 0.f, 116.558f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+	GameObjectDesc.TransformDesc.vInitPos = _float3(131.5f, 0.f, 116.558f);
+	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
 }
 
 CBoss_Golem_State* CBoss_Golem_State::Create(CNormal_Boss* pOwner, CState* pStateMachineCom, CModel* pModel,
@@ -709,4 +859,5 @@ CBoss_Golem_State* CBoss_Golem_State::Create(CNormal_Boss* pOwner, CState* pStat
 void CBoss_Golem_State::Free()
 {
 	Safe_Release(m_pFadeInOut);
+	Safe_Release(m_pBullet);
 }

@@ -6,6 +6,7 @@
 #include "BackGround.h"
 #include "Blade.h"
 #include "Boom.h"
+#include "DangerRing.h"
 #include "Default_Pistol.h"
 #include "Effect_Point_Instancing.h"
 #include "ForkLift.h"
@@ -19,6 +20,8 @@
 #include "Elite_Knight.h"
 #include "FadeInOut.h"
 #include "LaiLuo_Home.h"
+#include "Laser.h"
+#include "LaserBullet.h"
 #include "Little_Bug.h"
 #include "Monster.h"
 #include "MonsterUI.h"
@@ -31,6 +34,7 @@
 #include "Terrain.h"
 #include "Weapon.h"
 #include "Sky.h"
+#include "StonePillar.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -188,6 +192,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 	// 빨간 총알 텍스쳐
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Bullet", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Bullet/bullet_red.png", 1)), E_FAIL);
 
+	// 레이저 텍스쳐
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Laser", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/rules_green.png", 1)), E_FAIL);
+
 
 	// 몬스터 체력 베이스 텍스쳐
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_MonsterUI_Base", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/HP_Base.png", 1)), E_FAIL);
@@ -217,6 +224,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Sword_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Human_Sword/monster_body_2001_s.png", 1)), E_FAIL);
 
 
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Danger_Ring", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/ring.png", 1)), E_FAIL);
 
 
 
@@ -231,7 +239,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	m_wstrLoadingText = L"네비게이션 정보 생성중입니다.";
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Client_JH\\Bin\\Save Data\\Navigation\\Navigation_Test.json")), E_FAIL);
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"C:\\Users\\Hoon\\Desktop\\3D_JH\\Framework_JH\\Client_JH\\Bin\\Save Data\\Navigation\\Navigation_Test.json")), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/Navigation_With3909.json")), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/Navigation_With3909_Final.json")), E_FAIL);
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Navigation_Boss", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/3909NaviData_Fin.json")), E_FAIL);
 
 	m_wstrLoadingText = L"버퍼를 로딩중입니다.";
@@ -290,6 +298,12 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Boom", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/Normal_Human_Granade/Boom.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Blade", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Knight/Bullet/Knight_Bullet_Fix1.model", PivotMatrix)), E_FAIL);
 
+	// 돌기둥
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_StonePillar", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/StonePillar/StonePillar_1.model", PivotMatrix)), E_FAIL);
+
+	// 보스 주먹 
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LeftArm", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/LeftHand.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_RightArm", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/RightHand.model", PivotMatrix)), E_FAIL);
 
 
 
@@ -362,11 +376,16 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// FadeInOut
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Fade_In_Out", CFadeInOut::Create(m_pDevice, m_pContext)), E_FAIL);
+	// Ring
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Danger_Ring", CDangerRing::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	// 노말맵 총알 게임 오브젝트
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Bow_Arrow", CArrow::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Human_Granade_Boom", CBoom::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Elite_Knight_Blade", CBlade::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_Laser", CLaser::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_Laser_Bullet", CLaserBullet::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_StonePillar", CStonePillar::Create(m_pDevice, m_pContext)), E_FAIL);
 
 
 	// Bullet

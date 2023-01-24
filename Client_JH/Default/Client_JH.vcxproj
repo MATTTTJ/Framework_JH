@@ -177,6 +177,7 @@
     <ClInclude Include="..\public\Bullet.h" />
     <ClInclude Include="..\public\BulletEffect.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\DangerRing.h" />
     <ClInclude Include="..\public\Default_Pistol.h" />
     <ClInclude Include="..\public\Dynamic_Camera.h" />
     <ClInclude Include="..\public\Effect.h" />
@@ -206,6 +207,8 @@
     <ClInclude Include="..\public\Imgui_NavigationEditor.h" />
     <ClInclude Include="..\public\Imgui_ProtoMgr.h" />
     <ClInclude Include="..\public\LaiLuo_Home.h" />
+    <ClInclude Include="..\public\Laser.h" />
+    <ClInclude Include="..\public\LaserBullet.h" />
     <ClInclude Include="..\public\Level_GamePlay.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
@@ -224,6 +227,7 @@
     <ClInclude Include="..\public\PlayerUI_Base.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Static_Camera.h" />
+    <ClInclude Include="..\public\StonePillar.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\UI.h" />
     <ClInclude Include="..\public\Weapon.h" />
@@ -241,6 +245,7 @@
     <ClCompile Include="..\private\Boss_Golem_State.cpp" />
     <ClCompile Include="..\private\Bullet.cpp" />
     <ClCompile Include="..\private\BulletEffect.cpp" />
+    <ClCompile Include="..\private\DangerRing.cpp" />
     <ClCompile Include="..\private\Default_Pistol.cpp" />
     <ClCompile Include="..\private\Dynamic_Camera.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
@@ -272,6 +277,8 @@
     <ClCompile Include="..\private\Imgui_NavigationEditor.cpp" />
     <ClCompile Include="..\private\Imgui_ProtoMgr.cpp" />
     <ClCompile Include="..\private\LaiLuo_Home.cpp" />
+    <ClCompile Include="..\private\Laser.cpp" />
+    <ClCompile Include="..\private\LaserBullet.cpp" />
     <ClCompile Include="..\private\Level_GamePlay.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
@@ -290,6 +297,7 @@
     <ClCompile Include="..\private\PlayerUI_Base.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Static_Camera.cpp" />
+    <ClCompile Include="..\private\StonePillar.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />

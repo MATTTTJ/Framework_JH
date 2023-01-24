@@ -73,24 +73,44 @@ private:
 	CTransform*					m_pTransformCom = nullptr;
 	CNavigation*				m_pNavigationCom = nullptr;
 	class CDynamic_Camera*		m_pDynamic_Camera = nullptr;
-
+	CBullet*					m_pBullet = nullptr;
 	_bool						m_bPlayAnimation = true;
 	_bool						m_bDeadOnce = false;
 	_bool						m_bFirstState[CNormal_Boss::FIRSTSTATE_END] = { false, false, false };
 
 	_bool						m_bDamaged[HIT_END] = { false, false, false };
 	_bool						m_bCamSet = false;
+
+
+	
 private:					// Pattern CoolTime 
 							// 구르기
-	_float						m_fCurHideCoolTime = 0.f;
-	_float						m_fHideCoolTime = 8.f;
-	_bool						m_bCanHide = false;
+	_float						m_fCurLazerCoolTime = 0.f;
+	_float						m_fLazerCoolTime = 3.f;
+	_bool						m_bShotLazer = false;
+	_uint						m_iLazerCount = 0;
+	// IDLE 상태에서 3초 뒤 레이저
 
-	// 공격
+	_uint						m_iSpawnStonePillarsCount = 0;
+
 	_float						m_fCurAttackCoolTime = 0.f;
 	_float						m_fAttackCoolTime = 3.f;
 	_bool						m_bCanAttack = false;
 	_bool						m_bAttackOnce = false;
+
+	// 돌기둥 3번 생성 후 운석 생성 
+
+	// INTRO2 실행되고 땅 찍을 때 돌기둥 생성
+
+	_bool						m_bSpawnOnce = false;
+
+	// 운석패턴은 긴 시간초로 하는게 좋을 듯
+
+	// 레이저 공격 3번하면 돌기둥 모두 부수고 다시 소환
+	
+
+	// 공격
+
 
 	// 피격 애니메이션
 	_float						m_fCurDamagedAnimCoolTime = 0.f;
@@ -175,6 +195,8 @@ private:
 	_bool						Is_Can_Fire_Arm();
 	_bool						Is_Can_Spawn_Monster();
 	_bool						Is_Pillars_Empty();
+
+	void						Spawn_StonePillars();
 public:
 	static CBoss_Golem_State*	Create(class CNormal_Boss* pOwner, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
 	virtual void				Free() override;

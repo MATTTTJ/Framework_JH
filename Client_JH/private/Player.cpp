@@ -170,8 +170,8 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-59.f, -0.9f + 1.5f, 64.6f, 1.f));
 	// m_pNavigationCom->Set_CellIndex(442);
 	// Normal_Boss
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(114.f, 1.5f, 87.8f, 1.f));
-	m_pNavigationCom->Set_CellIndex(501);
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(113.1f, 0.104f, 63.115f, 1.f));
+	m_pNavigationCom->Set_CellIndex(504);
 	// Elite_Knight
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.7f, 0.36f, 36.5f, 1.f));
 	// m_pNavigationCom->Set_CellIndex(360);
@@ -206,7 +206,7 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	m_PlayerOption.m_iShieldPoint += (_int)(dTimeDelta * 30);
 
-	if (m_PlayerOption.m_iMaxShieldPoint <= m_PlayerOption.m_iShieldPoint)
+	if ((_int)m_PlayerOption.m_iMaxShieldPoint <= m_PlayerOption.m_iShieldPoint)
 		m_PlayerOption.m_iShieldPoint = m_PlayerOption.m_iMaxShieldPoint;
 
 	Set_On_NaviMesh();

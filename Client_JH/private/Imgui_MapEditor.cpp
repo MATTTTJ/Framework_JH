@@ -166,7 +166,7 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 				_bool	bClickedAnyButton = false;
 				auto	iter = CloneObjectList->begin();
 
-				if (ImGui::Button("Delete") || CGameInstance::GetInstance()->Key_Down(DIK_DELETE))
+				if (ImGui::Button("Delete"))
 				{
 					bClickedAnyButton = true;
 

@@ -151,7 +151,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	NULL_CHECK_RETURN(pPlayer, E_FAIL);
 
 	_matrix PivotMatrix = XMMatrixIdentity() * XMMatrixRotationAxis(XMVectorSet(0.f,1.f,0.f, 0.f),XMConvertToRadians(180.f));
-	PivotMatrix.r[3] = XMVectorSet(116.f, 1.3f, 179.f, 1.f);
+	PivotMatrix.r[3] = XMVectorSet(110.f, 1.3f, 179.f, 1.f);
 	// Boss 
 	CMonster::MONSTEROPTION			MonsterDesc;
 	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;

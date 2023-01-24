@@ -217,6 +217,7 @@ PS_OUT PS_MAIN_Monster_Normal(PS_IN In)
 
 	if (0.1f > vDiffuse.a)
 		discard;
+
 	vDiffuse.a = 1.f;
 
 
@@ -250,9 +251,9 @@ PS_OUT_UNNORM PS_MAIN_Monster_UnNormal(PS_IN In)
 	PS_OUT_UNNORM			Out = (PS_OUT_UNNORM)0;
 
 	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	if (0.1f > vDiffuse.a)
-		discard;
 
+	// if (0.1f > vDiffuse.a)
+	// 	discard;
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
@@ -338,7 +339,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 
 		VertexShader = compile vs_5_0 VS_MAIN();
