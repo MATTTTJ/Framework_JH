@@ -49,6 +49,8 @@ public:
 	virtual void				Collision_PlayerEyes() override;
 	virtual void				Collision_Shield(class CBullet* pBullet) override;
 	virtual void				Collision_Armor(CBullet* pBullet) override;
+
+	_bool						Collision_StonePillars();
 private:
 	CRenderer*					m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;
@@ -59,7 +61,12 @@ private:
 	CCollider*					m_pShieldColliderCom = nullptr;
 	CCollider*					m_pLeftArmColliderCom = nullptr;
 	CCollider*					m_pRightArmColliderCom = nullptr;
+
+
+	CCollider*					m_pDestroy_StoneColliderCom = nullptr;
 	_bool						m_bRenderUI = false;
+
+	list<CGameObject*>			m_StonePillarList;
 private:
 	HRESULT						SetUp_Components();
 	HRESULT						SetUp_ShaderResources();

@@ -266,18 +266,22 @@ ModelManifest.xml
 Client_JH/Bin/*
 !Client_JH/Bin/Debug/assimp-vc140-mtd.dll
 !Client_JH/Bin/Release/assimp-vc140-mt.dll
-!Client_JH/Bin/ShaderFiles
 !Client_JH/Bin/Resources
 !Client_JH/Bin/Save Data
-!Engine_JH/Bin/ShaderFiles
+!Client_JH/Bin/ShaderFiles
 Client_JH/Bin/Resources/DonotCommit(home)
+Client_JH/Default/imgui.ini
+/Client_JH/Bin/Resources/Meshes/Lobby_Obj/Lobby_Heavy
+
+Engine_JH/Bin/*
+!Engine_JH/Bin/ShaderFiles
 Engine_JH/Default/Debug
 Engine_JH/Default/Debug
 Framework_JH.VC.db
 .vs/Framework_JH/v14/.suo
-Client_JH/Default/imgui.ini
 Engine_JH/Bin/Engine_JH.ilk
 Engine_JH/Bin/Engine_JH.pdb
 Engine_JH/Bin/vc140.idb
 Engine_JH/Bin/vc140.pdb
-/Client_JH/Bin/Resources/Meshes/Lobby_Obj/Lobby_Heavy
+
+

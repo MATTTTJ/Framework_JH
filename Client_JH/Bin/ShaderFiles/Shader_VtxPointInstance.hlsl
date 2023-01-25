@@ -11,9 +11,9 @@ vector			g_vLook;
 vector			g_vRightSrc;
 vector			g_vUp;
 
-float			g_fProgress =1.f;
+float			g_fProgress = 1.f;
 float			g_fPreProgress = 1.f;
-float			g_fTest; 
+float			g_fTest;
 texture2D		g_Texture;
 float			g_fLaserAlpha = 0.f;
 struct VS_IN
@@ -21,7 +21,7 @@ struct VS_IN
 	float3		vPosition : POSITION;
 	float2		vPSize : PSIZE;
 
-	row_major float4x4	Matrix : WORLD;	
+	row_major float4x4	Matrix : WORLD;
 };
 
 struct VS_OUT
@@ -59,7 +59,7 @@ struct GS_OUT
 };
 
 [maxvertexcount(6)]
-void GS_MAIN( point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
+void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 {
 	GS_OUT		Out[4];
 
@@ -116,17 +116,17 @@ void GS_MAIN_UI_Red(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 	// In[0].vPosition.x = In[0].vPosition.x - (vRight * g_fTest) ;
 	vPosition = In[0].vPosition + vRight + vUp;
 	Out[0].vPosition = mul(vector(vPosition, 1.f), matVP);
-	Out[0].vTexUV = float2((1-g_fProgress) * 0.5f, 0.f);
+	Out[0].vTexUV = float2((1 - g_fProgress) * 0.5f, 0.f);
 
-	vPosition = ((In[0].vPosition - vRight  )+ vUp);
+	vPosition = ((In[0].vPosition - vRight) + vUp);
 	Out[1].vPosition = mul(vector(vPosition, 1.f), matVP);
-	Out[1].vTexUV = float2(0.5f + (1-g_fProgress)*0.5f , 0.f);
+	Out[1].vTexUV = float2(0.5f + (1 - g_fProgress)*0.5f, 0.f);
 
-	vPosition = ((In[0].vPosition - vRight )- vUp);
+	vPosition = ((In[0].vPosition - vRight) - vUp);
 	Out[2].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[2].vTexUV = float2(0.5f + (1 - g_fProgress)*0.5f, 1.f);
 
-	vPosition = In[0].vPosition + (vRight)- vUp;
+	vPosition = In[0].vPosition + (vRight)-vUp;
 	Out[3].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[3].vTexUV = float2((1 - g_fProgress) * 0.5f, 1.f);
 
@@ -205,18 +205,18 @@ void GS_MAIN_BULLET(point GS_IN In[1], inout TriangleStream<GS_OUT> Vertices)
 	Out[0].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[0].vTexUV = float2(0.f, 0.f);
 
-	vPosition = (In[0].vPosition - vRight + vUp) ;
+	vPosition = (In[0].vPosition - vRight + vUp);
 	Out[1].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[1].vTexUV = float2(1.f, 0.f);
 
-	vPosition = (In[0].vPosition - vRight - vUp) ;
+	vPosition = (In[0].vPosition - vRight - vUp);
 	Out[2].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[2].vTexUV = float2(1.f, 1.f);
 
 	vPosition = In[0].vPosition + vRight - vUp;
 	Out[3].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[3].vTexUV = float2(0.f, 1.f);
-	
+
 	Vertices.Append(Out[0]);
 	Vertices.Append(Out[1]);
 	Vertices.Append(Out[2]);
@@ -293,7 +293,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 	// Out.vColor.rgb = float3(1.f, 0.f, 0.f);
 	//
-	if(Out.vColor.a < 0.1f)
+	if (Out.vColor.a < 0.1f)
 		discard;
 	//
 	return Out;

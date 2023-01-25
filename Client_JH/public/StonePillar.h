@@ -25,9 +25,11 @@ public:
 	virtual HRESULT			Render() override;
 	void					Ready_DangerEffect();
 	// virtual pair<_bool, _float3> Picking_Mesh() override;
-	_bool					Collision_To_Golem();
+	void					Collision_To_Golem();
 	_bool					Collision_To_MagicStone();
 	_bool					Collision_To_Bullet();
+	_bool					Collision_To_LaserBullet();
+
 private:
 	CShader*				m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
@@ -40,6 +42,13 @@ private:
 
 	_float					m_fCurGrowTime = 0.f;
 	_float					m_fGrowTime = 2.f;
+
+	_float					m_fCurDeadTimer = 0.f;
+	_float					m_fDeadTimer = 1.5f;
+	_bool					m_bDeadTimerStart = false;
+
+	list<CGameObject*>		m_BulletList;
+	list<CGameObject*>		m_MagicStoneList;
 
 	// CNavigation*			m_pNavigationCom = nullptr;
 	// _bool					m_bNormalTexOn = false;

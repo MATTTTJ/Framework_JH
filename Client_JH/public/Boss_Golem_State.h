@@ -92,30 +92,12 @@ private:					// Pattern CoolTime
 	// IDLE 상태에서 3초 뒤 레이저
 
 	_uint						m_iSpawnStonePillarsCount = 0;
+	_bool						m_bDestroy_Pillars_Once = false;
 
-	_float						m_fCurAttackCoolTime = 0.f;
-	_float						m_fAttackCoolTime = 3.f;
-	_bool						m_bCanAttack = false;
-	_bool						m_bAttackOnce = false;
-
-	// 돌기둥 3번 생성 후 운석 생성 
-
-	// INTRO2 실행되고 땅 찍을 때 돌기둥 생성
-
+	// 레이저 공격임
 	_bool						m_bSpawnOnce = false;
 
-	// 운석패턴은 긴 시간초로 하는게 좋을 듯
-
-	// 레이저 공격 3번하면 돌기둥 모두 부수고 다시 소환
-	
-
-	// 공격
-
-
-	// 피격 애니메이션
-	_float						m_fCurDamagedAnimCoolTime = 0.f;
-	_float						m_fDamagedAnimCoolTime = 5.f;
-	_bool						m_bDamagedAnim = false;
+	_uint						m_iSpawnMagicStone = 0;
 
 private:
 	// vector<class CGameObject*>	m_vecBullet;
@@ -197,6 +179,9 @@ private:
 	_bool						Is_Pillars_Empty();
 
 	void						Spawn_StonePillars();
+	void						Spawn_MagicStone();
+	void						Spawn_RocketHand(_bool TrueIsLeft);
+
 public:
 	static CBoss_Golem_State*	Create(class CNormal_Boss* pOwner, CState* pStateMachineCom, CModel* pModel, CTransform* pTransform, CNavigation* pNavigation);
 	virtual void				Free() override;

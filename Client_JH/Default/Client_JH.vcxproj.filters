@@ -241,6 +241,15 @@
     <Filter Include="02. GameObjects\01. GamePlay\Bullet\Boss\StonePillar\Ring">
       <UniqueIdentifier>{814cd913-e203-4f16-bdc9-cc713a4be07e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Bullet\Boss\StonePillar\StoneLight">
+      <UniqueIdentifier>{41e76a9f-37aa-4a72-ab12-00f97199a089}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Bullet\Boss\Laser">
+      <UniqueIdentifier>{c7ba8500-1799-4349-88b4-6fb0b814ded2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Bullet\Boss\RocketArm">
+      <UniqueIdentifier>{0f9d1559-7dc7-4149-bc71-db0a9dc4c62e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -438,9 +447,6 @@
     <ClInclude Include="..\public\FadeInOut.h">
       <Filter>02. GameObjects\00. Public\FadeInOut</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Laser.h">
-      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\LaserBullet.h">
       <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\LaserBullet</Filter>
     </ClInclude>
@@ -452,6 +458,15 @@
     </ClInclude>
     <ClInclude Include="..\public\MagicStone.h">
       <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\MagicStone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StoneLight.h">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\StonePillar\StoneLight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Laser.h">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RocketArm.h">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\RocketArm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -638,9 +653,6 @@
     <ClCompile Include="..\private\FadeInOut.cpp">
       <Filter>02. GameObjects\00. Public\FadeInOut</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Laser.cpp">
-      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\LaserBullet.cpp">
       <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\LaserBullet</Filter>
     </ClCompile>
@@ -652,6 +664,15 @@
     </ClCompile>
     <ClCompile Include="..\private\MagicStone.cpp">
       <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\MagicStone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StoneLight.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\StonePillar\StoneLight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Laser.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RocketArm.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\RocketArm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

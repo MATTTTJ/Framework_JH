@@ -416,8 +416,6 @@ void CHuman_Bow_State::Tick_Attack_A(_double dTimeDelta)
 	{
 		CBullet::BULLETOPTION BulletDesc;
 		_float4 Position;
-		_matrix pivot = XMMatrixIdentity();
-		pivot = XMMatrixRotationZ(XMConvertToRadians(180.f));
 
 		XMStoreFloat4(&Position, (m_pMonster->Get_BoneMatrix("muzzle") * CGameUtils::Get_PlayerPivotMatrix() * m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]);
 

@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "..\public\StonePillar.h"
-#include "GameInstance.h"
 
+#include "Bullet.h"
+#include "GameInstance.h"
+#include "MagicStone.h"
 
 
 CStonePillar::CStonePillar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -64,6 +66,16 @@ void CStonePillar::Tick(_double TimeDelta)
 
 	{
 		m_fCurGrowTime += _float(TimeDelta);
+
+		if(m_bDeadTimerStart == true)
+		{
+			m_fCurDeadTimer += _float(TimeDelta);
+		}
+	}
+
+	if(m_fCurDeadTimer>= m_fDeadTimer)
+	{
+		Set_Dead(true);
 	}
 
 	_float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
@@ -72,8 +84,8 @@ void CStonePillar::Tick(_double TimeDelta)
 	{
 		if (m_fCurHeight < m_fMaxHeight)
 		{
-			m_fAddHeight += (_float)(TimeDelta * 12.f);
-			m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(Pos.x, m_fCurHeight + ((_float)TimeDelta * 2.f), Pos.z, 1.f));
+			m_fAddHeight += (_float)(TimeDelta * 25.f);
+			m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(Pos.x, m_fCurHeight + m_fAddHeight, Pos.z, 1.f));
 		}
 		else
 			m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(Pos.x, -0.135f, Pos.z, 1.f));
@@ -84,12 +96,6 @@ void CStonePillar::Tick(_double TimeDelta)
 		m_fCurGrowTime = 10.f;
 	}
 	m_pStonePillarColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-
-
-	if(CGameInstance::GetInstance()->Key_Down(DIK_F9))
-	{
-		Set_Dead(true);
-	}
 }
 
 void CStonePillar::Late_Tick(_double TimeDelta)
@@ -99,8 +105,8 @@ void CStonePillar::Late_Tick(_double TimeDelta)
 	if(m_pStonePillarColliderCom != nullptr)
 	{
 		Collision_To_Bullet();
-		Collision_To_Golem();
 		Collision_To_MagicStone();
+		Collision_To_LaserBullet();
 	}
 
 	if (nullptr != m_pRendererCom)
@@ -141,19 +147,149 @@ void CStonePillar::Ready_DangerEffect()
 	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_DangerRing", L"Prototype_GameObject_Danger_Ring", &GameObjectDesc));
 }
 
-_bool CStonePillar::Collision_To_Golem()
+void CStonePillar::Collision_To_Golem()
 {
-	return false;
+
+	CGameObject::GAMEOBJECTDESC GameObjectDesc;
+	_float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x, Pos.y, Pos.z);
+	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_StoneLight", L"Prototype_GameObject_Normal_Boss_StonePillar_Light", &GameObjectDesc));
+
+	m_bDeadTimerStart = true;
+
 }
 
 _bool CStonePillar::Collision_To_MagicStone()
 {
-	return false;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	// 몬스터 리스트를 가져와서 순회해야할것같음
+	list<CGameObject*>* CloneBullet = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_MagicStone");
+	if (CloneBullet == nullptr || CloneBullet->size() == 0)
+		return false;
+	else
+	{
+		m_MagicStoneList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_MagicStone");
+		_int ListSize = 0;
+		ListSize = (_int)m_MagicStoneList.size();
+
+		if (ListSize != 0)
+		{
+			auto iter = m_MagicStoneList.begin();
+			for (auto& iter = m_MagicStoneList.begin(); iter != m_MagicStoneList.end();)
+			{
+				if (iter == m_MagicStoneList.end())
+					return false;
+
+				CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_MagicStoneSPHERE");
+
+				if (pCollider == nullptr)
+					++iter;
+				else if (m_pStonePillarColliderCom->Collision(pCollider))
+				{
+					CMagicStone* pBullet = (CMagicStone*)pCollider->Get_Owner();
+					NULL_CHECK_RETURN(pBullet, false);
+
+					pBullet->Set_Dead(true); // 총알이 어디 충돌했는지 판단하니까
+					Collision_To_Golem();
+					return true;
+				}
+				else
+					++iter;
+			}
+			return false;
+		}
+		return false;
+
+	}
 }
 
 _bool CStonePillar::Collision_To_Bullet()
 {
-	return false;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	// 몬스터 리스트를 가져와서 순회해야할것같음
+	list<CGameObject*>* CloneBullet = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Bullet");
+	if (CloneBullet == nullptr || CloneBullet->size() == 0)
+		return false;
+	else
+	{
+		m_BulletList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Bullet");
+		_int ListSize = 0;
+		ListSize = (_int)m_BulletList.size();
+
+		if (ListSize != 0)
+		{
+			auto iter = m_BulletList.begin();
+			for (auto& iter = m_BulletList.begin(); iter != m_BulletList.end();)
+			{
+				if (iter == m_BulletList.end())
+					return false;
+
+				CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_BulletSPHERE");
+
+				if (pCollider == nullptr)
+					++iter;
+				else if (m_pStonePillarColliderCom->Collision(pCollider))
+				{
+					CBullet* pBullet = (CBullet*)pCollider->Get_Owner();
+					NULL_CHECK_RETURN(pBullet, false);
+
+					pBullet->Set_Dead(true); // 총알이 어디 충돌했는지 판단하니까
+					return true;
+					// ++iter;
+					// continue;
+				}
+				else
+					++iter;
+			}
+			return false;
+		}
+		return false;
+
+	}
+}
+
+_bool CStonePillar::Collision_To_LaserBullet()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	// 몬스터 리스트를 가져와서 순회해야할것같음
+	list<CGameObject*>* CloneBullet = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_LaserBullet");
+	if (CloneBullet == nullptr || CloneBullet->size() == 0)
+		return false;
+	else
+	{
+		m_BulletList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_LaserBullet");
+		_int ListSize = 0;
+		ListSize = (_int)m_BulletList.size();
+
+		if (ListSize != 0)
+		{
+			auto iter = m_BulletList.begin();
+			for (auto& iter = m_BulletList.begin(); iter != m_BulletList.end();)
+			{
+				if (iter == m_BulletList.end())
+					return false;
+
+				CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_BulletSPHERE");
+
+				if (pCollider == nullptr)
+					++iter;
+				else if (m_pStonePillarColliderCom->Collision(pCollider))
+				{
+					CBullet* pBullet = (CBullet*)pCollider->Get_Owner();
+					NULL_CHECK_RETURN(pBullet, false);
+
+					pBullet->Set_Dead(true); // 총알이 어디 충돌했는지 판단하니까
+					Collision_To_Golem();
+					return true;
+				}
+				else
+					++iter;
+			}
+			return false;
+		}
+		return false;
+
+	}
 }
 
 HRESULT CStonePillar::SetUp_Components()

@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Boss_Golem_State.h"
 #include "Bullet.h"
+#include "StonePillar.h"
 #include "UI.h"
 
 
@@ -179,7 +180,7 @@ HRESULT CNormal_Boss::Ready_UI()
 void CNormal_Boss::Collider_Tick(_double TimeDelta)
 {
 	m_pColliderCom[COLLTYPE_DETECTED]->Update(m_pTransformCom->Get_WorldMatrix());
-	// m_pColliderCom[COLLTYPE_HITBODY]->Update(Get_BoneMatrix("Bip001 Spine") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pColliderCom[COLLTYPE_HITBODY]->Update(Get_BoneMatrix("Bip001 Spine") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pColliderCom[COLLTYPE_HITHEAD]->Update(Get_BoneMatrix("Bip001 Head") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pLeftArmColliderCom->Update(Get_BoneMatrix("Bip001 L UpperArm") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pRightArmColliderCom->Update(Get_BoneMatrix("Bip001 R UpperArm") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
@@ -267,6 +268,53 @@ void CNormal_Boss::Collision_Armor(CBullet* pBullet)
 	// 	Set_Dead(true);
 	//
 	// m_pGolem_State->Set_DamagedState(CBoss_Golem_State::HIT);
+}
+
+_bool CNormal_Boss::Collision_StonePillars()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	// 몬스터 리스트를 가져와서 순회해야할것같음
+	list<CGameObject*>* CloneStonePillars = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Pillars");
+	if (CloneStonePillars == nullptr || CloneStonePillars->size() == 0)
+		return false;
+	else
+	{
+		m_StonePillarList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Pillars");
+		_int ListSize = 0;
+		ListSize = (_int)m_StonePillarList.size();
+
+		if (ListSize != 0)
+		{
+			auto iter = m_StonePillarList.begin();
+			for (auto& iter = m_StonePillarList.begin(); iter != m_StonePillarList.end();)
+			{
+				if (iter == m_StonePillarList.end())
+					return false;
+
+				CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_StonePillarColl");
+
+				if (pCollider == nullptr)
+					++iter;
+				else if (m_pColliderCom[COLLTYPE_DETECTED]->Collision(pCollider))
+				{
+					CStonePillar* pStonePillar = (CStonePillar*)pCollider->Get_Owner();
+					NULL_CHECK_RETURN(pStonePillar, false);
+
+					pStonePillar->Collision_To_Golem(); // 총알이 어디 충돌했는지 판단하니까
+
+					++iter;
+					continue;
+				}
+				else
+					++iter;
+			}
+			return false;
+		}
+		return false;
+
+	}
+
+
 }
 
 HRESULT CNormal_Boss::SetUp_Components()

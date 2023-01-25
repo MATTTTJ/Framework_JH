@@ -558,8 +558,8 @@ _bool CWeapon_State::MouseInput_None()
 
 _bool CWeapon_State::MouseInput_LB()
 {
-	// if (m_pGameInstance->Mouse_Pressing(DIM_LB))
-	// 	return true;
+	if (m_pGameInstance->Mouse_Pressing(DIM_LB))
+		return true;
 
 	return false;
 }

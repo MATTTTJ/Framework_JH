@@ -123,9 +123,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring wstrLayerTag)
 
 	// _matrix PivotMatrix = XMMatrixIdentity();
 
-
-	// if (FAILED(pGameInstance->))
-	// 	return E_FAIL;
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

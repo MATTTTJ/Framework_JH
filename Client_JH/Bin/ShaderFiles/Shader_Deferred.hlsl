@@ -13,7 +13,7 @@ vector			g_vLightSpecular;
 vector			g_vCamPosition;
 
 vector			g_vMtrlAmbient = (vector)0.8f;
-vector			g_vMtrlSpecular = (vector)0.15f;
+vector			g_vMtrlSpecular = (vector)0.5f;
 
 texture2D		g_Texture; /* 디버그용텍스쳐*/
 texture2D		g_NormalTexture_Deferred;
@@ -129,9 +129,10 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 
 	vector		vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
 	vector		vLook = vWorldPos - g_vCamPosition;
-	vector		Specular = g_SpecularMapTexture_Deferred.Sample(LinearSampler, In.vTexUV);
-	Out.vSpecular = (g_vLightSpecular * Specular) * saturate(dot(normalize(vLook) * -1.f, normalize(vReflect)));
-	
+	// vector		Specular = g_SpecularMapTexture_Deferred.Sample(LinearSampler, In.vTexUV);
+
+	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(saturate(dot(normalize(vLook) * -1.f, normalize(vReflect))), 30.f);
+
 	Out.vSpecular.a = 0.f;
 
 	return Out;
@@ -307,7 +308,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_DIRECTIONAL();
+		PixelShader = compile ps_5_0 PS_MAIN_POINT();
 	}
 
 	pass Blend

@@ -33,6 +33,16 @@ HRESULT CBullet::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CBullet::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	_float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	if(Pos.x >= 1000.f || Pos.y >= 1000.f || Pos.z >= 1000.f)
+	{
+		Set_Dead(true);
+	}
+	if (Pos.x <= -1000.f || Pos.y <= -1000.f || Pos.z <= -1000.f)
+	{
+		Set_Dead(true);
+	}
 }
 
 void CBullet::Late_Tick(_double dTimeDelta)

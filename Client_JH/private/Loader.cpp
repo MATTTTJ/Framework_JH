@@ -23,6 +23,7 @@
 #include "Laser.h"
 #include "LaserBullet.h"
 #include "Little_Bug.h"
+#include "MagicStone.h"
 #include "Monster.h"
 #include "MonsterUI.h"
 #include "NormalMap.h"
@@ -31,9 +32,11 @@
 #include "NumberUI.h"
 #include "Player.h"
 #include "PlayerUI_Base.h"
+#include "RocketArm.h"
 #include "Terrain.h"
 #include "Weapon.h"
 #include "Sky.h"
+#include "StoneLight.h"
 #include "StonePillar.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -265,6 +268,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Home", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/StartMap/StartMap_Normal.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_NormalMap", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/StartMap/Remove_CTex_Start0.model", PivotMatrix)), E_FAIL);
 
+
 	// PivotMatrix = XMMatrixScaling(0.0045f, 0.0045f, 0.0045f) * XMMatrixRotationY(XMConvertToRadians(45.f)) *XMMatrixRotationX(XMConvertToRadians(90.f));
 	// PivotMatrix.r[3] += XMVectorSet(82.f, 0.f, -30.f, 117.f);
 
@@ -298,13 +302,20 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Boom", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/Normal_Human_Granade/Boom.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Blade", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/Normal_Elite_Knight/Bullet/Knight_Bullet_Fix1.model", PivotMatrix)), E_FAIL);
 
+	// 운석
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_MagicStone_A", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/MagicStone/MagicStone_A.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_MagicStone_B", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/MagicStone/MagicStone_B.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_MagicStone_C", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/MagicStone/MagicStone_C.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_MagicStone_D", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/MagicStone/MagicStone_D.model", PivotMatrix)), E_FAIL);
+
 	// 돌기둥
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_StonePillar", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/StonePillar/StonePillar_1.model", PivotMatrix)), E_FAIL);
+	// 기둥 라이트
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_StonePillar_Light", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/StoneLight.model", PivotMatrix)), E_FAIL);
 
 	// 보스 주먹 
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LeftArm", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/LeftHand.model", PivotMatrix)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_RightArm", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/RightHand.model", PivotMatrix)), E_FAIL);
-
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LeftArm", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/LeftHand_Fix.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_RightArm", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/RightHand_Fix.model", PivotMatrix)), E_FAIL);
 
 
 	m_wstrLoadingText = L"셰이더를 로딩중입니다. ";
@@ -386,6 +397,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_Laser", CLaser::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_Laser_Bullet", CLaserBullet::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_StonePillar", CStonePillar::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_MagicStone", CMagicStone::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_RocketArm", CRocketArm::Create(m_pDevice, m_pContext)), E_FAIL);
+
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_StonePillar_Light", CStoneLight::Create(m_pDevice, m_pContext)), E_FAIL);
 
 
 	// Bullet

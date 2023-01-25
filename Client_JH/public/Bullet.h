@@ -30,6 +30,7 @@ public:
 		CGameObject::GAMEOBJECTDESC BulletDesc;
 		ELEMENTS m_eType = TYPE_END;
 
+		_bool			m_bTrueIsLeft = true;
 		CGameObject*	m_pOwner = nullptr;
 		BULLETOWNERTYPE m_eOwner = OWNER_END;
 	}BULLETOPTION;

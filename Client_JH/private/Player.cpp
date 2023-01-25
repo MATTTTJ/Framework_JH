@@ -309,7 +309,16 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_pTransformCom->Dash(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
 	}
 
-
+	if(CGameInstance::GetInstance()->Key_Down(DIK_F3))
+	{
+		CGameObject::GAMEOBJECTDESC GameObjectDesc;
+		// ¿ÞÂÊ
+		_float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+		_float4 Look = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		
+		GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x + (Look.x * 10.f), 5.f, Pos.z + (Look.z * 10.f));
+		(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_MagicStone", L"Prototype_GameObject_Normal_Boss_MagicStone", &GameObjectDesc));
+	}
 
 	if(m_pState != nullptr)
 		m_pState->Tick(dTimeDelta);
