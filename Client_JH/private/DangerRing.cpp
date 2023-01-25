@@ -21,34 +21,56 @@ HRESULT CDangerRing::Initialize_Prototype()
 
 HRESULT CDangerRing::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 {
-	CGameObject::GAMEOBJECTDESC		GameObjectDesc;
-	ZeroMemory(&GameObjectDesc, sizeof(GameObjectDesc));
+	ZeroMemory(&m_tRingDesc, sizeof(RINGDESC));
 
 	if(nullptr != pArg)
 	{
-		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
-		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
+		m_tRingDesc = *(RINGDESC*)pArg;
+		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tRingDesc), E_FAIL);
 
-		_float4 InitPos = _float4(GameObjectDesc.TransformDesc.vInitPos.x, GameObjectDesc.TransformDesc.vInitPos.y, GameObjectDesc.TransformDesc.vInitPos.z, 1.f);
+		_float4 InitPos = _float4(m_tRingDesc.GameObjectDesc.TransformDesc.vInitPos.x, m_tRingDesc.GameObjectDesc.TransformDesc.vInitPos.y, m_tRingDesc.GameObjectDesc.TransformDesc.vInitPos.z, 1.f);
 
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, InitPos);
 		
 		
-
-		if (GameObjectDesc.m_iHP == 1)
+		if (m_tRingDesc.m_eType == tagRingDesc::RINGTYPE_PILLAR)
 		{
-			m_bBaseRing = false;
-			m_pTransformCom->Set_Scaled(_float3(7.f, 1.f, 1.f));
+			if (m_tRingDesc.GameObjectDesc.m_iHP == 1)
+			{
+				m_bBaseRing = false;
+				m_fCurSize = m_tRingDesc.m_fMinSize;
+				m_fMaxSize = m_tRingDesc.m_fMaxSize;
+				m_pTransformCom->Set_Scaled(_float3(m_fMaxSize, m_fCurSize, m_fCurSize));
+			}
+			else
+			{
+				m_bBaseRing = true;
+				m_fMaxSize = m_tRingDesc.m_fMaxSize;
+				m_fMaxSize = m_tRingDesc.m_fMaxSize;
+				m_pTransformCom->Set_Scaled(_float3(m_fMaxSize, m_fMaxSize, m_fMaxSize));
+			}
 		}
-		else
+		else if(m_tRingDesc.m_eType == tagRingDesc::RINGTYPE_ROCKETARM)
 		{
-			m_bBaseRing = true;
-			m_pTransformCom->Set_Scaled(_float3(7.f, 7.f, 7.f));
+			if (m_tRingDesc.GameObjectDesc.m_iHP == 1)
+			{
+				m_bBaseRing = false;
+				m_fCurSize = m_tRingDesc.m_fMinSize;
+				m_fMaxSize = m_tRingDesc.m_fMaxSize;
+				m_pTransformCom->Set_Scaled(_float3(m_fMaxSize, m_fCurSize, m_fCurSize));
+			}
+			else
+			{
+				m_bBaseRing = true;
+				m_fCurSize = m_tRingDesc.m_fMinSize;
+				m_fMaxSize = m_tRingDesc.m_fMaxSize;
+				m_pTransformCom->Set_Scaled(_float3(m_fMaxSize, m_fMaxSize, m_fMaxSize));
+			}
 		}
 	}
 	else
 	{
-		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tRingDesc), E_FAIL);
 
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, _float4(0.f, 0.f, 0.f, 1.f));
 		m_pTransformCom->Set_Scaled(_float3(10.f, 10.f, 10.f));
@@ -81,17 +103,25 @@ void CDangerRing::Tick(_double TimeDelta)
 	{
 		if (m_fCurSize < m_fMaxSize)
 		{
-			m_fCurSize += (_float)(TimeDelta * 8.f);
-			_float3 Size = _float3(m_fCurSize, m_fCurSize, 7.f);
+			if (m_tRingDesc.m_eType == tagRingDesc::RINGTYPE_PILLAR)
+			{
+				m_fCurSize += (_float)(TimeDelta * 8.f);
+			}
+			else if (m_tRingDesc.m_eType == tagRingDesc::RINGTYPE_ROCKETARM)
+			{
+				m_fCurSize += (_float)(TimeDelta * 20.f);
+			}
+
+			_float3 Size = _float3(m_fCurSize, m_fCurSize, m_fMaxSize);
 			m_pTransformCom->Set_Scaled(Size);
 		}
 		else
 		{
-			m_fCurSize = 1.f;
+			m_fCurSize = m_tRingDesc.m_fMinSize;
 		}
 	}
 	else
-		m_pTransformCom->Set_Scaled(_float3(7.f,7.f,7.f));
+		m_pTransformCom->Set_Scaled(_float3(m_fMaxSize, m_fMaxSize, m_fMaxSize));
 
 	
 }
@@ -101,7 +131,7 @@ void CDangerRing::Late_Tick(_double TimeDelta)
 	__super::Late_Tick(TimeDelta);
 
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
 }
 
 HRESULT CDangerRing::Render()
@@ -174,4 +204,5 @@ void CDangerRing::Free()
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
+
 }

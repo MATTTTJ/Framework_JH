@@ -57,13 +57,9 @@ private:
 	CNavigation*				m_pNavigationCom = nullptr;
 	class CBoss_Golem_State*	m_pGolem_State = nullptr;
 	CModel::LERPTYPE			m_eLerpType = CModel::LERP_BEGIN;
-
-	CCollider*					m_pShieldColliderCom = nullptr;
 	CCollider*					m_pLeftArmColliderCom = nullptr;
 	CCollider*					m_pRightArmColliderCom = nullptr;
 
-
-	CCollider*					m_pDestroy_StoneColliderCom = nullptr;
 	_bool						m_bRenderUI = false;
 
 	list<CGameObject*>			m_StonePillarList;

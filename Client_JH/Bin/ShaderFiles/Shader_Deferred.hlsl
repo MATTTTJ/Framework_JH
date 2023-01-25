@@ -13,7 +13,7 @@ vector			g_vLightSpecular;
 vector			g_vCamPosition;
 
 vector			g_vMtrlAmbient = (vector)0.8f;
-vector			g_vMtrlSpecular = (vector)0.5f;
+vector			g_vMtrlSpecular = (vector)0.3f;
 
 texture2D		g_Texture; /* 디버그용텍스쳐*/
 texture2D		g_NormalTexture_Deferred;

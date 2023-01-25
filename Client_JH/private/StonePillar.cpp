@@ -2,6 +2,7 @@
 #include "..\public\StonePillar.h"
 
 #include "Bullet.h"
+#include "DangerRing.h"
 #include "GameInstance.h"
 #include "MagicStone.h"
 
@@ -137,14 +138,17 @@ HRESULT CStonePillar::Render()
 
 void CStonePillar::Ready_DangerEffect()
 {
-	CGameObject::GAMEOBJECTDESC GameObjectDesc;
+	CDangerRing::RINGDESC		RingDesc;
 	_float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x, 3.68f, Pos.z);
-	GameObjectDesc.m_iHP = 1;
-	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_DangerRing", L"Prototype_GameObject_Danger_Ring", &GameObjectDesc));
-	GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x, 3.68f, Pos.z);
-	GameObjectDesc.m_iHP = 0;
-	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_DangerRing", L"Prototype_GameObject_Danger_Ring", &GameObjectDesc));
+	RingDesc.GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x, 3.68f, Pos.z);
+	RingDesc.GameObjectDesc.m_iHP = 1;
+	RingDesc.m_fMinSize = 1.f;
+	RingDesc.m_fMaxSize = 7.f;
+	RingDesc.m_eType = CDangerRing::RINGDESC::RINGTYPE_PILLAR;
+	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_DangerRing", L"Prototype_GameObject_Danger_Ring", &RingDesc));
+	RingDesc.GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x, 3.68f, Pos.z);
+	RingDesc.GameObjectDesc.m_iHP = 0;
+	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_DangerRing", L"Prototype_GameObject_Danger_Ring", &RingDesc));
 }
 
 void CStonePillar::Collision_To_Golem()

@@ -6,10 +6,13 @@ vector			g_vNumColor = (vector)1.f;
 vector			g_vSlashColor = (vector)0.f;
 float			g_glowStrength = 1.f;
 texture2D		g_Texture;
+texture2D		g_RingTexture;
+
 texture2D       g_SkillGlowTexture;
 float			g_fTime = 1.f;
 texture2D		g_DepthTexture;
 float			g_fFadeAlpha = 0.f;
+
 /* 샘플링 해오는 함수 */
 /* dx9 : tex2D(DefaultSampler, In.vTexUV);*/
 /* dx11 : g_Texture.Sample(DefaultSampler, In.vTexUV); */
@@ -70,8 +73,12 @@ PS_OUT PS_MAIN_Ring(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
-	if (Out.vColor.a < 0.1f)
-		discard;
+	// float4 Glow = g_RingTexture.Sample(LinearSampler, In.vTexUV);
+
+	// Out.vColor = saturate(Out.vColor + Glow);
+
+	// if (Out.vColor.a < 0.1f)
+	// 	discard;
 
 	return Out;
 }

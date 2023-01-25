@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\public\RocketArm.h"
+
+#include "DangerRing.h"
 #include "GameInstance.h"
 #include "Monster.h"
 #include "Player.h"
@@ -33,7 +35,7 @@ HRESULT CRocketArm::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg
 
 		m_tBulletOption.BulletDesc.TransformDesc.fSpeedPerSec = 10.f;
 		m_tBulletOption.m_eType = CBullet::BULLETOPTION::TYPE_FIRE;
-		m_tBulletOption.BulletDesc.m_iDamage = 30;
+		m_tBulletOption.BulletDesc.m_iDamage = 70;
 		m_pOwner = m_tBulletOption.m_pOwner;
 
 		if (m_tBulletOption.m_bTrueIsLeft)
@@ -45,7 +47,6 @@ HRESULT CRocketArm::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg
 
 		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
-
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tBulletOption.BulletDesc.TransformDesc.vInitPos.x, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.y, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.z, 1.f));
 		m_vTargetPos = m_tBulletOption.BulletDesc.m_vBulletLook;
 		// m_vTargetPos.x = m_vTargetPos.x + CGameUtils::GetRandomFloat(-3.f, 3.f);
@@ -59,6 +60,8 @@ HRESULT CRocketArm::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 		m_pTransformCom->Set_Scaled(_float3(1000.f, 1000.f, 1.f));
 	}
+
+	Ready_Danger();
 
 	return S_OK;
 }
@@ -116,6 +119,21 @@ HRESULT CRocketArm::Render()
 	return S_OK;
 }
 
+void CRocketArm::Ready_Danger()
+{
+	CDangerRing::RINGDESC		RingDesc;
+	_float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	RingDesc.GameObjectDesc.TransformDesc.vInitPos = _float3(m_vTargetPos.x, 10.514f, m_vTargetPos.z);
+	RingDesc.GameObjectDesc.m_iHP = 1;
+	RingDesc.m_fMinSize = 5.f;
+	RingDesc.m_fMaxSize = 20.f;
+	RingDesc.m_eType = CDangerRing::RINGDESC::RINGTYPE_ROCKETARM;
+	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_DangerRing", L"Prototype_GameObject_Danger_Ring", &RingDesc));
+	RingDesc.GameObjectDesc.TransformDesc.vInitPos = _float3(m_vTargetPos.x, 10.514f, m_vTargetPos.z);
+	RingDesc.GameObjectDesc.m_iHP = 0;
+	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_DangerRing", L"Prototype_GameObject_Danger_Ring", &RingDesc));
+}
+
 HRESULT CRocketArm::SetUp_Component()
 {
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
@@ -127,7 +145,7 @@ HRESULT CRocketArm::SetUp_Component()
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vSize = _float3(30.f, 30.f, 30.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_RocketArmSPHERE", (CComponent**)&m_pBulletColliderCom, this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_RocketArmSPHERE", (CComponent**)&m_pArmCollider, this, &ColliderDesc), E_FAIL);
 
 
 	return S_OK;
@@ -175,7 +193,12 @@ void CRocketArm::Free()
 {
 	__super::Free();
 
-	for(_uint i = 0; i <ARMTYPE_END; ++i)
+	Safe_Release(m_pArmCollider);
+
+	for (_uint i = 0; i < ARMTYPE_END; ++i)
+	{
 		Safe_Release(m_pArmModel[i]);
-	Safe_Release(m_pBulletColliderCom);
+	}
+
+	
 }

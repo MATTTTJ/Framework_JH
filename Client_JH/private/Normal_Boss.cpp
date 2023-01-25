@@ -439,6 +439,8 @@ void CNormal_Boss::Free()
 	}
 	Safe_Release(m_pLeftArmColliderCom);
 	Safe_Release(m_pRightArmColliderCom);
+
+
 	for (auto& pUI : m_vecMonsterUI)
 	{
 		Safe_Release(pUI);

@@ -12,6 +12,17 @@ END
 BEGIN(Client)
 class CDangerRing final : public CGameObject
 {
+public:
+	typedef struct tagRingDesc
+	{
+		enum RINGTYPE { RINGTYPE_PILLAR, RINGTYPE_ROCKETARM, RINGTYPE_END};
+		RINGTYPE	m_eType;
+		_float		m_fMinSize;
+		_float		m_fMaxSize;
+
+		GAMEOBJECTDESC	GameObjectDesc;
+	}RINGDESC;
+
 private:
 	CDangerRing(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CDangerRing(const CDangerRing& rhs);
@@ -29,6 +40,7 @@ private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTexture*				m_pTextureCom = nullptr;
 	CVIBuffer_Rect*			m_pVIBufferCom = nullptr;
+	// CTexture*				m_pTextureGlowCom = nullptr;
 
 
 private:
@@ -41,6 +53,9 @@ private:
 private:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_ShaderResources();
+
+private:
+	RINGDESC		m_tRingDesc;
 
 public:
 	static CDangerRing* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
