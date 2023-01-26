@@ -26,6 +26,9 @@ private:
 	HRESULT			Ready_Layer_Player(const wstring wstrLayerTag);
 	HRESULT			Ready_Layer_Effect(const wstring wstrLayerTag);
 	HRESULT			Ready_Layer_UI(const wstring wstrLayerTag);
+	HRESULT			Ready_Layer_BossMonster(const wstring wstrLayerTag);
+
+
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

@@ -161,7 +161,6 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 	m_pModelCom->Set_CurAnimIndex(CWeapon_State::DEFAULT_PISTOL_IDLE);
 
-
 	m_pTransformCom->Set_Scaled(_float3(0.5f, 0.5f, 0.5f));
 	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(PlayerPos.x, PlayerPos.y + 1.5f, PlayerPos.z, 1.f));
@@ -170,16 +169,14 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-59.f, -0.9f + 1.5f, 64.6f, 1.f));
 	// m_pNavigationCom->Set_CellIndex(442);
 	// Normal_Boss
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(113.1f, 0.104f, 63.115f, 1.f));
-	m_pNavigationCom->Set_CellIndex(504);
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(113.1f, 0.104f, 63.115f, 1.f));
+	// m_pNavigationCom->Set_CellIndex(504);
 	// Elite_Knight
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.7f, 0.36f, 36.5f, 1.f));
 	// m_pNavigationCom->Set_CellIndex(360);
 	m_pWeaponState = CWeapon_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
 	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
-
-	// Set_On_NaviMesh();
 
 	return S_OK;
 }

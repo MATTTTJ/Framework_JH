@@ -4,6 +4,7 @@
 #include "Monster.h"
 #include "Player.h"
 #include "Collider.h"
+#include "Normal_Boss.h"
 
 CBullet::CBullet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice,pContext)
@@ -57,6 +58,7 @@ void CBullet::Late_Tick(_double dTimeDelta)
 		Collision_Shield();
 		Collision_LArm();
 		Collision_RArm();
+		Collision_To_BossMonster();
 	}
 
 	if (nullptr != m_pRendererCom &&
@@ -355,6 +357,160 @@ _bool CBullet::Collision_RArm()
 		}
 	}
 	return false;
+}
+
+_bool CBullet::Collision_To_BossMonster()
+{
+	CMonster* pMonster = (CMonster*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front());
+
+	if (pMonster != nullptr)
+	{
+		CCollider* pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_BossDownBodyCom");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_HitHeadSphere");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_LArmSphere");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_RArmSphere");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_RHandSphere");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_LHandSphere");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_ForeRSphere");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_ForeLSphere");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_ELBOW_RSphere");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_ELBOW_LSphere");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_BossUpBodyCom");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+
+		pCollider = (CCollider*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front())->Find_Component(L"Com_HeartSphere");
+		NULL_CHECK_RETURN(pCollider, false);
+		if (m_pBulletColliderCom->Collision(pCollider))
+		{
+			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+			NULL_CHECK_RETURN(pMonster, false);
+			pMonster->Collision_Head(this); // 총알이 어디 충돌했는지 판단하니까
+			Set_Dead(true);
+			m_bCollOnce = true;
+			return true;
+		}
+	}
+	else 
+		return false;
 }
 
 _bool CBullet::Collision_To_Player(CCollider* pBulletCollider)

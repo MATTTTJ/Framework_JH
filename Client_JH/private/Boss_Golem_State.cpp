@@ -38,11 +38,8 @@ HRESULT CBoss_Golem_State::Initialize(CNormal_Boss* pOwner, CState* pStateMachin
 
 void CBoss_Golem_State::Tick(_double dTimeDelta)
 {
-	if (m_pMonster->m_tMonsterOption.MonsterDesc.m_iHP <= 0)
-	{
-		m_pMonster->Set_Dead(true);
-		return;
-	}
+	// if (m_pMonster->m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	// 	return;
 
 	m_pPlayer = m_pMonster->m_pPlayer;
 
@@ -137,15 +134,6 @@ void CBoss_Golem_State::Late_Tick(_double dTimeDelta)
 		}
 		else
 			m_pMonster->m_bPlayerDetected = false;
-		//
-		// if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTRANGE]))
-		// {
-		// 	m_pMonster->m_bPlayerDetectedClose = true;
-		// }
-		// else
-		// {
-		// 	m_pMonster->m_bPlayerDetectedClose = false;
-		// }
 	}
 
 	if (m_pFadeInOut != nullptr)
@@ -208,12 +196,16 @@ HRESULT CBoss_Golem_State::SetUp_State_Idle()
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Melee_And_Ready_SpawnPillars)
 		.Init_End(this, &CBoss_Golem_State::End_Melee_And_Ready_SpawnPillars)
 		.Init_Changer(L"STATE::START_SPAWNPILLARS", this, &CBoss_Golem_State::Animation_Finish)
+		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
+
 	// 돌기둥 전부 파괴되면 스테이트 넘어옴
 		.Add_State(L"STATE::START_SPAWNPILLARS")
 		.Init_Start(this, &CBoss_Golem_State::Start_Start_SpawnPillars)
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Start_SpawnPillars)
 		.Init_End(this, &CBoss_Golem_State::End_Start_SpawnPillars)
 		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CBoss_Golem_State::Animation_Finish)
+		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
+
 	// ~돌기둥 생성
 
 	// 레이저 발사준비
@@ -222,12 +214,16 @@ HRESULT CBoss_Golem_State::SetUp_State_Idle()
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Ready_Lazer)
 		.Init_End(this, &CBoss_Golem_State::End_Ready_Lazer)
 		.Init_Changer(L"STATE::FIRE_LAZER", this, &CBoss_Golem_State::Animation_Finish)
+		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
+
 
 		.Add_State(L"STATE::FIRE_LAZER")
 		.Init_Start(this, &CBoss_Golem_State::Start_Fire_Lazer)
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Fire_Lazer)
 		.Init_End(this, &CBoss_Golem_State::End_Fire_Lazer)
 		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CBoss_Golem_State::Animation_Finish)
+		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
+
 	// ~레이저 발사준비
 
 	// 로켓 발사준비
@@ -236,24 +232,32 @@ HRESULT CBoss_Golem_State::SetUp_State_Idle()
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Ready_Arm_Fire)
 		.Init_End(this, &CBoss_Golem_State::End_Ready_Arm_Fire)
 		.Init_Changer(L"STATE::START_FIRE_LEFTARM", this, &CBoss_Golem_State::Animation_Finish)
+		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
+
 
 		.Add_State(L"STATE::START_FIRE_LEFTARM")
 		.Init_Start(this, &CBoss_Golem_State::Start_Fire_Arm_LeftArm)
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Fire_Arm_LeftArm)
 		.Init_End(this, &CBoss_Golem_State::End_Fire_Arm_LeftArm)
 		.Init_Changer(L"STATE::START_FIRE_RIGHTARM", this, &CBoss_Golem_State::Animation_Finish)
+		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
+
 
 		.Add_State(L"STATE::START_FIRE_RIGHTARM")
 		.Init_Start(this, &CBoss_Golem_State::Start_Fire_Arm_RightArm)
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Fire_Arm_RightArm)
 		.Init_End(this, &CBoss_Golem_State::End_Fire_Arm_RightArm)
 		.Init_Changer(L"STATE::END_FIREARM", this, &CBoss_Golem_State::Animation_Finish)
+		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
+
 
 		.Add_State(L"STATE::END_FIREARM")
 		.Init_Start(this, &CBoss_Golem_State::Start_End_Arm_Fire)
 		.Init_Tick(this, &CBoss_Golem_State::Tick_End_Arm_Fire)
 		.Init_End(this, &CBoss_Golem_State::End_End_Arm_Fire)
 		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CBoss_Golem_State::Animation_Finish)
+		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
+
 	// ~로켓 발사준비
 
 
@@ -263,6 +267,8 @@ HRESULT CBoss_Golem_State::SetUp_State_Idle()
 		.Init_Tick(this, &CBoss_Golem_State::Tick_Ready_MagicStone)
 		.Init_End(this, &CBoss_Golem_State::End_Ready_MagicStone)
 		.Init_Changer(L"STATE::START_MAGICSTONE", this, &CBoss_Golem_State::Animation_Finish)
+		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
+
 
 
 		.Add_State(L"STATE::START_MAGICSTONE")
@@ -270,6 +276,8 @@ HRESULT CBoss_Golem_State::SetUp_State_Idle()
 		.Init_Tick(this, &CBoss_Golem_State::Tick_End_MagicStone)
 		.Init_End(this, &CBoss_Golem_State::End_End_MagicStone)
 		.Init_Changer(L"STATE::IN_COMBAT_IDLE", this, &CBoss_Golem_State::Animation_Finish)
+		.Init_Changer(L"STATE::DEAD", this, &CBoss_Golem_State::IS_Dead)
+
 	// ~마법석 준비
 
 
@@ -675,6 +683,7 @@ void CBoss_Golem_State::End_Melee_And_Ready_SpawnPillars(_double dTimeDelta)
 
 void CBoss_Golem_State::End_Dead(_double dTimeDelta)
 {
+	m_pMonster->Set_Dead(true);
 }
 
 
@@ -703,7 +712,7 @@ _bool CBoss_Golem_State::Player_Detected()
 
 _bool CBoss_Golem_State::IS_Dead()
 {
-	if (m_pMonster->m_bIsDead == true)
+	if (m_pMonster->m_bDeadAnimStart == true)
 		return true;
 	else 
 		return false;
@@ -877,5 +886,5 @@ CBoss_Golem_State* CBoss_Golem_State::Create(CNormal_Boss* pOwner, CState* pStat
 void CBoss_Golem_State::Free()
 {
 	Safe_Release(m_pFadeInOut);
-	Safe_Release(m_pBullet);
+	// Safe_Release(m_pBullet);
 }

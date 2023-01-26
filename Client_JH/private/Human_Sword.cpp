@@ -306,8 +306,11 @@ void CHuman_Sword::Collision_Body(CBullet* pBullet)
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
-	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
 		Set_Dead(true);
+		return;
+	}
 
 	m_pHuman_Sword_State->Reset_Damaged();
 	m_pHuman_Sword_State->Set_DamagedState(CHuman_Sword_State::HIT);
@@ -321,8 +324,11 @@ void CHuman_Sword::Collision_Head(CBullet* pBullet)
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage * 2;
-	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
 		Set_Dead(true);
+		return;
+	}
 
 	m_pHuman_Sword_State->Reset_Damaged();
 	m_pHuman_Sword_State->Set_DamagedState(CHuman_Sword_State::HIT);

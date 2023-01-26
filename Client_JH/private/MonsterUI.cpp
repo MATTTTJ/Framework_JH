@@ -607,6 +607,12 @@ void CMonsterUI_HP_White::Late_Tick(_double dTimeDelta)
 
 HRESULT CMonsterUI_HP_White::Render()
 {
+
+	if (m_pMonster->Check_Dead() == true)
+	{
+		return S_OK;
+	}
+
 	if (m_pMonster->Get_MonsterUIRender())
 	{
 		FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
@@ -1051,6 +1057,11 @@ void CBoss_UI_White::Late_Tick(_double dTimeDelta)
 
 HRESULT CBoss_UI_White::Render()
 {
+	if(m_pMonster->Check_Dead() == true)
+	{
+		return S_OK;
+	}
+
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);

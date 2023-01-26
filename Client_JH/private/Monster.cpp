@@ -87,7 +87,8 @@ void CMonster::Late_Tick(_double TimeDelta)
 				continue;
 
 		
-				
+			if (m_pColliderCom[COLLTYPE_HITBODY]->Get_ColliderType() != CCollider::COLLIDER_SPHERE)
+				continue;
 
 			if (ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY)->Get_ColliderType() == CCollider::COLLIDER_SPHERE && 
 				CGameUtils::CollisionSphereSphere(m_pColliderCom[CMonster::COLLTYPE_HITBODY], ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY), fDir))

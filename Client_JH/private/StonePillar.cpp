@@ -121,7 +121,6 @@ void CStonePillar::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 		m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarColliderCom);
 		m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarExplodeCollCom);
-
 	}
 }
 

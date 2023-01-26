@@ -18,6 +18,11 @@ CNormal_Boss::CNormal_Boss(const CNormal_Boss& rhs)
 {
 }
 
+void CNormal_Boss::Get_BossCollPtr()
+{
+
+}
+
 HRESULT CNormal_Boss::Render_UI()
 {
 	CUI* pMonsterUI = nullptr;
@@ -79,6 +84,12 @@ HRESULT CNormal_Boss::Initialize_Clone(const wstring& wstrPrototypeTag, void* pA
 
 void CNormal_Boss::Tick(_double TimeDelta)
 {
+	if (m_bIsDead)
+	{
+		// Set_Dead(true);
+		return;
+	}
+
 	__super::Tick(TimeDelta);
 	
 
@@ -90,11 +101,7 @@ void CNormal_Boss::Tick(_double TimeDelta)
 	// tmp._43 = 179.f;
 	// m_pModelCom->Get_BonePtr("Bip 001")->Set_TransformMatrix(tmp);
 
-	if (m_bIsDead)
-	{
-		Set_Dead(true);
-		return;
-	}
+	
 
 	m_pState->Tick(TimeDelta);
 	m_pGolem_State->Tick(TimeDelta);
@@ -111,15 +118,15 @@ void CNormal_Boss::Tick(_double TimeDelta)
 		m_vecMonsterUI[i]->Tick(TimeDelta);
 	}
 
-	if(CGameInstance::GetInstance()->Key_Down(DIK_F5))
-	{
-		m_tMonsterOption.MonsterDesc.m_iHP -= 30;
-	}
+	// if(CGameInstance::GetInstance()->Key_Down(DIK_F5))
+	// {
+	// 	m_tMonsterOption.MonsterDesc.m_iHP -= 30;
+	// }
 }
 
 void CNormal_Boss::Late_Tick(_double TimeDelta)
 {
-	// __super::Late_Tick(TimeDelta);
+	__super::Late_Tick(TimeDelta);
 
 	m_pGolem_State->Late_Tick(TimeDelta);
 
@@ -198,8 +205,6 @@ void CNormal_Boss::Collider_Tick(_double TimeDelta)
 	m_pBodyColliderCom[BODYTYPE_BODY]->Update(Get_BoneMatrix("Bip001 Spine") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pBodyColliderCom[BODYTYPE_ELBOW_L]->Update(Get_BoneMatrix("Bone007(mirrored)") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pBodyColliderCom[BODYTYPE_ELBOW_R]->Update(Get_BoneMatrix("Bone007") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
-
-
 }
 
 _bool CNormal_Boss::Collision_Detected(CCollider* pOtherCollider)
@@ -209,25 +214,30 @@ _bool CNormal_Boss::Collision_Detected(CCollider* pOtherCollider)
 
 _bool CNormal_Boss::Collider_AttRange(CCollider* pOtherCollider)
 {
-	return m_pColliderCom[COLLTYPE_HITBODY]->Collision(pOtherCollider);
+	// return m_pColliderCom[COLLTYPE_HITBODY]->Collision(pOtherCollider);
+	return false;
 }
 
 void CNormal_Boss::Set_On_NaviMesh()
 {
-	_float4 MonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	MonsterPos = m_pNavigationCom->Get_CellHeight(MonsterPos);
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, MonsterPos);
+	// _float4 MonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	// MonsterPos = m_pNavigationCom->Get_CellHeight(MonsterPos);
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, MonsterPos);
 }
 
 void CNormal_Boss::Collision_Body(CBullet* pBullet)
 {
-	// CBullet::BULLETOPTION BulletDesc;
-	// BulletDesc = pBullet->Get_BulletOption();
-	//
-	// if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
-	// 	m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
-	// else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
-	// 	Set_Dead(true);
+	CBullet::BULLETOPTION BulletDesc;
+	BulletDesc = pBullet->Get_BulletOption();
+	
+	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
+		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
+
+	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
+		m_tMonsterOption.MonsterDesc.m_iHP = 0;
+		m_bDeadAnimStart = true;
+	}
 	//
 	// m_pGolem_State->Reset_Damaged();
 	// m_pGolem_State->Set_DamagedState(CBoss_Golem_State::HIT);
@@ -236,13 +246,17 @@ void CNormal_Boss::Collision_Body(CBullet* pBullet)
 
 void CNormal_Boss::Collision_Head(CBullet* pBullet)
 {
-	// CBullet::BULLETOPTION BulletDesc;
-	// BulletDesc = pBullet->Get_BulletOption();
-	//
-	// if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
-	// 	m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage * 2;
-	// else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
-	// 	Set_Dead(true);
+	CBullet::BULLETOPTION BulletDesc;
+	BulletDesc = pBullet->Get_BulletOption();
+	
+	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
+		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage * 5;
+
+	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
+		m_tMonsterOption.MonsterDesc.m_iHP = 0;
+		m_bDeadAnimStart = true;
+	}
 	//
 	// m_pGolem_State->Reset_Damaged();
 	// m_pGolem_State->Set_DamagedState(CBoss_Golem_State::HIT);

@@ -26,6 +26,7 @@ public:
 	virtual ~CNormal_Boss() = default;
 
 public:
+	void						Get_BossCollPtr();
 	HRESULT						Render_UI();
 	void						Get_Damaged() { m_tMonsterOption.MonsterDesc.m_iHP -= 30; }
 	virtual HRESULT				Initialize_Prototype() override;
@@ -60,13 +61,13 @@ private:
 	CTexture*					m_pNormalTexCom = nullptr;
 	class CBoss_Golem_State*	m_pGolem_State = nullptr;
 	CModel::LERPTYPE			m_eLerpType = CModel::LERP_BEGIN;
-	CCollider*					m_pLeftArmColliderCom = nullptr;
-	CCollider*					m_pRightArmColliderCom = nullptr;
 
+	CCollider*					m_pRightArmColliderCom = nullptr;
+	CCollider*					m_pLeftArmColliderCom = nullptr;
 	CCollider*					m_pBodyColliderCom[BODYTYPE_END] = { nullptr };
 
 	_bool						m_bRenderUI = false;
-
+	_bool						m_bDeadAnimStart = false;
 	list<CGameObject*>			m_StonePillarList;
 private:
 	HRESULT						SetUp_Components();

@@ -211,7 +211,8 @@ void CElite_Bug::Collision_Body(CBullet* pBullet)
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
-	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+
+	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 		Set_Dead(true);
 
 	m_pElite_Bug_State->Reset_Damaged();
@@ -226,7 +227,8 @@ void CElite_Bug::Collision_Head(CBullet* pBullet)
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
-	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+
+	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 		Set_Dead(true);
 
 	m_pElite_Bug_State->Reset_Damaged();

@@ -32,6 +32,10 @@ void CLayer::Tick(_double TimeDelta)
 		{
 			Safe_Release(*iter);
 			iter = m_GameObjectList.erase(iter);
+			if(m_GameObjectList.empty())
+			{
+				m_GameObjectList.clear();
+			}
 		}
 		else
 		{

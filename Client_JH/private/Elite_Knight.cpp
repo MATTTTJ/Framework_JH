@@ -213,8 +213,11 @@ void CElite_Knight::Collision_Body(CBullet* pBullet)
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
-	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
 		Set_Dead(true);
+		return;
+	}
 
 	m_pElite_Knight_State->Reset_Damaged();
 	m_pElite_Knight_State->Set_DamagedState(CElite_Knight_State::HIT);
@@ -228,8 +231,11 @@ void CElite_Knight::Collision_Head(CBullet* pBullet)
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage * 2;
-	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
 		Set_Dead(true);
+		return;
+	}
 
 	m_pElite_Knight_State->Reset_Damaged();
 	m_pElite_Knight_State->Set_DamagedState(CElite_Knight_State::HIT);
@@ -265,8 +271,12 @@ void CElite_Knight::Collision_Shield(CBullet* pBullet)
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
 		m_tMonsterOption.MonsterDesc.m_iHP -= (_int)(BulletDesc.BulletDesc.m_iDamage * 0.5f);
-	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+
+	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
 		Set_Dead(true);
+		return;
+	}
 
 	m_pElite_Knight_State->Set_DamagedState(CElite_Knight_State::HIT);
 
@@ -280,8 +290,12 @@ void CElite_Knight::Collision_Armor(CBullet* pBullet)
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
 		m_tMonsterOption.MonsterDesc.m_iHP -= (_int)(BulletDesc.BulletDesc.m_iDamage * 0.7f);
-	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+
+	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
 		Set_Dead(true);
+		return;
+	}
 
 	m_pElite_Knight_State->Set_DamagedState(CElite_Knight_State::HIT);
 }
