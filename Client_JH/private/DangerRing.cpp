@@ -91,7 +91,7 @@ void CDangerRing::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	{
-		m_fCurLifeTime += TimeDelta;
+		m_fCurLifeTime += (_float)TimeDelta;
 	}
 
 	if(m_fCurLifeTime >= m_fLifeTime)

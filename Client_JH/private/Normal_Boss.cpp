@@ -119,7 +119,7 @@ void CNormal_Boss::Tick(_double TimeDelta)
 
 void CNormal_Boss::Late_Tick(_double TimeDelta)
 {
-	__super::Late_Tick(TimeDelta);
+	// __super::Late_Tick(TimeDelta);
 
 	m_pGolem_State->Late_Tick(TimeDelta);
 
@@ -130,18 +130,24 @@ void CNormal_Boss::Late_Tick(_double TimeDelta)
 		m_vecMonsterUI[i]->Late_Tick(TimeDelta);
 	}
 
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
+	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTPOS]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pLeftArmColliderCom);
 		m_pRendererCom->Add_DebugRenderGroup(m_pRightArmColliderCom);
+		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_FORE_L]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_FORE_R]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_HAND_L]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_HAND_R]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_HEART]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_BODY]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_ELBOW_L]);
+		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_ELBOW_R]);
 	}
 }
 
@@ -164,7 +170,7 @@ HRESULT CNormal_Boss::Render()
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 
-		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 3);
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 4);
 	}
 
 	return S_OK;
@@ -184,8 +190,16 @@ void CNormal_Boss::Collider_Tick(_double TimeDelta)
 	m_pColliderCom[COLLTYPE_HITHEAD]->Update(Get_BoneMatrix("Bip001 Head") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pLeftArmColliderCom->Update(Get_BoneMatrix("Bip001 L UpperArm") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pRightArmColliderCom->Update(Get_BoneMatrix("Bip001 R UpperArm") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
-	m_pColliderCom[COLLTYPE_ATTRANGE]->Update(m_pTransformCom->Get_WorldMatrix());
-	// m_pColliderCom[COLLTYPE_ONAIM]->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pBodyColliderCom[BODYTYPE_FORE_L]->Update(Get_BoneMatrix("Bip001 L Forearm") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pBodyColliderCom[BODYTYPE_FORE_R]->Update(Get_BoneMatrix("Bip001 R Forearm") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pBodyColliderCom[BODYTYPE_HAND_L]->Update(Get_BoneMatrix("Bip001 L Hand") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pBodyColliderCom[BODYTYPE_HAND_R]->Update(Get_BoneMatrix("Bip001 R Hand") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pBodyColliderCom[BODYTYPE_HEART]->Update(Get_BoneMatrix("uv02") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pBodyColliderCom[BODYTYPE_BODY]->Update(Get_BoneMatrix("Bip001 Spine") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pBodyColliderCom[BODYTYPE_ELBOW_L]->Update(Get_BoneMatrix("Bone007(mirrored)") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+	m_pBodyColliderCom[BODYTYPE_ELBOW_R]->Update(Get_BoneMatrix("Bone007") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+
+
 }
 
 _bool CNormal_Boss::Collision_Detected(CCollider* pOtherCollider)
@@ -323,6 +337,7 @@ HRESULT CNormal_Boss::SetUp_Components()
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_State", L"Com_State", (CComponent**)&m_pState, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxAnimModel", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Normal_Boss", L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_NormalBoss_NormalMap", L"Com_NormalTexCom", (CComponent**)&m_pNormalTexCom, this), E_FAIL);
 
 
 	// _float Xmin = (_float)SHRT_MAX, Xmax = (_float)SHRT_MIN, Ymin = (_float)SHRT_MAX, Ymax = (_float)SHRT_MIN, Zmin = (_float)SHRT_MAX, Zmax = (_float)SHRT_MIN;
@@ -331,44 +346,56 @@ HRESULT CNormal_Boss::SetUp_Components()
 	CCollider::COLLIDERDESC	ColliderDesc;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(165.f, 15.f, 15.f);
+	ColliderDesc.vSize = _float3(165.f, 165.f, 165.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_DetectedSphere", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(0.01f, 0.01f, 0.01f);
-	ColliderDesc.vPosition = _float3(0.25f, 0.f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_HitBodySphere", (CComponent**)&m_pColliderCom[COLLTYPE_HITBODY], this, &ColliderDesc), E_FAIL);
+	ColliderDesc.vSize = _float3(16.f, 10.f, 13.f);
+	ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vPosition = _float3(4.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_OBB", L"Com_BossDownBodyCom", (CComponent**)&m_pColliderCom[COLLTYPE_HITBODY], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(0.01f, 0.5f, 0.5f);
-	ColliderDesc.vPosition = _float3(0.1f, 0.f, 0.f);
+	ColliderDesc.vSize = _float3(10.f, 10.f, 10.f);
+	ColliderDesc.vPosition = _float3(5.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_HitHeadSphere", (CComponent**)&m_pColliderCom[COLLTYPE_HITHEAD], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(0.f, 0.f, 0.3f);
-	ColliderDesc.vPosition = _float3(0.f, 0.f, -1.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_AttackPosSphere", (CComponent**)&m_pColliderCom[COLLTYPE_ATTPOS], this, &ColliderDesc), E_FAIL);
-
-	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(4.7f, 4.7f, 4.7f);
-	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_AttackRangeSphere", (CComponent**)&m_pColliderCom[COLLTYPE_ATTRANGE], this, &ColliderDesc), E_FAIL);
-
-	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
-	ColliderDesc.vPosition = _float3(0.f, 1.5f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_OnAimSphere", (CComponent**)&m_pColliderCom[COLLTYPE_ONAIM], this, &ColliderDesc), E_FAIL);
-
-	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(0.01f, 0.7f, 0.7f);
+	ColliderDesc.vSize = _float3(10.f, 10.f, 10.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_LArmSphere", (CComponent**)&m_pLeftArmColliderCom, this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_RArmSphere", (CComponent**)&m_pRightArmColliderCom, this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(0.01f, 0.7f, 0.7f);
+	ColliderDesc.vSize = _float3(6.f, 6.f, 6.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_RArmSphere", (CComponent**)&m_pRightArmColliderCom, this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_RHandSphere", (CComponent**)&m_pBodyColliderCom[BODYTYPE_HAND_L], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_LHandSphere", (CComponent**)&m_pBodyColliderCom[BODYTYPE_HAND_R], this, &ColliderDesc), E_FAIL);
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(10.f, 10.f, 10.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_ForeRSphere", (CComponent**)&m_pBodyColliderCom[BODYTYPE_FORE_R], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_ForeLSphere", (CComponent**)&m_pBodyColliderCom[BODYTYPE_FORE_L], this, &ColliderDesc), E_FAIL);
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(5.f, 5.f, 5.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_HeartSphere", (CComponent**)&m_pBodyColliderCom[BODYTYPE_HEART], this, &ColliderDesc), E_FAIL);
+
+	
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(10.f, 10.f, 10.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_ELBOW_RSphere", (CComponent**)&m_pBodyColliderCom[BODYTYPE_ELBOW_R], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_ELBOW_LSphere", (CComponent**)&m_pBodyColliderCom[BODYTYPE_ELBOW_L], this, &ColliderDesc), E_FAIL);
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(10.f, 10.f, 20.f);
+	ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vPosition = _float3(13.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_OBB", L"Com_BossUpBodyCom", (CComponent**)&m_pBodyColliderCom[BODYTYPE_BODY], this, &ColliderDesc), E_FAIL);
 
 	// CNavigation::NAVIDESC		NaviDesc;
 	// ZeroMemory(&NaviDesc, sizeof(CNavigation::NAVIDESC));
@@ -391,7 +418,7 @@ HRESULT CNormal_Boss::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
 	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
-
+	m_pNormalTexCom->Bind_ShaderResource(m_pShaderCom, L"g_NormalTexture");
 
 
 	Safe_Release(pGameInstance);
@@ -428,7 +455,7 @@ CGameObject* CNormal_Boss::Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CNormal_Boss::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pNormalTexCom);
 	Safe_Release(m_pGolem_State);
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pState);
@@ -437,6 +464,13 @@ void CNormal_Boss::Free()
 	{
 		Safe_Release(m_pColliderCom[i]);
 	}
+
+	for(_uint i = 0; i< BODYTYPE_END; ++i)
+	{
+		Safe_Release(m_pBodyColliderCom[i]);
+	}
+
+
 	Safe_Release(m_pLeftArmColliderCom);
 	Safe_Release(m_pRightArmColliderCom);
 

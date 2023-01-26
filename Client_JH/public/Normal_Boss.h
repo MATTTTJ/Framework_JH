@@ -16,6 +16,8 @@ BEGIN(Client)
 
 class CNormal_Boss final : public CMonster
 {
+	enum BODYCOLLTYPE { BODYTYPE_FORE_R, BODYTYPE_FORE_L, BODYTYPE_HAND_L, BODYTYPE_HAND_R,BODYTYPE_HEART,BODYTYPE_BODY,BODYTYPE_ELBOW_R, BODYTYPE_ELBOW_L, BODYTYPE_END};
+
 	friend class CBoss_Golem_State;
 
 public:
@@ -55,10 +57,13 @@ private:
 	CRenderer*					m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;
 	CNavigation*				m_pNavigationCom = nullptr;
+	CTexture*					m_pNormalTexCom = nullptr;
 	class CBoss_Golem_State*	m_pGolem_State = nullptr;
 	CModel::LERPTYPE			m_eLerpType = CModel::LERP_BEGIN;
 	CCollider*					m_pLeftArmColliderCom = nullptr;
 	CCollider*					m_pRightArmColliderCom = nullptr;
+
+	CCollider*					m_pBodyColliderCom[BODYTYPE_END] = { nullptr };
 
 	_bool						m_bRenderUI = false;
 

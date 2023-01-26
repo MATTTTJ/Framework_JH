@@ -29,12 +29,13 @@ public:
 	_bool					Collision_To_MagicStone();
 	_bool					Collision_To_Bullet();
 	_bool					Collision_To_LaserBullet();
-
+	_bool					Collision_To_Player_WhenExplode();
 private:
 	CShader*				m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CCollider*				m_pStonePillarColliderCom = nullptr;
+	CCollider*				m_pStonePillarExplodeCollCom = nullptr;
 	_float					m_fAddHeight = 0.f;
 	_float					m_fCurHeight = 0.f;
 	_float					m_fMaxHeight = -7.5f;
@@ -50,6 +51,8 @@ private:
 	list<CGameObject*>		m_BulletList;
 	list<CGameObject*>		m_MagicStoneList;
 
+	_bool					m_bCollisionOnce = false;
+	
 	// CNavigation*			m_pNavigationCom = nullptr;
 	// _bool					m_bNormalTexOn = false;
 

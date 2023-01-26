@@ -81,17 +81,29 @@ void CRocketArm::Tick(_double dTimeDelta)
 	{
 		Set_Dead(true);
 	}
+	m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_BULLET);
+	// m_pTransformCom->Chase(m_vTargetPos, dTimeDelta);
 
-	m_pTransformCom->Chase(m_vTargetPos, dTimeDelta);
+	_float	vPos[3], vScale[3], vAngle[3];
+	_matrix WorldMat = m_pTransformCom->Get_WorldMatrix();
+	_float3 vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	ImGuizmo::DecomposeMatrixToComponents((_float*)&WorldMat, vPos, vAngle, vScale);
+	vScale[0] = vScale[0] * 1400.f;
+	vScale[1] = vScale[1] * 1400.f;
+	vScale[2] = vScale[2] * 1400.f;
+	vPos[0] = vPos[0] + (vLook.x * 1200.f);
+	vPos[1] = vPos[1] + (vLook.y * 1200.f);
+	vPos[2] = vPos[2] + (vLook.z * 1200.f);
+	ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&WorldMat);
 
-	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pBulletColliderCom->Update(WorldMat);
 }
 
 void CRocketArm::Late_Tick(_double dTimeDelta)
 {
 	// __super::Late_Tick(dTimeDelta);
 
-	// Collision_To_Player(m_pBulletColliderCom);
+	Collision_To_Player(m_pBulletColliderCom);
 
 	if (nullptr != m_pRendererCom)
 	{
@@ -140,13 +152,37 @@ HRESULT CRocketArm::SetUp_Component()
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxNonAnim", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LeftArm", L"Com_LeftArmModel", (CComponent**)&m_pArmModel[ARMTYPE_LEFT], this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_RightArm", L"Com_RightArmModel", (CComponent**)&m_pArmModel[ARMTYPE_RIGHT], this), E_FAIL);
+	// CCollider::COLLIDERDESC	ColliderDesc;
+	//
+	// if (m_iModelType == ARMTYPE_LEFT)
+	// {
+	// 	_float Xmin = (_float)SHRT_MAX, Xmax = (_float)SHRT_MIN, Ymin = (_float)SHRT_MAX, Ymax = (_float)SHRT_MIN, Zmin = (_float)SHRT_MAX, Zmax = (_float)SHRT_MIN;
+	// 	FAILED_CHECK_RETURN(m_pArmModel[ARMTYPE_LEFT]->Check_MeshSize("3909_13", Xmin, Xmax, Ymin, Ymax, Zmin, Zmax), E_FAIL);
+	// 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	// 	ColliderDesc.vSize = _float3((Xmax - Xmin) * 0.5f, Ymax - Ymin, (Zmax - Zmin) * 0.9f);
+	// 	ColliderDesc.vPosition = _float3(0.f, 0.9f, 0.f);
+	// 	ColliderDesc.vRotation = _float3(XMConvertToRadians(-90.f), 0.f, 0.f);
+	// }
+	// else
+	// {
+	// 	_float Xmin = (_float)SHRT_MAX, Xmax = (_float)SHRT_MIN, Ymin = (_float)SHRT_MAX, Ymax = (_float)SHRT_MIN, Zmin = (_float)SHRT_MAX, Zmax = (_float)SHRT_MIN;
+	// 	FAILED_CHECK_RETURN(m_pArmModel[ARMTYPE_RIGHT]->Check_MeshSize("3909_12", Xmin, Xmax, Ymin, Ymax, Zmin, Zmax), E_FAIL);
+	// 	CCollider::COLLIDERDESC	ColliderDesc;
+	// 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	// 	ColliderDesc.vSize = _float3((Xmax - Xmin) * 0.5f, Ymax - Ymin, (Zmax - Zmin) * 0.9f);
+	// 	ColliderDesc.vPosition = _float3(0.f, 0.9f, 0.f);
+	// 	ColliderDesc.vRotation = _float3(XMConvertToRadians(-90.f), 0.f, 0.f);
+	// }
+
+
+	// FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_RocketArmSPHERE", (CComponent**)&m_pArmCollider, this, &ColliderDesc), E_FAIL);
+
 
 	CCollider::COLLIDERDESC			ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
-	ColliderDesc.vSize = _float3(30.f, 30.f, 30.f);
+	ColliderDesc.vSize = _float3(3000.f, 3000.f, 3000.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_RocketArmSPHERE", (CComponent**)&m_pArmCollider, this, &ColliderDesc), E_FAIL);
-
 
 	return S_OK;
 }

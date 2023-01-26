@@ -87,7 +87,7 @@ public:
 
 	_bool					Collision_Detected(CCollider* pOtherCollider);
 	CGameObject*			Collision_AimBox_To_Monster();
-	void					Collision_Event(class CMonster* pMonster);
+	void					Collision_Event(CGameObject* pMonster);
 public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;

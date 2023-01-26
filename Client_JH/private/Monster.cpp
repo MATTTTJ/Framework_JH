@@ -86,7 +86,11 @@ void CMonster::Late_Tick(_double TimeDelta)
 			if (ppMonster == this || ppMonster== nullptr)
 				continue;
 
-			if (CGameUtils::CollisionSphereSphere(m_pColliderCom[CMonster::COLLTYPE_HITBODY], ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY), fDir))
+		
+				
+
+			if (ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY)->Get_ColliderType() == CCollider::COLLIDER_SPHERE && 
+				CGameUtils::CollisionSphereSphere(m_pColliderCom[CMonster::COLLTYPE_HITBODY], ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY), fDir))
 			{
 				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 				fDir.y = 0.f;

@@ -209,6 +209,28 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT_UNNORM PS_MAIN_Boss(PS_IN In)
+{
+	PS_OUT_UNNORM			Out = (PS_OUT_UNNORM)0;
+
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (0.1f > vDiffuse.a)
+		discard;
+
+	vDiffuse.a = 1.f;
+	
+	vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+
+	float3		vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal, In.vNormal.xyz);
+	vNormal = normalize(mul(vNormal, WorldMatrix));
+	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDiffuse = vDiffuse;
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
+	return Out;
+}
+
 PS_OUT PS_MAIN_Monster_Normal(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -349,4 +371,17 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_Monster_UnNormal();
 	}
 
+	pass MonsterBoss4
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_Boss();
+	}
 }

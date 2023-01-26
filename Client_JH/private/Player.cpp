@@ -484,7 +484,7 @@ CGameObject* CPlayer::Collision_AimBox_To_Monster()
 	return	nullptr;//m_pColliderCom[COLLIDER_OBB]->CollisionReturnObj(pTargetCollider);
 }
 
-void CPlayer::Collision_Event(CMonster* pMonster)
+void CPlayer::Collision_Event(CGameObject* pMonster)
 {
 	NULL_CHECK_RETURN(pMonster, );
 

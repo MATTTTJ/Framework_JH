@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\public\StonePillar.h"
-
+#include "Player.h"
 #include "Bullet.h"
 #include "DangerRing.h"
 #include "GameInstance.h"
@@ -76,6 +76,11 @@ void CStonePillar::Tick(_double TimeDelta)
 
 	if(m_fCurDeadTimer>= m_fDeadTimer)
 	{
+		if(m_bCollisionOnce == false)
+		{
+			Collision_To_Player_WhenExplode();
+		}
+
 		Set_Dead(true);
 	}
 
@@ -97,6 +102,7 @@ void CStonePillar::Tick(_double TimeDelta)
 		m_fCurGrowTime = 10.f;
 	}
 	m_pStonePillarColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pStonePillarExplodeCollCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CStonePillar::Late_Tick(_double TimeDelta)
@@ -114,6 +120,8 @@ void CStonePillar::Late_Tick(_double TimeDelta)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 		m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarColliderCom);
+		m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarExplodeCollCom);
+
 	}
 }
 
@@ -126,11 +134,8 @@ HRESULT CStonePillar::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-	
-
-	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
-
-	m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
+		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+		m_pModelCom->Render(m_pShaderCom, i);
 	}
 
 	return S_OK;
@@ -296,6 +301,23 @@ _bool CStonePillar::Collision_To_LaserBullet()
 	}
 }
 
+_bool CStonePillar::Collision_To_Player_WhenExplode()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_BODYSPHERE");
+	NULL_CHECK_RETURN(pCollider, false);
+
+	if (m_pStonePillarExplodeCollCom->Collision(pCollider))
+	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pCollider->Get_Owner());
+		NULL_CHECK_RETURN(pPlayer, false);
+		pPlayer->Collision_Event(this);
+		m_bCollisionOnce = true;
+		return true;
+	}
+	return false;
+}
+
 HRESULT CStonePillar::SetUp_Components()
 {
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
@@ -311,6 +333,11 @@ HRESULT CStonePillar::SetUp_Components()
 	ColliderDesc.vPosition = _float3(0.f, 3.5f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_OBB", L"Com_StonePillarColl", (CComponent**)&m_pStonePillarColliderCom, this, &ColliderDesc), E_FAIL);
 
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(10.f, 10.f, 10.f);
+	ColliderDesc.vPosition = _float3(0.f, 3.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_ExplodeSPHERE", (CComponent**)&m_pStonePillarExplodeCollCom, this, &ColliderDesc), E_FAIL);
 	return S_OK;
 }
 
@@ -355,6 +382,7 @@ CGameObject* CStonePillar::Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CStonePillar::Free()
 {
 	__super::Free();
+	Safe_Release(m_pStonePillarExplodeCollCom);
 	Safe_Release(m_pStonePillarColliderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
