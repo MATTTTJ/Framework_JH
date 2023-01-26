@@ -312,8 +312,8 @@ PS_OUT PS_MAIN_MonsterUI(PS_IN In)
 
 	// Out.vColor.rgb = float3(1.f, 0.f, 0.f);
 
-	// if (Out.vColor.a < 0.1f)
-	// 	discard;
+	if (Out.vColor.a < 0.1f)
+		discard;
 
 	return Out;
 }

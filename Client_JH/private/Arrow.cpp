@@ -52,6 +52,10 @@ HRESULT CArrow::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 
 void CArrow::Tick(_double dTimeDelta)
 {
+	if(m_pOwner == nullptr)
+	{
+		Set_Dead(true);
+	}
 	__super::Tick(dTimeDelta);
 
 	m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_BULLET);

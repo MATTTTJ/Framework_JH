@@ -28,6 +28,34 @@ public:
 	virtual void Free() override;
 };
 
+class CPlayerUI_Enter final : public CUI
+{
+private:
+	CPlayerUI_Enter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CPlayerUI_Enter(const CPlayerUI_Enter& rhs);
+	virtual ~CPlayerUI_Enter() = default;
+
+protected:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
+	virtual void	Tick(_double dTimeDelta) override;
+	virtual void	Late_Tick(_double dTimeDelta) override;
+	virtual HRESULT Render() override;
+
+private:
+	CPlayer*		m_pPlayer = nullptr;
+
+private:
+	HRESULT			SetUp_Component();
+	HRESULT			SetUp_ShaderResources();
+
+public:
+	static CPlayerUI_Enter*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
+	virtual void Free() override;
+};
+
+
 
 class CPlayerUI_Hp_Red final : public CUI
 {

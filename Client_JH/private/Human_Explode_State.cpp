@@ -96,21 +96,23 @@ void CHuman_Explode_State::Late_Tick(_double dTimeDelta)
 		}
 		// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vPos);
 	}
+	if (m_pPlayer != nullptr)
+	{
+		if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_DETECTED]))
+		{
+			m_pMonster->m_bPlayerDetected = true;
+		}
+		else
+			m_pMonster->m_bPlayerDetected = false;
 
-	if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_DETECTED]))
-	{
-		m_pMonster->m_bPlayerDetected = true;
-	}
-	else
-		m_pMonster->m_bPlayerDetected = false;
-
-	if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTRANGE]))
-	{
-		m_pMonster->m_bPlayerDetectedClose = true;
-	}
-	else
-	{
-		m_pMonster->m_bPlayerDetectedClose = false;
+		if (m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTRANGE]))
+		{
+			m_pMonster->m_bPlayerDetectedClose = true;
+		}
+		else
+		{
+			m_pMonster->m_bPlayerDetectedClose = false;
+		}
 	}
 }
 
@@ -347,6 +349,7 @@ void CHuman_Explode_State::End_Patrol(_double dTimeDelta)
 void CHuman_Explode_State::End_Attack_A(_double dTimeDelta)
 {
 	m_bAttackOnce = false;
+	m_pMonster->Set_Dead(true);
 }
 
 void CHuman_Explode_State::End_Hide(_double dTimeDelta)

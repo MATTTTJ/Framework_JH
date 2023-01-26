@@ -27,6 +27,7 @@ private:
 	HRESULT			Ready_Layer_Effect(const wstring wstrLayerTag);
 	HRESULT			Ready_Layer_UI(const wstring wstrLayerTag);
 	HRESULT			Ready_Layer_BossMonster(const wstring wstrLayerTag);
+	HRESULT			Ready_Layer_Trigger(const wstring wstrLayerTag);
 
 
 public:

@@ -466,7 +466,7 @@ void CBoss_Golem_State::Start_Dead(_double dTimeDelta)
 {
 	m_pModelCom->Set_LerpTime(0.2f);
 	m_pModelCom->Set_CurAnimIndex(GOLEM_DIE);
-
+	dynamic_cast<CLaser*>(m_pBullet)->Set_Laser_Alpha_Zero(false);
 	if(m_pModelCom->Get_LastAnimationIndex() == GOLEM_DIE)
 	{
 		m_pMonster->Set_Dead(true);

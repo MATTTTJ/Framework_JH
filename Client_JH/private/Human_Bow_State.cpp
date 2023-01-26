@@ -84,6 +84,8 @@ void CHuman_Bow_State::Tick(_double dTimeDelta)
 		m_bTurnPatrolDirection = true;
 	}
 
+	m_pTransformCom->LookAt_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta);
+
 	// if(m_pGameInstance->Key_Down(DIK_F7))
 	// {
 	// 	// 위치잡기 

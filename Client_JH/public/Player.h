@@ -4,7 +4,7 @@
 #include "Model.h"
 #include "Weapon_State.h"
 BEGIN(Engine)
-class CRenderer;
+	class CRenderer;
 class CShader;
 class CModel;
 class CCollider;
@@ -24,6 +24,7 @@ public:
 
 	enum WEAPONTYPE { WEAPON_DEFAULT, WEAPON_FLAMEBULLET, WEAPON_FIREDRAGON, WEAPON_POISON, WEAPON_END };
 
+	enum ROOMTYPE { ROOM_A, ROOM_B, ROOM_C, ROOM_KIGHT, ROOM_BUG, ROOM_BOSS, ROOMTYPE_END};
 
 	typedef struct tagWeaponType
 	{
@@ -56,6 +57,18 @@ private:
 	friend CWeapon_State;
 
 public:
+	void					Set_PortalUI(_bool TrueIsRender) { m_bPortalUI = TrueIsRender; }
+	_bool					Get_PortalUI() { return m_bPortalUI; }
+	void					Set_RoomType(ROOMTYPE eType)
+	{
+		memset(m_bCurRoomType, false, sizeof(_bool) * ROOMTYPE_END);
+		m_bCurRoomType[eType] = true; 
+	}
+	_bool					Get_CurRoomType(ROOMTYPE eType) { return m_bCurRoomType[eType]; }
+	void					Set_CellIndex(_uint iCellIdx);
+
+
+
 	void					Get_Damaged() { m_PlayerOption.m_iHp -= 30; }
 	PLAYEROPTION			Get_PlayerStat() { return m_PlayerOption; }
 
@@ -120,6 +133,12 @@ private:
 	_bool					m_bNormalTexOn;
 	_bool					m_bSpecularTexOn;
 	// vector<CGameObject*>	m_vecPlayerParts;
+
+private:
+	//For Trigger
+	_bool					m_bCurRoomType[ROOMTYPE_END] = {false};
+	_bool					m_bPortalUI = false;
+
 public:
 	CCollider*				m_pColliderCom[COLLIDERTYPE_END] = { nullptr };
 

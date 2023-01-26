@@ -38,6 +38,7 @@
 #include "Sky.h"
 #include "StoneLight.h"
 #include "StonePillar.h"
+#include "Trigger.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -215,6 +216,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 	//페이드 텍스쳐
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Fade_In_Out", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Monster_UI/Monster_HP/FadeInOut.png", 1)), E_FAIL);
 
+	// 입장 텍스쳐 
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Enter", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/Enter.png", 1)), E_FAIL);
+
 
 	// 몬스터 노말 텍스쳐
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Monster_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Human_Sword/monster_body_2001_s.png", 1)), E_FAIL);
@@ -273,7 +277,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// PivotMatrix = XMMatrixScaling(0.009f, 0.009f, 0.009f) * XMMatrixRotationY(XMConvertToRadians(180.f)) *XMMatrixRotationX(XMConvertToRadians(90.f));
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Home", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/StartMap/StartMap_Normal.model", PivotMatrix)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_NormalMap", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/StartMap/Remove_CTex_Start0.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_NormalMap", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/StartMap/Lite_StartMap.model", PivotMatrix)), E_FAIL);
 
 
 	// PivotMatrix = XMMatrixScaling(0.0045f, 0.0045f, 0.0045f) * XMMatrixRotationY(XMConvertToRadians(45.f)) *XMMatrixRotationX(XMConvertToRadians(90.f));
@@ -349,6 +353,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Base", CPlayerUI_Base::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Hp", CPlayerUI_Hp_Red::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Shield", CPlayerUI_Hp_Shield::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Enter", CPlayerUI_Enter::Create(m_pDevice, m_pContext)), E_FAIL);
 
 
 
@@ -410,6 +415,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_StonePillar_Light", CStoneLight::Create(m_pDevice, m_pContext)), E_FAIL);
 
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Trigger", CTrigger::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	// Bullet
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_Default_PistolTex", CDefault_Pistol::Create(m_pDevice, m_pContext)), E_FAIL);

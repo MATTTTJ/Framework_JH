@@ -232,6 +232,7 @@
     <ClInclude Include="..\public\StoneLight.h" />
     <ClInclude Include="..\public\StonePillar.h" />
     <ClInclude Include="..\public\Terrain.h" />
+    <ClInclude Include="..\public\Trigger.h" />
     <ClInclude Include="..\public\UI.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\Weapon_State.h" />
@@ -305,6 +306,7 @@
     <ClCompile Include="..\private\StoneLight.cpp" />
     <ClCompile Include="..\private\StonePillar.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
+    <ClCompile Include="..\private\Trigger.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\Weapon_State.cpp" />

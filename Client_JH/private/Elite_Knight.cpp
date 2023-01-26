@@ -45,6 +45,7 @@ HRESULT CElite_Knight::Initialize_Clone(const wstring& wstrPrototypeTag, void* p
 	{
 		m_pModelCom->Set_CurAnimIndex(CElite_Knight_State::KNIGHT_SPAWN);
 	}
+	m_pNavigationCom->Set_CellIndex(m_tMonsterOption.m_iCellIndex);
 
 	return S_OK;
 }

@@ -117,6 +117,135 @@ void CPlayerUI_Base::Free()
 	__super::Free();
 }
 
+// Enter Tex
+
+
+CPlayerUI_Enter::CPlayerUI_Enter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CUI(pDevice, pContext)
+{
+}
+
+CPlayerUI_Enter::CPlayerUI_Enter(const CPlayerUI_Enter& rhs)
+	: CUI(rhs)
+{
+}
+
+HRESULT CPlayerUI_Enter::Initialize_Prototype()
+{
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CPlayerUI_Enter::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
+{
+	m_fSizeX = 256.f;
+	m_fSizeY = 256.f;
+	m_fX = m_fSizeX * 0.5f;
+	m_fY = m_fSizeY * 0.5f;
+
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
+
+	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
+
+	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(200.f, -150.f, 0.f, 1.f));
+	return S_OK;
+}
+
+void CPlayerUI_Enter::Tick(_double dTimeDelta)
+{
+	__super::Tick(dTimeDelta);
+}
+
+void CPlayerUI_Enter::Late_Tick(_double dTimeDelta)
+{
+	__super::Late_Tick(dTimeDelta);
+
+	if (nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+}
+
+HRESULT CPlayerUI_Enter::Render()
+{
+	if (m_pOwner != nullptr)
+	{
+		if (dynamic_cast<CPlayer*>(m_pOwner)->Get_PortalUI() == true)
+		{
+			FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+
+			FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+
+			m_pShaderCom->Begin(1);
+
+			m_pVIBufferCom->Render();
+
+			return S_OK;
+		}
+		else
+			return S_OK;
+	}
+	else
+		return S_OK;
+}
+
+HRESULT CPlayerUI_Enter::SetUp_Component()
+{
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Shader_VtxTex", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Enter", L"Com_Texture", (CComponent**)&m_pTextureCom, this), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CPlayerUI_Enter::SetUp_ShaderResources()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix");
+	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
+	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
+	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
+
+	return S_OK;
+}
+
+CPlayerUI_Enter* CPlayerUI_Enter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CPlayerUI_Enter*	pInstance = new CPlayerUI_Enter(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed to Create : CPlayerUI_Enter");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject* CPlayerUI_Enter::Clone(const wstring& wstrPrototypeTag, void* pArg)
+{
+	CPlayerUI_Enter*	pInstance = new CPlayerUI_Enter(*this);
+
+	if (FAILED(pInstance->Initialize_Clone(wstrPrototypeTag, pArg)))
+	{
+		MSG_BOX("Failed to Create : CPlayerUI_Enter");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CPlayerUI_Enter::Free()
+{
+	__super::Free();
+}
+
+
+
+
+
 // Player_HP
 
 
@@ -1605,7 +1734,7 @@ HRESULT CPlayer_UI_BulletType::SetUp_ShaderResources()
 	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
 	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
 
-	if (m_wstrWeaponName == L"WEAPON_DEFAULT")
+	if (m_wstrWeaponName == L"WEAPON_POISON")
 	{
 		//Rifle
 		m_pWeaponTextureCom[WEAPON_SECOND]->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
@@ -1615,8 +1744,7 @@ HRESULT CPlayer_UI_BulletType::SetUp_ShaderResources()
 		//Injector
 		m_pWeaponTextureCom[WEAPON_THIRD]->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
 	}
-	else if (m_wstrWeaponName == L"WEAPON_POISON" ||
-		m_wstrWeaponName == L"WEAPON_FLAMEBULLET")
+	else if (	m_wstrWeaponName == L"WEAPON_FLAMEBULLET" || 	m_wstrWeaponName == L"WEAPON_DEFAULT")
 	{
 		//Pistol
 		m_pWeaponTextureCom[WEAPON_FIRST]->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
@@ -1724,13 +1852,13 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 		break;
 
 	case CNT_BULLET:
-		if (m_wstrWeaponName == L"WEAPON_DEFAULT")
+		if (m_wstrWeaponName == L"WEAPON_POISON")
 		{
 			//Rifle
-			// m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_RifleBulletCnt();
 			m_eWeaponType = WEAPON_RIFLE;
+			m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_RifleBulletCnt();
 
-			m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_PistolBulletCnt();
+			// m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_PistolBulletCnt();
 			m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
 
@@ -1758,7 +1886,7 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 			InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vInjectorNumColor, m_vBulletNumberSize);
 
 		}
-		else if (m_wstrWeaponName == L"WEAPON_POISON" || m_wstrWeaponName == L"WEAPON_FLAMEBULLET")
+		else if (m_wstrWeaponName == L"WEAPON_POISON" || m_wstrWeaponName == L"WEAPON_FLAMEBULLET" || m_wstrWeaponName == L"WEAPON_DEFAULT")
 		{
 			//Pistol
 			m_eWeaponType = WEAPON_PISTOL;

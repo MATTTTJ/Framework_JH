@@ -58,7 +58,11 @@ void CBullet::Late_Tick(_double dTimeDelta)
 		Collision_Shield();
 		Collision_LArm();
 		Collision_RArm();
-		Collision_To_BossMonster();
+
+		if (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurRoomType(CPlayer::ROOM_BOSS) == true)
+		{
+			Collision_To_BossMonster();
+		}
 	}
 
 	if (nullptr != m_pRendererCom &&
@@ -515,6 +519,8 @@ _bool CBullet::Collision_To_BossMonster()
 
 _bool CBullet::Collision_To_Player(CCollider* pBulletCollider)
 {
+	NULL_CHECK_RETURN(m_pOwner, false);
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	CCollider* pCollider = (CCollider*)pGameInstance->Get_ComponentPtr(LEVEL_GAMEPLAY, L"Layer_Player", L"Com_BODYSPHERE");
 	NULL_CHECK_RETURN(pCollider, false);

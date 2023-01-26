@@ -42,10 +42,19 @@ CPlayer::CPlayer(const CPlayer & rhs)
 	m_PlayerOption.m_iEmeraldCnt = 0;
 	m_PlayerOption.m_iMaxShieldPoint = 100;
 	m_PlayerOption.m_iShieldPoint = m_PlayerOption.m_iMaxShieldPoint;
-	m_PlayerOption.m_iPistol_BulletCnt = 50;
+	m_PlayerOption.m_iPistol_BulletCnt = 300;
 	m_PlayerOption.m_iRifle_BulletCnt = 50;
 	m_PlayerOption.m_iInjector_BulletCnt = 50;
 	m_PlayerOption.m_iThrowCnt = 4;
+
+	memset(&m_bCurRoomType, false, sizeof(_bool) * ROOMTYPE_END);
+}
+
+void CPlayer::Set_CellIndex(_uint iCellIdx)
+{
+	// CNavigation::NAVIDESC& NaviDesc = m_pNavigationCom->Get_NaviDescRef();
+	// NaviDesc.iCurrentIndex = iCellIdx;
+	m_pNavigationCom->Set_CellIndex(iCellIdx);
 }
 
 #pragma region Utils
@@ -165,19 +174,16 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	_float4 PlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(PlayerPos.x, PlayerPos.y + 1.5f, PlayerPos.z, 1.f));
 
-	//Elite_Bug
-	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-59.f, -0.9f + 1.5f, 64.6f, 1.f));
-	// m_pNavigationCom->Set_CellIndex(442);
-	// Normal_Boss
-	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(113.1f, 0.104f, 63.115f, 1.f));
-	// m_pNavigationCom->Set_CellIndex(504);
-	// Elite_Knight
-	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.7f, 0.36f, 36.5f, 1.f));
-	// m_pNavigationCom->Set_CellIndex(360);
+
 	m_pWeaponState = CWeapon_State::Create(this, m_pState, m_pModelCom, m_pTransformCom, m_pNavigationCom);
 	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-14.f, 0.f, 0.8f, 1.f));
+	m_pNavigationCom->Set_CellIndex(40);
+
+	m_bCurRoomType[ROOM_A] = true;
+	
 	return S_OK;
 }
 
@@ -605,6 +611,11 @@ HRESULT CPlayer::Ready_UI()
 	CUI*		pPlayerUI = nullptr;
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Enter"));
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+	pPlayerUI->Set_Owner(this);
+	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Base"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);

@@ -198,11 +198,9 @@ _bool CLittle_Bug::Collider_AttRange(CCollider* pOtherCollider)
 
 void CLittle_Bug::Set_On_NaviMesh()
 {
-	// _float m_fHeight = m_pNavigationCom->Get_CellHeight();
-	// _float4 vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	// vMonsterPos.y = m_fHeight;
-	//
-	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMonsterPos);
+	_float4 MonsterPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	MonsterPos = m_pNavigationCom->Get_CellHeight(MonsterPos);
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, MonsterPos);
 }
 
 void CLittle_Bug::Collision_Body(CBullet* pBullet)

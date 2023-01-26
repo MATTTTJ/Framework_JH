@@ -59,6 +59,11 @@ HRESULT CBoom::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 
 void CBoom::Tick(_double dTimeDelta)
 {
+	if(m_pOwner == nullptr)
+	{
+		Set_Dead(true);
+	}
+
 	__super::Tick(dTimeDelta);
 	{
 		if(m_bFallTime == true)
