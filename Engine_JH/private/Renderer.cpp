@@ -63,7 +63,7 @@ HRESULT CRenderer::Draw_RenderGroup()
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_OutLine(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_Fade(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_FADE(), E_FAIL);
 
 #ifdef _DEBUG
 	FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
@@ -166,6 +166,11 @@ HRESULT CRenderer::Render_Priority()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_ShadowDepth_Dynamic()
+{
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_NonAlphaBlend()
 {
 	NULL_CHECK_RETURN(m_pTarget_Manager, E_FAIL);
@@ -186,6 +191,11 @@ HRESULT CRenderer::Render_NonAlphaBlend()
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, TEXT("MRT_Deferred")), E_FAIL);
 
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect()
+{
 	return S_OK;
 }
 
@@ -223,12 +233,6 @@ HRESULT CRenderer::Render_LightAcc()
 
 HRESULT CRenderer::Render_DOF()
 {
-	return S_OK;
-}
-
-HRESULT CRenderer::Render_Ditortion()
-{
-
 	return S_OK;
 }
 
@@ -284,8 +288,6 @@ HRESULT CRenderer::Render_AlphaBlend()
 
 HRESULT CRenderer::Render_UI()
 {
-
-
 	for (auto& pGameObject : m_RenderObjectList[RENDER_UI])
 	{
 		if (nullptr != pGameObject)
@@ -296,6 +298,16 @@ HRESULT CRenderer::Render_UI()
 
 	m_RenderObjectList[RENDER_UI].clear();
 
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Blur(const _tchar* pTargetTag)
+{
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Bloom(const _tchar* pTargetTag)
+{
 	return S_OK;
 }
 
@@ -314,7 +326,7 @@ HRESULT CRenderer::Render_OutLine()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_Fade()
+HRESULT CRenderer::Render_FADE()
 {
 	for (auto& pGameObject : m_RenderObjectList[RENDER_FADE])
 	{

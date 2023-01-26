@@ -6,7 +6,7 @@ BEGIN(Engine)
 class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
-	enum RENDERGROUP { RENDER_PRIORITY, RENDER_NONALPHABLEND, RENDERER_LIGHTACC, RENDER_NONLIGHT, RENDER_ALPHABLEND,RENDER_FADE, RENDER_UI,RENDER_OUTLINE, RENDER_END };
+	enum RENDERGROUP { RENDER_PRIORITY, RENDER_DYNAMIC_SHADOWDEPTH, RENDER_NONALPHABLEND, RENDER_OUTLINE,  RENDERER_LIGHTACC, RENDER_NONLIGHT, RENDER_BLUR,RENDER_FADE, RENDER_ALPHABLEND,RENDER_EFFECT, RENDER_UI, RENDER_END };
 
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -39,18 +39,23 @@ private:
 	_bool								m_bRender_Collider;
 private:
 	HRESULT				Render_Priority();
+	HRESULT				Render_ShadowDepth_Dynamic();
 	HRESULT				Render_NonAlphaBlend();
+	HRESULT				Render_Effect();
 	HRESULT				Render_LightAcc();
-	HRESULT				Render_NonAnim_OutLine();
 	HRESULT				Render_DOF();
-	HRESULT				Render_Ditortion();
 	HRESULT				Render_Blend();
 	HRESULT				Render_NonLight();
 	HRESULT				Render_AlphaBlend();
 	HRESULT				Render_UI();
-	HRESULT				Render_OutLine();
+	HRESULT				Render_FADE();
 
-	HRESULT				Render_Fade();
+
+private:
+	HRESULT				Render_Blur(const _tchar* pTargetTag);
+	HRESULT				Render_Bloom(const _tchar* pTargetTag);
+	HRESULT				Render_OutLine();
+	HRESULT				Render_ShadowBlur();
 
 #ifdef _DEBUG
 private:

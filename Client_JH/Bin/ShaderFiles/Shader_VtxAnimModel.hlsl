@@ -11,7 +11,7 @@ texture2D		g_NormalTexture;
 texture2D		g_ModelGlowTexture;
 texture2D		g_ModelTestTexture;
 texture2D		g_ModelSpecularTexture;
-
+float3			g_vColor = float3(0.f, 0.f, 0.f);
 bool			g_bNormalTexOn;
 bool			g_bSpecularTexOn;
 bool			g_bHit = false;
@@ -308,6 +308,20 @@ PS_OUT PS_MAIN_OUTLINE(PS_IN In)
 	
 	if (Out.vDiffuse.a < 0.1f)
 		discard;
+
+	return Out;
+}
+
+struct PS_OUT_FLAG
+{
+	vector		vFlag : SV_TARGET0;
+};
+
+PS_OUT_FLAG PS_OUTLINE(PS_IN In)
+{
+	PS_OUT_FLAG		Out = (PS_OUT_FLAG)0;
+	//¿Ü°û¼± À¯¹«
+	Out.vFlag = vector(g_vColor, 1.f);
 
 	return Out;
 }
