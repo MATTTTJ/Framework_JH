@@ -66,10 +66,7 @@ void CBoom::Tick(_double dTimeDelta)
 
 	__super::Tick(dTimeDelta);
 	{
-		if(m_bFallTime == true)
-		{
-			m_fCurBoomTime += (_float)dTimeDelta;
-		}
+		m_fCurBoomTime += (_float)dTimeDelta;
 	}
 	_float4 BoomPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 
@@ -85,11 +82,12 @@ void CBoom::Tick(_double dTimeDelta)
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta);
 	}
 
-	if(BoomPos.y <= m_fDeadHeight.y)
+	if (BoomPos.y <= m_fDeadHeight.y)
 	{
 		m_bFallTime = true;
-		_float4 tmp = dynamic_cast<CMonster*>(m_pOwner)->Get_TransformState(CTransform::STATE_TRANSLATION);
-		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(BoomPos.x, tmp.y + 0.35f, BoomPos.z, 1.f));
+		
+		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(BoomPos.x, BoomPos.y + 0.35f, BoomPos.z, 1.f));
+		
 	}
 	m_pBoomColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());

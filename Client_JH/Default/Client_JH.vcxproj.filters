@@ -253,6 +253,9 @@
     <Filter Include="02. GameObjects\00. Public\Trigger">
       <UniqueIdentifier>{c3dbe700-0d9f-45fd-a4d3-6445d0f89f19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\00. Public\SkySphere">
+      <UniqueIdentifier>{3ea5667c-c094-4a22-8d83-edc59c17d494}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -472,6 +475,7 @@
       <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\RocketArm</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Trigger.h" />
+    <ClInclude Include="..\public\SkySphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -679,6 +683,7 @@
       <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\RocketArm</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Trigger.cpp" />
+    <ClCompile Include="..\private\SkySphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

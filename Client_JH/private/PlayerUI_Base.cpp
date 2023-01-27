@@ -1857,8 +1857,6 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 			//Rifle
 			m_eWeaponType = WEAPON_RIFLE;
 			m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_RifleBulletCnt();
-
-			// m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_PistolBulletCnt();
 			m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
 
@@ -1886,7 +1884,7 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 			InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vInjectorNumColor, m_vBulletNumberSize);
 
 		}
-		else if (m_wstrWeaponName == L"WEAPON_POISON" || m_wstrWeaponName == L"WEAPON_FLAMEBULLET" || m_wstrWeaponName == L"WEAPON_DEFAULT")
+		else if (m_wstrWeaponName == L"WEAPON_FLAMEBULLET" || m_wstrWeaponName == L"WEAPON_DEFAULT")
 		{
 			//Pistol
 			m_eWeaponType = WEAPON_PISTOL;
@@ -1936,20 +1934,20 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 
 	Create_CountUI();
 
-	for (_uint i = 0; i < m_vecCountUI.size(); ++i)
-	{
-		m_vecCountUI[i]->Tick(dTimeDelta);
-	}
+	// for (_uint i = 0; i < m_vecCountUI.size(); ++i)
+	// {
+	// 	m_vecCountUI[i]->Tick(dTimeDelta);
+	// }
 }
 
 void CPlayer_UI_CountMachine::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	for (_uint i = 0; i < m_vecCountUI.size(); ++i)
-	{
-		m_vecCountUI[i]->Late_Tick(dTimeDelta);
-	}
+	// for (_uint i = 0; i < m_vecCountUI.size(); ++i)
+	// {
+	// 	m_vecCountUI[i]->Late_Tick(dTimeDelta);
+	// }
 
 
 
@@ -1997,7 +1995,7 @@ void CPlayer_UI_CountMachine::InttoString(_uint ConvertCnt, _float2 vPos, _float
 			if (v2[i] != Number)
 				continue;
 
-			CGameObject*		pNumberUI = nullptr;
+			CUI*		pNumberUI = nullptr;
 			CGameObject::GAMEOBJECTDESC		tmp;
 			if (v2.size() == 1)
 				tmp.TransformDesc.vInitPos = _float3(vPos.x + 36.f, vPos.y, 0.f);
@@ -2008,10 +2006,10 @@ void CPlayer_UI_CountMachine::InttoString(_uint ConvertCnt, _float2 vPos, _float
 			tmp.m_iNumber = Number;
 			tmp.m_vNumColor = vColor;
 			tmp.m_vTexSize = vSize;
-			pNumberUI = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_NumberUI", &tmp);
-			NULL_CHECK_RETURN(pNumberUI, );
-
-			m_vecCountUI.push_back(dynamic_cast<vector<CUI*>::value_type>(pNumberUI));
+			// pNumberUI = (CUI*);
+			// NULL_CHECK_RETURN(pNumberUI, );
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_NumUI", L"Prototype_GameObject_Player_NumberUI", &tmp), );
+			m_vecCountUI.push_back(pNumberUI);
 
 			m_iLastPlayer_BulletCnt = m_iPlayer_BulletCnt;
 			m_iLastWeapon_BulletCnt = m_iWeapon_BulletCnt;

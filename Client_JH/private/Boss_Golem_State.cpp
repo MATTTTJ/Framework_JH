@@ -54,19 +54,19 @@ void CBoss_Golem_State::Tick(_double dTimeDelta)
 		m_bShotLazer = true;
 	}
 
-	if(m_pGameInstance->Key_Down(DIK_F7))
-	{
-		// m_pMonster->m_bPlayerDetected = true;
-		// Spawn_MagicStone();
-		Spawn_RocketHand(true);
-	}
-
-	if (m_pGameInstance->Key_Down(DIK_F8))
-	{
-		// m_pMonster->m_bPlayerDetected = true;
-		// Spawn_MagicStone();
-		Spawn_RocketHand(false);
-	}
+	// if(m_pGameInstance->Key_Down(DIK_F7))
+	// {
+	// 	// m_pMonster->m_bPlayerDetected = true;
+	// 	// Spawn_MagicStone();
+	// 	Spawn_RocketHand(true);
+	// }
+	//
+	// if (m_pGameInstance->Key_Down(DIK_F8))
+	// {
+	// 	// m_pMonster->m_bPlayerDetected = true;
+	// 	// Spawn_MagicStone();
+	// 	Spawn_RocketHand(false);
+	// }
 
 	if (m_pGameInstance->Key_Down(DIK_F3))
 	{
@@ -327,7 +327,7 @@ void CBoss_Golem_State::Start_Intro1(_double dTimeDelta)
 
 void CBoss_Golem_State::Start_Intro2(_double dTimeDelta)
 {
-	_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ -2.172f,-5.205f,0.0f }, Pos[3]{ 109.373f ,11.078f, 118.908f };
+	_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ -1.35f, 0.702f, 0.f }, Pos[3]{ 110.486f, 13.789f, 120.949f };
 	_matrix camWorld;
 	ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
 	m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);

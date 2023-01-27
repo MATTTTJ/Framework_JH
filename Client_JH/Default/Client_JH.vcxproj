@@ -228,6 +228,7 @@
     <ClInclude Include="..\public\PlayerUI_Base.h" />
     <ClInclude Include="..\public\RocketArm.h" />
     <ClInclude Include="..\public\Sky.h" />
+    <ClInclude Include="..\public\SkySphere.h" />
     <ClInclude Include="..\public\Static_Camera.h" />
     <ClInclude Include="..\public\StoneLight.h" />
     <ClInclude Include="..\public\StonePillar.h" />
@@ -302,6 +303,7 @@
     <ClCompile Include="..\private\PlayerUI_Base.cpp" />
     <ClCompile Include="..\private\RocketArm.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
+    <ClCompile Include="..\private\SkySphere.cpp" />
     <ClCompile Include="..\private\Static_Camera.cpp" />
     <ClCompile Include="..\private\StoneLight.cpp" />
     <ClCompile Include="..\private\StonePillar.cpp" />

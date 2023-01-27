@@ -140,16 +140,6 @@ HRESULT CHuman_Sword::Render()
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-	// _uint UISize = (_uint)m_vecMonsterUI.size();
-	//
-	// if (m_bCanUIRender)
-	// {
-	// 	for (_uint i = 0; i < UISize; ++i)
-	// 	{
-	// 		m_vecMonsterUI[i]->Render();
-	// 	}
-	// }
-
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");

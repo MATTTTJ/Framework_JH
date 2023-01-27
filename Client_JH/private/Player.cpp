@@ -179,8 +179,8 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	NULL_CHECK_RETURN(m_pWeaponState, E_FAIL);
 	FAILED_CHECK_RETURN(Ready_UI(), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-14.f, 0.f, 0.8f, 1.f));
-	m_pNavigationCom->Set_CellIndex(40);
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-14.f, 0.f, 0.8f, 1.f));
+	// m_pNavigationCom->Set_CellIndex(40);
 
 	m_bCurRoomType[ROOM_A] = true;
 	

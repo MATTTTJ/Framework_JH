@@ -96,7 +96,7 @@ private:
 	_bool						MouseInput_None(void);
 	_bool						MouseInput_LB(void);
 	_bool						Animation_Finish(void);
-
+	_bool						Is_Empty_Bullet(void);
 private:
 	class CGameInstance*		m_pGameInstance = nullptr;
 
@@ -106,7 +106,7 @@ private:
 	CModel*						m_pModelCom = nullptr;
 	CTransform*					m_pTransformCom = nullptr;
 	CNavigation*				m_pNavigationCom = nullptr;
-
+	_bool						m_bGoReload = false;
 	_bool						m_bDeadOnce = false;
 private:
 	WEAPON_OPTION				m_tWeaponOption[WEAPONTYPE_END];

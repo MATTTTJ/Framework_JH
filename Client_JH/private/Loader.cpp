@@ -36,6 +36,7 @@
 #include "Terrain.h"
 #include "Weapon.h"
 #include "Sky.h"
+#include "SkySphere.h"
 #include "StoneLight.h"
 #include "StonePillar.h"
 #include "Trigger.h"
@@ -243,10 +244,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 
 
-
-
-
-
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_SphereTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/Untitled-1.png", 1)), E_FAIL);
 
 
 
@@ -259,6 +257,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	m_wstrLoadingText = L"버퍼를 로딩중입니다.";
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Cube", CVIBuffer_Cube::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Sphere", CVIBuffer_Sphere::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Point_Instancing", CVIBuffer_Point_Instancing::Create(m_pDevice, m_pContext, 30)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Bullet_Instancing", CVIBuffer_Point_Instancing::Create(m_pDevice, m_pContext,1)), E_FAIL);
 
@@ -293,6 +292,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Flame_Bullet/Flame_Bullet_Spec.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fire_Dragon", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Fire_Dragon/Fire_Dragon_Alpha0.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Poison", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Poison/Poison_Normal.model", PivotMatrix)), E_FAIL);
+
+
 
 	// 노말맵 몬스터 모델
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Sword", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Human_Sword/Normal_Human_Sword.model", PivotMatrix)), E_FAIL);
@@ -345,6 +346,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Home", CHome::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NormalMap", CNormalMap::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_BossMap", CNormal_BossMap::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_SkySphere", CSkySphere::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_LaiHome", CLaiLuo_Home::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Weapon",CWeapon::Create(m_pDevice, m_pContext)), E_FAIL);

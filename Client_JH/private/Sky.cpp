@@ -31,6 +31,8 @@ HRESULT CSky::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CSky::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMLoadFloat4(&CGameInstance::GetInstance()->Get_CamPos()));
 }
 
 void CSky::Late_Tick(_double dTimeDelta)
@@ -39,7 +41,7 @@ void CSky::Late_Tick(_double dTimeDelta)
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 	
-	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMLoadFloat4(&pGameInstance->Get_CamPos()));
+	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMLoadFloat4(&pGameInstance->Get_CamPos()));
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -67,7 +69,7 @@ HRESULT CSky::SetUp_Components()
 	/* For.Com_Renderer */
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxCubeTex", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL)
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Sky", L"Com_Texture",	(CComponent**)&m_pTextureCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_SphereTex", L"Com_Texture",	(CComponent**)&m_pTextureCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Cube", L"Com_VIBuffer",	(CComponent**)&m_pVIBufferCom, this), E_FAIL);
 
 	return S_OK;
@@ -77,7 +79,7 @@ HRESULT CSky::SetUp_ShaderResources()
 {
 	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
-	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture", 2), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);
 	
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW)), E_FAIL);

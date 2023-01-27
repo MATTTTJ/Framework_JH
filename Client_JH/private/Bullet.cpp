@@ -36,11 +36,11 @@ void CBullet::Tick(_double dTimeDelta)
 	__super::Tick(dTimeDelta);
 
 	_float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	if(Pos.x >= 1000.f || Pos.y >= 1000.f || Pos.z >= 1000.f)
+	if(Pos.x >= 300.f || Pos.y >= 80.f || Pos.z >= 300.f)
 	{
 		Set_Dead(true);
 	}
-	if (Pos.x <= -1000.f || Pos.y <= -1000.f || Pos.z <= -1000.f)
+	if (Pos.x <= -300.f || Pos.y <= -80.f || Pos.z <= -300.f)
 	{
 		Set_Dead(true);
 	}
@@ -50,7 +50,7 @@ void CBullet::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	if (m_bCollOnce == false && m_tBulletOption.m_eOwner == OWNER_PLAYER)
+	if (m_tBulletOption.m_eOwner == OWNER_PLAYER)
 	{
 		Collision_Body();
 		Collision_Head();
@@ -116,7 +116,7 @@ _bool CBullet::Collision_Body()
 					pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 					Set_Dead(true);
 
-					m_bCollOnce = true;
+					// m_bCollOnce = true;
 					return true;
 				}
 				else
@@ -164,7 +164,7 @@ _bool CBullet::Collision_Head()
 					pMonster->Collision_Head(this); // 총알이 어디 충돌했는지 판단하니까
 					Set_Dead(true);
 
-					m_bCollOnce = true;
+					// m_bCollOnce = true;
 					return true;
 				}
 				else
@@ -256,7 +256,7 @@ _bool CBullet::Collision_Shield()
 					pMonster->Collision_Shield(this); // 총알이 어디 충돌했는지 판단하니까
 					Set_Dead(true);
 
-					m_bCollOnce = true;
+					// m_bCollOnce = true;
 					return true;
 				}
 				else
@@ -304,7 +304,7 @@ _bool CBullet::Collision_LArm()
 					pMonster->Collision_Armor(this); // 총알이 어디 충돌했는지 판단하니까
 					Set_Dead(true);
 
-					m_bCollOnce = true;
+					// m_bCollOnce = true;
 					return true;
 				}
 				else
@@ -351,7 +351,7 @@ _bool CBullet::Collision_RArm()
 					pMonster->Set_HitColor();
 					pMonster->Collision_Armor(this); // 총알이 어디 충돌했는지 판단하니까
 					Set_Dead(true);
-					m_bCollOnce = true;
+					// m_bCollOnce = true;
 					return true;
 				}
 				else
@@ -365,6 +365,9 @@ _bool CBullet::Collision_RArm()
 
 _bool CBullet::Collision_To_BossMonster()
 {
+	if ((CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front()) == nullptr)
+		return false;
+
 	CMonster* pMonster = (CMonster*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front());
 
 	if (pMonster != nullptr)
@@ -377,7 +380,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -389,7 +392,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -401,7 +404,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -413,7 +416,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -425,7 +428,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -437,7 +440,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -449,7 +452,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -461,7 +464,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -473,7 +476,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -485,7 +488,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -497,7 +500,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 
@@ -509,7 +512,7 @@ _bool CBullet::Collision_To_BossMonster()
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Head(this); // 총알이 어디 충돌했는지 판단하니까
 			Set_Dead(true);
-			m_bCollOnce = true;
+			// m_bCollOnce = true;
 			return true;
 		}
 	}
@@ -530,6 +533,8 @@ _bool CBullet::Collision_To_Player(CCollider* pBulletCollider)
 		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pCollider->Get_Owner());
 		NULL_CHECK_RETURN(pPlayer, false);
 		pPlayer->Collision_Event(dynamic_cast<CMonster*>(m_pOwner));
+		Set_Dead(true);
+
 		return true;
 	}
 	return false;

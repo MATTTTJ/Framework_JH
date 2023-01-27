@@ -54,7 +54,7 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 	if (!m_bRender)
 		return;
 
-	// m_pTransformCom->Go_Straight(TimeDelta * 0.1f, CTransform::TRANS_BULLET);
+	m_pTransformCom->Go_Straight(TimeDelta * 0.15f, CTransform::TRANS_BULLET);
 
 	if (GetKeyState(VK_UP) & 0x8000)
 	{

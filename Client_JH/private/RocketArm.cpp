@@ -77,10 +77,10 @@ void CRocketArm::Tick(_double dTimeDelta)
 		Set_Dead(true);
 	}
 
-	if (CGameInstance::GetInstance()->Key_Down(DIK_F9))
-	{
-		Set_Dead(true);
-	}
+	// if (CGameInstance::GetInstance()->Key_Down(DIK_F9))
+	// {
+	// 	Set_Dead(true);
+	// }
 	m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_BULLET);
 	// m_pTransformCom->Chase(m_vTargetPos, dTimeDelta);
 

@@ -137,6 +137,7 @@ HRESULT CWeapon_State::SetUp_State_Weapon_Idle()
 		.Init_End(this, &CWeapon_State::End_Common)
 		.Init_Changer(L"STATE::WEAPON_FIRE", this, &CWeapon_State::MouseInput_LB)
 		.Init_Changer(L"STATE::WEAPON_RELOAD", this, &CWeapon_State::KeyInput_R)
+		.Init_Changer(L"STATE::WEAPON_RELOAD", this, &CWeapon_State::Is_Empty_Bullet)
 		.Init_Changer(L"STATE::WEAPON_THROW", this, &CWeapon_State::KeyInput_Q)
 		.Init_Changer(L"STATE::WEAPON_ROAR", this, &CWeapon_State::KeyInput_E)
 
@@ -159,6 +160,7 @@ HRESULT CWeapon_State::SetUp_State_Fire()
 		.Init_Changer(L"STATE::WEAPON_THROW", this, &CWeapon_State::KeyInput_Q)
 		.Init_Changer(L"STATE::WEAPON_ROAR", this, &CWeapon_State::KeyInput_E)
 		.Init_Changer(L"STATE::WEAPON_IDLE", this, &CWeapon_State::Animation_Finish)
+		.Init_Changer(L"STATE::WEAPON_RELOAD", this, &CWeapon_State::Is_Empty_Bullet)
 
 		.Finish_Setting();
 
@@ -242,9 +244,11 @@ void CWeapon_State::Start_Weapon_Idle(_double TimeDelta)
 
 void CWeapon_State::Start_Fire(_double TimeDelta)
 {
-	if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName &&
-		m_pPlayer->Get_PistolBulletCnt() > 1)
+	if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName)
 	{
+		if (m_pPlayer->Get_PistolBulletCnt() <= 0)
+			m_bGoReload = true;
+
 		m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
 		m_tWeaponOption[DEFAULT_PISTOL].iCurBullet -= 1;
 	
@@ -504,6 +508,8 @@ void CWeapon_State::End_Reload(_double TimeDelta)
 			}
 		}
 	}
+
+	m_bGoReload = false;
 }
 
 _bool CWeapon_State::None_Input()
@@ -559,14 +565,29 @@ _bool CWeapon_State::MouseInput_None()
 _bool CWeapon_State::MouseInput_LB()
 {
 	if (m_pGameInstance->Mouse_Pressing(DIM_LB))
-		return true;
+	{
+		if (m_tWeaponOption->iCurBullet == 0)
+		{
+			m_bGoReload = true;
 
-	return false;
+			return false;
+		}
+		else
+			return true;
+	}
+	else 
+		return false;
+
 }
 
 _bool CWeapon_State::Animation_Finish()
 {
 	return m_pModelCom->Get_AnimationFinish();
+}
+
+_bool CWeapon_State::Is_Empty_Bullet()
+{
+	return m_bGoReload;
 }
 
 CWeapon_State* CWeapon_State::Create(CPlayer* pPlayer, CState* pStateMachineCom, CModel * pModel, CTransform * pTransform, CNavigation* pNavigation)

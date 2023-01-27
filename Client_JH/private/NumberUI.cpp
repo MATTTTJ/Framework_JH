@@ -59,8 +59,8 @@ void CNumberUI::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+	if (nullptr != m_pNumRendererCom)
+		m_pNumRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 
 HRESULT CNumberUI::Render()
@@ -78,7 +78,7 @@ HRESULT CNumberUI::Render()
 
 HRESULT CNumberUI::SetUp_Components()
 {
-	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",(CComponent**)&m_pRendererCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",(CComponent**)&m_pNumRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Shader_VtxTex", L"Com_Shader",	(CComponent**)&m_pShaderCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer",	(CComponent**)&m_pVIBufferCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_0", L"Com_Num0", (CComponent**)&m_pNumberingTexCom[ZERO], this), E_FAIL);
@@ -176,4 +176,5 @@ CGameObject* CNumberUI::Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CNumberUI::Free()
 {
 	__super::Free();
+	Safe_Release(m_pNumRendererCom);
 }

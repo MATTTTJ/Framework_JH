@@ -25,6 +25,7 @@ private:
 	HRESULT							SetUp_ShaderResources();
 
 private:
+	CRenderer*						m_pNumRendererCom = nullptr;
 	int								m_iNumCnt;
 	int								m_iNumber;
 	_float4							m_vNumColor;

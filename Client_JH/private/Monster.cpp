@@ -65,6 +65,11 @@ HRESULT CMonster::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 void CMonster::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	if(CGameInstance::GetInstance()->Key_Down(DIK_F9))
+	{
+		Set_Dead(true);
+	}
 }
 
 void CMonster::Late_Tick(_double TimeDelta)

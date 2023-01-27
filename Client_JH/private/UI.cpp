@@ -73,6 +73,7 @@ HRESULT CUI::Render()
 void CUI::Free()
 {
 	__super::Free();
+
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
@@ -89,6 +90,7 @@ void CUI::Free()
 
 	for (_int i = 0; i < NUM_END; ++i)
 		Safe_Release(m_pNumberingTexCom[i]);
+
 	Safe_Release(m_pPointBufferOther);
 	Safe_Release(m_pPointBuffer);
 	Safe_Release(m_pRendererCom);
