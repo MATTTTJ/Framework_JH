@@ -32,22 +32,16 @@ void CLayer::Tick(_double TimeDelta)
 		{
 			Safe_Release(*iter);
 			iter = m_GameObjectList.erase(iter);
-			if(m_GameObjectList.empty())
-			{
-				m_GameObjectList.clear();
-			}
+			continue;
 		}
-		else
-		{
-			++iter;
-		}
+
+		if (nullptr != (*iter) && !(*iter)->IsDisabled())
+			(*iter)->Tick(TimeDelta);
+
+		++iter;
 	}
 
-	for (auto& pGameObject : m_GameObjectList)
-	{
-		if (nullptr != pGameObject)
-			pGameObject->Tick(TimeDelta);
-	}
+	
 }
 
 void CLayer::Late_Tick(_double TimeDelta)

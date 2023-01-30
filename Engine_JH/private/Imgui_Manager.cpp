@@ -23,7 +23,6 @@ void CImgui_Manager::Ready_Imgui(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 	//io.ConfigViewportsNoAutoMerge = true;
 	io.ConfigViewportsNoTaskBarIcon = true;
-
 	ImGui::StyleColorsDark();
 	
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -40,6 +39,81 @@ void CImgui_Manager::Ready_Imgui(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 
 	ImGui_ImplWin32_Init(hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pDeviceContext);
+
+	ImGuiStyle * pstyle = &ImGui::GetStyle();
+
+	pstyle->WindowMinSize = ImVec2(160, 20);
+	pstyle->FramePadding = ImVec2(4, 2);
+	pstyle->ItemSpacing = ImVec2(6, 2);
+	pstyle->ItemInnerSpacing = ImVec2(6, 4);
+	pstyle->Alpha = 0.95f;
+	pstyle->WindowRounding = 4.0f;
+	pstyle->FrameRounding = 2.0f;
+	pstyle->IndentSpacing = 6.0f;
+	pstyle->ItemInnerSpacing = ImVec2(2, 4);
+	pstyle->ColumnsMinSpacing = 50.0f;
+	pstyle->GrabMinSize = 14.0f;
+	pstyle->GrabRounding = 16.0f;
+	pstyle->ScrollbarSize = 12.0f;
+	pstyle->ScrollbarRounding = 16.0f;
+
+	// pstyle->WindowPadding = ImVec2(15, 15);
+	// pstyle->WindowRounding = 5.0f;
+	// pstyle->FramePadding = ImVec2(5, 5);
+	// pstyle->FrameRounding = 4.0f;
+	// pstyle->ItemSpacing = ImVec2(12, 8);
+	// pstyle->ItemInnerSpacing = ImVec2(8, 6);
+	// pstyle->IndentSpacing = 25.0f;
+	// pstyle->ScrollbarSize = 15.0f;
+	// pstyle->ScrollbarRounding = 9.0f;
+	// pstyle->GrabMinSize = 5.0f;
+	// pstyle->GrabRounding = 3.0f;
+	// pstyle->WindowRounding = 4.0f;
+	// pstyle->FrameRounding = 2.0f;
+
+	pstyle->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
+	pstyle->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	pstyle->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	pstyle->Colors[ImGuiCol_ChildBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	pstyle->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	pstyle->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
+	pstyle->Colors[ImGuiCol_Tab] = ImVec4(0.30f, 0.30f, 0.33f, 1.f);
+	pstyle->Colors[ImGuiCol_TabHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	pstyle->Colors[ImGuiCol_TabActive] = ImVec4(0.36f, 0.36f, 0.38f, 1.00f);
+	pstyle->Colors[ImGuiCol_TabUnfocused] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	pstyle->Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.46f, 0.46f, 0.48f, 1.00f);
+
+	pstyle->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	pstyle->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
+	pstyle->Colors[ImGuiCol_FrameBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	pstyle->Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	pstyle->Colors[ImGuiCol_FrameBgActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	pstyle->Colors[ImGuiCol_TitleBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	pstyle->Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
+	pstyle->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	pstyle->Colors[ImGuiCol_MenuBarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	pstyle->Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	pstyle->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	pstyle->Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	pstyle->Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	pstyle->Colors[ImGuiCol_CheckMark] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	pstyle->Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	pstyle->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	pstyle->Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	pstyle->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	pstyle->Colors[ImGuiCol_ButtonActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	pstyle->Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	pstyle->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	pstyle->Colors[ImGuiCol_HeaderActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	pstyle->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	pstyle->Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	pstyle->Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	pstyle->Colors[ImGuiCol_PlotLines] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+	pstyle->Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	pstyle->Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+	pstyle->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	pstyle->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
+	pstyle->Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
 }
 
 
@@ -60,6 +134,7 @@ void CImgui_Manager::Tick_Imgui()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	ImGui::ShowStyleEditor();
 
 	ImGui_DockSpace();
 

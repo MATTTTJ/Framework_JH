@@ -42,9 +42,32 @@ protected:
 	virtual ~CGameObject() = default;
 
 public:
-	const _bool				Check_Dead() { return m_bIsDead; }
-	void					Set_Dead(_bool bDead) { m_bIsDead = bDead; }
+	const _bool				Check_Dead()
+	{
+		return m_bIsDead;
+	}
+	void					Set_Dead(_bool bDead)
+	{
+		m_bIsDead = bDead;
+	}
 
+	_bool IsDisabled()
+	{
+		return m_bDisabled;
+	}
+	void SetDisabled(_bool bDisabled)
+	{
+		m_bDisabled = bDisabled;
+	}
+
+	void	SetActive(_bool bActive)
+	{
+		m_bActive = bActive;
+	}
+	_bool	IsActive()
+	{
+		return m_bActive;
+	}
 
 	GAMEOBJECTDESC			Set_GameObjectDesc(GAMEOBJECTDESC Desc);
 
@@ -81,6 +104,9 @@ protected:
 	_bool					m_bHasModel = false; 
 	_bool					m_bIsClone = false;
 	_bool					m_bIsDead = false;
+	_bool					m_bDisabled = false;
+	_bool					m_bActive = true;
+
 	_float					m_fCamDistance = { 0.0 };
 
 	wstring					m_wstrPrototypeGameObjectTag = L"";

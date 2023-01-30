@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Imgui_LevelSwitcher.h"
+
+#include "Effect_Manager.h"
 #include "GameInstance.h"
+#include "Json_Utils.h"
 #include "Level_Loading.h"
 
 CImgui_LevelSwitcher::CImgui_LevelSwitcher(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -23,18 +26,20 @@ void CImgui_LevelSwitcher::Imgui_RenderWindow()
 {
 	m_iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
 
-	ImGui::BeginTabBar("My Tool");
+	ImGui::BeginTabBar("My Tool", ImGuiTabBarFlags_None);
 	Render_LevelSwitch();
 	Render_EffectTool();
 	Render_ImguiSetting();
 	ImGui::EndTabBar();
-	
+
 }
 
 void CImgui_LevelSwitcher::Render_LevelSwitch()
 {
 	if (ImGui::BeginTabItem("Level_Switch"))
 	{
+		m_eTabId = TAB_LEVELSWITCH;
+
 		ImGui::Text("Current Level : %s", m_pLevelName[m_iCurrentLevel]);
 
 		ImGui::NewLine();
@@ -57,6 +62,8 @@ void CImgui_LevelSwitcher::Render_ImguiSetting()
 {
 	if (ImGui::BeginTabItem("Default_Setting"))
 	{
+		m_eTabId = TAB_SETTING;
+
 		IMGUI_LEFT_LABEL(ImGui::SliderFloat, "Alpha", m_pAlpha, 0.f, 1.f);
 		ImGui::Text("(CTRL+Click to Input Directly)");
 		// ImGui::ShowDemoWindow();
@@ -67,11 +74,503 @@ void CImgui_LevelSwitcher::Render_ImguiSetting()
 
 void CImgui_LevelSwitcher::Render_EffectTool()
 {
+	static _uint item_current_idx = 0;
+	m_iEffectTagCnt = m_EffectTagList.size();
 	if (ImGui::BeginTabItem("Effect_Tool"))
 	{
+		m_eTabId = TAB_EFFECT;
 
-		ImGui::EndTabItem();
+		if (ImGui::Button("Open"))
+			LoadData();
+		ImGui::SameLine();
+		if (ImGui::Button("Save"))
+			SaveData();
+		ImGui::SameLine();
+
+		static char szEffectTag[MAX_PATH] = "";
+		IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "Add Effect", "Input EffectTag here and Press Add Button", szEffectTag, MAX_PATH);
+		ImGui::SameLine();
+		if (ImGui::Button("Add") && strcmp(szEffectTag, ""))
+		{
+			CEffect::EFFECTINFO tInfo;
+			ZeroMemory(&tInfo, sizeof(CEffect::EFFECTINFO));
+
+			string szStr = szEffectTag;
+
+			//wcscpy_s(tInfo.pEffectTag, wstring(szStr.begin(), szStr.end()).c_str());
+
+			//lstrcpyW(&tInfo.pEffectTag, &szWstr.c_str());
+
+			m_EffectTagList.push_back(szStr);
+			m_vecEffectInfo.push_back(tInfo);
+			ZeroMemory(szEffectTag, MAX_PATH);
+		}
+
+
+		ImGui::BulletText("Effect List");
+
+		// if (m_iEffectTagCnt == 0)
+		// 	ImGui::Text("There is No Effect");
+		// else
+		// {
+			if (ImGui::BeginListBox("##listbox 1", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
+			{
+				for (_uint i = 0; i < m_EffectTagList.size(); i++)
+				{
+					const _bool is_Selected = (item_current_idx == i);
+					if (ImGui::Selectable(m_EffectTagList[i].c_str(), is_Selected))
+						item_current_idx = i;
+		
+					if (is_Selected)
+						ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndListBox();
+		// }
+		if (m_iEffectTagCnt == 0)
+			ImGui::Text("There is No Effect");
+		else
+		{
+			if (m_EffectTagList.size() > 0)
+			{
+
+				ImGui::BulletText("Current Selected Effect : %s", m_EffectTagList[item_current_idx].c_str());
+				ImGui::Separator();
+
+				CEffect::EFFECTINFO* tInfo = &m_vecEffectInfo[item_current_idx];
+
+				_float vScale[3] = { tInfo->vScale.x, tInfo->vScale.y, tInfo->vScale.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Scale", vScale);
+				tInfo->vScale.x = vScale[0];
+				tInfo->vScale.y = vScale[1];
+				tInfo->vScale.z = vScale[2];
+
+				_float vRotation[3] = { tInfo->vRotation.x, tInfo->vRotation.y, tInfo->vRotation.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Rotation", vRotation);
+				tInfo->vRotation.x = vRotation[0];
+				tInfo->vRotation.y = vRotation[1];
+				tInfo->vRotation.z = vRotation[2];
+
+				_float vOffsetPos[3] = { tInfo->vOffsetPos.x, tInfo->vOffsetPos.y, tInfo->vOffsetPos.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "OffsetPos", vOffsetPos);
+				tInfo->vOffsetPos.x = vOffsetPos[0];
+				tInfo->vOffsetPos.y = vOffsetPos[1];
+				tInfo->vOffsetPos.z = vOffsetPos[2];
+
+				ImGui::Checkbox("BillBoard", &tInfo->bIsBillBoard);
+				ImGui::SameLine();
+				ImGui::Checkbox("Rotation", &tInfo->bIsRotation);
+				ImGui::SameLine();
+				ImGui::Checkbox("ParentRotation", &tInfo->bIsParentRotation);
+				ImGui::SameLine();
+				ImGui::Checkbox("Sprite", &tInfo->bIsSprite);
+
+				if(tInfo->bIsRotation)
+				{
+					_float vRotation[3] = { tInfo->vRotationToTime.x, tInfo->vRotationToTime.y, tInfo->vRotationToTime.z };
+					IMGUI_LEFT_LABEL(ImGui::InputFloat3, "RotationToTime", vRotation);
+					tInfo->vRotationToTime.x = vRotation[0];
+					tInfo->vRotationToTime.y = vRotation[1];
+					tInfo->vRotationToTime.z = vRotation[2];
+				}
+
+				if (tInfo->bIsSprite)
+				{
+					_float vMaxUV[2] = { tInfo->vMaxUV.x, tInfo->vMaxUV.y };
+					IMGUI_LEFT_LABEL(ImGui::InputFloat2, "MaxUV", vMaxUV);
+					IMGUI_LEFT_LABEL(ImGui::InputFloat, "UVchangeTime", &tInfo->fUVchangeTime);
+					IMGUI_LEFT_LABEL(ImGui::InputFloat, "UVchangeStartTime", &tInfo->fUVchangeStartTime);
+				}
+
+				InputColor(&tInfo->vColor, "vColor");
+
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ApearTime", &tInfo->fAppearTime);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "DeleteTime", &tInfo->fDelTime);
+
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ChangeStartT", &tInfo->fStartChangeTime);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ChangeEndT", &tInfo->fEndChangeTime);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ChangeRatio", &tInfo->fChangeRatio);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeInStartT", &tInfo->fFadeInStartTime);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeInRatio", &tInfo->fFadeInRatio);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeOutStartT", &tInfo->fFadeOutStartTime);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeOutRatio", &tInfo->fFadeOutRatio);
+
+
+
+
+
+
+
+
+
+
+
+				// InputFloat3(&tInfo->vScale, "Scale");
+				// InputFloat3(&tInfo->vRotation, "Rotation");
+				// InputFloat3(&tInfo->vOffsetPos, "OffsetPos");
+
+				// IMGUI_LEFT_LABEL(ImGui::SliderFloat, "fApearTime", &tInfo->fAppearTime, 0.f, 20.f);
+
+
+			}
+		}
+
+
+
+
+
+
+
+
+			////////////////////////////////////////////////
+			ImGui::EndTabItem();
 	}
+	
+}
+
+void CImgui_LevelSwitcher::LoadData()
+{
+	if (m_eTabId == TAB_EFFECT)
+	{
+		m_vecEffectInfo.clear();
+
+		_tchar		szJsonFileName[MAX_PATH] = TEXT("Effect_Data");
+
+		json	Json;
+
+		if (FAILED(CJson_Utils::Load_Json(CJson_Utils::Complete_Path(szJsonFileName).c_str(), &Json)))
+			return;
+
+		json	JsonData = Json["data"];
+		for (_uint i = 0; i < JsonData.size(); ++i)
+		{
+			CEffect::EFFECTINFO tEffect;
+			ZeroMemory(&tEffect, sizeof(CEffect::EFFECTINFO));
+
+			string szEffectTag = JsonData[i]["pEffectTag"];
+
+			wcscpy_s(tEffect.pEffectTag, wstring(szEffectTag.begin(), szEffectTag.end()).c_str());
+
+			tEffect.vScale.x = (nullptr != JsonData[i]["vScaleX"]) ? JsonData[i]["vScaleX"] : 0.f;
+			tEffect.vScale.y = (nullptr != JsonData[i]["vScaleY"]) ? JsonData[i]["vScaleY"] : 0.f;
+			tEffect.vScale.z = (nullptr != JsonData[i]["vScaleZ"]) ? JsonData[i]["vScaleZ"] : 0.f;
+
+			tEffect.vRotation.x = (nullptr != JsonData[i]["vRotationX"]) ? JsonData[i]["vRotationX"] : 0.f;
+			tEffect.vRotation.y = (nullptr != JsonData[i]["vRotationY"]) ? JsonData[i]["vRotationY"] : 0.f;
+			tEffect.vRotation.z = (nullptr != JsonData[i]["vRotationZ"]) ? JsonData[i]["vRotationZ"] : 0.f;
+
+			tEffect.vOffsetPos.x = (nullptr != JsonData[i]["vOffsetPosX"]) ? JsonData[i]["vOffsetPosX"] : 0.f;
+			tEffect.vOffsetPos.y = (nullptr != JsonData[i]["vOffsetPosY"]) ? JsonData[i]["vOffsetPosY"] : 0.f;
+			tEffect.vOffsetPos.z = (nullptr != JsonData[i]["vOffsetPosZ"]) ? JsonData[i]["vOffsetPosZ"] : 0.f;
+
+			tEffect.fFadeInStartTime = (nullptr != JsonData[i]["fFadeInStartTime"]) ? JsonData[i]["fFadeInStartTime"] : 0.f;
+			tEffect.fFadeInRatio = (nullptr != JsonData[i]["fFadeInRatio"]) ? JsonData[i]["fFadeInRatio"] : 0.f;
+			tEffect.fFadeOutStartTime = (nullptr != JsonData[i]["fFadeOutStartTime"]) ? JsonData[i]["fFadeOutStartTime"] : 0.f;
+			tEffect.fFadeOutRatio = (nullptr != JsonData[i]["fFadeOutRatio"]) ? JsonData[i]["fFadeOutRatio"] : 0.f;
+
+			tEffect.bIsBillBoard = (nullptr != JsonData[i]["bIsBillBoard"]) ? JsonData[i]["bIsBillBoard"] : false;
+			tEffect.bIsRotation = (nullptr != JsonData[i]["bIsRotation"]) ? JsonData[i]["bIsRotation"] : false;
+
+			if (tEffect.bIsRotation)
+			{
+				tEffect.vRotationToTime.x = (nullptr != JsonData[i]["vRotationXToTime"]) ? JsonData[i]["vRotationXToTime"] : 0.f;
+				tEffect.vRotationToTime.y = (nullptr != JsonData[i]["vRotationYToTime"]) ? JsonData[i]["vRotationYToTime"] : 0.f;
+				tEffect.vRotationToTime.z = (nullptr != JsonData[i]["vRotationZToTime"]) ? JsonData[i]["vRotationZToTime"] : 0.f;
+			}
+			tEffect.bIsParentRotation = (nullptr != JsonData[i]["bIsParentRotation"]) ? JsonData[i]["bIsParentRotation"] : false;
+
+
+			tEffect.bIsSprite = (nullptr != JsonData[i]["bIsSprite"]) ? JsonData[i]["bIsSprite"] : false;
+
+			if (tEffect.bIsSprite)
+			{
+				tEffect.vMaxUV.x = (nullptr != JsonData[i]["vMaxUVX"]) ? JsonData[i]["vMaxUVX"] : 0.f;
+				tEffect.vMaxUV.y = (nullptr != JsonData[i]["vMaxUVY"]) ? JsonData[i]["vMaxUVY"] : 0.f;
+				tEffect.fUVchangeTime = (nullptr != JsonData[i]["fUVchangeTime"]) ? JsonData[i]["fUVchangeTime"] : 0.f;
+				tEffect.fUVchangeStartTime = (nullptr != JsonData[i]["fUVchangeStartTime"]) ? JsonData[i]["fUVchangeStartTime"] : 0.f;
+			}
+
+			tEffect.fAppearTime = JsonData[i]["fAppearTime"];
+			tEffect.fDelTime = JsonData[i]["fDelTime"];
+			tEffect.fStartChangeTime = JsonData[i]["fStartChangeTime"];
+			tEffect.fEndChangeTime = JsonData[i]["fEndChangeTime"];
+			tEffect.fChangeRatio = JsonData[i]["fChangeRatio"];
+
+			tEffect.vColor.x = JsonData[i]["vColorR"];
+			tEffect.vColor.y = JsonData[i]["vColorG"];
+			tEffect.vColor.z = JsonData[i]["vColorB"];
+			tEffect.vColor.w = JsonData[i]["vColorA"];
+
+			tEffect.vUVScale.x = JsonData[i]["vUVScaleX"];
+			tEffect.vUVScale.y = JsonData[i]["vUVScaleY"];
+
+			tEffect.vUVPos.x = JsonData[i]["vUVPosX"];
+			tEffect.vUVPos.y = JsonData[i]["vUVPosY"];
+
+			tEffect.eType = JsonData[i]["eType"];
+			tEffect.iTextureIndex = JsonData[i]["iTextureIndex"];
+			tEffect.iPassIndex = JsonData[i]["iPassIndex"];
+			tEffect.bIsBlur = JsonData[i]["bIsBlur"];
+			tEffect.bIsBloom = JsonData[i]["bIsBloom"];
+			tEffect.bIsGlow = JsonData[i]["bIsGlow"];
+
+			if (tEffect.eType == CEffect::EFFECT_MESH || tEffect.eType == CEffect::EFFECT_PARTICLE_MESH)
+			{
+				string szMeshPrototypeTag = (nullptr != JsonData[i]["pMeshPrototypeTag"]) ? JsonData[i]["pMeshPrototypeTag"] : "";
+
+				wcscpy_s(tEffect.pMeshPrototypeTag, wstring(szMeshPrototypeTag.begin(), szMeshPrototypeTag.end()).c_str());
+			}
+
+			if (tEffect.eType <= 2)
+			{
+				tEffect.tParticleDesc.vMinPos.x = JsonData[i]["vMinPosX"];
+				tEffect.tParticleDesc.vMinPos.y = JsonData[i]["vMinPosY"];
+				tEffect.tParticleDesc.vMinPos.z = JsonData[i]["vMinPosZ"];
+
+				tEffect.tParticleDesc.vMaxPos.x = JsonData[i]["vMaxPosX"];
+				tEffect.tParticleDesc.vMaxPos.y = JsonData[i]["vMaxPosY"];
+				tEffect.tParticleDesc.vMaxPos.z = JsonData[i]["vMaxPosZ"];
+
+				tEffect.tParticleDesc.fMaxSpeed = JsonData[i]["fMaxSpeed"];
+				tEffect.tParticleDesc.fMinSpeed = JsonData[i]["fMinSpeed"];
+
+				tEffect.tParticleDesc.vMinDir.x = JsonData[i]["vMinDirX"];
+				tEffect.tParticleDesc.vMinDir.y = JsonData[i]["vMinDirY"];
+				tEffect.tParticleDesc.vMinDir.z = JsonData[i]["vMinDirZ"];
+
+				tEffect.tParticleDesc.vMaxDir.x = JsonData[i]["vMaxDirX"];
+				tEffect.tParticleDesc.vMaxDir.y = JsonData[i]["vMaxDirY"];
+				tEffect.tParticleDesc.vMaxDir.z = JsonData[i]["vMaxDirZ"];
+
+				tEffect.tParticleDesc.vAcceleration.x = JsonData[i]["vAccelerationX"];
+				tEffect.tParticleDesc.vAcceleration.y = JsonData[i]["vAccelerationY"];
+				tEffect.tParticleDesc.vAcceleration.z = JsonData[i]["vAccelerationZ"];
+
+				tEffect.tParticleDesc.vMinScale.x = JsonData[i]["vMinScaleX"];
+				tEffect.tParticleDesc.vMinScale.y = JsonData[i]["vMinScaleY"];
+				tEffect.tParticleDesc.vMinScale.z = JsonData[i]["vMinScaleZ"];
+
+				tEffect.tParticleDesc.vMaxScale.x = JsonData[i]["vMaxScaleX"];
+				tEffect.tParticleDesc.vMaxScale.y = JsonData[i]["vMaxScaleY"];
+				tEffect.tParticleDesc.vMaxScale.z = JsonData[i]["vMaxScaleZ"];
+
+				tEffect.tParticleDesc.vScaleVariation.x = JsonData[i]["vScaleVariationX"];
+				tEffect.tParticleDesc.vScaleVariation.y = JsonData[i]["vScaleVariationY"];
+				tEffect.tParticleDesc.vScaleVariation.z = JsonData[i]["vScaleVariationZ"];
+
+				tEffect.tParticleDesc.vMinColor.x = JsonData[i]["vMinColorR"];
+				tEffect.tParticleDesc.vMinColor.y = JsonData[i]["vMinColorG"];
+				tEffect.tParticleDesc.vMinColor.z = JsonData[i]["vMinColorB"];
+				tEffect.tParticleDesc.vMinColor.w = JsonData[i]["vMinColorA"];
+
+				tEffect.tParticleDesc.vMaxColor.x = JsonData[i]["vMaxColorR"];
+				tEffect.tParticleDesc.vMaxColor.y = JsonData[i]["vMaxColorG"];
+				tEffect.tParticleDesc.vMaxColor.z = JsonData[i]["vMaxColorB"];
+				tEffect.tParticleDesc.vMaxColor.w = JsonData[i]["vMaxColorA"];
+
+				tEffect.tParticleDesc.vColorVariation.x = JsonData[i]["vColorVariationR"];
+				tEffect.tParticleDesc.vColorVariation.y = JsonData[i]["vColorVariationG"];
+				tEffect.tParticleDesc.vColorVariation.z = JsonData[i]["vColorVariationB"];
+				tEffect.tParticleDesc.vColorVariation.w = JsonData[i]["vColorVariationA"];
+
+				tEffect.tParticleDesc.fMinLifeTime = JsonData[i]["fMinLifeTime"];
+				tEffect.tParticleDesc.fMaxLifeTime = JsonData[i]["fMaxLifeTime"];
+				tEffect.tParticleDesc.fVemitRate = JsonData[i]["fVemitRate"];
+				tEffect.tParticleDesc.fGenerationTime = JsonData[i]["fGenerationTime"];
+				tEffect.tParticleDesc.iTotalCnt = JsonData[i]["iTotalCnt"];
+			}
+			string pEffectTag = JsonData[i]["pEffectTag"];
+			m_EffectTagList.push_back(pEffectTag);
+			m_vecEffectInfo.push_back(tEffect);
+		}
+
+		MSG_BOX(" [ Loading Complete ] ");
+	}
+}
+
+
+void CImgui_LevelSwitcher::SaveData()
+{
+	if(m_eTabId == TAB_EFFECT)
+	{
+		_tchar		szJsonFileName[MAX_PATH] = TEXT("Effect_Data");
+
+		json	Json;
+
+		for (_uint i = 0; i < m_vecEffectInfo.size(); ++i)
+		{
+			json	JsonEffect;
+
+			wstring szTag = m_vecEffectInfo[i].pEffectTag;
+
+			JsonEffect.emplace("pEffectTag", m_EffectTagList[i]);
+
+			if (m_vecEffectInfo[i].eType == CEffect::EFFECT_MESH || m_vecEffectInfo[i].eType == CEffect::EFFECT_PARTICLE_MESH)
+			{
+				wstring szMeshPrototypeTag = m_vecEffectInfo[i].pMeshPrototypeTag;
+
+				JsonEffect.emplace("pMeshPrototypeTag", string(szMeshPrototypeTag.begin(), szMeshPrototypeTag.end()));
+			}
+
+			JsonEffect.emplace("vScaleX", m_vecEffectInfo[i].vScale.x);
+			JsonEffect.emplace("vScaleY", m_vecEffectInfo[i].vScale.y);
+			JsonEffect.emplace("vScaleZ", m_vecEffectInfo[i].vScale.z);
+
+			JsonEffect.emplace("vRotationX", m_vecEffectInfo[i].vRotation.x);
+			JsonEffect.emplace("vRotationY", m_vecEffectInfo[i].vRotation.y);
+			JsonEffect.emplace("vRotationZ", m_vecEffectInfo[i].vRotation.z);
+
+			JsonEffect.emplace("vOffsetPosX", m_vecEffectInfo[i].vOffsetPos.x);
+			JsonEffect.emplace("vOffsetPosY", m_vecEffectInfo[i].vOffsetPos.y);
+			JsonEffect.emplace("vOffsetPosZ", m_vecEffectInfo[i].vOffsetPos.z);
+
+			JsonEffect.emplace("fFadeInStartTime", m_vecEffectInfo[i].fFadeInStartTime);
+			JsonEffect.emplace("fFadeInRatio", m_vecEffectInfo[i].fFadeInRatio);
+			JsonEffect.emplace("fFadeOutStartTime", m_vecEffectInfo[i].fFadeOutStartTime);
+			JsonEffect.emplace("fFadeOutRatio", m_vecEffectInfo[i].fFadeOutRatio);
+
+			JsonEffect.emplace("bIsBillBoard", m_vecEffectInfo[i].bIsBillBoard);
+			JsonEffect.emplace("bIsRotation", m_vecEffectInfo[i].bIsRotation);
+			if (m_vecEffectInfo[i].bIsRotation)
+			{
+				JsonEffect.emplace("vRotationXToTime", m_vecEffectInfo[i].vRotationToTime.x);
+				JsonEffect.emplace("vRotationYToTime", m_vecEffectInfo[i].vRotationToTime.y);
+				JsonEffect.emplace("vRotationZToTime", m_vecEffectInfo[i].vRotationToTime.z);
+			}
+			JsonEffect.emplace("bIsParentRotation", m_vecEffectInfo[i].bIsParentRotation);
+
+			JsonEffect.emplace("bIsSprite", m_vecEffectInfo[i].bIsSprite);
+			if (m_vecEffectInfo[i].bIsSprite)
+			{
+				JsonEffect.emplace("vMaxUVX", m_vecEffectInfo[i].vMaxUV.x);
+				JsonEffect.emplace("vMaxUVY", m_vecEffectInfo[i].vMaxUV.y);
+				JsonEffect.emplace("fUVchangeTime", m_vecEffectInfo[i].fUVchangeTime);
+				JsonEffect.emplace("fUVchangeStartTime", m_vecEffectInfo[i].fUVchangeStartTime);
+			}
+
+			JsonEffect.emplace("fAppearTime", m_vecEffectInfo[i].fAppearTime);
+			JsonEffect.emplace("fDelTime", m_vecEffectInfo[i].fDelTime);
+			JsonEffect.emplace("fStartChangeTime", m_vecEffectInfo[i].fStartChangeTime);
+			JsonEffect.emplace("fEndChangeTime", m_vecEffectInfo[i].fEndChangeTime);
+			JsonEffect.emplace("fChangeRatio", m_vecEffectInfo[i].fChangeRatio);
+			JsonEffect.emplace("vColorR", m_vecEffectInfo[i].vColor.x);
+			JsonEffect.emplace("vColorG", m_vecEffectInfo[i].vColor.y);
+			JsonEffect.emplace("vColorB", m_vecEffectInfo[i].vColor.z);
+			JsonEffect.emplace("vColorA", m_vecEffectInfo[i].vColor.w);
+			JsonEffect.emplace("vUVScaleX", m_vecEffectInfo[i].vUVScale.x);
+			JsonEffect.emplace("vUVScaleY", m_vecEffectInfo[i].vUVScale.y);
+			JsonEffect.emplace("vUVPosX", m_vecEffectInfo[i].vUVPos.x);
+			JsonEffect.emplace("vUVPosY", m_vecEffectInfo[i].vUVPos.y);
+			JsonEffect.emplace("eType", m_vecEffectInfo[i].eType);
+			JsonEffect.emplace("iTextureIndex", m_vecEffectInfo[i].iTextureIndex);
+			JsonEffect.emplace("iPassIndex", m_vecEffectInfo[i].iPassIndex);
+			JsonEffect.emplace("bIsBlur", m_vecEffectInfo[i].bIsBlur);
+			JsonEffect.emplace("bIsBloom", m_vecEffectInfo[i].bIsBloom);
+			JsonEffect.emplace("bIsGlow", m_vecEffectInfo[i].bIsGlow);
+
+			if (m_vecEffectInfo[i].eType <= CEffect::EFFECT_PARTICLE_MESH)
+			{
+				JsonEffect.emplace("vMinPosX", m_vecEffectInfo[i].tParticleDesc.vMinPos.x);
+				JsonEffect.emplace("vMinPosY", m_vecEffectInfo[i].tParticleDesc.vMinPos.y);
+				JsonEffect.emplace("vMinPosZ", m_vecEffectInfo[i].tParticleDesc.vMinPos.z);
+
+				JsonEffect.emplace("vMaxPosX", m_vecEffectInfo[i].tParticleDesc.vMaxPos.x);
+				JsonEffect.emplace("vMaxPosY", m_vecEffectInfo[i].tParticleDesc.vMaxPos.y);
+				JsonEffect.emplace("vMaxPosZ", m_vecEffectInfo[i].tParticleDesc.vMaxPos.z);
+
+				JsonEffect.emplace("fMaxSpeed", m_vecEffectInfo[i].tParticleDesc.fMaxSpeed);
+				JsonEffect.emplace("fMinSpeed", m_vecEffectInfo[i].tParticleDesc.fMinSpeed);
+
+				JsonEffect.emplace("vMinDirX", m_vecEffectInfo[i].tParticleDesc.vMinDir.x);
+				JsonEffect.emplace("vMinDirY", m_vecEffectInfo[i].tParticleDesc.vMinDir.y);
+				JsonEffect.emplace("vMinDirZ", m_vecEffectInfo[i].tParticleDesc.vMinDir.z);
+
+				JsonEffect.emplace("vMaxDirX", m_vecEffectInfo[i].tParticleDesc.vMaxDir.x);
+				JsonEffect.emplace("vMaxDirY", m_vecEffectInfo[i].tParticleDesc.vMaxDir.y);
+				JsonEffect.emplace("vMaxDirZ", m_vecEffectInfo[i].tParticleDesc.vMaxDir.z);
+
+				JsonEffect.emplace("vAccelerationX", m_vecEffectInfo[i].tParticleDesc.vAcceleration.x);
+				JsonEffect.emplace("vAccelerationY", m_vecEffectInfo[i].tParticleDesc.vAcceleration.y);
+				JsonEffect.emplace("vAccelerationZ", m_vecEffectInfo[i].tParticleDesc.vAcceleration.z);
+
+				JsonEffect.emplace("vMinScaleX", m_vecEffectInfo[i].tParticleDesc.vMinScale.x);
+				JsonEffect.emplace("vMinScaleY", m_vecEffectInfo[i].tParticleDesc.vMinScale.y);
+				JsonEffect.emplace("vMinScaleZ", m_vecEffectInfo[i].tParticleDesc.vMinScale.z);
+
+				JsonEffect.emplace("vMaxScaleX", m_vecEffectInfo[i].tParticleDesc.vMaxScale.x);
+				JsonEffect.emplace("vMaxScaleY", m_vecEffectInfo[i].tParticleDesc.vMaxScale.y);
+				JsonEffect.emplace("vMaxScaleZ", m_vecEffectInfo[i].tParticleDesc.vMaxScale.z);
+
+				JsonEffect.emplace("vScaleVariationX", m_vecEffectInfo[i].tParticleDesc.vScaleVariation.x);
+				JsonEffect.emplace("vScaleVariationY", m_vecEffectInfo[i].tParticleDesc.vScaleVariation.y);
+				JsonEffect.emplace("vScaleVariationZ", m_vecEffectInfo[i].tParticleDesc.vScaleVariation.z);
+
+				JsonEffect.emplace("vMinColorR", m_vecEffectInfo[i].tParticleDesc.vMinColor.x);
+				JsonEffect.emplace("vMinColorG", m_vecEffectInfo[i].tParticleDesc.vMinColor.y);
+				JsonEffect.emplace("vMinColorB", m_vecEffectInfo[i].tParticleDesc.vMinColor.z);
+				JsonEffect.emplace("vMinColorA", m_vecEffectInfo[i].tParticleDesc.vMinColor.w);
+
+				JsonEffect.emplace("vMaxColorR", m_vecEffectInfo[i].tParticleDesc.vMaxColor.x);
+				JsonEffect.emplace("vMaxColorG", m_vecEffectInfo[i].tParticleDesc.vMaxColor.y);
+				JsonEffect.emplace("vMaxColorB", m_vecEffectInfo[i].tParticleDesc.vMaxColor.z);
+				JsonEffect.emplace("vMaxColorA", m_vecEffectInfo[i].tParticleDesc.vMaxColor.w);
+
+				JsonEffect.emplace("vColorVariationR", m_vecEffectInfo[i].tParticleDesc.vColorVariation.x);
+				JsonEffect.emplace("vColorVariationG", m_vecEffectInfo[i].tParticleDesc.vColorVariation.y);
+				JsonEffect.emplace("vColorVariationB", m_vecEffectInfo[i].tParticleDesc.vColorVariation.z);
+				JsonEffect.emplace("vColorVariationA", m_vecEffectInfo[i].tParticleDesc.vColorVariation.w);
+
+				JsonEffect.emplace("fMinLifeTime", m_vecEffectInfo[i].tParticleDesc.fMinLifeTime);
+				JsonEffect.emplace("fMaxLifeTime", m_vecEffectInfo[i].tParticleDesc.fMaxLifeTime);
+
+				JsonEffect.emplace("fVemitRate", m_vecEffectInfo[i].tParticleDesc.fVemitRate);
+				JsonEffect.emplace("fGenerationTime", m_vecEffectInfo[i].tParticleDesc.fGenerationTime);
+				JsonEffect.emplace("iTotalCnt", m_vecEffectInfo[i].tParticleDesc.iTotalCnt);
+			}
+
+			Json["data"].push_back(JsonEffect);
+			JsonEffect.clear();
+		}
+
+		if (FAILED(CJson_Utils::Save_Json(CJson_Utils::Complete_Path(szJsonFileName).c_str(), Json)))
+		{
+			MSG_BOX("EffectTool -> SAVE FAILED");
+			return;
+		}
+
+		// CEffect_Manager::GetInstance()->Reset(LEVEL_GAMEPLAY);
+
+		MSG_BOX(" [ Save Complete ] ");
+		Json.clear();
+	}
+
+}
+
+void CImgui_LevelSwitcher::InputFloat2(_float2* pVector, const char* str)
+{
+	_float vVec2[3] = { pVector->x, pVector->y };
+	ImGui::InputFloat2(str, vVec2);
+	pVector->x = vVec2[0];
+	pVector->y = vVec2[1];
+}
+
+void CImgui_LevelSwitcher::InputFloat3(_float3* pVector, const char* str)
+{
+	_float vVec3f[3] = { pVector->x, pVector->y, pVector->z };
+	ImGui::InputFloat3(str, vVec3f);
+	pVector->x = vVec3f[0];
+	pVector->y = vVec3f[1];
+	pVector->z = vVec3f[2];
+}
+
+void CImgui_LevelSwitcher::InputColor(_float4* pVector, const char* str)
+{
+	_float vColor[4] = { pVector->x, pVector->y, pVector->z, pVector->w };
+	ImGui::ColorEdit4(str, vColor, ImGuiColorEditFlags_PickerHueWheel);
+	pVector->x = vColor[0];
+	pVector->y = vColor[1];
+	pVector->z = vColor[2];
+	pVector->w = vColor[3];
 }
 
 CImgui_LevelSwitcher* CImgui_LevelSwitcher::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)

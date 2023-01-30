@@ -262,6 +262,9 @@
     <Filter Include="80. Manager\Jason">
       <UniqueIdentifier>{13510668-bd7b-4821-8893-1bea80e7123b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="80. Manager\Parent\Effect\Manager">
+      <UniqueIdentifier>{01cd12a8-1595-44de-a039-412906fd015e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -480,9 +483,21 @@
     <ClInclude Include="..\public\RocketArm.h">
       <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\RocketArm</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Trigger.h" />
-    <ClInclude Include="..\public\SkySphere.h" />
-    <ClInclude Include="..\public\CursorUI.h" />
+    <ClInclude Include="..\public\CursorUI.h">
+      <Filter>02. GameObjects\00. Public\Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkySphere.h">
+      <Filter>02. GameObjects\00. Public\SkySphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Trigger.h">
+      <Filter>02. GameObjects\00. Public\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Json_Utils.h">
+      <Filter>80. Manager\Jason</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Manager.h">
+      <Filter>80. Manager\Parent\Effect\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -689,9 +704,21 @@
     <ClCompile Include="..\private\RocketArm.cpp">
       <Filter>02. GameObjects\01. GamePlay\Bullet\Boss\RocketArm</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Trigger.cpp" />
-    <ClCompile Include="..\private\SkySphere.cpp" />
-    <ClCompile Include="..\private\CursorUI.cpp" />
+    <ClCompile Include="..\private\CursorUI.cpp">
+      <Filter>02. GameObjects\00. Public\Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkySphere.cpp">
+      <Filter>02. GameObjects\00. Public\SkySphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Trigger.cpp">
+      <Filter>02. GameObjects\00. Public\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Json_Utils.cpp">
+      <Filter>80. Manager\Jason</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Manager.cpp">
+      <Filter>80. Manager\Parent\Effect\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

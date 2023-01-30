@@ -86,7 +86,7 @@ public:
 
 	void				Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpeed);
 	void				Dash(_double dTimeDelta, TRANSTYPE eType = TRANSTYPE_END, CNavigation* pNaviCom = nullptr);
-
+	void				Billboard();
 	void Speed_Up(_bool bKeyState);
 public:
 

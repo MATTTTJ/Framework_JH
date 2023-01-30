@@ -570,6 +570,17 @@ void CTransform::Dash(_double dTimeDelta, TRANSTYPE eType, CNavigation* pNaviCom
 	}
 }
 
+void CTransform::Billboard()
+{
+	_matrix ViewMatrixInv = CPipeLine::GetInstance()->Get_TransformMatrix_Inverse(CPipeLine::D3DTS_VIEW);
+
+	_float3 fScale = Get_Scaled();
+
+	Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(ViewMatrixInv.r[0]) * fScale.x);
+	Set_State(CTransform::STATE_UP, XMVector3Normalize(ViewMatrixInv.r[1]) * fScale.y);
+	Set_State(CTransform::STATE_LOOK, XMVector3Normalize(ViewMatrixInv.r[2]) * fScale.z);
+}
+
 void CTransform::Speed_Up(_bool bKeyState)
 {
 	if (bKeyState)

@@ -50,6 +50,7 @@ using namespace std;
 #include "ImGuiFileDialog.h"
 
 #include <Json/json_fwd.hpp>
+#include "Json/json.hpp"
 using Json = nlohmann::json;
 using namespace nlohmann;
 #include <Shlwapi.h>

@@ -331,12 +331,12 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	if(CGameInstance::GetInstance()->Key_Pressing(DIK_F3))
 	{
-		m_fDegree -=  dTimeDelta * 10.f;
-		_float4 vDirection;
-		_matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-221.33f));
-		XMStoreFloat4(&vDirection, XMVector3TransformNormal(XMVectorSet(-cosf(XMConvertToRadians(60.f)), -sinf(XMConvertToRadians(60.f)), 0.f, 0.f), RotationMatrix));
-
-		CGameInstance::GetInstance()->Set_LightDirection(1, vDirection); 
+		// m_fDegree -=  dTimeDelta * 10.f;
+		// _float4 vDirection;
+		// _matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-221.33f));
+		// XMStoreFloat4(&vDirection, XMVector3TransformNormal(XMVectorSet(-cosf(XMConvertToRadians(60.f)), -sinf(XMConvertToRadians(60.f)), 0.f, 0.f), RotationMatrix));
+		//
+		// CGameInstance::GetInstance()->Set_LightDirection(1, vDirection); 
 	}
 
 	if(m_pState != nullptr)
