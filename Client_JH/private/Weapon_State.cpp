@@ -564,18 +564,18 @@ _bool CWeapon_State::MouseInput_None()
 
 _bool CWeapon_State::MouseInput_LB()
 {
-	if (m_pGameInstance->Mouse_Pressing(DIM_LB))
-	{
-		if (m_tWeaponOption->iCurBullet == 0)
-		{
-			m_bGoReload = true;
-
-			return false;
-		}
-		else
-			return true;
-	}
-	else 
+	// if (m_pGameInstance->Mouse_Pressing(DIM_LB))
+	// {
+	// 	if (m_tWeaponOption->iCurBullet == 0)
+	// 	{
+	// 		m_bGoReload = true;
+	//
+	// 		return false;
+	// 	}
+	// 	else
+	// 		return true;
+	// }
+	// else 
 		return false;
 
 }

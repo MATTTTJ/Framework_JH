@@ -118,6 +118,7 @@ void CStonePillar::Late_Tick(_double TimeDelta)
 
 	if (nullptr != m_pRendererCom)
 	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 		m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarColliderCom);
 		m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarExplodeCollCom);
@@ -315,6 +316,27 @@ _bool CStonePillar::Collision_To_Player_WhenExplode()
 		return true;
 	}
 	return false;
+}
+
+HRESULT CStonePillar::Render_ShadowDepth()
+{
+	if (nullptr == m_pShaderCom ||
+		nullptr == m_pModelCom)
+		return E_FAIL;
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
+	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_LightTransform(1, 0)); // D3DTS_VIEW
+	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_LightTransform(1, 1)); // D3DTS_PROJ
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 5);
+	}
+
+	return S_OK;
 }
 
 HRESULT CStonePillar::SetUp_Components()

@@ -27,6 +27,7 @@ CGameInstance::CGameInstance()
 	, m_pFont_Manager(CFontMgr::GetInstance())
 	, m_pTarget_Manager(CTarget_Manager::GetInstance())
 	, m_pFrustum(CFrustum::GetInstance())
+	, m_pCamera_Manager(CCamera_Manager::GetInstance())
 {
 	Safe_AddRef(m_pTarget_Manager);
 	Safe_AddRef(m_pFrustum);
@@ -39,6 +40,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pGraphic_Device);
+	Safe_AddRef(m_pCamera_Manager);
 	Safe_AddRef(m_pImgui_Manager);
 }
 
@@ -77,7 +79,10 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 
 	
 	m_pObject_Manager->Tick(TimeDelta);
+	m_pCamera_Manager->Tick();
+
 	m_pLevel_Manager->Tick(TimeDelta);
+
 	m_pPipeLine->Tick();
 	
 	m_pFrustum->Transform_ToWorldSpace();
@@ -338,6 +343,65 @@ CGameObject* CGameInstance::Clone_GameObjectReturnPtr(_uint iLevelIndex, const w
 	return m_pObject_Manager->Clone_GameObjectReturnPtr(iLevelIndex, wstrLayerTag, wstrPrototypeTag, pArg);
 }
 
+HRESULT CGameInstance::Add_Camera(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag,
+	CCamera::CAMERADESC& tCameraDesc)
+{
+	NULL_CHECK_RETURN(m_pCamera_Manager, E_FAIL);
+
+	return m_pCamera_Manager->Add_Camera(iLevelIndex, pLayerTag, pPrototypeTag, tCameraDesc);
+}
+
+void CGameInstance::Change_Camera()
+{
+	NULL_CHECK_RETURN(m_pCamera_Manager, );
+
+	return m_pCamera_Manager->Change_Camera();
+}
+
+_matrix CGameInstance::Get_Transform(_uint iIndex, _uint iState)
+{
+	if (nullptr == m_pCamera_Manager)
+		return XMMatrixIdentity();
+
+	return m_pCamera_Manager->Get_Transform(iIndex, iState);
+}
+
+_float4 CGameInstance::Get_CamPosition(_uint iIndex)
+{
+	if (nullptr == m_pCamera_Manager)
+		return _float4(0.f, 0.f, 0.f, 1.f);
+
+	return m_pCamera_Manager->Get_CamPosition(iIndex);
+}
+
+void CGameInstance::Clear_Camera()
+{
+	if (nullptr == m_pCamera_Manager)
+		return;
+
+	m_pCamera_Manager->Clear();
+}
+
+CCamera::CAMERADESC CGameInstance::Get_CameraDesc()
+{
+	if (nullptr == m_pCamera_Manager)
+	{
+		CCamera::CAMERADESC tDesc;
+		ZeroMemory(&tDesc, sizeof(CCamera::CAMERADESC));
+		return tDesc;
+	}
+
+	return m_pCamera_Manager->Get_CameraDesc();
+}
+
+void CGameInstance::Set_Far(_float fFar)
+{
+	if (nullptr == m_pCamera_Manager)
+		return;
+
+	m_pCamera_Manager->Set_Far(fFar);
+}
+
 map<const wstring, CComponent*>* CGameInstance::Get_PrototypeComponents()
 {
 	NULL_CHECK_RETURN(m_pComponent_Manager, nullptr);
@@ -436,8 +500,64 @@ HRESULT CGameInstance::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);
 }
 
+_float4x4 CGameInstance::Get_LightTransform(_uint iIndex, _uint eState)
+{
+	if (nullptr == m_pLight_Manager)
+	{
+		_float4x4 ReturnMatrix;
+		XMStoreFloat4x4(&ReturnMatrix, XMMatrixIdentity());
+		return ReturnMatrix;
+	}
+
+	return m_pLight_Manager->Get_Transform(iIndex, eState);
+}
+
+_float4x4 CGameInstance::Get_LightTransform_TP(_uint iIndex, _uint eState)
+{
+	if (nullptr == m_pLight_Manager)
+	{
+		_float4x4 ReturnMatrix;
+		XMStoreFloat4x4(&ReturnMatrix, XMMatrixIdentity());
+		return ReturnMatrix;
+	}
+
+	return m_pLight_Manager->Get_Transform_TP(iIndex, eState);
+}
+
+void CGameInstance::Set_LightPos(_uint iIndex, _fvector vPos)
+{
+	if (nullptr == m_pLight_Manager)
+		return;
+
+	return m_pLight_Manager->Set_LightPos(iIndex, vPos);
+}
+
+void CGameInstance::Set_LightRange(_uint iIndex, _float fRange)
+{
+	if (nullptr == m_pLight_Manager)
+		return;
+
+	return m_pLight_Manager->Set_LightRange(iIndex, fRange);
+}
+
+void CGameInstance::Set_LightDirection(_uint iIndex, _float4 vDirection)
+{
+	if (nullptr == m_pLight_Manager)
+		return;
+
+	return m_pLight_Manager->Set_LightDirection(iIndex, vDirection);
+}
+
+void CGameInstance::Clear_Lights()
+{
+	if (nullptr == m_pLight_Manager)
+		return;
+
+	return m_pLight_Manager->Clear();
+}
+
 HRESULT CGameInstance::Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag,
-	const _tchar* pFontFilePath)
+                                const _tchar* pFontFilePath)
 {
 	NULL_CHECK_RETURN(m_pFont_Manager, E_FAIL);
 
@@ -509,6 +629,8 @@ void CGameInstance::Release_Engine()
 
 	CGameInstance::GetInstance()->DestroyInstance();
 
+	CCamera_Manager::GetInstance()->DestroyInstance();
+
 	CObject_Manager::GetInstance()->DestroyInstance();
 
 	CComponent_Manager::GetInstance()->DestroyInstance();
@@ -536,6 +658,7 @@ void CGameInstance::Free()
 {
 	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pFrustum);
+	Safe_Release(m_pCamera_Manager);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pImgui_Manager);
 	Safe_Release(m_pLight_Manager);

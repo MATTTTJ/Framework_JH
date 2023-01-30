@@ -25,7 +25,6 @@ HRESULT CMainApp::Initialize()
 	GraphicDesc.iViewportSizeX = g_iWinSizeX;
 	GraphicDesc.iViewportSizeY = g_iWinSizeY;
 	GraphicDesc.eWindowMode = GRAPHIC_DESC::WINMODE_WIN;
-
 	FAILED_CHECK_RETURN(m_pGameInstance->Initialize_Engine(LEVEL_END, GraphicDesc, &m_pDevice, &m_pContext), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_Component(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Prototype_GameObject(), E_FAIL);
@@ -57,7 +56,9 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Render_ImGui();
 	m_pGameInstance->Clear_Graphic_Device(&_float4(0.46f, 0.42f, 0.37f, 1.f));
+
 	m_pRenderer->Draw_RenderGroup();
+
 	m_pGameInstance->Render_Update_ImGui();
 	m_pGameInstance->Render_Level();
 

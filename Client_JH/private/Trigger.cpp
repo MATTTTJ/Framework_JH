@@ -770,7 +770,13 @@ HRESULT CTrigger::Room_C_To_Boss()
 			CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_BackGround")->front()->Set_Dead(true);
 
 			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_BackGround", L"Prototype_GameObject_Normal_BossMap"), E_FAIL);
-			
+			CGameInstance::GetInstance()->Set_LightRange(0, 100.f);
+			_float4 vDirection;
+			_matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-221.33f));
+			XMStoreFloat4(&vDirection, XMVector3TransformNormal(XMVectorSet(-cosf(XMConvertToRadians(60.f)), -sinf(XMConvertToRadians(60.f)), 0.f, 0.f), RotationMatrix));
+
+			CGameInstance::GetInstance()->Set_LightDirection(1, vDirection);
+
 			m_pPlayer->Set_RoomType(CPlayer::ROOM_BOSS);
 			_matrix PlayerMat = m_pPlayer->Get_WorldFloat4x4();
 			PlayerMat.r[3] = XMVectorSet(113.1f, 0.104f, 63.115f, 1.f);

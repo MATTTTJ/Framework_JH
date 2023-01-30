@@ -26,16 +26,14 @@ namespace Engine
 	/* 방향성광원, 점광원 : 방향벡터가 필요하다. */
 	typedef struct tagLightDesc
 	{
-		enum TYPE { LIGHT_DIRECTIONAL, LIGHT_POINT, LIGHTTYPE_END };
+		enum TYPE { LIGHT_DIRECTIONAL, LIGHT_POINT, LIGHT_FOV, LIGHTTYPE_END };
 
-		TYPE				eType;
+		TYPE				eType = LIGHTTYPE_END;
 
 		_bool				isEnable;
 
 		XMFLOAT4			vDirection;
 
-		/* 모든 정점(픽셀)이 받는 빛의 방향벡터가 다 다르게 표현되어야하기때문이다. */
-		/* 셰)이더내에서 빛의 방향벡터를 구해서 연산한다. */
 		XMFLOAT4			vPosition;
 		_float				fRange;
 		XMFLOAT4			vDiffuse;

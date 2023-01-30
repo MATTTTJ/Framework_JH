@@ -330,6 +330,7 @@ void CBoss_Golem_State::Start_Intro2(_double dTimeDelta)
 	_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ -1.35f, 0.702f, 0.f }, Pos[3]{ 110.486f, 13.789f, 120.949f };
 	_matrix camWorld;
 	ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
+	
 	m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
 
 
@@ -497,6 +498,7 @@ void CBoss_Golem_State::Tick_Intro1(_double dTimeDelta)
 		_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ 4.737f ,-20.6f, 0.0f }, Pos[3]{ 105.388f ,20.583f,119.339f };
 		_matrix camWorld;
 		ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
+		m_pGameInstance->Change_Camera();
 		m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
 		m_bCamSet = true;
 		m_pFadeInOut->Fade_Out(true);
@@ -624,6 +626,7 @@ void CBoss_Golem_State::End_Intro2(_double dTimeDelta)
 
 	DynamicCamera = !DynamicCamera;
 	StaticCamera = !StaticCamera;
+	m_pGameInstance->Change_Camera();
 
 	m_pMonster->Render_UI();
 }

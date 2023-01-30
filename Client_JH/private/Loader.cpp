@@ -6,6 +6,7 @@
 #include "BackGround.h"
 #include "Blade.h"
 #include "Boom.h"
+#include "CursorUI.h"
 #include "DangerRing.h"
 #include "Default_Pistol.h"
 #include "Effect_Point_Instancing.h"
@@ -241,6 +242,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// 보스 노말
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_NormalBoss_NormalMap", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/3909_c_Test_B.png", 1)), E_FAIL);
+	// 커서
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Battle_Cursor", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/Cusor.png", 1)), E_FAIL);
 
 
 
@@ -413,6 +416,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_StonePillar", CStonePillar::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_MagicStone", CMagicStone::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_RocketArm", CRocketArm::Create(m_pDevice, m_pContext)), E_FAIL);
+
+	// Cursor
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Battle_Cursor", CCursorUI::Create(m_pDevice, m_pContext)), E_FAIL);
 
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_StonePillar_Light", CStoneLight::Create(m_pDevice, m_pContext)), E_FAIL);

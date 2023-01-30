@@ -25,10 +25,10 @@ private:
 	HRESULT							SetUp_ShaderResources();
 
 private:
-	CRenderer*						m_pNumRendererCom = nullptr;
 	int								m_iNumCnt;
 	int								m_iNumber;
 	_float4							m_vNumColor;
+	_int							m_iType = 0;
 public:
 	static CNumberUI*				Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*			Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;

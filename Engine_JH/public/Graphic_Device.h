@@ -38,9 +38,7 @@ public:
 	mutex&		GetContexMtx() { return m_ContextMtx; }
 
 public:
-	HRESULT		Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE Winmode,
-						_uint iWinCX, _uint iWinCY,
-						ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut);
+	HRESULT		Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE Winmode,_uint iWinCX, _uint iWinCY,ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut);
 	HRESULT		Clear_BackBuffer_View(_float4 vClearColor);
 	HRESULT		Clear_DepthStencil_View();
 	HRESULT		Present();
@@ -62,8 +60,7 @@ private:
 	mutex								m_ContextMtx;
 
 private:
-	HRESULT		Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMode,
-		_uint iWinCX, _uint iWINCY);
+	HRESULT		Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMode, _uint iWinCX, _uint iWINCY);
 	HRESULT		Ready_BackBufferRenderTargetView();
 	HRESULT		Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint iWinCY);
 

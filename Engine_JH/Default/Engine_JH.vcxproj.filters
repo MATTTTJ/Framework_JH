@@ -169,6 +169,9 @@
     <Filter Include="01. Utility\03. Components\11. RenderTarget\Manager">
       <UniqueIdentifier>{fdc40669-7c94-4389-9038-eba7ded26476}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\02. GameObject\Camera\Manager">
+      <UniqueIdentifier>{75bc8d7b-e7f5-4062-9e6b-e3fc12cd2770}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -405,6 +408,9 @@
     <ClInclude Include="..\public\Target_Manager.h">
       <Filter>01. Utility\03. Components\11. RenderTarget\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Camera_Manager.h">
+      <Filter>01. Utility\02. GameObject\Camera\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -607,6 +613,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Target_Manager.cpp">
       <Filter>01. Utility\03. Components\11. RenderTarget\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_Manager.cpp">
+      <Filter>01. Utility\02. GameObject\Camera\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

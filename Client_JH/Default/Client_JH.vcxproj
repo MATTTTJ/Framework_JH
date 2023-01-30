@@ -177,6 +177,7 @@
     <ClInclude Include="..\public\Bullet.h" />
     <ClInclude Include="..\public\BulletEffect.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\CursorUI.h" />
     <ClInclude Include="..\public\DangerRing.h" />
     <ClInclude Include="..\public\Default_Pistol.h" />
     <ClInclude Include="..\public\Dynamic_Camera.h" />
@@ -250,6 +251,7 @@
     <ClCompile Include="..\private\Boss_Golem_State.cpp" />
     <ClCompile Include="..\private\Bullet.cpp" />
     <ClCompile Include="..\private\BulletEffect.cpp" />
+    <ClCompile Include="..\private\CursorUI.cpp" />
     <ClCompile Include="..\private\DangerRing.cpp" />
     <ClCompile Include="..\private\Default_Pistol.cpp" />
     <ClCompile Include="..\private\Dynamic_Camera.cpp">

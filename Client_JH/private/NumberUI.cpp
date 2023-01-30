@@ -37,6 +37,7 @@ HRESULT CNumberUI::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 		m_iNumCnt = tmp.m_iNumCnt;
 		m_iNumber = tmp.m_iNumber;
 		m_vNumColor = tmp.m_vNumColor;
+		m_iType = tmp.m_iCountType;
 		m_pTransformCom->Set_Scaled(_float3(tmp.m_vTexSize.x, tmp.m_vTexSize.y, 1.f));
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(tmp.TransformDesc.vInitPos.x, tmp.TransformDesc.vInitPos.y, 0.f, 1.f));
 	}
@@ -59,8 +60,8 @@ void CNumberUI::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	if (nullptr != m_pNumRendererCom)
-		m_pNumRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+	if (nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 
 HRESULT CNumberUI::Render()
@@ -68,9 +69,13 @@ HRESULT CNumberUI::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
-
-	m_pShaderCom->Begin(4);
-
+	if (m_iType == 0)
+	{
+		m_pShaderCom->Begin(4);
+	}
+	else
+		m_pShaderCom->Begin(11);
+	
 	m_pVIBufferCom->Render();
 
 	return S_OK;
@@ -78,7 +83,7 @@ HRESULT CNumberUI::Render()
 
 HRESULT CNumberUI::SetUp_Components()
 {
-	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",(CComponent**)&m_pNumRendererCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",(CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Shader_VtxTex", L"Com_Shader",	(CComponent**)&m_pShaderCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer",	(CComponent**)&m_pVIBufferCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Numbering_0", L"Com_Num0", (CComponent**)&m_pNumberingTexCom[ZERO], this), E_FAIL);
@@ -104,7 +109,6 @@ HRESULT CNumberUI::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vNumColor", &m_vNumColor, sizeof(_float4)), E_FAIL);
 	if(m_iNumber == 0)
 	{
 		FAILED_CHECK_RETURN(m_pNumberingTexCom[ZERO]->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);
@@ -145,6 +149,7 @@ HRESULT CNumberUI::SetUp_ShaderResources()
 	{
 		FAILED_CHECK_RETURN(m_pNumberingTexCom[NINE]->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);
 	}
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vNumColor", &m_vNumColor, sizeof(_float4)), E_FAIL);
 
 	return S_OK;
 }
@@ -176,5 +181,4 @@ CGameObject* CNumberUI::Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CNumberUI::Free()
 {
 	__super::Free();
-	Safe_Release(m_pNumRendererCom);
 }

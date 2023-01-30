@@ -139,6 +139,8 @@ void CNormal_Boss::Late_Tick(_double TimeDelta)
 
 	if (nullptr != m_pRendererCom)
 	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
+
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
@@ -165,13 +167,6 @@ HRESULT CNormal_Boss::Render()
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	// _uint UISize = (_uint)m_vecMonsterUI.size();
-	//
-	// for (_uint i = 0; i < UISize; ++i)
-	// {
-	// 	m_vecMonsterUI[i]->Render();
-	// }
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
@@ -205,6 +200,27 @@ void CNormal_Boss::Collider_Tick(_double TimeDelta)
 	m_pBodyColliderCom[BODYTYPE_BODY]->Update(Get_BoneMatrix("Bip001 Spine") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pBodyColliderCom[BODYTYPE_ELBOW_L]->Update(Get_BoneMatrix("Bone007(mirrored)") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
 	m_pBodyColliderCom[BODYTYPE_ELBOW_R]->Update(Get_BoneMatrix("Bone007") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+}
+
+HRESULT CNormal_Boss::Render_ShadowDepth()
+{
+	if (nullptr == m_pShaderCom ||
+		nullptr == m_pModelCom)
+		return E_FAIL;
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
+	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_LightTransform(1, 0)); // D3DTS_VIEW
+	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_LightTransform(1, 1)); // D3DTS_PROJ
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 5);
+	}
+
+	return S_OK;
 }
 
 _bool CNormal_Boss::Collision_Detected(CCollider* pOtherCollider)

@@ -46,6 +46,8 @@ public:
 	virtual void				Collision_Head(CBullet* pBullet) override;
 	virtual void				Collision_Hide(CBullet* pBullet) override;
 	virtual void				Collision_PlayerEyes() override;
+	virtual HRESULT				Render_ShadowDepth();
+	virtual HRESULT				Render_OutLineFlag();
 
 private:
 	CRenderer*					m_pRendererCom = nullptr;
@@ -55,7 +57,7 @@ private:
 private:
 	HRESULT						SetUp_Components();
 	HRESULT						SetUp_ShaderResources();
-
+	
 public:
 	static CHuman_Sword*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*		Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;

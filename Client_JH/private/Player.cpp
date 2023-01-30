@@ -201,7 +201,23 @@ void CPlayer::Set_On_NaviMesh()
 void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+	if(m_bCurRoomType[ROOM_BOSS] == true)
+	{
+		_vector vPos = XMVectorSet(109.66f, 1.52f, 129.f, 1.f);
+		CGameInstance::GetInstance()->Set_LightPos(0, vPos);
+		CGameInstance::GetInstance()->Set_Far(50.f);
 
+	}
+	else
+	{
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+
+		CGameInstance::GetInstance()->Set_LightPos(0, vPos);
+		CGameInstance::GetInstance()->Set_Far(6.f);
+
+	}
+	
+	
 	if (m_PlayerOption.m_iHp <= 0)
 		m_PlayerOption.m_iHp = 0;
 	if (m_PlayerOption.m_iShieldPoint <= 0)
@@ -305,6 +321,7 @@ void CPlayer::Tick(_double dTimeDelta)
 	{
 		DynamicCamera = !DynamicCamera;
 		StaticCamera = !StaticCamera;
+		CGameInstance::GetInstance()->Change_Camera();
 	}
 
 	if(m_bNowIsDash)
@@ -312,15 +329,14 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_pTransformCom->Dash(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
 	}
 
-	if(CGameInstance::GetInstance()->Key_Down(DIK_F3))
+	if(CGameInstance::GetInstance()->Key_Pressing(DIK_F3))
 	{
-		CGameObject::GAMEOBJECTDESC GameObjectDesc;
-		// ¿ÞÂÊ
-		_float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-		_float4 Look = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-		
-		GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x + (Look.x * 10.f), 5.f, Pos.z + (Look.z * 10.f));
-		(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_MagicStone", L"Prototype_GameObject_Normal_Boss_MagicStone", &GameObjectDesc));
+		m_fDegree -=  dTimeDelta * 10.f;
+		_float4 vDirection;
+		_matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-221.33f));
+		XMStoreFloat4(&vDirection, XMVector3TransformNormal(XMVectorSet(-cosf(XMConvertToRadians(60.f)), -sinf(XMConvertToRadians(60.f)), 0.f, 0.f), RotationMatrix));
+
+		CGameInstance::GetInstance()->Set_LightDirection(1, vDirection); 
 	}
 
 	if(m_pState != nullptr)
@@ -366,7 +382,7 @@ void CPlayer::Tick(_double dTimeDelta)
 	m_vCamPos = (Get_BoneMatrix("Bip001 Head") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix()).r[3];
 	m_pFirstAimColliderCom->Update(_matrix(R, U, L, P));
 	m_pSecondAimColliderCom->Update(_matrix(R, U, L, P));
-	static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Late_Tick(dTimeDelta);
+	// static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Late_Tick(dTimeDelta);
 
 	// if (CGameInstance::GetInstance()->Key_Down(DIK_F5))
 	// {
@@ -387,6 +403,8 @@ void CPlayer::Tick(_double dTimeDelta)
 	// 		m_PlayerOption.m_iShieldPoint = result;
 	// 	}
 	// }
+	Set_Camera(dTimeDelta);
+
 }
 
 void CPlayer::Late_Tick(_double dTimeDelta)
@@ -397,7 +415,6 @@ void CPlayer::Late_Tick(_double dTimeDelta)
 	if(m_pWeaponState != nullptr)
 		m_pWeaponState->Late_Tick(dTimeDelta);
 	
-	Set_Camera(dTimeDelta);
 	static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Tick(dTimeDelta);
 
 	for (_uint i = 0; i < m_vecPlayerUI.size(); ++i)
@@ -727,6 +744,9 @@ HRESULT CPlayer::Ready_UI()
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
+	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_Battle_Cursor"));
+	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
+	m_vecPlayerUI.push_back(pPlayerUI);
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

@@ -14,7 +14,6 @@ public:
 public:
 	ID3D11ShaderResourceView* Get_SRV(const _tchar* pTargetTag);
 
-
 public:
 	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void	Tick(_double dTimeDelta);
@@ -23,6 +22,9 @@ public:
 
 	HRESULT Begin_MRT(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
 	HRESULT End_MRT(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
+
+	HRESULT Begin_RenderTarget(ID3D11DeviceContext* pContext, const _tchar* pTargetTag);
+	HRESULT Begin_ShadowDepthRenderTarget(ID3D11DeviceContext* pContext, const _tchar* pTargetTag);
 
 #ifdef _DEBUG
 public:
@@ -43,6 +45,7 @@ private:
 	ID3D11DeviceContext*				m_pContext = nullptr;
 	ID3D11RenderTargetView*				m_pBackBufferView = nullptr;
 	ID3D11DepthStencilView*				m_pDepthStencilView = nullptr;
+	D3D11_VIEWPORT						m_OriginViewPort;
 
 #ifdef _DEBUG
 private:
@@ -52,7 +55,7 @@ private:
 #endif
 
 
-private:
+public:
 	class CRender_Target*		 Find_RenderTarget(const _tchar* pTargetTag);
 	list<class CRender_Target*>* Find_MRT(const _tchar* pMRTTag);
 

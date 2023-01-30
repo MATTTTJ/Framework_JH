@@ -17,9 +17,6 @@ public:
 private:
 	HRESULT		Ready_Light();
 	HRESULT		Ready_Layer_Background(const wstring wstrLayerTag);
-	HRESULT		Ready_Layer_StaticMesh(const wstring wstrLayerTag);
-
-
 	HRESULT		Ready_Layer_Camera(const wstring wstrLayerTag);
 
 

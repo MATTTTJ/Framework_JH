@@ -280,28 +280,28 @@ HRESULT CPlayerUI_Hp_Red::Initialize_Clone(const wstring& wstrPrototypeTag, void
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_fX - m_fSizeX * 0.5f, -m_fY + m_fSizeY * 0.5f, 0.f, 1.f));
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-784.f, -470.f, 0.f, 1.f));
-	
+
 	m_fProgress = 1.f;
-	
+
 	return S_OK;
 }
 
 void CPlayerUI_Hp_Red::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
-	
-	
-		m_PlayerOption = dynamic_cast<CPlayer*>(m_pOwner)->Get_PlayerStat();
-		m_iCurHP = m_PlayerOption.m_iHp;
-		if (m_iCurHP != m_iLastHP)
-		{
-			SetProgress(m_PlayerOption.m_iHp, m_PlayerOption.m_iMaxHp);
-			m_fDist = ((m_fSizeX * (1 - m_fProgress)) * 0.5f);
-			m_iLastHP = m_iCurHP;
-		}
 
-		m_pTransformCom->Set_Scaled(_float3(m_fSizeX * m_fProgress, m_fSizeY, 1.f));
-		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-784.f - m_fDist, -470.f, 0.f, 1.f));
+
+	m_PlayerOption = dynamic_cast<CPlayer*>(m_pOwner)->Get_PlayerStat();
+	m_iCurHP = m_PlayerOption.m_iHp;
+	if (m_iCurHP != m_iLastHP)
+	{
+		SetProgress(m_PlayerOption.m_iHp, m_PlayerOption.m_iMaxHp);
+		m_fDist = ((m_fSizeX * (1 - m_fProgress)) * 0.5f);
+		m_iLastHP = m_iCurHP;
+	}
+
+	m_pTransformCom->Set_Scaled(_float3(m_fSizeX * m_fProgress, m_fSizeY, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-784.f - m_fDist, -470.f, 0.f, 1.f));
 
 }
 
@@ -555,8 +555,8 @@ void CPlayerUI_Skill::Tick(_double dTimeDelta)
 
 	if (m_fGlowStrength >= 1.f)
 		m_bIsChange = true;
-	else if(m_fGlowStrength <= 0)
-		m_bIsChange = false;                                                                                                                                                                                 
+	else if (m_fGlowStrength <= 0)
+		m_bIsChange = false;
 
 	if (m_bIsChange == true)
 		m_fGlowStrength += (_float)dTimeDelta * -1.f;
@@ -592,7 +592,7 @@ HRESULT CPlayerUI_Skill::SetUp_Component()
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerSkillOn", L"Com_OnTexture", (CComponent**)&m_pOnTextureCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerSkillOff", L"Com_OffTexture", (CComponent**)&m_pOffTextureCom, this), E_FAIL);
-	
+
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerSkillGlow", L"Com_GlowTexture", (CComponent**)&m_pGlowTextureCom, this), E_FAIL);
 
 	return S_OK;
@@ -1040,7 +1040,7 @@ void CPlayer_UI_Throw::Tick(_double dTimeDelta)
 
 	m_iThrownCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_ThrowCnt();
 
-	
+
 }
 
 void CPlayer_UI_Throw::Late_Tick(_double dTimeDelta)
@@ -1087,7 +1087,7 @@ HRESULT CPlayer_UI_Throw::SetUp_ShaderResources()
 	{
 		m_pOffTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
 	}
-	else 
+	else
 		m_pOnTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
 
 	return S_OK;
@@ -1205,7 +1205,7 @@ HRESULT CPlayer_UI_Dash::SetUp_ShaderResources()
 	m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix");
 	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
 	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
-	if(dynamic_cast<CPlayer*>(m_pOwner)->Get_CanDash() == true)
+	if (dynamic_cast<CPlayer*>(m_pOwner)->Get_CanDash() == true)
 		m_pOnTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
 	else
 		m_pOffTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
@@ -1744,7 +1744,7 @@ HRESULT CPlayer_UI_BulletType::SetUp_ShaderResources()
 		//Injector
 		m_pWeaponTextureCom[WEAPON_THIRD]->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
 	}
-	else if (	m_wstrWeaponName == L"WEAPON_FLAMEBULLET" || 	m_wstrWeaponName == L"WEAPON_DEFAULT")
+	else if (m_wstrWeaponName == L"WEAPON_FLAMEBULLET" || m_wstrWeaponName == L"WEAPON_DEFAULT")
 	{
 		//Pistol
 		m_pWeaponTextureCom[WEAPON_FIRST]->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
@@ -1794,6 +1794,7 @@ CPlayer_UI_CountMachine::CPlayer_UI_CountMachine(ID3D11Device* pDevice, ID3D11De
 CPlayer_UI_CountMachine::CPlayer_UI_CountMachine(const CPlayer_UI_CountMachine& rhs)
 	: CUI(rhs)
 {
+	m_iLastWeapon_BulletCnt = 0;
 }
 
 HRESULT CPlayer_UI_CountMachine::Initialize_Prototype()
@@ -1840,116 +1841,126 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 	switch (m_eType)
 	{
 	case CNT_GOLD:
-		m_iGoldCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_GoldCnt();
-		if (m_iGoldCnt != m_iLastGoldCnt)
+		if (m_iLastGoldCnt == dynamic_cast<CPlayer*>(m_pOwner)->Get_GoldCnt())
+			break;
+		else
 		{
-			for (auto& iter : m_vecCountUI)
-				Safe_Release(iter);
-			m_vecCountUI.clear();
+			m_iGoldCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_GoldCnt();
+			if (m_iGoldCnt != m_iLastGoldCnt)
+			{
+				for (auto& iter : m_CountUIList)
+					Safe_Release(iter);
+				m_CountUIList.clear();
 
-			InttoString(m_iGoldCnt, m_vPlayerGoldCntPos, m_vGoldNumColor, m_vGoldNumberSize);
+				InttoString(m_iGoldCnt, m_vPlayerGoldCntPos, m_vGoldNumColor, m_vGoldNumberSize, 1);
+			}
 		}
-		break;
+			break;
 
 	case CNT_BULLET:
-		if (m_wstrWeaponName == L"WEAPON_POISON")
+		if (m_iLastWeapon_BulletCnt == m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName))
+			break;
+		else
 		{
-			//Rifle
-			m_eWeaponType = WEAPON_RIFLE;
-			m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_RifleBulletCnt();
-			m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
+			if (m_wstrWeaponName == L"WEAPON_POISON")
+			{
+				//Rifle
+				m_eWeaponType = WEAPON_RIFLE;
+				m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_RifleBulletCnt();
+				m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
+				for (auto& iter : m_CountUIList)
+					Safe_Release(iter);
+				m_CountUIList.clear();
 
-			for (auto& iter : m_vecCountUI)
-				Safe_Release(iter);
-			m_vecCountUI.clear();
+				InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vRifleNumColor, m_vBulletNumberSize,0);
+				InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vRifleNumColor, m_vBulletNumberSize,0);
+			}
+			else if (m_wstrWeaponName == L"WEAPON_FIREDRAGON")
+			{
+				//Injector
+				m_eWeaponType = WEAPON_INJECTOR;
 
-			InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vRifleNumColor, m_vBulletNumberSize);
-			InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vRifleNumColor, m_vBulletNumberSize);
+				m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_InjectorBulletCnt();
+				m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
-		}
-		else if (m_wstrWeaponName == L"WEAPON_FIREDRAGON")
-		{
-			//Injector
-			m_eWeaponType = WEAPON_INJECTOR;
+				for (auto& iter : m_CountUIList)
+					Safe_Release(iter);
+				m_CountUIList.clear();
 
-			m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_InjectorBulletCnt();
-			m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
+				InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vInjectorNumColor, m_vBulletNumberSize,0);
+				InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vInjectorNumColor, m_vBulletNumberSize,0);
 
-			for (auto& iter : m_vecCountUI)
-				Safe_Release(iter);
-			m_vecCountUI.clear();
+			}
+			else if (m_wstrWeaponName == L"WEAPON_FLAMEBULLET" || m_wstrWeaponName == L"WEAPON_DEFAULT")
+			{
+				//Pistol
+				m_eWeaponType = WEAPON_PISTOL;
 
-			InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vInjectorNumColor, m_vBulletNumberSize);
-			InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vInjectorNumColor, m_vBulletNumberSize);
+				m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_PistolBulletCnt();
+				m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
-		}
-		else if (m_wstrWeaponName == L"WEAPON_FLAMEBULLET" || m_wstrWeaponName == L"WEAPON_DEFAULT")
-		{
-			//Pistol
-			m_eWeaponType = WEAPON_PISTOL;
+				for (auto& iter : m_CountUIList)
+					Safe_Release(iter);
+				m_CountUIList.clear();
 
-			m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_PistolBulletCnt();
-			m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
+				InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vPistolNumColor, m_vBulletNumberSize,0);
+				InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vPistolNumColor, m_vBulletNumberSize,0);
 
-			for (auto& iter : m_vecCountUI)
-				Safe_Release(iter);
-			m_vecCountUI.clear();
-
-			InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vPistolNumColor, m_vBulletNumberSize);
-			InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vPistolNumColor, m_vBulletNumberSize);
-
+			}
 		}
 		break;
 
 	case CNT_THROW:
-		m_iThrowCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_ThrowCnt();
-
-		if (m_iThrowCnt != m_iLastThrowCnt)
+		if (m_iLastThrowCnt == dynamic_cast<CPlayer*>(m_pOwner)->Get_ThrowCnt())
+			break;
+		else
 		{
-			for (auto& iter : m_vecCountUI)
-				Safe_Release(iter);
-			m_vecCountUI.clear();
+			m_iThrowCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_ThrowCnt();
 
-			// m_vPlayerThrowCntPos = _float2{ 533.f, -447.f };
-			InttoString(m_iThrowCnt, m_vPlayerThrowCntPos, m_vThrowNumColor, m_vThrowNumberSize);
+			if (m_iThrowCnt != m_iLastThrowCnt)
+			{
+				for (auto& iter : m_CountUIList)
+					Safe_Release(iter);
+				m_CountUIList.clear();
+
+				// m_vPlayerThrowCntPos = _float2{ 533.f, -447.f };
+				InttoString(m_iThrowCnt, m_vPlayerThrowCntPos, m_vThrowNumColor, m_vThrowNumberSize,3);
+			}
+			break;
 		}
-		break;
-
 	case CNT_EMERALD:
-		m_iEmeraldCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_EmeraldCnt();
-
-		if(m_iEmeraldCnt != m_iLastEmeraldCnt)
+		if (m_iLastEmeraldCnt == dynamic_cast<CPlayer*>(m_pOwner)->Get_EmeraldCnt())
+			break;
+		else
 		{
-			for (auto& iter : m_vecCountUI)
-				Safe_Release(iter);
-			m_vecCountUI.clear();
+			m_iEmeraldCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_EmeraldCnt();
 
-			InttoString(m_iEmeraldCnt, m_vPlayerEmeraldCntPos, m_vGoldNumColor, m_vGoldNumberSize);
+			if (m_iEmeraldCnt != m_iLastEmeraldCnt)
+			{
+				for (auto& iter : m_CountUIList)
+					Safe_Release(iter);
+				m_CountUIList.clear();
+
+				InttoString(m_iEmeraldCnt, m_vPlayerEmeraldCntPos, m_vThrowNumColor, m_vGoldNumberSize, 2);
+			}
+			break;
 		}
+	default:
 		break;
-
-	default:;
 	}
 
-	Create_CountUI();
-
-	// for (_uint i = 0; i < m_vecCountUI.size(); ++i)
-	// {
-	// 	m_vecCountUI[i]->Tick(dTimeDelta);
-	// }
+	for (auto& iter : m_CountUIList)
+		iter->Tick(dTimeDelta);
 }
 
 void CPlayer_UI_CountMachine::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	// for (_uint i = 0; i < m_vecCountUI.size(); ++i)
-	// {
-	// 	m_vecCountUI[i]->Late_Tick(dTimeDelta);
-	// }
 
-
+	for (auto& iter : m_CountUIList)
+		iter->Late_Tick(dTimeDelta);
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
@@ -1957,6 +1968,9 @@ void CPlayer_UI_CountMachine::Late_Tick(_double dTimeDelta)
 
 HRESULT CPlayer_UI_CountMachine::Render()
 {
+	if (m_eType != CNT_BULLET)
+		return S_OK;
+
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
@@ -1968,12 +1982,7 @@ HRESULT CPlayer_UI_CountMachine::Render()
 	return S_OK;
 }
 
-void CPlayer_UI_CountMachine::Create_CountUI()
-{
-
-}
-
-void CPlayer_UI_CountMachine::InttoString(_uint ConvertCnt, _float2 vPos, _float4 vColor, _float2 vSize)
+void CPlayer_UI_CountMachine::InttoString(_uint ConvertCnt, _float2 vPos, _float4 vColor, _float2 vSize, _int iType)
 {
 	string s = to_string(ConvertCnt);
 	vector<int> v, v2;
@@ -1995,7 +2004,7 @@ void CPlayer_UI_CountMachine::InttoString(_uint ConvertCnt, _float2 vPos, _float
 			if (v2[i] != Number)
 				continue;
 
-			CUI*		pNumberUI = nullptr;
+			CGameObject*		pNumberUI = nullptr;
 			CGameObject::GAMEOBJECTDESC		tmp;
 			if (v2.size() == 1)
 				tmp.TransformDesc.vInitPos = _float3(vPos.x + 36.f, vPos.y, 0.f);
@@ -2006,14 +2015,16 @@ void CPlayer_UI_CountMachine::InttoString(_uint ConvertCnt, _float2 vPos, _float
 			tmp.m_iNumber = Number;
 			tmp.m_vNumColor = vColor;
 			tmp.m_vTexSize = vSize;
-			// pNumberUI = (CUI*);
-			// NULL_CHECK_RETURN(pNumberUI, );
-			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_NumUI", L"Prototype_GameObject_Player_NumberUI", &tmp), );
-			m_vecCountUI.push_back(pNumberUI);
+			tmp.m_iCountType = iType;
+			pNumberUI = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_NumberUI", &tmp);
+			NULL_CHECK_RETURN(pNumberUI, );
+
+			m_CountUIList.push_back(dynamic_cast<vector<CUI*>::value_type>(pNumberUI));
 
 			m_iLastPlayer_BulletCnt = m_iPlayer_BulletCnt;
 			m_iLastWeapon_BulletCnt = m_iWeapon_BulletCnt;
 			m_iLastGoldCnt = m_iGoldCnt;
+			m_iLastEmeraldCnt = m_iEmeraldCnt;
 			m_iLastThrowCnt = m_iThrowCnt;
 		}
 	}
@@ -2033,25 +2044,34 @@ HRESULT CPlayer_UI_CountMachine::SetUp_ShaderResources()
 {
 	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
 
-	m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix");
-	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
-	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
+		m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix");
+		m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
+		m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
 
-	if (m_eWeaponType == WEAPON_PISTOL)
-	{
-		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vSlashColor", &m_vPistolNumColor, sizeof(_float4)), E_FAIL);
-	}
-	else if (m_eWeaponType == WEAPON_INJECTOR)
-	{
-		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vSlashColor", &m_vInjectorNumColor, sizeof(_float4)), E_FAIL);
-	}
-	else if (m_eWeaponType == WEAPON_RIFLE)
-	{
-		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vSlashColor", &m_vRifleNumColor, sizeof(_float4)), E_FAIL);
-	}
+		if (m_eWeaponType == WEAPON_PISTOL)
+		{
+			FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vSlashColor", &m_vPistolNumColor, sizeof(_float4)), E_FAIL);
+		}
+		else if (m_eWeaponType == WEAPON_INJECTOR)
+		{
+			FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vSlashColor", &m_vInjectorNumColor, sizeof(_float4)), E_FAIL);
+		}
+		else if (m_eWeaponType == WEAPON_RIFLE)
+		{
+			FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vSlashColor", &m_vRifleNumColor, sizeof(_float4)), E_FAIL);
+		}
 
-	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
-
+		m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_SlashTexture");
+	
+	// else
+	// {
+	// 	_float4	white = _float4(1.f, 1.f, 1.f, 1.f);
+	// 	m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix");
+	// 	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
+	// 	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
+	// 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vSlashColor", &white, sizeof(_float4)), E_FAIL);
+	// 	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
+	// }
 	return S_OK;
 }
 
@@ -2085,8 +2105,8 @@ void CPlayer_UI_CountMachine::Free()
 {
 	__super::Free();
 
-	for (auto& pUI : m_vecCountUI)
+	for (auto& pUI : m_CountUIList)
 		Safe_Release(pUI);
-	m_vecCountUI.clear();
+	m_CountUIList.clear();
 
 }

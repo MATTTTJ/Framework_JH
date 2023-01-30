@@ -17,6 +17,8 @@ bool			g_bSpecularTexOn;
 bool			g_bHit = false;
 float4			g_vLimColor; 
 float			g_Outline_Offset = 0.03f;
+float			g_fFar = 300.f;
+
 
 struct VS_IN
 {
@@ -24,8 +26,6 @@ struct VS_IN
 	float3		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
 	float3		vTangent : TANGENT;
-
-	/* 현재 정점에게 곱해져야할 뼈들(최대 4개)의 행렬을 만든다. */
 	uint4		vBlendIndex : BLENDINDEX;
 	float4		vBlendWeight : BLENDWEIGHT;
 };
@@ -96,9 +96,6 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
-
-
-
 VS_OUT VS_MAIN_OUTLINE(VS_IN In)
 {
 	VS_OUT		Out = (VS_OUT)0;
@@ -149,7 +146,7 @@ struct PS_OUT
 	float4		vDiffuse : SV_TARGET0;
 	float4		vNormal : SV_TARGET1;
 	float4		vDepth : SV_TARGET2;
-	float4		vSpecularMap : SV_TARGET3;
+	float4		vFlag : SV_TARGET3;
 };
 
 struct PS_OUT_UNNORM
@@ -191,19 +188,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	{
 		Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	}
-	vector SpecularMap;
-	if(g_bSpecularTexOn)
-	{
-		SpecularMap = g_ModelSpecularTexture.Sample(LinearSampler, In.vTexUV);
-	}
-	else
-	{
-		SpecularMap = vector(0.f, 0.f, 0.f, 1.f);
-	}
 
-
-
-	Out.vSpecularMap = SpecularMap;
 	Out.vDiffuse = vDiffuse;
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
 	return Out;
@@ -326,6 +311,72 @@ PS_OUT_FLAG PS_OUTLINE(PS_IN In)
 	return Out;
 }
 
+struct VS_IN_SHADOW
+{
+	float3		vPosition : POSITION;
+	uint4		vBlendIndex : BLENDINDEX;
+	float4		vBlendWeight : BLENDWEIGHT;
+};
+
+struct VS_OUT_SHADOW
+{
+	float4		vPosition : SV_POSITION; // SV_POSITION
+	float4		vProjPos : TEXCOORD0;
+};
+
+VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN_SHADOW In)
+{
+	VS_OUT_SHADOW		Out = (VS_OUT_SHADOW)0;
+
+
+	matrix		matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	/* 정점의 Weight.x + y + z + w = 1.f */
+
+	float			fWeightW = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
+
+	matrix			BoneMatrix = g_BoneMatrices[In.vBlendIndex.x] * In.vBlendWeight.x +
+		g_BoneMatrices[In.vBlendIndex.y] * In.vBlendWeight.y +
+		g_BoneMatrices[In.vBlendIndex.z] * In.vBlendWeight.z +
+		g_BoneMatrices[In.vBlendIndex.w] * fWeightW;
+
+	vector			vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
+
+	Out.vPosition = mul(vPosition, matWVP);
+	Out.vProjPos = Out.vPosition;
+
+	return Out;
+}
+
+struct PS_IN_SHADOW
+{
+	float4		vPosition : SV_POSITION;
+	float4		vProjPos : TEXCOORD0;
+};
+
+struct PS_OUT_SHADOW
+{
+	/*SV_TARGET0 : 모든 정보가 결정된 픽셀이다. AND 0번째 렌더타겟에 그리기위한 색상이다. */
+	float4		vLightDepth : SV_TARGET0;
+};
+
+PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
+{
+	PS_OUT_SHADOW			Out = (PS_OUT_SHADOW)0;
+
+	Out.vLightDepth.r = In.vProjPos.z;
+
+	Out.vLightDepth.a = 1.f;
+
+	return Out;
+}
+
+
+
+
 
 technique11 DefaultTechnique
 {
@@ -333,7 +384,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
 		
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -347,7 +398,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_CW);
 		SetDepthStencilState(DS_Test, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
 
 
 		VertexShader = compile vs_5_0 VS_MAIN_OUTLINE();
@@ -361,7 +412,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
 
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -375,7 +426,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
 
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -389,7 +440,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
 
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -397,5 +448,30 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_Boss();
+	}
+
+	pass ShadowDepth5
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
+
+
+		VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
+	}
+
+	pass Outline6
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_OUTLINE();
 	}
 }

@@ -59,6 +59,9 @@ public:
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT				Render() override;
 
+public:
+	virtual POINT				Get_CursorPos();
+
 protected:
 	CRenderer*					m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;

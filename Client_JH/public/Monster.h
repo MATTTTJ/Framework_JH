@@ -45,7 +45,6 @@ public:
 	void					Set_HideColl(_bool bHide) {	 m_bHideCollision = bHide; }
 	void					Set_Player(class CPlayer* pPlayer) { m_pPlayer = pPlayer; }
 	void					Set_PlayAnimation(_bool bPlayAnim) { m_bPlayAnimation = bPlayAnim; }
-	
 
 
 public:

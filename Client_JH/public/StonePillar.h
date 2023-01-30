@@ -30,6 +30,8 @@ public:
 	_bool					Collision_To_Bullet();
 	_bool					Collision_To_LaserBullet();
 	_bool					Collision_To_Player_WhenExplode();
+
+	virtual	HRESULT			Render_ShadowDepth();					
 private:
 	CShader*				m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;

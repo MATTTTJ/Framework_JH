@@ -35,6 +35,7 @@ public:
 	void					Ready_DangerEffect();
 	_bool					Collision_To_Bullet();
 	void					Fire_To_Player(_double TimeDelta);
+	virtual HRESULT			Render_ShadowDepth();
 private:
 	CShader*				m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;

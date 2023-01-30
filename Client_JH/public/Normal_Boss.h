@@ -39,7 +39,7 @@ public:
 
 public:
 	virtual void				Collider_Tick(_double TimeDelta) override;
-
+	virtual HRESULT				Render_ShadowDepth();
 public:
 	_bool						Collision_Detected(CCollider* pOtherCollider);
 	_bool						Collider_AttRange(CCollider* pOtherCollider);

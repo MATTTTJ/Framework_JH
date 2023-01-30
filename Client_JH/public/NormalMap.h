@@ -23,7 +23,7 @@ public:
 	virtual void			Tick(_double TimeDelta) override;
 	virtual void			Late_Tick(_double TimeDelta) override;
 	virtual HRESULT			Render() override;
-
+	virtual HRESULT			Render_ShadowDepth();
 	virtual pair<_bool, _float3> Picking_Mesh() override;
 
 private:

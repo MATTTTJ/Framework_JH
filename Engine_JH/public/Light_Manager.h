@@ -13,6 +13,15 @@ public:
 public:
 	const LIGHTDESC*		Get_LightDesc(_uint iIndex);
 
+	void Set_LightPos(_uint iIndex, _fvector vPos);
+	void Set_LightRange(_uint iIndex, _float fRange);
+	void Set_LightDirection(_uint iIndex, _float4 vDirection);
+
+	_float4x4 Get_Transform(_uint iIndex, _uint eState); //1. ºä, 2. Åõ¿µ
+	_float4x4 Get_Transform_TP(_uint iIndex, _uint eState);
+
+	void		CascadeUpdate(_float4x4 CamWorldMatrix, _float4* vFrustumCorners);
+
 public:
 	HRESULT					Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc);
 	void					Render_Light(class CVIBuffer_Rect* pVIBuffer, class CShader* pShader);

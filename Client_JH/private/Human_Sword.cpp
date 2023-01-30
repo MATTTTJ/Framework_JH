@@ -121,7 +121,12 @@ void CHuman_Sword::Late_Tick(_double TimeDelta)
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 	{
+		if(m_bIsOnPlayerEyes)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_OUTLINE, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
+
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
@@ -130,6 +135,8 @@ void CHuman_Sword::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 	}
+
+
 }
 
 HRESULT CHuman_Sword::Render()
@@ -144,12 +151,50 @@ HRESULT CHuman_Sword::Render()
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 		m_pTextureCom[TEXTURE_NORMAL]->Bind_ShaderResource(m_pShaderCom, L"g_NormalTexture");
-
-		// m_pModelCom->Render_2Pass(m_pShaderCom, i, L"monster_body_2001_020", L"g_BoneMatrices", 1);
-
-		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 1);
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 2);
 	}
+
+	return S_OK;
+}
+
+HRESULT CHuman_Sword::Render_ShadowDepth()
+{
+	if (nullptr == m_pShaderCom ||
+		nullptr == m_pModelCom)
+		return E_FAIL;
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
+	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_LightTransform(1, 0)); // D3DTS_VIEW
+	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_LightTransform(1, 1)); // D3DTS_PROJ
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 5);
+	}
+
+	return S_OK;
+}
+
+HRESULT CHuman_Sword::SetUp_ShaderResources()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
+
+	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
+	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_Outline_Offset", &m_fOutLineOffset, sizeof(_float)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bHit", &m_bHitColor, sizeof(_bool)), E_FAIL);
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -258,36 +303,7 @@ HRESULT CHuman_Sword::SetUp_Components()
 	return S_OK;
 }
 
-HRESULT CHuman_Sword::SetUp_ShaderResources()
-{
-	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
 
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-
-	Safe_AddRef(pGameInstance);
-
-	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
-
-	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
-	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_Outline_Offset", &m_fOutLineOffset, sizeof(_float)), E_FAIL);
-
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bHit", &m_bHitColor, sizeof(_bool)), E_FAIL);
-
-	if (m_bIsOnPlayerEyes)
-	{
-		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &m_vOnAimOutLineColor, sizeof(_float)), E_FAIL);
-	}
-	else
-	{
-		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &m_vDefaultOutLineColor, sizeof(_float)), E_FAIL);
-	}
-
-
-	Safe_Release(pGameInstance);
-
-	return S_OK;
-}
 
 void CHuman_Sword::Collision_Body(CBullet* pBullet)
 {
@@ -346,6 +362,28 @@ void CHuman_Sword::Collision_PlayerEyes()
 		m_bIsOnPlayerEyes = false;
 		m_bCanUIRender = false;
 	};
+}
+
+
+HRESULT CHuman_Sword::Render_OutLineFlag()
+{
+	if (nullptr == m_pShaderCom ||
+		nullptr == m_pModelCom)
+		return E_FAIL;
+
+	/* 셰이더 전역변수에 값을 던진다. */
+	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &m_vOnAimOutLineColor, sizeof(_float)), E_FAIL);
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 6);
+	}
+
+	return S_OK;
 }
 
 

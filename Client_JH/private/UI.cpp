@@ -70,6 +70,15 @@ HRESULT CUI::Render()
 	return S_OK;
 }
 
+POINT CUI::Get_CursorPos()
+{
+	POINT ptMouse;
+	GetCursorPos(&ptMouse);
+	ScreenToClient(g_hWnd, &ptMouse);
+
+	return ptMouse;
+}
+
 void CUI::Free()
 {
 	__super::Free();

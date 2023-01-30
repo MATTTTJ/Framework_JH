@@ -13,8 +13,9 @@ CImgui_LevelSwitcher::CImgui_LevelSwitcher(ID3D11Device* pDevice, ID3D11DeviceCo
 
 HRESULT CImgui_LevelSwitcher::Initialize(void* pArg)
 {
-	m_szWindowName = " [ Level Switcher ] ";
-
+	m_szWindowName = "My Tool";
+	m_pAlpha = &ImGui::GetStyle().Colors[ImGuiCol_WindowBg].w;
+	*m_pAlpha = 0.2f;
 	return S_OK;
 }
 
@@ -22,19 +23,54 @@ void CImgui_LevelSwitcher::Imgui_RenderWindow()
 {
 	m_iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
 
-	ImGui::Text("Current Level : %s", m_pLevelName[m_iCurrentLevel]);
-
-	ImGui::NewLine();
-	ImGui::BulletText("Change Level");
-	ImGui::Combo( " ", &m_iNextLevel, m_pLevelName, LEVEL_END);
+	ImGui::BeginTabBar("My Tool");
+	Render_LevelSwitch();
+	Render_EffectTool();
+	Render_ImguiSetting();
+	ImGui::EndTabBar();
 	
-	ImGui::SameLine();
-	if (ImGui::Button("Change"))
-	{
-		if (m_iNextLevel == LEVEL_LOADING || m_iCurrentLevel == m_iNextLevel)
-			return;
+}
 
-		FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_iNextLevel)), );
+void CImgui_LevelSwitcher::Render_LevelSwitch()
+{
+	if (ImGui::BeginTabItem("Level_Switch"))
+	{
+		ImGui::Text("Current Level : %s", m_pLevelName[m_iCurrentLevel]);
+
+		ImGui::NewLine();
+		ImGui::BulletText("Change Level");
+		ImGui::Combo(" ", &m_iNextLevel, m_pLevelName, LEVEL_END);
+
+		ImGui::SameLine();
+		if (ImGui::Button("Change"))
+		{
+			if (m_iNextLevel == LEVEL_LOADING || m_iCurrentLevel == m_iNextLevel)
+				return;
+
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_iNextLevel)), );
+		}
+		ImGui::EndTabItem();
+	}
+}
+
+void CImgui_LevelSwitcher::Render_ImguiSetting()
+{
+	if (ImGui::BeginTabItem("Default_Setting"))
+	{
+		IMGUI_LEFT_LABEL(ImGui::SliderFloat, "Alpha", m_pAlpha, 0.f, 1.f);
+		ImGui::Text("(CTRL+Click to Input Directly)");
+		// ImGui::ShowDemoWindow();
+
+		ImGui::EndTabItem();
+	}
+}
+
+void CImgui_LevelSwitcher::Render_EffectTool()
+{
+	if (ImGui::BeginTabItem("Effect_Tool"))
+	{
+
+		ImGui::EndTabItem();
 	}
 }
 

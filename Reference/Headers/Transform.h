@@ -31,8 +31,8 @@ public:
 	void				FinalUpdate();	/* For UI .*/
 
 	void				SetParent(CTransform* pParent)	{ m_pParent = pParent; }
-	const _matrix		Get_WorldMatrix_Inverse() const {	return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)); }
-	const _matrix		Get_WorldMatrix() const {	return XMLoadFloat4x4(&m_WorldMatrix);	}
+	_matrix				Get_WorldMatrix_Inverse() const {	return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)); }
+	 _matrix		Get_WorldMatrix() const {	return XMLoadFloat4x4(&m_WorldMatrix);	}
 
 	_matrix				Get_UIWorldMatrix()
 	{

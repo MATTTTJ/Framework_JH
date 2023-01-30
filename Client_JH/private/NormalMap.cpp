@@ -43,6 +43,7 @@ void CNormalMap::Late_Tick(_double TimeDelta)
 
 	if (nullptr != m_pRendererCom)
 	{
+		// m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 		// m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 	}
@@ -70,7 +71,25 @@ HRESULT CNormalMap::Render()
 
 		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
-		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 4);
+	}
+
+	return S_OK;
+}
+
+HRESULT CNormalMap::Render_ShadowDepth()
+{
+	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
+
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_LightTransform(1, 0)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_LightTransform(1, 1)), E_FAIL);
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 5);
 	}
 
 	return S_OK;

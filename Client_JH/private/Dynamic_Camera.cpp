@@ -41,6 +41,7 @@ HRESULT CDynamic_Camera::Initialize_Clone(const wstring& wstrPrototypeTag, void 
 		CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 		CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 	}
+
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &CameraDesc), E_FAIL);
 
 	if (FAILED(SetUp_Components()))

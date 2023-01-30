@@ -389,8 +389,7 @@ protected:
 	virtual void	Tick(_double dTimeDelta) override;
 	virtual void	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT Render() override;
-	void			Create_CountUI();
-	void			InttoString(_uint ConvertCnt, _float2 vPos, _float4 vColor, _float2 vSize);
+	void			InttoString(_uint ConvertCnt, _float2 vPos, _float4 vColor, _float2 vSize, _int iType);
 	
 private:
 	HRESULT			SetUp_Component();
@@ -412,7 +411,7 @@ private:
 
 	COUNTUI			m_eType = CNT_END;
 	CGameInstance*	m_pGameInstance = nullptr;
-	vector<CUI*>	m_vecCountUI;
+	list<CUI*>		m_CountUIList;
 	WEAPONTYPE		m_eWeaponType = WEAPONTYPE_END;
 
 	_float2			m_vPlayerEmeraldCntPos = { 800.f, 640.f };

@@ -15,8 +15,11 @@ WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 bool			g_bFullScreen = false;
 bool			g_bNeedResizeSwapChain = false;
-unsigned int	g_iWinSizeX = 2540;
+unsigned int	g_iWinSizeX = 2560;
 unsigned int	g_iWinSizeY = 1369;
+
+// unsigned int	g_iWinSizeX = 1280;
+// unsigned int	g_iWinSizeY = 720;
 // 이 코드 모듈에 들어 있는 함수의 정방향 선언입니다.
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);

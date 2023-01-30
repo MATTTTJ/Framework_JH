@@ -13,7 +13,7 @@ HRESULT CLevel_MapEditor::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	// FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
 	//
 	// FAILED_CHECK_RETURN(Ready_Layer_Background(L"Layer_Terrain"), E_FAIL);
 	//
@@ -75,11 +75,6 @@ HRESULT CLevel_MapEditor::Ready_Layer_Background(const wstring wstrLayerTag)
 
 	// RELEASE_INSTANCE(CGameInstance);
 
-	return S_OK;
-}
-
-HRESULT CLevel_MapEditor::Ready_Layer_StaticMesh(const wstring wstrLayerTag)
-{
 	return S_OK;
 }
 

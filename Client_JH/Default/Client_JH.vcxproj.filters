@@ -256,6 +256,12 @@
     <Filter Include="02. GameObjects\00. Public\SkySphere">
       <UniqueIdentifier>{3ea5667c-c094-4a22-8d83-edc59c17d494}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\00. Public\Cursor">
+      <UniqueIdentifier>{c709f2fd-c0a9-4160-9c2f-6847ccbbec63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager\Jason">
+      <UniqueIdentifier>{13510668-bd7b-4821-8893-1bea80e7123b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -476,6 +482,7 @@
     </ClInclude>
     <ClInclude Include="..\public\Trigger.h" />
     <ClInclude Include="..\public\SkySphere.h" />
+    <ClInclude Include="..\public\CursorUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -684,6 +691,7 @@
     </ClCompile>
     <ClCompile Include="..\private\Trigger.cpp" />
     <ClCompile Include="..\private\SkySphere.cpp" />
+    <ClCompile Include="..\private\CursorUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

@@ -9,6 +9,7 @@
 #include "PipeLine.h"
 #include "Graphic_Device.h"
 #include "FontMgr.h"
+#include "Camera_Manager.h"
 
 #define CONTEXT_LOCK CContext_LockGuard _CtxLock_(CGraphic_Device::GetInstance()->GetContexMtx());
 
@@ -72,6 +73,15 @@ public: /* For.Object_Manager */
 	class CGameObject*	Clone_GameObjectReturnPtr_M(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, _float4x4 matWorld = XMMatrixIdentity(),void* pArg = nullptr);
 	class CGameObject*	Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag,  void* pArg = nullptr);
 
+public: // For CameraManager
+	HRESULT				Add_Camera(_uint iLevelIndex, const wstring& pLayerTag, const wstring& pPrototypeTag, CCamera::CAMERADESC& tCameraDesc);
+	void				Change_Camera();
+	_matrix				Get_Transform(_uint iIndex, _uint iState);
+	_float4				Get_CamPosition(_uint iIndex);
+	void				Clear_Camera();
+	CCamera::CAMERADESC Get_CameraDesc();
+	void				Set_Far(_float fFar);
+
 
 public: /* For.Component_Manager */
 	map<const wstring, class CComponent*>* Get_PrototypeComponents();
@@ -93,6 +103,13 @@ public: /* For. Timer_Manager*/
 public: /* For. Light_Manager*/
 	const LIGHTDESC*	Get_LightDesc(_uint iIndex);
 	HRESULT				Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc);
+	_float4x4			Get_LightTransform(_uint iIndex, _uint eState); //1. ºä, 2. Åõ¿µ
+	_float4x4			Get_LightTransform_TP(_uint iIndex, _uint eState); //1. ºä, 2. Åõ¿µ
+	void				Set_LightPos(_uint iIndex, _fvector vPos);
+	void				Set_LightRange(_uint iIndex, _float fRange);
+	void				Set_LightDirection(_uint iIndex, _float4 vDirection);
+	void				Clear_Lights();
+
 
 public: /* For. Font_Manager*/
 	HRESULT				Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag, const _tchar* pFontFilePath);
@@ -121,7 +138,7 @@ private:
 	class CFrustum*					m_pFrustum = nullptr;
 	class CTarget_Manager*			m_pTarget_Manager = nullptr;
 	class CImgui_Manager*			m_pImgui_Manager = nullptr;
-
+	class CCamera_Manager*			m_pCamera_Manager = nullptr;
 private:
 	static _uint					m_iStaticLevelIndex;
 

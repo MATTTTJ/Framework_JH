@@ -26,6 +26,7 @@ public:
 		_int					m_iNumCnt = 0;
 		_int					m_iNumber = 0;
 		_float4					m_vNumColor = {1.f, 1.f, 1.f, 1.f};
+		_int					m_iCountType = 0;
 		_float4					m_vBulletLook = { 0.f, 0.f, 0.f, 0.f }; 
 	}GAMEOBJECTDESC;
 
@@ -55,7 +56,8 @@ public:
 	class CComponent*		Get_Component(const wstring& wstrComponentTag);
 	class CComponent*		Find_Component(const wstring& pComopnentTag);
 	CTransform*				Get_Transform() { return m_pTransformCom; }
-
+	virtual HRESULT			Render_ShadowDepth() { return NOERROR; }
+	virtual HRESULT			Render_OutLineFlag() { return NOERROR; }
 public:
 	virtual HRESULT			Initialize_Prototype();
 	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg);

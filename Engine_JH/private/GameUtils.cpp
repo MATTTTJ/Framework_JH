@@ -111,6 +111,7 @@ COMPONENTTYPE CGameUtils::CheckComponentTypeFromTag(const wstring & wstrComponen
 	return eType;
 }
 
+
 string CGameUtils::wstrTostr(const wstring& wstrSour)
 {
 	string		strDest = "";

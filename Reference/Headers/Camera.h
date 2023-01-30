@@ -8,6 +8,7 @@ public:
 	typedef struct tagCameraDesc : public CGameObject::GAMEOBJECTDESC
 	{
 		_float4	vEye, vAt, vUp;
+		_float	fFovy, fAspect, fNear, fFar;
 	}CAMERADESC;
 
 public:
@@ -24,6 +25,13 @@ public:
 	virtual void			Late_Tick(_double TimeDelta);
 	virtual HRESULT			Render();
 
+
+
+public:
+	CAMERADESC				Get_CamDesc() { return m_CameraDesc; }
+
+private:
+	void					SetCascade();
 
 private:
 	class CPipeLine*		m_pPipeLine = nullptr;

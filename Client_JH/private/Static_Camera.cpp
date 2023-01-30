@@ -61,10 +61,9 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 
 	_uint iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
 
+	m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->front();
 
-	if (m_pOwner == nullptr)
-		m_pOwner = CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->front();
-	else if (CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->empty())
+	if (CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->empty())
 	{
 		m_pOwner = nullptr;
 		return;
@@ -136,13 +135,14 @@ void CStatic_Camera::Camera_Update(_double dTimeDelta, _float4x4 PlayerWorld)
 	_vector vCamPos = XMVectorSet(CombindMatrix._41, CombindMatrix._42, CombindMatrix._43, CombindMatrix._44) + (_vector(PlayerWorld.Backward() * 0.1f) - (_vector(PlayerWorld.Right() * 0.05f) - (_vector(PlayerWorld.Up() * 0.3f))));
 
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vCamPos);
-	if (CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Env")->front() != nullptr)
-	{
-		CSkySphere* pSphere = (CSkySphere*)CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Env")->front();
-		_float4x4 Mat = pSphere->Get_WorldFloat4x4();
-		Mat.Translation(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
-		pSphere->Set_WorldMatrix(Mat);
-	}
+	
+	// if (CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Env")->front() != nullptr)
+	// {
+	// 	CSkySphere* pSphere = (CSkySphere*)CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Env")->front();
+	// 	_float4x4 Mat = pSphere->Get_WorldFloat4x4();
+	// 	Mat.Translation(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+	// 	pSphere->Set_WorldMatrix(Mat);
+	// }
 	m_pTransformCom->LookAt(vCamPos + _vector(PlayerWorld.Backward()));
 }
 

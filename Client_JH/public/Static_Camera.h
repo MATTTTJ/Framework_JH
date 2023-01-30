@@ -26,6 +26,9 @@ public:
 	void					Set_FixControl() { m_bFix = !m_bFix; }
 	void					Set_CamPos(_float4 vPos, _float4 vLook);
 	_float4*				Get_CamLook(void) { return &m_vCameraLook; }
+
+	
+
 private:
 	CCollider*				m_pColliderCom = nullptr;
 	CGameObject*			m_pOwner = nullptr;

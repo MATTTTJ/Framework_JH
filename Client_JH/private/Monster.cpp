@@ -17,7 +17,9 @@ CMonster::CMonster(const CMonster & rhs)
 	: CGameObject(rhs)
 {
 	m_vOnAimOutLineColor =  _float4{ 0.98f, 0.35f, 0.15f, 1.f };
+	m_vDefaultOutLineColor = _float4{ 0.1f, 0.1f, 0.1f, 1.f };
 }
+
 
 _matrix CMonster::Get_BoneMatrix(const string& strBoneName)
 {

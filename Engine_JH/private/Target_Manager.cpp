@@ -34,8 +34,6 @@ HRESULT CTarget_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
 	m_pShader = CShader::Create(pDevice, pContext, L"../Bin/ShaderFiles/Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
 	NULL_CHECK_RETURN(m_pShader, E_FAIL);
-	// m_pShader = CShader::Create(pDevice, pContext, L"C:\\Users\\Jihoon\\Documents\\Visual Studio 2015\\Projects\\Framework_JH\\Engine_JH\\Bin\\ShaderFiles\\Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
-	// m_pShader = CShader::Create(pDevice, pContext, L"C:\\Users\\Hoon\\Desktop\\3D_JH\\Framework_JH\\Engine_JH\\Bin\\ShaderFiles\\Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
 	m_pVIBuffer = CVIBuffer_Rect::Create(pDevice, pContext);
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
 #endif
@@ -55,8 +53,12 @@ void CTarget_Manager::Tick(_double dTimeDelta)
 	for (auto& Pair : m_mapRenderTarget)
 		Pair.second->Tick((_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height);
 
+	// 전체화면시 화면 나감 
+
+	// m_pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
+
 #ifdef _DEBUG
-	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
+	// XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
 #endif // _DEBUG
 }
 
@@ -105,7 +107,12 @@ HRESULT CTarget_Manager::Begin_MRT(ID3D11DeviceContext* pContext, const _tchar* 
 
 	NULL_CHECK_RETURN(pMRTList, E_FAIL);
 
-	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
+	if (pMRTList->size() > 8)
+		return E_FAIL;
+
+	ID3D11ShaderResourceView*			pSRVs[128] = { nullptr };
+
+	pContext->PSSetShaderResources(0, 128, pSRVs);
 
 	ID3D11RenderTargetView*		pRTVs[8] = { nullptr };
 
@@ -116,7 +123,13 @@ HRESULT CTarget_Manager::Begin_MRT(ID3D11DeviceContext* pContext, const _tchar* 
 		pRTV->Clear();
 		pRTVs[iNumViews++] = pRTV->Get_RTV();
 	}
+	// 기존에 바인딩 되어있던 (백버퍼 + 깊이스텐실버퍼)를 얻어옴
+	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
 
+	_uint iNumViewports = 1;
+	pContext->RSGetViewports(&iNumViewports, &m_OriginViewPort);
+
+	// 렌더타겟들을 장치에 바인딩
 	pContext->OMSetRenderTargets(iNumViews, pRTVs, m_pDepthStencilView);
 
 	return S_OK;
@@ -128,6 +141,60 @@ HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pContext, const _tchar* pM
 
 	Safe_Release(m_pBackBufferView);
 	Safe_Release(m_pDepthStencilView);
+
+	pContext->RSSetViewports(1, &m_OriginViewPort);
+
+	return S_OK;
+}
+
+HRESULT CTarget_Manager::Begin_RenderTarget(ID3D11DeviceContext* pContext, const _tchar* pTargetTag)
+{
+	CRender_Target*		pRenderTarget = Find_RenderTarget(pTargetTag);
+
+	ID3D11ShaderResourceView*		pSRVs[128] = { nullptr };
+
+	pContext->PSSetShaderResources(0, 128, pSRVs);
+
+	ID3D11RenderTargetView*			pRTV;
+
+	pRenderTarget->Clear();
+	pRTV = pRenderTarget->Get_RTV();
+
+	// 기존에 바인딩되어있던 (백버퍼 + 깊이스텐실버퍼)를 얻어옴
+	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
+
+	_uint iNumViewports = 1;
+	pContext->RSGetViewports(&iNumViewports, &m_OriginViewPort);
+
+	pContext->OMSetRenderTargets(1, &pRTV, m_pDepthStencilView);
+
+	return S_OK;
+}
+
+HRESULT CTarget_Manager::Begin_ShadowDepthRenderTarget(ID3D11DeviceContext* pContext, const _tchar* pTargetTag)
+{
+	CRender_Target*		pRenderTarget = Find_RenderTarget(pTargetTag);
+
+	ID3D11ShaderResourceView*		pSRVs[128] = { nullptr };
+
+	pContext->PSSetShaderResources(0, 128, pSRVs);
+
+	ID3D11RenderTargetView*		pRTV;
+
+	pRenderTarget->Clear();
+	pRTV = pRenderTarget->Get_RTV();
+
+	/* 기존에 바인딩되어있던(백버퍼 + 깊이스텐실버퍼)를 얻어온다. */
+	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
+
+	_uint iNumViewports = 1;
+	pContext->RSGetViewports(&iNumViewports, &m_OriginViewPort);
+
+	pContext->OMSetRenderTargets(1, &pRTV, pRenderTarget->GetDepthStencilView());
+
+	pContext->ClearDepthStencilView(pRenderTarget->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+
+	pContext->RSSetViewports(1, &pRenderTarget->GetViewPortDesc());
 
 	return S_OK;
 }
@@ -196,11 +263,15 @@ void CTarget_Manager::Free()
 
 	m_mapRenderTarget.clear();
 
-	Safe_Release(m_pContext);
+	// Safe_Release(m_pBackBufferView);
+	// Safe_Release(m_pDepthStencilView);
 
 #ifdef _DEBUG
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
 
 #endif
+
+	Safe_Release(m_pContext);
+
 }

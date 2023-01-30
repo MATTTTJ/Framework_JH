@@ -40,6 +40,7 @@ private:
 private:
 	HRESULT				Render_Priority();
 	HRESULT				Render_ShadowDepth_Dynamic();
+	HRESULT				Render_ShadowDepth_Static();
 	HRESULT				Render_NonAlphaBlend();
 	HRESULT				Render_Effect();
 	HRESULT				Render_LightAcc();

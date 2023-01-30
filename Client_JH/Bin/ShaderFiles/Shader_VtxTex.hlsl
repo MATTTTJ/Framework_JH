@@ -7,7 +7,7 @@ vector			g_vSlashColor = (vector)0.f;
 float			g_glowStrength = 1.f;
 texture2D		g_Texture;
 texture2D		g_RingTexture;
-
+texture2D		g_SlashTexture;
 texture2D       g_SkillGlowTexture;
 float			g_fTime = 1.f;
 texture2D		g_DepthTexture;
@@ -132,7 +132,7 @@ PS_OUT PS_MAIN_SLASH(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_Texture.Sample(PointSampler, In.vTexUV);
+	Out.vColor = g_SlashTexture.Sample(PointSampler, In.vTexUV);
 
 	if (Out.vColor.a < 0.1f)
 		discard;
@@ -165,6 +165,27 @@ PS_OUT PS_MAIN_Number(PS_IN In)
 	else
 	{
 		Out.vColor = g_vNumColor;
+	}
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_WhiteNum(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+
+	if (Out.vColor.a < 0.3f)
+		discard;
+
+	if (Out.vColor.r < float(0.3f) && Out.vColor.g < float(0.3f) && Out.vColor.b<float(0.3f))
+	{
+		Out.vColor.rgba = float4(0.f, 0.f, 0.f, 0.9f);
+	}
+	else
+	{
+		Out.vColor = float4(1.f,1.f,1.f,1.f);
 	}
 
 	return Out;
@@ -337,5 +358,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass UI_ForNumber11
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_WhiteNum();
 	}
 }

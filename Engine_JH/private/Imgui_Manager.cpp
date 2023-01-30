@@ -47,10 +47,15 @@ void CImgui_Manager::Tick_Imgui()
 {
 
 	if (CGameInstance::GetInstance()->Key_Down(DIK_T) && CGameInstance::GetInstance()->Get_DIKeyState(DIK_LCONTROL) & 0x80)
+	{
 		m_bDrawImGui = !m_bDrawImGui;
+	}
 
 	if (!m_bDrawImGui)
+	{
 		return;
+	}
+
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();

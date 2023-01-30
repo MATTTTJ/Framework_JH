@@ -42,7 +42,8 @@ public:
 	virtual void				Collision_Head(CBullet* pBullet) override;
 	virtual void				Collision_Hide(CBullet* pBullet) override;
 	virtual void				Collision_PlayerEyes() override;
-
+	virtual HRESULT				Render_ShadowDepth();
+	virtual HRESULT				Render_OutLineFlag();
 private:
 	HRESULT						SetUp_Components();
 	HRESULT						SetUp_ShaderResources();

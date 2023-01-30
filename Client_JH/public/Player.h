@@ -103,13 +103,15 @@ public:
 	void					Collision_Event(CGameObject* pMonster);
 public:
 	virtual HRESULT			Initialize_Prototype() override;
-	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
+	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
 	virtual void			Tick(_double dTimeDelta) override;
 	virtual void			Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 
 public :
 	void					Is_Dash(); 
+
+	_float					m_fDegree = 0.f;
 
 private:
 	CShader*				m_pShaderCom	= nullptr;
