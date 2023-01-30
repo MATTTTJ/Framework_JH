@@ -134,7 +134,7 @@ void CImgui_Manager::Tick_Imgui()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	ImGui::ShowStyleEditor();
+	// ImGui::ShowStyleEditor();
 
 	ImGui_DockSpace();
 

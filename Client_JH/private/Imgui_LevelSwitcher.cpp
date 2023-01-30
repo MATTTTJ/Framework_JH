@@ -85,8 +85,8 @@ void CImgui_LevelSwitcher::Render_EffectTool()
 		ImGui::SameLine();
 		if (ImGui::Button("Save"))
 			SaveData();
-		ImGui::SameLine();
 
+		ImGui::Separator();
 		static char szEffectTag[MAX_PATH] = "";
 		IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "Add Effect", "Input EffectTag here and Press Add Button", szEffectTag, MAX_PATH);
 		ImGui::SameLine();
@@ -131,13 +131,14 @@ void CImgui_LevelSwitcher::Render_EffectTool()
 			ImGui::Text("There is No Effect");
 		else
 		{
+			CEffect::EFFECTINFO* tInfo = &m_vecEffectInfo[item_current_idx];
+
 			if (m_EffectTagList.size() > 0)
 			{
 
 				ImGui::BulletText("Current Selected Effect : %s", m_EffectTagList[item_current_idx].c_str());
 				ImGui::Separator();
 
-				CEffect::EFFECTINFO* tInfo = &m_vecEffectInfo[item_current_idx];
 
 				_float vScale[3] = { tInfo->vScale.x, tInfo->vScale.y, tInfo->vScale.z };
 				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Scale", vScale);
@@ -165,7 +166,7 @@ void CImgui_LevelSwitcher::Render_EffectTool()
 				ImGui::SameLine();
 				ImGui::Checkbox("Sprite", &tInfo->bIsSprite);
 
-				if(tInfo->bIsRotation)
+				if (tInfo->bIsRotation)
 				{
 					_float vRotation[3] = { tInfo->vRotationToTime.x, tInfo->vRotationToTime.y, tInfo->vRotationToTime.z };
 					IMGUI_LEFT_LABEL(ImGui::InputFloat3, "RotationToTime", vRotation);
@@ -197,24 +198,87 @@ void CImgui_LevelSwitcher::Render_EffectTool()
 
 
 
-
-
-
-
-
-
-
-
-				// InputFloat3(&tInfo->vScale, "Scale");
-				// InputFloat3(&tInfo->vRotation, "Rotation");
-				// InputFloat3(&tInfo->vOffsetPos, "OffsetPos");
-
-				// IMGUI_LEFT_LABEL(ImGui::SliderFloat, "fApearTime", &tInfo->fAppearTime, 0.f, 20.f);
-
-
+				//EFFECT_PARTICLE_POINT, EFFECT_PARTICLE_RECT, EFFECT_PARTICLE_MESH, EFFECT_RECT, EFFECT_POINT, EFFECT_MESH
+			// 	ImGui::Text("Particle:");
+			// 	ImGui::RadioButton("Particle_Point", (int*)&tInfo->eType, 0); ImGui::SameLine();
+			// 	ImGui::RadioButton("Particle_Rect", (int*)&tInfo->eType, 1); ImGui::SameLine();
+			// 	ImGui::RadioButton("Particle_Mesh", (int*)&tInfo->eType, 2);
+			// 	ImGui::Text("NoParticle:");
+			// 	ImGui::RadioButton("Point", (int*)&tInfo->eType, 3); ImGui::SameLine();
+			// 	ImGui::RadioButton("Rect", (int*)&tInfo->eType, 4); ImGui::SameLine();
+			// 	ImGui::RadioButton("Mesh", (int*)&tInfo->eType, 5);
+			//
+			// 	ImGui::InputScalar("iTextureIndex", ImGuiDataType_U32, &tInfo->iTextureIndex, NULL, NULL, "%u");
+			// 	ImGui::InputScalar("iPassIndex", ImGuiDataType_U32, &tInfo->iPassIndex, NULL, NULL, "%u");
+			//
+			// 	ImGui::Checkbox("bIsBlur", &tInfo->bIsBlur); ImGui::SameLine();
+			// 	ImGui::Checkbox("bIsBloom", &tInfo->bIsBloom); ImGui::SameLine();
+			// 	ImGui::Checkbox("bIsGlow", &tInfo->bIsGlow);
+			// }
+			//
+			// //메시, 파티클 매시
+			// if (tInfo->eType == 2 || tInfo->eType == 5)
+			// {
+			// 	if (ImGui::CollapsingHeader("PrototypeTag"))
+			// 	{
+			// 		if (ImGui::BeginListBox("##listbox 2", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
+			// 		{
+			//
+			// 			for (_uint i = 0; i < m_PrototypeTagList.size(); ++i)
+			// 			{
+			// 				wstring szMeshPrototypeTag = wstring(tInfo->pMeshPrototypeTag);
+			//
+			// 				const bool is_selected = m_PrototypeTagList[i].c_str() == string(szMeshPrototypeTag.begin(), szMeshPrototypeTag.end());
+			//
+			// 				if (ImGui::Selectable(m_PrototypeTagList[i].c_str(), is_selected))
+			// 				{
+			// 					wcscpy_s(tInfo->pMeshPrototypeTag, wstring(m_PrototypeTagList[i].begin(), m_PrototypeTagList[i].end()).c_str());
+			// 				}
+			//
+			// 				if (is_selected)
+			// 					ImGui::SetItemDefaultFocus();
+			// 			}
+			//
+			// 			ImGui::EndListBox();
+			// 		}
+			// 	}
+			// }
+			//
+			// //파티클
+			// if (tInfo->eType <= 2)
+			// {
+			// 	if (ImGui::CollapsingHeader("Particle"))
+			// 	{
+			// 		PARTICLEDESC* tParticle = &tInfo->tParticleDesc;
+			//
+			// 		InputFloat3(&tParticle->vMinPos, "vMinPos");
+			// 		InputFloat3(&tParticle->vMaxPos, "vMaxPos");
+			// 		InputFloat3(&tParticle->vMinDir, "vMinDir");
+			// 		InputFloat3(&tParticle->vMaxDir, "vMaxDir");
+			// 		InputFloat3(&tParticle->vAcceleration, "vAcceleration");
+			//
+			// 		InputFloat3(&tParticle->vMinScale, "vMinScale");
+			// 		InputFloat3(&tParticle->vMaxScale, "vMaxScale");
+			// 		InputFloat3(&tParticle->vScaleVariation, "vScaleVariation");
+			//
+			// 		InputColor(&tParticle->vMinColor, "vMinColor");
+			// 		InputColor(&tParticle->vMaxColor, "vMaxColor");
+			// 		InputColor(&tParticle->vColorVariation, "vColorVariation");
+			//
+			// 		ImGui::InputScalar("fMinSpeed", ImGuiDataType_Float, &tParticle->fMinSpeed, NULL);
+			// 		ImGui::InputScalar("fMaxSpeed", ImGuiDataType_Float, &tParticle->fMaxSpeed, NULL);
+			//
+			// 		ImGui::InputScalar("fMinLifeTime", ImGuiDataType_Float, &tParticle->fMinLifeTime, NULL);
+			// 		ImGui::InputScalar("fMaxLifeTime", ImGuiDataType_Float, &tParticle->fMaxLifeTime, NULL);
+			//
+			// 		ImGui::InputScalar("fVemitRate", ImGuiDataType_Float, &tParticle->fVemitRate, NULL);
+			// 		ImGui::InputScalar("fGenerationTime", ImGuiDataType_Float, &tParticle->fGenerationTime, NULL);
+			//
+			// 		ImGui::InputScalar("iTotalCnt", ImGuiDataType_U32, &tParticle->iTotalCnt, NULL, NULL, "%u");
+			// 	}
 			}
 		}
-
+		
 
 
 
@@ -233,7 +297,8 @@ void CImgui_LevelSwitcher::LoadData()
 	if (m_eTabId == TAB_EFFECT)
 	{
 		m_vecEffectInfo.clear();
-
+		m_EffectTagList.clear();
+		
 		_tchar		szJsonFileName[MAX_PATH] = TEXT("Effect_Data");
 
 		json	Json;
