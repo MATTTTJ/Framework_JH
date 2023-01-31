@@ -110,6 +110,15 @@ namespace Engine
 		XMFLOAT2		vPSize;
 	}VTXPOINT;
 
+	typedef struct tagVertex_Instance
+	{
+		XMFLOAT4			vRight;
+		XMFLOAT4			vUp;
+		XMFLOAT4			vLook;
+		XMFLOAT4			vTranslation;
+		XMFLOAT4			vColor;
+	}VTXINSTANCE;
+
 	typedef struct tagVertexMatrix
 	{
 		XMFLOAT4			vRight;

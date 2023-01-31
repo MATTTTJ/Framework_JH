@@ -183,6 +183,7 @@
     <ClInclude Include="..\public\Dynamic_Camera.h" />
     <ClInclude Include="..\public\Effect.h" />
     <ClInclude Include="..\public\Effect_Manager.h" />
+    <ClInclude Include="..\public\Effect_Point.h" />
     <ClInclude Include="..\public\Effect_Point_Instancing.h" />
     <ClInclude Include="..\public\Elite_Bug.h" />
     <ClInclude Include="..\public\Elite_Bug_State.h" />
@@ -261,6 +262,7 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect.cpp" />
     <ClCompile Include="..\private\Effect_Manager.cpp" />
+    <ClCompile Include="..\private\Effect_Point.cpp" />
     <ClCompile Include="..\private\Effect_Point_Instancing.cpp" />
     <ClCompile Include="..\private\Elite_Bug.cpp" />
     <ClCompile Include="..\private\Elite_Bug_State.cpp" />

@@ -107,7 +107,7 @@ protected:
 
 	_float2							m_vSpriteUVPos;
 
-private:
+protected:
 	virtual HRESULT			SetUp_Components();
 
 public:

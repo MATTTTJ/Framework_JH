@@ -16,7 +16,6 @@ public:
 	virtual HRESULT Initialize_Clone(CGameObject* pOwner, void* pArg) override;
 	virtual HRESULT Tick(_double TimeDelta) = 0;
 	virtual HRESULT Render();
-	
 
 protected:
 	_uint						m_iNumInstance = 0; /* 몇개의 도형?!*/ 

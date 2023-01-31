@@ -15,7 +15,7 @@
 #include "VIBuffer_Rect_Instancing.h"
 #include "VIBuffer_Point_Instancing.h"
 #include "VIBuffer_Terrain.h"	
-
+#include "VIBuffer_Point.h"
 #include "Navigation.h"
 #include "Component.h"
 

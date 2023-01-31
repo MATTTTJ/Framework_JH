@@ -265,6 +265,18 @@
     <Filter Include="80. Manager\Parent\Effect\Manager">
       <UniqueIdentifier>{01cd12a8-1595-44de-a039-412906fd015e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="80. Manager\Parent\Effect\Particle">
+      <UniqueIdentifier>{10bed65a-4002-4839-989c-442cc7d6b4c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager\Parent\Effect\Point">
+      <UniqueIdentifier>{4a478d68-ad38-4365-b0a1-e227c59b3825}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager\Parent\Effect\Particle\Point">
+      <UniqueIdentifier>{f1dec0e9-9d9e-4495-ab4f-249b8fcb9602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager\Parent\Effect\Particle\Rect">
+      <UniqueIdentifier>{c5eb7de0-bddf-44a0-8d4d-4d1e28604649}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -347,9 +359,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Imgui_AnimationMgr.h">
       <Filter>96. Tool\AnimationMgr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Point_Instancing.h">
-      <Filter>02. GameObjects\01. GamePlay\Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Client_Defines.h">
       <Filter>99. Defines</Filter>
@@ -498,6 +507,12 @@
     <ClInclude Include="..\public\Effect_Manager.h">
       <Filter>80. Manager\Parent\Effect\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Point.h">
+      <Filter>80. Manager\Parent\Effect\Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Point_Instancing.h">
+      <Filter>80. Manager\Parent\Effect\Particle\Point</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -574,9 +589,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Imgui_AnimationMgr.cpp">
       <Filter>96. Tool\AnimationMgr</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Point_Instancing.cpp">
-      <Filter>02. GameObjects\01. GamePlay\Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Weapon_State.cpp">
       <Filter>02. GameObjects\01. GamePlay\Player\State</Filter>
@@ -718,6 +730,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Manager.cpp">
       <Filter>80. Manager\Parent\Effect\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Point.cpp">
+      <Filter>80. Manager\Parent\Effect\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Point_Instancing.cpp">
+      <Filter>80. Manager\Parent\Effect\Particle\Point</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

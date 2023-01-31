@@ -43,19 +43,23 @@ void CImgui_Manager::Ready_Imgui(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 	ImGuiStyle * pstyle = &ImGui::GetStyle();
 
 	pstyle->WindowMinSize = ImVec2(160, 20);
-	pstyle->FramePadding = ImVec2(4, 2);
-	pstyle->ItemSpacing = ImVec2(6, 2);
+	pstyle->FramePadding = ImVec2(10, 6);
+	pstyle->WindowPadding = ImVec2(20, 20);
+	
+	pstyle->ItemSpacing = ImVec2(10, 6);
 	pstyle->ItemInnerSpacing = ImVec2(6, 4);
 	pstyle->Alpha = 0.95f;
 	pstyle->WindowRounding = 4.0f;
 	pstyle->FrameRounding = 2.0f;
 	pstyle->IndentSpacing = 6.0f;
-	pstyle->ItemInnerSpacing = ImVec2(2, 4);
+	pstyle->ItemInnerSpacing = ImVec2(10, 4);
 	pstyle->ColumnsMinSpacing = 50.0f;
 	pstyle->GrabMinSize = 14.0f;
 	pstyle->GrabRounding = 16.0f;
 	pstyle->ScrollbarSize = 12.0f;
 	pstyle->ScrollbarRounding = 16.0f;
+	pstyle->TabBorderSize = 1.f;
+	pstyle->FrameBorderSize = 1.f;
 
 	// pstyle->WindowPadding = ImVec2(15, 15);
 	// pstyle->WindowRounding = 5.0f;
@@ -76,12 +80,13 @@ void CImgui_Manager::Ready_Imgui(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 	pstyle->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
 	pstyle->Colors[ImGuiCol_ChildBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
 	pstyle->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
-	pstyle->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
+	pstyle->Colors[ImGuiCol_Border] = ImVec4(0.37f, 0.28f, 0.20f, 0.88f);
 	pstyle->Colors[ImGuiCol_Tab] = ImVec4(0.30f, 0.30f, 0.33f, 1.f);
 	pstyle->Colors[ImGuiCol_TabHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
 	pstyle->Colors[ImGuiCol_TabActive] = ImVec4(0.36f, 0.36f, 0.38f, 1.00f);
 	pstyle->Colors[ImGuiCol_TabUnfocused] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
 	pstyle->Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.46f, 0.46f, 0.48f, 1.00f);
+	pstyle->Alpha = 1.f;
 
 	pstyle->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 	pstyle->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);

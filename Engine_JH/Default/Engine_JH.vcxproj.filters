@@ -172,6 +172,12 @@
     <Filter Include="01. Utility\02. GameObject\Camera\Manager">
       <UniqueIdentifier>{75bc8d7b-e7f5-4062-9e6b-e3fc12cd2770}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\02. VIBuffer\Instancing\Mesh">
+      <UniqueIdentifier>{6b99ad52-7b20-4a92-a6ce-98871a510601}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Components\02. VIBuffer\Point">
+      <UniqueIdentifier>{f6579f0b-93d8-492a-9e24-d3741618b1c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -411,6 +417,7 @@
     <ClInclude Include="..\public\Camera_Manager.h">
       <Filter>01. Utility\02. GameObject\Camera\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Point.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -617,6 +624,7 @@
     <ClCompile Include="..\private\Camera_Manager.cpp">
       <Filter>01. Utility\02. GameObject\Camera\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Point.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd">

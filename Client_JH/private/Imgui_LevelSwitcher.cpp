@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Imgui_LevelSwitcher.h"
-
 #include "Effect_Manager.h"
 #include "GameInstance.h"
 #include "Json_Utils.h"
@@ -106,6 +105,8 @@ void CImgui_LevelSwitcher::Render_EffectTool()
 			ZeroMemory(szEffectTag, MAX_PATH);
 		}
 
+		
+
 
 		ImGui::BulletText("Effect List");
 
@@ -137,17 +138,47 @@ void CImgui_LevelSwitcher::Render_EffectTool()
 			{
 
 				ImGui::BulletText("Current Selected Effect : %s", m_EffectTagList[item_current_idx].c_str());
+				ImGui::SameLine();
+				if (ImGui::Button("Delete"))
+				{
+					auto iter = m_vecEffectInfo.begin();
+					auto TagIter = m_EffectTagList.begin();
+
+					m_vecEffectInfo.erase(iter + item_current_idx);
+					m_EffectTagList.erase(TagIter + item_current_idx);
+					item_current_idx = 0;
+				}
+
+
 				ImGui::Separator();
 
+				//EFFECT_PARTICLE_POINT, EFFECT_PARTICLE_RECT, EFFECT_PARTICLE_MESH, EFFECT_RECT, EFFECT_POINT, EFFECT_MESH
+				ImGui::BulletText("Choose Effect Type");
+				ImGui::RadioButton("Particle_Point", (_int*)&tInfo->eType, 0); ImGui::SameLine();
+				ImGui::RadioButton("Particle_Rect", (_int*)&tInfo->eType, 1); ImGui::SameLine();
+				ImGui::RadioButton("Particle_Mesh", (_int*)&tInfo->eType, 2); ImGui::SameLine();
+				ImGui::RadioButton("Point", (_int*)&tInfo->eType, 3); ImGui::SameLine();
+				ImGui::RadioButton("Rect", (_int*)&tInfo->eType, 4); ImGui::SameLine();
+				ImGui::RadioButton("Mesh", (_int*)&tInfo->eType, 5);
+
+				IMGUI_LEFT_LABEL(ImGui::InputInt, "TextureIndex", (_int*)&(tInfo->iTextureIndex));
+				IMGUI_LEFT_LABEL(ImGui::InputInt, "PassIndex   ", (_int*)&(tInfo->iPassIndex));
+
+				ImGui::Checkbox("Blur", &tInfo->bIsBlur); ImGui::SameLine();
+				ImGui::Checkbox("Bloom", &tInfo->bIsBloom); ImGui::SameLine();
+				ImGui::Checkbox("Glow", &tInfo->bIsGlow);
+
+				ImGui::Separator();
+				ImGui::Separator();
 
 				_float vScale[3] = { tInfo->vScale.x, tInfo->vScale.y, tInfo->vScale.z };
-				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Scale", vScale);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Scale    ", vScale);
 				tInfo->vScale.x = vScale[0];
 				tInfo->vScale.y = vScale[1];
 				tInfo->vScale.z = vScale[2];
 
 				_float vRotation[3] = { tInfo->vRotation.x, tInfo->vRotation.y, tInfo->vRotation.z };
-				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Rotation", vRotation);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Rotation ", vRotation);
 				tInfo->vRotation.x = vRotation[0];
 				tInfo->vRotation.y = vRotation[1];
 				tInfo->vRotation.z = vRotation[2];
@@ -169,7 +200,7 @@ void CImgui_LevelSwitcher::Render_EffectTool()
 				if (tInfo->bIsRotation)
 				{
 					_float vRotation[3] = { tInfo->vRotationToTime.x, tInfo->vRotationToTime.y, tInfo->vRotationToTime.z };
-					IMGUI_LEFT_LABEL(ImGui::InputFloat3, "RotationToTime", vRotation);
+					IMGUI_LEFT_LABEL(ImGui::InputFloat3, "RotationToTime   ", vRotation);
 					tInfo->vRotationToTime.x = vRotation[0];
 					tInfo->vRotationToTime.y = vRotation[1];
 					tInfo->vRotationToTime.z = vRotation[2];
@@ -178,114 +209,168 @@ void CImgui_LevelSwitcher::Render_EffectTool()
 				if (tInfo->bIsSprite)
 				{
 					_float vMaxUV[2] = { tInfo->vMaxUV.x, tInfo->vMaxUV.y };
-					IMGUI_LEFT_LABEL(ImGui::InputFloat2, "MaxUV", vMaxUV);
-					IMGUI_LEFT_LABEL(ImGui::InputFloat, "UVchangeTime", &tInfo->fUVchangeTime);
+					IMGUI_LEFT_LABEL(ImGui::InputFloat2, "MaxUV            ", vMaxUV);
+					tInfo->vMaxUV.x = vMaxUV[0];
+					tInfo->vMaxUV.y = vMaxUV[1];
+
+					IMGUI_LEFT_LABEL(ImGui::InputFloat, "UVchangeTime     ", &tInfo->fUVchangeTime);
 					IMGUI_LEFT_LABEL(ImGui::InputFloat, "UVchangeStartTime", &tInfo->fUVchangeStartTime);
 				}
 
-				InputColor(&tInfo->vColor, "vColor");
+				_float vColor[4] = { tInfo->vColor.x, tInfo->vColor.y, tInfo->vColor.z ,tInfo->vColor.w };
+				IMGUI_LEFT_LABEL(ImGui::ColorEdit4, "Color        ", vColor, ImGuiColorEditFlags_PickerHueWheel);
+				tInfo->vColor.x = vColor[0];
+				tInfo->vColor.y = vColor[1];
+				tInfo->vColor.z = vColor[2];
+				tInfo->vColor.w = vColor[3];
 
-				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ApearTime", &tInfo->fAppearTime);
-				IMGUI_LEFT_LABEL(ImGui::InputFloat, "DeleteTime", &tInfo->fDelTime);
 
-				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ChangeStartT", &tInfo->fStartChangeTime);
-				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ChangeEndT", &tInfo->fEndChangeTime);
-				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ChangeRatio", &tInfo->fChangeRatio);
-				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeInStartT", &tInfo->fFadeInStartTime);
-				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeInRatio", &tInfo->fFadeInRatio);
+				_float vUVScale[2] = { tInfo->vUVScale.x, tInfo->vUVScale.y };
+				_float vUVPos[2] = { tInfo->vUVPos.x, tInfo->vUVPos.y };
+
+				IMGUI_LEFT_LABEL(ImGui::InputFloat2, "UVScale      ", vUVScale);
+				tInfo->vUVScale.x = vUVScale[0];
+				tInfo->vUVScale.y = vUVScale[1];
+
+				IMGUI_LEFT_LABEL(ImGui::InputFloat2, "UVPos        ", vUVPos);
+				tInfo->vUVPos.x = vUVPos[0];
+				tInfo->vUVPos.y = vUVPos[1];
+
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ApearTime    ", &tInfo->fAppearTime);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "DeleteTime   ", &tInfo->fDelTime);
+
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ChangeStartT ", &tInfo->fStartChangeTime);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ChangeEndT   ", &tInfo->fEndChangeTime);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "ChangeRatio  ", &tInfo->fChangeRatio);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeInStartT ", &tInfo->fFadeInStartTime);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeInRatio  ", &tInfo->fFadeInRatio);
 				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeOutStartT", &tInfo->fFadeOutStartTime);
-				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeOutRatio", &tInfo->fFadeOutRatio);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "FadeOutRatio ", &tInfo->fFadeOutRatio);
+
+				ImGui::Separator();
+			}
+
+			//메시, 파티클 매시
+			if (tInfo->eType == CEffect::EFFECT_MESH || tInfo->eType == CEffect::EFFECT_PARTICLE_MESH)
+			{
+				ImGui::Begin("MeshType Explorer");
+				if (m_PrototypeTagList.size() == 0)
+					ImGui::BulletText("There is no Prototype");
+				else
+				{
+					if (ImGui::BeginListBox("##listbox 2", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
+					{
 
 
+						for (_uint i = 0; i < m_PrototypeTagList.size(); ++i)
+						{
+							wstring szMeshPrototypeTag = wstring(tInfo->pMeshPrototypeTag);
 
-				//EFFECT_PARTICLE_POINT, EFFECT_PARTICLE_RECT, EFFECT_PARTICLE_MESH, EFFECT_RECT, EFFECT_POINT, EFFECT_MESH
-			// 	ImGui::Text("Particle:");
-			// 	ImGui::RadioButton("Particle_Point", (int*)&tInfo->eType, 0); ImGui::SameLine();
-			// 	ImGui::RadioButton("Particle_Rect", (int*)&tInfo->eType, 1); ImGui::SameLine();
-			// 	ImGui::RadioButton("Particle_Mesh", (int*)&tInfo->eType, 2);
-			// 	ImGui::Text("NoParticle:");
-			// 	ImGui::RadioButton("Point", (int*)&tInfo->eType, 3); ImGui::SameLine();
-			// 	ImGui::RadioButton("Rect", (int*)&tInfo->eType, 4); ImGui::SameLine();
-			// 	ImGui::RadioButton("Mesh", (int*)&tInfo->eType, 5);
+							const bool is_selected = m_PrototypeTagList[i].c_str() == string(szMeshPrototypeTag.begin(), szMeshPrototypeTag.end());
+
+							if (ImGui::Selectable(m_PrototypeTagList[i].c_str(), is_selected))
+							{
+								wcscpy_s(tInfo->pMeshPrototypeTag, wstring(m_PrototypeTagList[i].begin(), m_PrototypeTagList[i].end()).c_str());
+							}
+
+							if (is_selected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndListBox();
+					}
+				}
+					ImGui::End();
+			}
 			//
-			// 	ImGui::InputScalar("iTextureIndex", ImGuiDataType_U32, &tInfo->iTextureIndex, NULL, NULL, "%u");
-			// 	ImGui::InputScalar("iPassIndex", ImGuiDataType_U32, &tInfo->iPassIndex, NULL, NULL, "%u");
-			//
-			// 	ImGui::Checkbox("bIsBlur", &tInfo->bIsBlur); ImGui::SameLine();
-			// 	ImGui::Checkbox("bIsBloom", &tInfo->bIsBloom); ImGui::SameLine();
-			// 	ImGui::Checkbox("bIsGlow", &tInfo->bIsGlow);
-			// }
-			//
-			// //메시, 파티클 매시
-			// if (tInfo->eType == 2 || tInfo->eType == 5)
-			// {
-			// 	if (ImGui::CollapsingHeader("PrototypeTag"))
-			// 	{
-			// 		if (ImGui::BeginListBox("##listbox 2", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
-			// 		{
-			//
-			// 			for (_uint i = 0; i < m_PrototypeTagList.size(); ++i)
-			// 			{
-			// 				wstring szMeshPrototypeTag = wstring(tInfo->pMeshPrototypeTag);
-			//
-			// 				const bool is_selected = m_PrototypeTagList[i].c_str() == string(szMeshPrototypeTag.begin(), szMeshPrototypeTag.end());
-			//
-			// 				if (ImGui::Selectable(m_PrototypeTagList[i].c_str(), is_selected))
-			// 				{
-			// 					wcscpy_s(tInfo->pMeshPrototypeTag, wstring(m_PrototypeTagList[i].begin(), m_PrototypeTagList[i].end()).c_str());
-			// 				}
-			//
-			// 				if (is_selected)
-			// 					ImGui::SetItemDefaultFocus();
-			// 			}
-			//
-			// 			ImGui::EndListBox();
-			// 		}
-			// 	}
-			// }
-			//
-			// //파티클
-			// if (tInfo->eType <= 2)
-			// {
-			// 	if (ImGui::CollapsingHeader("Particle"))
-			// 	{
-			// 		PARTICLEDESC* tParticle = &tInfo->tParticleDesc;
-			//
-			// 		InputFloat3(&tParticle->vMinPos, "vMinPos");
-			// 		InputFloat3(&tParticle->vMaxPos, "vMaxPos");
-			// 		InputFloat3(&tParticle->vMinDir, "vMinDir");
-			// 		InputFloat3(&tParticle->vMaxDir, "vMaxDir");
-			// 		InputFloat3(&tParticle->vAcceleration, "vAcceleration");
-			//
-			// 		InputFloat3(&tParticle->vMinScale, "vMinScale");
-			// 		InputFloat3(&tParticle->vMaxScale, "vMaxScale");
-			// 		InputFloat3(&tParticle->vScaleVariation, "vScaleVariation");
-			//
-			// 		InputColor(&tParticle->vMinColor, "vMinColor");
-			// 		InputColor(&tParticle->vMaxColor, "vMaxColor");
-			// 		InputColor(&tParticle->vColorVariation, "vColorVariation");
-			//
-			// 		ImGui::InputScalar("fMinSpeed", ImGuiDataType_Float, &tParticle->fMinSpeed, NULL);
-			// 		ImGui::InputScalar("fMaxSpeed", ImGuiDataType_Float, &tParticle->fMaxSpeed, NULL);
-			//
-			// 		ImGui::InputScalar("fMinLifeTime", ImGuiDataType_Float, &tParticle->fMinLifeTime, NULL);
-			// 		ImGui::InputScalar("fMaxLifeTime", ImGuiDataType_Float, &tParticle->fMaxLifeTime, NULL);
-			//
-			// 		ImGui::InputScalar("fVemitRate", ImGuiDataType_Float, &tParticle->fVemitRate, NULL);
-			// 		ImGui::InputScalar("fGenerationTime", ImGuiDataType_Float, &tParticle->fGenerationTime, NULL);
-			//
-			// 		ImGui::InputScalar("iTotalCnt", ImGuiDataType_U32, &tParticle->iTotalCnt, NULL, NULL, "%u");
-			// 	}
+			//파티클
+			if (tInfo->eType <= CEffect::EFFECT_PARTICLE_MESH)
+			{
+				ImGui::Begin("ParticleType Explorer");
+
+				PARTICLEDESC* tParticle = &tInfo->tParticleDesc;
+
+				_float vMinPos[3] = { tParticle->vMinPos.x, tParticle->vMinPos.y, tParticle->vMinPos.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "MinPos        ", vMinPos);
+				tParticle->vMinPos.x = vMinPos[0];
+				tParticle->vMinPos.y = vMinPos[1];
+				tParticle->vMinPos.z = vMinPos[2];
+
+				_float vMaxPos[3] = { tParticle->vMinPos.x, tParticle->vMinPos.y, tParticle->vMinPos.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "MaxPos        ", vMaxPos);
+				tParticle->vMaxPos.x = vMaxPos[0];
+				tParticle->vMaxPos.y = vMaxPos[1];
+				tParticle->vMaxPos.z = vMaxPos[2];
+
+				_float vMinDir[3] = { tParticle->vMinDir.x, tParticle->vMinDir.y, tParticle->vMinDir.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "MinDir        ", vMinDir);
+				tParticle->vMinDir.x = vMinDir[0];
+				tParticle->vMinDir.y = vMinDir[1];
+				tParticle->vMinDir.z = vMinDir[2];
+
+				_float vMaxDir[3] = { tParticle->vMaxDir.x, tParticle->vMaxDir.y, tParticle->vMaxDir.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "MaxDir        ", vMaxDir);
+				tParticle->vMaxDir.x = vMaxDir[0];
+				tParticle->vMaxDir.y = vMaxDir[1];
+				tParticle->vMaxDir.z = vMaxDir[2];
+
+				_float vAcceleration[3] = { tParticle->vAcceleration.x, tParticle->vAcceleration.y, tParticle->vAcceleration.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Acceleration  ", vAcceleration);
+				tParticle->vAcceleration.x = vAcceleration[0];
+				tParticle->vAcceleration.y = vAcceleration[1];
+				tParticle->vAcceleration.z = vAcceleration[2];
+
+				_float vMinScale[3] = { tParticle->vMinScale.x, tParticle->vMinScale.y, tParticle->vMinScale.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "MinScale      ", vMinScale);
+				tParticle->vMinScale.x = vMinScale[0];
+				tParticle->vMinScale.y = vMinScale[1];
+				tParticle->vMinScale.z = vMinScale[2];
+
+				_float vMaxScale[3] = { tParticle->vMaxScale.x, tParticle->vMaxScale.y, tParticle->vMaxScale.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "MaxScale      ", vMaxScale);
+				tParticle->vMaxScale.x = vMaxScale[0];
+				tParticle->vMaxScale.y = vMaxScale[1];
+				tParticle->vMaxScale.z = vMaxScale[2];
+
+				_float vScaleVariation[3] = { tParticle->vScaleVariation.x, tParticle->vScaleVariation.y, tParticle->vScaleVariation.z };
+				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "ScaleVariation", vScaleVariation);
+				tParticle->vScaleVariation.x = vScaleVariation[0];
+				tParticle->vScaleVariation.y = vScaleVariation[1];
+				tParticle->vScaleVariation.z = vScaleVariation[2];
+
+				_float vMinColor[4] = { tParticle->vMinColor.x, tParticle->vMinColor.y, tParticle->vMinColor.z ,tParticle->vMinColor.w };
+				IMGUI_LEFT_LABEL(ImGui::ColorEdit4, "MinColor      ", vMinColor, ImGuiColorEditFlags_PickerHueWheel);
+				tParticle->vMinColor.x = vMinColor[0];
+				tParticle->vMinColor.y = vMinColor[1];
+				tParticle->vMinColor.z = vMinColor[2];
+				tParticle->vMinColor.w = vMinColor[3];
+
+				_float vMaxColor[4] = { tParticle->vMaxColor.x, tParticle->vMaxColor.y, tParticle->vMaxColor.z ,tParticle->vMaxColor.w };
+				IMGUI_LEFT_LABEL(ImGui::ColorEdit4, "MaxColor      ", vMaxColor, ImGuiColorEditFlags_PickerHueWheel);
+				tParticle->vMaxColor.x = vMaxColor[0];
+				tParticle->vMaxColor.y = vMaxColor[1];
+				tParticle->vMaxColor.z = vMaxColor[2];
+				tParticle->vMaxColor.w = vMaxColor[3];
+
+				_float vColorVariation[4] = { tParticle->vColorVariation.x, tParticle->vColorVariation.y, tParticle->vColorVariation.z ,tParticle->vColorVariation.w };
+				IMGUI_LEFT_LABEL(ImGui::ColorEdit4, "ColorVariation", vColorVariation, ImGuiColorEditFlags_PickerHueWheel);
+				tParticle->vColorVariation.x = vColorVariation[0];
+				tParticle->vColorVariation.y = vColorVariation[1];
+				tParticle->vColorVariation.z = vColorVariation[2];
+				tParticle->vColorVariation.w = vColorVariation[3];
+
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "MinSpeed      ", &tParticle->fMinSpeed);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "MaxSpeed      ", &tParticle->fMaxSpeed);
+
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "MinLifeTime   ", &tParticle->fMinLifeTime);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "MaxLifeTime   ", &tParticle->fMaxLifeTime);
+
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "VemitRate     ", &tParticle->fVemitRate);
+				IMGUI_LEFT_LABEL(ImGui::InputFloat, "GenerationTime", &tParticle->fGenerationTime);
+				IMGUI_LEFT_LABEL(ImGui::InputInt, "TotalCnt      ", (_int*)&tParticle->iTotalCnt);
+
+				ImGui::End();
 			}
 		}
-		
-
-
-
-
-
-
-
 			////////////////////////////////////////////////
 			ImGui::EndTabItem();
 	}

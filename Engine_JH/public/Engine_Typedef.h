@@ -34,4 +34,14 @@ namespace Engine
 	typedef		XMMATRIX				_matrix;
 	typedef		FXMMATRIX				_fmatrix;
 	typedef		CXMMATRIX				_cmatrix;
+
+	typedef struct tagInt32
+	{
+		tagInt32(unsigned int _ix, unsigned int _iy, unsigned int _iz)
+			: ix(_ix)
+			, iy(_iy)
+			, iz(_iz) {	}
+
+		unsigned int ix, iy, iz;
+	} _uint3;
 }
