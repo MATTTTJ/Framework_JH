@@ -57,11 +57,11 @@ HRESULT CEffect_Point::SetUp_Components()
 {
 	__super::SetUp_Components();
 
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxPointInstance", L"Com_Shader", (CComponent**)&m_pShaderCom, this)), E_FAIL;)
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxPointInstance", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL;)
 
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Effect", L"Com_Texture", (CComponent**)&m_pTextureCom, this)), E_FAIL;)
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Effect", L"Com_Texture", (CComponent**)&m_pTextureCom, this), E_FAIL;)
 
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Point", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom, this)), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Point", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom, this), E_FAIL);
 
 
 
@@ -98,7 +98,7 @@ HRESULT CEffect_Point::SetUp_ShaderResource()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_fAlphaRatio", &m_fAlphaRatio, sizeof(_float)), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vCamPosition", &pGameInstance->Get_CamPos(), sizeof(_float4)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_DiffuseTexture", m_tEffect.iTextureIndex)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_DiffuseTexture", m_tEffect.iTextureIndex), E_FAIL);
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
