@@ -136,7 +136,6 @@ void CImgui_LevelSwitcher::Render_EffectTool()
 
 			if (m_EffectTagList.size() > 0)
 			{
-
 				ImGui::BulletText("Current Selected Effect : %s", m_EffectTagList[item_current_idx].c_str());
 				ImGui::SameLine();
 				if (ImGui::Button("Delete"))

@@ -285,7 +285,7 @@ void CImgui_ProtoMgr::Component_Editor()
 
 			if (ImGui::Button("Create"))
 			{
-				for (size_t i = 0; i < m_mapProtoComponenets[iSelectLevel].size(); ++i)
+				for (size_t i = 0; i < m_mapProtoComponenets[iSelectLevel].size(); ++i)                                                                                                                                                                                                                                                         
 					Safe_Delete_Array(ppProtoComponentTag[i]);
 				Safe_Delete_Array(ppProtoComponentTag);
 

@@ -107,7 +107,7 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 				wstring	wstrLayerTag = wszBuff;
 
 				CGameObject* pInst = CGameInstance::GetInstance()->Clone_GameObjectReturnPtr_M(m_iCurLevel, wstrLayerTag, wstrPrototypeTag);
-				// dynamic_cast<CMonster*>(pInst)->Set_Player(dynamic_cast<CPlayer*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front()));
+				// dynamic_cast< nster*>(pInst)->Set_Player(dynamic_cast<CPlayer*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front()));
 			}
 
 
@@ -292,8 +292,8 @@ void CImgui_MapEditor::CheckNewPrototype()
 
 	for(auto Pair : *m_mapPrototypes)
 	{
-		if (!Pair.second->Get_HasModel())
-			continue;
+		// if (!Pair.second->Get_HasModel())
+		// 	continue;
 		
 		auto iter = find_if(m_mapPrototypeModels.begin(), m_mapPrototypeModels.end(), CTag_Finder(Pair.first));
 

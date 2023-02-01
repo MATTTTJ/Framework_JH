@@ -196,7 +196,7 @@ HRESULT CCustomObject::Render()
 HRESULT CCustomObject::SetUp_Component()
 {
 	if (m_wstrRendererComTag != L"")
-		FAILED_CHECK_RETURN(__super::Add_Component(m_iRendererComLevel, m_wstrRendererComTag, L"Com_Renderer", (CComponent**)&m_pRendererCom,this), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::GetInstance()->Get_StaticLevelIndex(), m_wstrRendererComTag, L"Com_Renderer", (CComponent**)&m_pRendererCom,this), E_FAIL);
 	if (m_wstrVIBufferComTag != L"")
 		FAILED_CHECK_RETURN(__super::Add_Component(m_iVIBufferComLevel, m_wstrVIBufferComTag, L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom, this), E_FAIL);
 	if (m_wstrShaderComTag != L"")
