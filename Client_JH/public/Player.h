@@ -75,6 +75,8 @@ public:
 	_bool					Get_CanDash() { return m_bCanDash; }
 	CTransform*				Get_Transform() { return m_pTransformCom; }
 	void					Set_On_NaviMesh();
+	CCollider*				Get_MuzzlePtr() { return m_pColliderCom[COLLIDER_MUZZLE]; }
+
 	CCollider*				Get_OBBPtr() { return m_pColliderCom[COLLIDER_OBB]; }
 	_matrix					Get_BoneMatrix(const string& strBoneName);
 	_matrix					Get_OffsetMatrix(const string& strBoneName);

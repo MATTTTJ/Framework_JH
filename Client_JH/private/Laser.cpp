@@ -81,7 +81,10 @@ void CLaser::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-
+	if(nullptr != m_pRendererCom)
+	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
+	}
 	
 	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 

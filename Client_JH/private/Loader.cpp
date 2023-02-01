@@ -8,6 +8,7 @@
 #include "Boom.h"
 #include "CursorUI.h"
 #include "DangerRing.h"
+#include "Default_Bullet_Birth.h"
 #include "Default_Pistol.h"
 #include "Effect_Point_Instancing.h"
 #include "ForkLift.h"
@@ -92,6 +93,7 @@ HRESULT CLoader::Loading_For_Logo()
 	Safe_AddRef(pGameInstance);
 
 	m_wstrLoadingText = L"텍스쳐를 로딩중입니다.";
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Logo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Loading/Loading0.png", 1)), E_FAIL);
 	m_wstrLoadingText = L"버퍼를 로딩중입니다.";
 	m_wstrLoadingText = L"모델을 로딩중입니다.";
 	m_wstrLoadingText = L"셰이더를 로딩중입니다.";
@@ -197,6 +199,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// 빨간 총알 텍스쳐
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Bullet", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Bullet/bullet_red.png", 1)), E_FAIL);
+
+	// 머즐 텍스쳐
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_Bullet_BirthTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/J_H_004.png", 1)), E_FAIL);
+
 
 	// 레이저 텍스쳐
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Laser", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/rules_green.png", 1)), E_FAIL);
@@ -416,6 +422,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_StonePillar", CStonePillar::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_MagicStone", CMagicStone::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_RocketArm", CRocketArm::Create(m_pDevice, m_pContext)), E_FAIL);
+
+	// 이펙트
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Default_Bullet_Birth", CDefault_Bullet_Birth::Create(m_pDevice, m_pContext)), E_FAIL);
+
+
 
 	// Cursor
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Battle_Cursor", CCursorUI::Create(m_pDevice, m_pContext)), E_FAIL);

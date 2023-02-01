@@ -17,6 +17,7 @@
 #include "VIBuffer_Terrain.h"	
 #include "VIBuffer_Point.h"
 #include "Navigation.h"
+#include "Material.h"
 #include "Component.h"
 
 

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\public\Level_Logo.h"
 
+#include "BackGround.h"
+#include "Shader.h"
 #include "Level_Loading.h"
 #include "GameInstance.h"
 #include "Imgui_AnimationMgr.h"
@@ -22,8 +24,8 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	// if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
-	// 	return E_FAIL;
+	if (FAILED(Ready_Layer_BackGround(L"Layer_BackGround")))
+		return E_FAIL;
 	// CGameInstance::GetInstance()->Clear_ImguiObjects();
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_Setting::Create());
 	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
@@ -40,6 +42,10 @@ void CLevel_Logo::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
+	// if(CGameInstance::GetInstance()->Key_Down(DIK_F5))
+	// {
+	// 	m_pShader->ReCompileShader();
+	// }
 }
 
 void CLevel_Logo::Late_Tick(_double TimeDelta)
@@ -74,11 +80,22 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const wstring& wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
+	CGameObject* pGameObject = nullptr;
+	pGameObject = pGameInstance->Clone_GameObjectReturnPtr(LEVEL_LOGO, wstrLayerTag, L"Prototype_GameObject_BackGround");
+	NULL_CHECK_RETURN(pGameObject, E_FAIL);
 
-	if (FAILED(pGameInstance->Clone_GameObject(LEVEL_LOGO, wstrLayerTag, L"Prototype_GameObject_BackGround")))
-		return E_FAIL;
+	m_pShader = dynamic_cast<CBackGround*>(pGameObject)->Get_ShaderCom();
+	NULL_CHECK_RETURN(m_pShader, E_FAIL);
 
 	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::SetUp_Component()
+{
+	// m_pShader = dynamic_cast<CShader*>(CGameInstance::GetInstance()->Clone_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Shader_VtxTex", nullptr));
+	// NULL_CHECK_RETURN(m_pShader, E_FAIL);
 
 	return S_OK;
 }
@@ -99,5 +116,5 @@ void CLevel_Logo::Free()
 {
 	__super::Free();
 
-
+	Safe_Release(m_pShader);
 }

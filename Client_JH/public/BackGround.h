@@ -25,7 +25,7 @@ public:
 	virtual void	Tick(_double TimeDelta)			override;
 	virtual void	Late_Tick(_double TimeDelta)	override;
 	virtual HRESULT Render()						override;
-
+	CShader*		Get_ShaderCom() { return m_pShaderCom; }
 private:
 	CShader*				m_pShaderCom	= nullptr;
 	CRenderer*				m_pRendererCom	= nullptr;

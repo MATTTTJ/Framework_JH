@@ -165,6 +165,7 @@ HRESULT CRenderer::Draw_RenderGroup()
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_FADE(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Glow(), E_FAIL);
 
 #ifdef _DEBUG
 	FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
@@ -287,7 +288,7 @@ HRESULT CRenderer::Render_Effect()
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, TEXT("MRT_Effect")), E_FAIL);
 
-	// FAILED_CHECK_RETURN(Render_Blur(TEXT("Target_OriginEffect")), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Blur(TEXT("Target_OriginEffect")), E_FAIL);
 	// FAILED_CHECK_RETURN(Render_Bloom(TEXT("Target_OriginEffect")), E_FAIL);
 		
 	return S_OK;
@@ -621,6 +622,23 @@ HRESULT CRenderer::Render_FADE()
 	}
 
 	m_RenderObjectList[RENDER_FADE].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Glow()
+{
+	for (auto& pGameObject : m_RenderObjectList[RENDER_GLOW])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObjectList[RENDER_GLOW].clear();
+
+
 
 	return S_OK;
 }

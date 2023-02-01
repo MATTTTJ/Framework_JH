@@ -271,18 +271,18 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector		vDiffuse = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
 	vector		vShade = g_ShadeTexture_Deferred.Sample(LinearSampler, In.vTexUV);
 	vector		vSpecular = g_SpecularTexture_Deferred.Sample(LinearSampler, In.vTexUV);
-	// vector		vFlag = g_FlagTexture.Sample(LinearSampler, In.vTexUV);
-	// vector		vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexUV);
+	vector		vFlag = g_FlagTexture.Sample(LinearSampler, In.vTexUV);
+	vector		vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexUV);
 	vector		vBloom = g_BloomTexture.Sample(LinearSampler, In.vTexUV);
-	// vector		vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexUV);
-	vector			vOutline = g_OutlineTexture.Sample(LinearSampler, In.vTexUV);
+	vector		vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexUV);
+	vector		vOutline = g_OutlineTexture.Sample(LinearSampler, In.vTexUV);
 
 	// if (vBlur.a >= 0.05f)
 	// {
 	// 	//vBlur.rgb *= 3.f;
 	// 	Out.vColor = vector(vBlur.rgb * vBlur.a + vDiffuse.rgb * (1.f - vBlur.a), 1.f) * vShade + vSpecular;
 	//
-	// 	//글로우
+	// // 	//글로우
 	// 	if (vFlag.b == 1.f)
 	// 	{
 	// 		if (vEffect.a > 0.1f)
@@ -303,32 +303,59 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	// 	{
 	// 		Out.vColor = vDiffuse * vShade + vSpecular;
 	// 	}
-	//
+	// //
 	// }
-	// //블룸
+	// // //블룸
 	// if (vFlag.g >= 0.1f)
 	// {
 	// 	vEffect.rgb = pow(pow(abs(vBloom.rgb), 2.2f) + pow(abs(vEffect.rgb), 2.2f), 1.f / 2.2f);
 	// 	Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
 	// }
 	//
+	//
 	// if (Out.vColor.a == 0.f)
 	// 	discard;
 	//
 	// return Out;
+	if (vBlur.a >= 0.05f)
+	{
+		//vBlur.rgb *= 3.f;
+		Out.vColor = vector(vBlur.rgb * vBlur.a + vDiffuse.rgb * (1.f - vBlur.a), 1.f) * vShade + vSpecular;
 
-	///////////////////////////////////////////////////////
-	///
-	// vector NewDiffuse = (vDiffuse * vShade) + (vSpecular);
-	
-	// vector NewBloom = vector(pow(pow(abs(vBloom.rgb), 2.2f) + pow(abs(vSpecular.rgb), 2.2f), 1.f / 2.2f), vBloom.a);
-	// Out.vColor = vector(NewBloom.rgb * NewBloom.a + NewDiffuse.rgb * (1.f - NewBloom.a), 1.f);
-	Out.vColor = (vDiffuse * vShade) + (vSpecular);
+		//글로우
+		if (vFlag.b == 1.f)
+		{
+			if (vEffect.a > 0.1f)
+			{
+				Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f) * vShade + vSpecular;
+			}
+		}
+	}
+	else
+	{
+		//이펙트 효과 없을 때
+		if (vEffect.a > 0.1f && vFlag.r == 0.f && vFlag.g == 0.f && vFlag.b == 0.f)
+		{
+			vDiffuse = vDiffuse * vShade + vSpecular;
+			Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
+		}
+		else
+		{
+			Out.vColor = vDiffuse * vShade + vSpecular;
+		}
+
+	}
+	//블룸
+	if (vFlag.g >= 0.1f)
+	{
+		vEffect.rgb = pow(pow(abs(vBloom.rgb), 2.2f) + pow(abs(vEffect.rgb), 2.2f), 1.f / 2.2f);
+		Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
+	}
 
 	if (vOutline.a == 1.f)
 		Out.vColor.rgb = vOutline.rgb;
 
-	if (0.0f == Out.vColor.a)
+	if (Out.vColor.a == 0.f)
 		discard;
 
 	return Out;
@@ -445,7 +472,7 @@ PS_OUT PS_HORIZONTALBLUR(PS_IN_BLUR In)
 
 	float weight0, weight1, weight2, weight3, weight4;
 	weight0 = 1.0f;
-	weight1 = 0.9f;
+	weight1 = 0.75f;
 	weight2 = 0.55f;
 	weight3 = 0.18f;
 	weight4 = 0.1f;
@@ -481,7 +508,7 @@ PS_OUT PS_VERTICALBLUR(PS_IN_BLUR In)
 
 	float weight0, weight1, weight2, weight3, weight4;
 	weight0 = 1.0f;
-	weight1 = 0.9f;
+	weight1 = 0.75f;
 	weight2 = 0.55f;
 	weight3 = 0.18f;
 	weight4 = 0.1f;
@@ -536,18 +563,18 @@ PS_OUT PS_BLOOMFLAG(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	vector vFlag = g_FlagTexture.Sample(LinearSampler, In.vTexUV);
-
+	
 	if (vFlag.g != 1.f)
 		discard;
 
-	//float texelSize = 1.f / g_iWinCY;
-	//vector vColor;
+	// float texelSize = 1.f / g_iWinCY;
+	// vector vColor;
 	//
-	//for (int i = 0; i < 7; ++i)
-	//{
-	//	vColor += g_DiffuseTexture.Sample(DefaultSampler, float2(In.vTexUV.x, In.vTexUV.y + vGaussFilter[i].y * texelSize)) * vGaussFilter[i].w;
-	//}
-	//vColor = vColor * 4.f;
+	// for (int i = 0; i < 7; ++i)
+	// {
+	// 	vColor += g_DiffuseTexture_Deferred.Sample(LinearSampler, float2(In.vTexUV.x, In.vTexUV.y + vGaussFilter[i].y * texelSize)) * vGaussFilter[i].w;
+	// }
+	// vColor = vColor * 4.f;
 	vector vColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
 
 	float fBrightness = dot(vColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));

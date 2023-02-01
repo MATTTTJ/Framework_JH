@@ -36,7 +36,7 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
-		m_vPSize = _float2{ 1.f, 1.f };
+		m_vPSize = _float2{ 0.5f, 0.5f };
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tBulletOption.BulletDesc.TransformDesc.vInitPos.x, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.y, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.z, 1.f));
 
 		_matrix matpivot;
@@ -96,7 +96,6 @@ void CDefault_Pistol::Tick(_double dTimeDelta)
 		// m_fTrailCount = 0.f;
 	// 0.016
 
-	m_fTrailCount += (_float)dTimeDelta;
 	m_vUp = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_UP);
 
 
@@ -119,11 +118,11 @@ void CDefault_Pistol::Late_Tick(_double dTimeDelta)
 
 	// if (nullptr != m_pBulletColliderCom)
 	// 	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-
+	if (m_pRendererCom != nullptr)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
 
 
 	m_pBulletColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-
 }
 
 HRESULT CDefault_Pistol::Render()

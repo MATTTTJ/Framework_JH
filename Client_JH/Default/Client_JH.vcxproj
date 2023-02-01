@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Client_Defines.h" />
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Params.h" />
     <ClInclude Include="..\private\Boom.h" />
     <ClInclude Include="..\public\Arrow.h" />
     <ClInclude Include="..\public\BackGround.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\CursorUI.h" />
     <ClInclude Include="..\public\DangerRing.h" />
+    <ClInclude Include="..\public\Default_Bullet_Birth.h" />
     <ClInclude Include="..\public\Default_Pistol.h" />
     <ClInclude Include="..\public\Dynamic_Camera.h" />
     <ClInclude Include="..\public\Effect.h" />
@@ -256,6 +258,7 @@
     <ClCompile Include="..\private\BulletEffect.cpp" />
     <ClCompile Include="..\private\CursorUI.cpp" />
     <ClCompile Include="..\private\DangerRing.cpp" />
+    <ClCompile Include="..\private\Default_Bullet_Birth.cpp" />
     <ClCompile Include="..\private\Default_Pistol.cpp" />
     <ClCompile Include="..\private\Dynamic_Camera.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
@@ -346,6 +349,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxRectInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTexIncCount.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

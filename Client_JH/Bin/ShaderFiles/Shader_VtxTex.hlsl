@@ -1,7 +1,7 @@
 
 #include "Shader_Client_Defines.h"
+#include "Shader_Params.h"
 
-matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 vector			g_vNumColor = (vector)1.f;
 vector			g_vSlashColor = (vector)0.f;
 float			g_glowStrength = 1.f;
@@ -65,7 +65,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
-
+	// Out.vColor = vector(0.f, 0.f, 0.f, 1.f);
 	return Out;
 }
 PS_OUT PS_MAIN_Ring(PS_IN In)

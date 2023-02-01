@@ -122,6 +122,18 @@ string CGameUtils::wstrTostr(const wstring& wstrSour)
 	return strDest;
 }
 
+wstring CGameUtils::s2ws(const string& strSour)
+{
+	wstring wstrDest = L"";
+
+	if(strSour != "")
+	{
+		wstrDest.assign(strSour.begin(), strSour.end());
+	}
+
+	return wstrDest;
+}
+
 void CGameUtils::Saturate(int & InValue, int InMax, int InMin)
 {
 	if (InValue > InMax)

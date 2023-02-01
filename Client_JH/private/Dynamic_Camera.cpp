@@ -114,6 +114,8 @@ HRESULT CDynamic_Camera::Render()
 	return S_OK;
 }
 
+
+
 HRESULT CDynamic_Camera::SetUp_Components()
 {
 	return S_OK;

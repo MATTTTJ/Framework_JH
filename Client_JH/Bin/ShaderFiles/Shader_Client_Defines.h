@@ -119,7 +119,7 @@ BlendState BS_AlphaBlend
 BlendState BS_One
 {
 	BlendEnable[0] = true;
-BlendEnable[1] = true;
+	BlendEnable[1] = true;
 
 	SrcBlend = ONE;
 	DestBlend = ONE;

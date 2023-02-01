@@ -178,6 +178,9 @@
     <Filter Include="01. Utility\03. Components\02. VIBuffer\Point">
       <UniqueIdentifier>{f6579f0b-93d8-492a-9e24-d3741618b1c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Components\12. Matetial">
+      <UniqueIdentifier>{f1108938-08c7-4cfc-b2bc-26873eecb381}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -417,7 +420,12 @@
     <ClInclude Include="..\public\Camera_Manager.h">
       <Filter>01. Utility\02. GameObject\Camera\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\VIBuffer_Point.h" />
+    <ClInclude Include="..\public\Material.h">
+      <Filter>01. Utility\03. Components\12. Matetial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Point.h">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Point</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -624,7 +632,12 @@
     <ClCompile Include="..\private\Camera_Manager.cpp">
       <Filter>01. Utility\02. GameObject\Camera\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\VIBuffer_Point.cpp" />
+    <ClCompile Include="..\private\Material.cpp">
+      <Filter>01. Utility\03. Components\12. Matetial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Point.cpp">
+      <Filter>01. Utility\03. Components\02. VIBuffer\Point</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd">

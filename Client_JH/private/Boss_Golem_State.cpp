@@ -344,7 +344,7 @@ void CBoss_Golem_State::Start_Intro2(_double dTimeDelta)
 	XMStoreFloat4(&Position, (m_pMonster->Get_BoneMatrix("muzzle") *  m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]);
 	BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
 	BulletDesc.BulletDesc.m_vBulletLook = ((m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION) - (m_pMonster->Get_BoneMatrix("muzzle") *  m_pMonster->m_pTransformCom->Get_WorldMatrix()).r[3]) * 0.5f);
-	BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_MONSTER;
+	BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_BOSS;
 	BulletDesc.m_pOwner = m_pMonster;
 	m_pBullet = (CLaser*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Laser", L"Prototype_GameObject_Normal_Boss_Laser", &BulletDesc));
 	NULL_CHECK_RETURN(m_pBullet, );

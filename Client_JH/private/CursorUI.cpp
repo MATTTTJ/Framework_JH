@@ -32,7 +32,7 @@ HRESULT CCursorUI::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 0.f));
-	ShowCursor(false);
+	// ShowCursor(false);
 	return S_OK;
 }
 

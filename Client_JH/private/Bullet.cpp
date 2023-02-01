@@ -64,14 +64,29 @@ void CBullet::Late_Tick(_double dTimeDelta)
 			Collision_To_BossMonster();
 		}
 	}
+	
 
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+		if(m_tBulletOption.m_eOwner == OWNER_PLAYER)
+		{
+			// m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
+		}
+		else if(m_tBulletOption.m_eOwner == OWNER_MONSTER)
+		{
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		}
+		else if (m_tBulletOption.m_eOwner == OWNER_BOSS)
+		{
+			
+		}
+
 		m_pRendererCom->Add_DebugRenderGroup(m_pBulletColliderCom);
 		
 	}
+
+	
 }
 
 HRESULT CBullet::Render()

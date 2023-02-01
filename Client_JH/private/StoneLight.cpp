@@ -66,6 +66,8 @@ void CStoneLight::Tick(_double TimeDelta)
 	if(m_fAlpha >= 1.f)
 	{
 		m_fAlpha = 1.f;
+		// m_pTransformCom->Set_Scaled(_float3(2.f, 1.5f, 2.f));
+
 	}
 	_float3 Scale =  m_pTransformCom->Get_Scaled();
 	_float Time = (_float)(TimeDelta);
@@ -80,8 +82,9 @@ void CStoneLight::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
 
+	if (m_pRendererCom != nullptr)
 	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
 	}
 
 

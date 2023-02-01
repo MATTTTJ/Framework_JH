@@ -2,6 +2,7 @@
 #include "..\public\Weapon_State.h"
 #include "GameInstance.h"
 #include "Bullet.h"
+#include "Default_Bullet_Birth.h"
 #include "Player.h"
 
 
@@ -254,9 +255,11 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 	
 		// TODO:: 카메라 룩 설정할 수 있게 작업하기 
 		CBullet::BULLETOPTION BulletDesc;
+		CDefault_Bullet_Birth::EFFECTDESC EffectDesc;
+
 		_float4 Position;
 		XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
-	
+		
 		if (nullptr != m_pPlayer->Collision_AimBox_To_Monster())
 		{
 			if (nullptr == m_pPlayer->m_pFirstAimColliderCom)
@@ -309,7 +312,17 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 			CBullet*		pBullet = nullptr;
 			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
 			NULL_CHECK_RETURN(pBullet, );
+
+			
 		}
+
+		EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+		EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
+		EffectDesc.m_pOwner = m_pPlayer;
+		CDefault_Bullet_Birth* pEffect = nullptr;
+		pEffect = (CDefault_Bullet_Birth*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Default_Bullet_Birth", &EffectDesc));
+		NULL_CHECK_RETURN(pEffect, );
+
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName)
 	{
@@ -564,18 +577,18 @@ _bool CWeapon_State::MouseInput_None()
 
 _bool CWeapon_State::MouseInput_LB()
 {
-	// if (m_pGameInstance->Mouse_Pressing(DIM_LB))
-	// {
-	// 	if (m_tWeaponOption->iCurBullet == 0)
-	// 	{
-	// 		m_bGoReload = true;
-	//
-	// 		return false;
-	// 	}
-	// 	else
-	// 		return true;
-	// }
-	// else 
+	if (m_pGameInstance->Mouse_Pressing(DIM_LB))
+	{
+		if (m_tWeaponOption->iCurBullet == 0)
+		{
+			m_bGoReload = true;
+	
+			return false;
+		}
+		else
+			return true;
+	}
+	else 
 		return false;
 
 }

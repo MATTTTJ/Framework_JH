@@ -83,9 +83,8 @@ void CUI::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pModelCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pOnTextureCom);
 	Safe_Release(m_pOffTextureCom);
@@ -102,5 +101,6 @@ void CUI::Free()
 
 	Safe_Release(m_pPointBufferOther);
 	Safe_Release(m_pPointBuffer);
+	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 }

@@ -294,6 +294,13 @@ PS_OUT PS_MAIN_ENV(PS_IN_ENV In)
 	return Out;
 }
 
+struct PS_OUT_EFFECT
+{
+	/*SV_TARGET0 : 모든 정보가 결정된 픽셀이다. AND 0번째 렌더타겟에 그리기위한 색상이다. */
+	float4		vColor : SV_TARGET0;
+	float4		vFlag : SV_TARGET1;
+};
+
 PS_OUT PS_MAIN_OBJ(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -302,10 +309,10 @@ PS_OUT PS_MAIN_OBJ(PS_IN In)
 	if (vDiffuse.a < 0.1f)
 		discard;
 
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDiffuse = vDiffuse  * g_fAlpha;
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
-
+	Out.vFlag.r = 1.f;
+	Out.vFlag.g = 1.f;
+	Out.vFlag.b = 1.f;
 	return Out;
 }
 

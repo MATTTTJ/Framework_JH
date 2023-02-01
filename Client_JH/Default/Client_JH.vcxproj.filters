@@ -277,6 +277,9 @@
     <Filter Include="80. Manager\Parent\Effect\Particle\Rect">
       <UniqueIdentifier>{c5eb7de0-bddf-44a0-8d4d-4d1e28604649}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\DefualtBullet_Birth">
+      <UniqueIdentifier>{bf4eb937-0823-4d7c-b6d7-de4bbc53f962}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -513,6 +516,10 @@
     <ClInclude Include="..\public\Effect_Point_Instancing.h">
       <Filter>80. Manager\Parent\Effect\Particle\Point</Filter>
     </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Params.h">
+      <Filter>97. ShaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Default_Bullet_Birth.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -737,6 +744,7 @@
     <ClCompile Include="..\private\Effect_Point_Instancing.cpp">
       <Filter>80. Manager\Parent\Effect\Particle\Point</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Default_Bullet_Birth.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">
@@ -779,6 +787,9 @@
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNonAnim.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTexIncCount.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
