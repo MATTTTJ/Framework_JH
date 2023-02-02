@@ -185,6 +185,59 @@ z = 116.558f
 
 !!이펙트 뭐 필요한지 정리하기 !!
 
+Default_Bullet_Birth 완료 
+// 총알 이펙트는 트레일만들고 그 안에 총알 그리는거
+총알을 총구 바로 앞에서 나가게 하지말고 
+좀 앞에서 나가게 하자 
+글고 트레일같은 텍스쳐 써서 더해 
+
+Default_Bullet_Dead
+데드 이펙트는 따로 없고 몬스터한테 맞을 때 어케 나오는지
+
+Flame_Bullet_Birth 
+빤작거리는 텍스쳐 하나 
+
+Flame_Bullet_Dead
+폭발
+
+Fire_Dragon_Birth
+Fire_Dragon_Loop // 폭발 스프라이트
+Fire_Dragon_Dead
+
+Skill_UI_Charging // 쿨찼을 때 
+Skill_UI_Thunder
+Skill_UI_Use // E 눌렀을 때 
+
+ESkill_Use // 뷰스크린에 번개 띄우기
+QSkill_Use // 번개 날리기 (체인라이트닝은 나중에)
+
+Granade_Explode(투척물 터짐)
+
+Explode_Fire(자폭) 
+
+Shield_Guard_Success 
+
+Elite_Bug_Spawn_Mist 
+
+Map_Light(파란불)
+
+Boss_StonePillar_Explode(기둥터질때)
+
+Boss_Spawn_MagicStone(돌생성될때)
+
+Boss_Hit(돌덩이랑 먼지같은거 떨어지게) 
+
+Boss_Explode_MagicStone(돌터질 때)
+
+Boss_RocketArm_Explode(주먹 터질 때)
+먼지랑 돌덩이 많이 
+ 
+
+
+
+
+
+
 
 
 
