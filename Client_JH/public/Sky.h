@@ -33,6 +33,17 @@ private:
 	CVIBuffer_Cube*			m_pVIBufferCom = nullptr;
 
 private:
+	_float					m_vColorDown = 1.f; 
+	_float4					m_vInitPos;
+	_float					m_fUpSpeed;
+
+
+	_float					m_fMaxRange = 0.f;
+	_bool					m_bRangeChange = false;
+	_int					m_iLightNumber = 0;
+
+	_float					m_fSize = 0.3f;
+private:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_ShaderResources();
 

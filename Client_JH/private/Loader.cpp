@@ -7,9 +7,12 @@
 #include "Blade.h"
 #include "Boom.h"
 #include "CursorUI.h"
+#include "Damage_Font.h"
 #include "DangerRing.h"
 #include "Default_Bullet_Birth.h"
+#include "Default_Bullet_Dead.h"
 #include "Default_Pistol.h"
+#include "Dust.h"
 #include "Effect_Point_Instancing.h"
 #include "ForkLift.h"
 #include "Home.h"
@@ -21,6 +24,7 @@
 #include "Elite_Bug.h"
 #include "Elite_Knight.h"
 #include "FadeInOut.h"
+#include "Fire_Light.h"
 #include "LaiLuo_Home.h"
 #include "Laser.h"
 #include "LaserBullet.h"
@@ -199,9 +203,14 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// »¡°£ ÃÑ¾Ë ÅØ½ºÃÄ
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Bullet", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Bullet/bullet_red.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_BulletAdd", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Trail/DJS_trail_007.png", 1)), E_FAIL);
+	
 
 	// ¸ÓÁñ ÅØ½ºÃÄ
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_Bullet_BirthTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/J_H_004.png", 1)), E_FAIL);
+
+	// DefaultPistol Å¸°Ý ÀÌÆåÆ®
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_Bullet_DeadTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/speak_hit_05.png", 1)), E_FAIL);
 
 
 	// ·¹ÀÌÀú ÅØ½ºÃÄ
@@ -250,6 +259,15 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_NormalBoss_NormalMap", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/3909_c_Test_B.png", 1)), E_FAIL);
 	// Ä¿¼­
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Battle_Cursor", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/Cusor.png", 1)), E_FAIL);
+
+	// ÀÌÆåÆ® ÅØ½ºÃÄ
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_DustTexture_Noise", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/noise/NoiseClouds01.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_DustTexture_Diffuse", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Smoke/smoke_22.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_DustTexture_Alpha", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Smoke/smoke_10_mask.png", 1)), E_FAIL);
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_RedFire_Lamp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Fire/ui_succes_fire.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_BlueFire_Lamp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Fire/BlueFire.dds", 1)), E_FAIL);
 
 
 
@@ -359,7 +377,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_LaiHome", CLaiLuo_Home::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Weapon",CWeapon::Create(m_pDevice, m_pContext)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sky", CSky::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_BlueLight", CSky::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Point_Instancing", CEffect_Point_Instancing::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Base", CPlayerUI_Base::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_PlayerUI_Hp", CPlayerUI_Hp_Red::Create(m_pDevice, m_pContext)), E_FAIL);
@@ -423,9 +441,19 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_MagicStone", CMagicStone::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_Boss_RocketArm", CRocketArm::Create(m_pDevice, m_pContext)), E_FAIL);
 
+
+	// DamageFont
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_DamageFont", CDamage_Font::Create(m_pDevice, m_pContext)), E_FAIL);
+
+
 	// ÀÌÆåÆ®
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Default_Bullet_Birth", CDefault_Bullet_Birth::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Default_Bullet_Dead", CDefault_Bullet_Dead::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Dust", CDust::Create(m_pDevice, m_pContext)), E_FAIL);
 
+	// ºÒ²É
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Fire_Light", CFire_Light::Create(m_pDevice, m_pContext)), E_FAIL);
 
 
 	// Cursor

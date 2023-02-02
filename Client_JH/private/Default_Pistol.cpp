@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Default_Pistol.h"
+
+#include "Default_Bullet_Dead.h"
 #include "GameInstance.h"
 #include "Monster.h"
 #include "Player.h"
@@ -144,6 +146,7 @@ HRESULT CDefault_Pistol::SetUp_Component()
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxPointInstance", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Point_Instancing", L"Com_VIBuffer", (CComponent**)&m_pPointBuffer, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Bullet", L"Com_Texture", (CComponent**)&m_pTextureCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_BulletAdd", L"Com_AddTexture", (CComponent**)&m_pTestTexture, this), E_FAIL);
 
 	return S_OK;
 }
@@ -161,6 +164,7 @@ HRESULT CDefault_Pistol::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vRightSrc", &m_vTest, sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vUp", &m_vUp, sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vPSize", &m_vPSize, sizeof(_float2)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTestTexture->Bind_ShaderResource(m_pShaderCom, L"g_AddTexture"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);
 
 	return S_OK;
@@ -211,11 +215,16 @@ CGameObject* CDefault_Pistol::Clone(const wstring& wstrPrototypeTag, void* pArg)
 
 void CDefault_Pistol::Free()
 {
+	
+
 	__super::Free();
+
+
 
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pTestTexture);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pBulletColliderCom);
 	Safe_Release(m_pPointBuffer);

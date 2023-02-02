@@ -348,8 +348,8 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	//ºí·ë
 	if (vFlag.g >= 0.1f)
 	{
-		vEffect.rgb = pow(pow(abs(vBloom.rgb), 2.2f) + pow(abs(vEffect.rgb), 2.2f), 1.f / 2.2f);
-		Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
+		vEffect.rgb = pow(pow(abs(vBloom.rgb), 2.f) + pow(abs(vEffect.rgb), 2.f), vEffect.a);
+		Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), vDiffuse.a);
 	}
 
 	if (vOutline.a == 1.f)
@@ -476,6 +476,7 @@ PS_OUT PS_HORIZONTALBLUR(PS_IN_BLUR In)
 	weight2 = 0.55f;
 	weight3 = 0.18f;
 	weight4 = 0.1f;
+
 
 	float normalization = (weight0 + 2.0f * (weight1 + weight2 + weight3 + weight4));
 
@@ -738,7 +739,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetBlendState(BS_One, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
@@ -751,7 +752,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetBlendState(BS_One, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
@@ -856,7 +857,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetBlendState(BS_One, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;

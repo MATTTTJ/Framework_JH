@@ -85,7 +85,7 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	LightDesc.vPosition = _float4(0.f, 0.f, 0.f, 1.f);
 	LightDesc.fRange = 15.f;
 	LightDesc.vDirection = _float4(-1.f, -3.f, 1.0f, 0.f);
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDiffuse = _float4(0.7f, 0.7f, 0.7f, 1.f);
 	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
@@ -103,19 +103,7 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
 
-	// ZeroMemory(&LightDesc, sizeof LightDesc);
-	//
-	// LightDesc.eType = LIGHTDESC::LIGHT_POINT;
-	// LightDesc.isEnable = true;
-	// /*LightDesc.vDirection = _float4(1.f, -1.f, 1.0f, 0.f);*/
-	// LightDesc.vPosition = _float4(5.f, 3.f, 5.f, 1.f);
-	// LightDesc.fRange = 10.0f;
-	// LightDesc.vDiffuse = _float4(1.f, 0.f, 0.f, 1.f);
-	// LightDesc.vAmbient = _float4(0.4f, 0.2f, 0.2f, 0.2f);
-	// LightDesc.vSpecular = LightDesc.vDiffuse;
-	//
-	// if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
-	// 	return E_FAIL;
+
 	//
 	//
 	// ZeroMemory(&LightDesc, sizeof LightDesc);
@@ -132,6 +120,115 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	// if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
 	// 	return E_FAIL;
 
+
+	// Prototype_GameObject_Effect_Fire_Light
+
+#pragma region LIGHT_2
+	CGameObject::GAMEOBJECTDESC	tFireLightDesc;
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(-11.08f, 1.335f, -3.234f);
+	tFireLightDesc.m_iNumber = 2;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+	
+	ZeroMemory(&LightDesc, sizeof LightDesc);
+	
+	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+	LightDesc.isEnable = true;
+	/*LightDesc.vDirection = _float4(1.f, -1.f, 1.0f, 0.f);*/
+	LightDesc.vPosition = _float4(-11.08f, 1.734f, -3.234f, 1.f);
+	LightDesc.fRange = 8.0f;
+	LightDesc.vDiffuse = _float4(0.9f, 0.3f, 0.15f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	LightDesc.vSpecular = LightDesc.vDiffuse;
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+#pragma endregion
+
+#pragma region LIGHT_3
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(-6.242f, 1.335f, 19.687f);
+	tFireLightDesc.m_iNumber = 3;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
+	ZeroMemory(&LightDesc, sizeof LightDesc);
+
+	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+	LightDesc.isEnable = true;
+	/*LightDesc.vDirection = _float4(1.f, -1.f, 1.0f, 0.f);*/
+	LightDesc.vPosition = _float4(-6.242f, 1.088f, 19.687f, 1.f);
+	LightDesc.fRange = 8.0f;
+	LightDesc.vDiffuse = _float4(0.9f, 0.3f, 0.15f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	LightDesc.vSpecular = LightDesc.vDiffuse;
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+#pragma endregion
+
+#pragma region LIGHT_4
+
+
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(1.652f, 3.439f, 24.013f);
+	tFireLightDesc.m_iNumber = 4;
+	tFireLightDesc.m_vTexSize = _float2(0.7f, 2.f);
+	for(_uint i =0; i<9; ++i)
+		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
+
+	ZeroMemory(&LightDesc, sizeof LightDesc);
+
+	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+	LightDesc.isEnable = true;
+
+
+	LightDesc.vPosition = _float4(1.652f, 3.87f, 24.013f, 1.f);
+	LightDesc.fRange = 8.0f;
+	LightDesc.vDiffuse = _float4(0.6f, 0.87f, 0.9f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	LightDesc.vSpecular = LightDesc.vDiffuse;
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+#pragma endregion
+
+#pragma region LIGHT_5
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(1.628f, 3.439f, 28.932f);
+	tFireLightDesc.m_iNumber = 5;
+	tFireLightDesc.m_vTexSize = _float2(0.7f, 2.f);
+	for (_uint i = 0; i<9; ++i)
+		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
+
+	ZeroMemory(&LightDesc, sizeof LightDesc);
+
+	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+	LightDesc.isEnable = true;
+	/*LightDesc.vDirection = _float4(1.f, -1.f, 1.0f, 0.f);*/
+	LightDesc.vPosition = _float4(1.628f, 3.87f, 28.932f, 1.f);
+	LightDesc.fRange = 8.0f;
+	LightDesc.vDiffuse = _float4(0.6f, 0.87f, 0.9f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	LightDesc.vSpecular = LightDesc.vDiffuse;
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+#pragma endregion
+
+#pragma region LIGHT_6
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(-15.879f, 1.335f, 29.835);
+	tFireLightDesc.m_iNumber = 6;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
+	ZeroMemory(&LightDesc, sizeof LightDesc);
+
+	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+	LightDesc.isEnable = true;
+	/*LightDesc.vDirection = _float4(1.f, -1.f, 1.0f, 0.f);*/
+	LightDesc.vPosition = _float4(-15.879f, 1.08f, 29.835, 1.f);
+	LightDesc.fRange = 8.0f;
+	LightDesc.vDiffuse = _float4(0.9f, 0.3f, 0.15f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	LightDesc.vSpecular = LightDesc.vDiffuse;
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+#pragma endregion
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -184,21 +281,21 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	// PivotMatrix.r[3] = XMVectorSet(110.f, 1.3f, 179.f, 1.f);
 	// // SWORD
 	PivotMatrix.r[3] = XMVectorSet(-14.f, 0.f, 0.8f, 1.f);
-	// CMonster::MONSTEROPTION			MonsterDesc;
-	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	// MonsterDesc.MonsterDesc.m_iDamage = 15;
-	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 5.f;
-	// MonsterDesc.m_iCellIndex = 40;
-	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Sword", PivotMatrix, &MonsterDesc));
-	// pMonster->Set_Player(pPlayer);
+	CMonster::MONSTEROPTION			MonsterDesc;
+	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	MonsterDesc.MonsterDesc.m_iDamage = 15;
+	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 5.f;
+	MonsterDesc.m_iCellIndex = 40;
+	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Sword", PivotMatrix, &MonsterDesc));
+	pMonster->Set_Player(pPlayer);
 
 	////이펙트 확인용
-	CGameObject::GAMEOBJECTDESC GameObjectDesc;
-	GameObjectDesc.TransformDesc.vInitPos = _float3(-14.f, 0.f, 0.8f);
-	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_StoneLight", L"Prototype_GameObject_Normal_Boss_StonePillar_Light", &GameObjectDesc));
+	// CGameObject::GAMEOBJECTDESC GameObjectDesc;
+	// GameObjectDesc.TransformDesc.vInitPos = _float3(-14.f, 0.f, 0.8f);
+	// (CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_StoneLight", L"Prototype_GameObject_Normal_Boss_StonePillar_Light", &GameObjectDesc));
 
 
 

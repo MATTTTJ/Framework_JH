@@ -30,7 +30,7 @@ private:
 	_float4x4					m_matPivot;
 	_float						m_fStrong;
 	_float4x4					m_SocketMatrix;
-
+	CTexture*					m_pTestTexture = nullptr;
 	_float4						m_vDir;
 	_float4						m_vLook;
 

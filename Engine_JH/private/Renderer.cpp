@@ -289,7 +289,7 @@ HRESULT CRenderer::Render_Effect()
 	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, TEXT("MRT_Effect")), E_FAIL);
 
 	FAILED_CHECK_RETURN(Render_Blur(TEXT("Target_OriginEffect")), E_FAIL);
-	// FAILED_CHECK_RETURN(Render_Bloom(TEXT("Target_OriginEffect")), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Bloom(TEXT("Target_OriginEffect")), E_FAIL);
 		
 	return S_OK;
 }

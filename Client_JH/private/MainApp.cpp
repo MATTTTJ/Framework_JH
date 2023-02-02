@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 #include "Dynamic_Camera.h"
 #include "Static_Camera.h"
+#include "DamageFont_Mgr.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -169,6 +170,5 @@ void CMainApp::Free()
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
-
 	CGameInstance::Release_Engine();
 }

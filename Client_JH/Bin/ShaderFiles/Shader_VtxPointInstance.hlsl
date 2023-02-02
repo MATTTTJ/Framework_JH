@@ -15,7 +15,12 @@ float			g_fProgress = 1.f;
 float			g_fPreProgress = 1.f;
 float			g_fTest;
 texture2D		g_Texture;
+texture2D		g_AddTexture;
 float			g_fLaserAlpha = 0.f;
+
+texture2D		g_AlphaTexture;
+texture2D		g_NoiseTexture;
+
 
 
 int			g_iUV_Max_Width_Num;
@@ -23,6 +28,13 @@ int			g_iUV_Max_Height_Num;
 int			g_iUV_Cur_Width_Num;
 int			g_iUV_Cur_Height_Num;
 
+// Dust
+float2		g_fDistortion1;
+float2		g_fDistortion2;
+float2		g_fDistortion3;
+float		g_fDitortionScale;
+float		g_fDistortionBias;
+float		g_fDustAlpha;
 
 
 struct VS_IN
@@ -125,8 +137,8 @@ void	GS_MAIN_UVSPRITE(point GS_IN In[1], inout TriangleStream<GS_OUT_UVSPRITE> V
 
 						/* 외적결과를 통해 Right,Up,Look 을 구한다 */
 	float3		vLook = g_vCamPosition.xyz - In[0].vPosition;		//카메라를 구해온것은 빌보드처럼 만들려고 
-	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x * 0.5f;
-	float3		vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y * 0.5f;
+	float3		vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * g_vPSize.x * 0.5f;
+	float3		vUp = normalize(cross(vLook, vRight)) * g_vPSize.y * 0.5f;
 
 	matrix		matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
@@ -448,14 +460,27 @@ PS_OUT PS_MAIN_BULLET(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	float4 AddTexture = g_AddTexture.Sample(LinearSampler, In.vTexUV);
+
+	if(AddTexture.a > 0.f)
+	{
+		Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+
+	}
+	else
+	{
+		Out.vColor.a = 0.f;
+	}
+	// float4 OriginTexture = 
+
+
 	// Out.vColor.rgb = float3(1.f, 0.f, 0.f);
 	//
-	Out.vFlag = float4(0.f, 1.f, 1.f, 0.f);
+	Out.vFlag = float4(0.f, 0.f, 0.f, 0.f);
 
 	if (Out.vColor.a < 0.1f)
 		discard;
-	//
+	
 	return Out;
 }
 
@@ -472,6 +497,69 @@ PS_OUT PS_MAIN_UVSPRITE(PS_IN In)
 		discard;
 
 
+
+	//
+	return Out;
+}
+
+PS_OUT PS_MAIN_UVDEFAULTBULLET(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	Out.vFlag.r = 0.f;
+	Out.vFlag.g = 0.f;
+	Out.vFlag.b = 0.f;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+
+
+	//
+	return Out;
+}
+
+PS_OUT PS_MAIN_UVDEFAULTBULLET_Dead(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor.r = 1.f;
+	Out.vColor.g = 1.f;
+	Out.vColor.b = 0.f;
+	Out.vFlag.r = 0.f;
+	Out.vFlag.g = 0.f;
+	Out.vFlag.b = 0.f;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+
+
+	//
+	return Out;
+}
+
+PS_OUT PS_MAIN_UVDust(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	float4	Origin = g_Texture.Sample(LinearSampler, In.vTexUV);
+	if (Origin.a < 0.1f)
+		discard;
+
+	float Noise1 = g_NoiseTexture.Sample(LinearSampler, In.vTexUV).r;
+
+	// Mask.r = g_fDustAlpha;
+	Out.vColor = saturate(Origin *  Noise1);
+	Out.vColor.a = g_fDustAlpha;
+	Out.vFlag.r = 0.f;
+	Out.vFlag.g = 0.f;
+	Out.vFlag.b = 0.f;
+
+	// if (Out.vColor.a < 0.1f)
+	// 	discard;
 
 	//
 	return Out;
@@ -625,4 +713,69 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_UVSPRITE();
 	}
 
+	pass UVSprite_BilboardCam8_Z_Pass
+	{
+		SetRasterizerState(RS_None);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_UVSPRITE();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_UVDEFAULTBULLET_Dead();
+	}
+
+	pass UVSprite_BilboardCam9_Z_Pass
+	{
+		SetRasterizerState(RS_None);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_UVSPRITE();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_UVDEFAULTBULLET();
+	}
+
+	pass Rect10
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass Dust11
+	{
+		SetRasterizerState(RS_None);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_UVSPRITE();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_UVDust();
+	}
+
+	pass UVSprite_BilboardCam12
+	{
+		SetRasterizerState(RS_None);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_UVSPRITE();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_UVSPRITE();
+	}
+	
 }

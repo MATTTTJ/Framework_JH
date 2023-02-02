@@ -118,7 +118,7 @@ HRESULT CDefault_Bullet_Birth::Render()
 
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
-	m_pShaderCom->Begin(6);
+	m_pShaderCom->Begin(9);
 
 	m_pPointBuffer->Render();
 

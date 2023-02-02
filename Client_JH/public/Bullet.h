@@ -63,7 +63,7 @@ public:
 private:
 	HRESULT						SetUp_Components();
 	HRESULT						SetUp_ShaderResources();
-
+	void						Create_DamageFont();
 public:
 
 protected:

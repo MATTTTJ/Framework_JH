@@ -5,6 +5,8 @@ matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 textureCUBE		g_Texture;
 
+float			g_fColorDown;
+
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -50,7 +52,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 
-
+	Out.vColor.rg = Out.vColor.rgb * g_fColorDown;
 	
 	return Out;
 }
@@ -61,8 +63,8 @@ technique11 DefaultTechnique
 {
 	pass Rect
 	{
-		SetRasterizerState(RS_CW);
-		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);		
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);		
 		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);	
 
 		VertexShader = compile vs_5_0 VS_MAIN();

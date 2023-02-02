@@ -280,6 +280,21 @@
     <Filter Include="02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\DefualtBullet_Birth">
       <UniqueIdentifier>{bf4eb937-0823-4d7c-b6d7-de4bbc53f962}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\DefulatBullet_Dead">
+      <UniqueIdentifier>{3b31f59b-3eaf-4e5e-b3ae-e816828d1c50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager\Parent\Damage_Font">
+      <UniqueIdentifier>{f5c52a55-493b-4828-86fc-c508fd23ced4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="80. Manager\Parent\Damage_Font\Manager">
+      <UniqueIdentifier>{4083d4aa-7139-42d7-b2cb-ff9b851e0a60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Effect\Dust">
+      <UniqueIdentifier>{03cca718-9d98-4a09-8dae-546790daad89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Effect\Fire_Light">
+      <UniqueIdentifier>{8dad337f-59c2-404a-a78a-757fec276e70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -519,7 +534,24 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Params.h">
       <Filter>97. ShaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Default_Bullet_Birth.h" />
+    <ClInclude Include="..\public\Default_Bullet_Birth.h">
+      <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\DefualtBullet_Birth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Default_Bullet_Dead.h">
+      <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\DefulatBullet_Dead</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Damage_Font.h">
+      <Filter>80. Manager\Parent\Damage_Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DamageFont_Mgr.h">
+      <Filter>80. Manager\Parent\Damage_Font\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Dust.h">
+      <Filter>02. GameObjects\01. GamePlay\Effect\Dust</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Fire_Light.h">
+      <Filter>02. GameObjects\01. GamePlay\Effect\Fire_Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -744,7 +776,24 @@
     <ClCompile Include="..\private\Effect_Point_Instancing.cpp">
       <Filter>80. Manager\Parent\Effect\Particle\Point</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Default_Bullet_Birth.cpp" />
+    <ClCompile Include="..\private\Default_Bullet_Birth.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\DefualtBullet_Birth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Default_Bullet_Dead.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\DefulatBullet_Dead</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Damage_Font.cpp">
+      <Filter>80. Manager\Parent\Damage_Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DamageFont_Mgr.cpp">
+      <Filter>80. Manager\Parent\Damage_Font\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Dust.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Effect\Dust</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Fire_Light.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Effect\Fire_Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client_JH.ico">

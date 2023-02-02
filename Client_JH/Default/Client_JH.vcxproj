@@ -179,9 +179,13 @@
     <ClInclude Include="..\public\BulletEffect.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\CursorUI.h" />
+    <ClInclude Include="..\public\DamageFont_Mgr.h" />
+    <ClInclude Include="..\public\Damage_Font.h" />
     <ClInclude Include="..\public\DangerRing.h" />
     <ClInclude Include="..\public\Default_Bullet_Birth.h" />
+    <ClInclude Include="..\public\Default_Bullet_Dead.h" />
     <ClInclude Include="..\public\Default_Pistol.h" />
+    <ClInclude Include="..\public\Dust.h" />
     <ClInclude Include="..\public\Dynamic_Camera.h" />
     <ClInclude Include="..\public\Effect.h" />
     <ClInclude Include="..\public\Effect_Manager.h" />
@@ -192,6 +196,7 @@
     <ClInclude Include="..\public\Elite_Knight.h" />
     <ClInclude Include="..\public\Elite_Knight_State.h" />
     <ClInclude Include="..\public\FadeInOut.h" />
+    <ClInclude Include="..\public\Fire_Light.h" />
     <ClInclude Include="..\public\ForkLift.h" />
     <ClInclude Include="..\public\Home.h" />
     <ClInclude Include="..\public\Home_Deco.h" />
@@ -257,9 +262,13 @@
     <ClCompile Include="..\private\Bullet.cpp" />
     <ClCompile Include="..\private\BulletEffect.cpp" />
     <ClCompile Include="..\private\CursorUI.cpp" />
+    <ClCompile Include="..\private\DamageFont_Mgr.cpp" />
+    <ClCompile Include="..\private\Damage_Font.cpp" />
     <ClCompile Include="..\private\DangerRing.cpp" />
     <ClCompile Include="..\private\Default_Bullet_Birth.cpp" />
+    <ClCompile Include="..\private\Default_Bullet_Dead.cpp" />
     <ClCompile Include="..\private\Default_Pistol.cpp" />
+    <ClCompile Include="..\private\Dust.cpp" />
     <ClCompile Include="..\private\Dynamic_Camera.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
@@ -272,6 +281,7 @@
     <ClCompile Include="..\private\Elite_Knight.cpp" />
     <ClCompile Include="..\private\Elite_Knight_State.cpp" />
     <ClCompile Include="..\private\FadeInOut.cpp" />
+    <ClCompile Include="..\private\Fire_Light.cpp" />
     <ClCompile Include="..\private\ForkLift.cpp" />
     <ClCompile Include="..\private\Home.cpp" />
     <ClCompile Include="..\private\Home_Deco.cpp" />

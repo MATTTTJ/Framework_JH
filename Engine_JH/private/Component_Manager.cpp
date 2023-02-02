@@ -67,7 +67,12 @@ void CComponent_Manager::Free()
 	for(_uint i = 0; i < m_iNumLevels; ++i)
 	{
 		for (auto& Pair : m_mapPrototypes[i])
+		{
+			if (m_mapPrototypes[i].size() == 0)
+				continue;
+
 			Safe_Release(Pair.second);
+		}
 		m_mapPrototypes[i].clear();
 	}
 
