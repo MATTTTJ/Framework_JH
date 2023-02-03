@@ -52,13 +52,18 @@ HRESULT CSky::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 
 void CSky::Tick(_double dTimeDelta)
 {
+	if (CGameInstance::GetInstance()->Get_LightDesc(m_iLightNumber)->isEnable == false)
+	{
+		Set_Dead(true);
+	}
+
 	__super::Tick(dTimeDelta);
 
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMLoadFloat4(&CGameInstance::GetInstance()->Get_CamPos()));
 	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), (_float)dTimeDelta);
 	m_pTransformCom->Turn(XMVectorSet(0.f,0.f,1.f,0.f), (_float)dTimeDelta);
 
-	if (m_fMaxRange <= 1.f && m_bRangeChange == false)
+	if (m_fMaxRange <= 1.f && m_bRangeChange == false && m_bIsDead == false)
 	{
 		m_fMaxRange += (_float)dTimeDelta * 2.f;
 

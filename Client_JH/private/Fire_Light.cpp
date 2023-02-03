@@ -66,6 +66,11 @@ void CFire_Light::Tick(_double dTimeDelta)
 		return;
 
 	__super::Tick(dTimeDelta);
+
+	if(CGameInstance::GetInstance()->Get_LightDesc(m_iLightNumber)->isEnable == false)
+	{
+		Set_Dead(true);
+	}
 	// _vector tmp = dynamic_cast<CPlayer*>(m_pOwner)->Get_MuzzlePtr()->Get_SphereCenter() + _float4((dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK) * 0.2f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, tmp);
 

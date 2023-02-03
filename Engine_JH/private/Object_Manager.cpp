@@ -103,6 +103,8 @@ HRESULT CObject_Manager::Clone_GameObject(_uint iLevelIndex, const wstring& pLay
 	NULL_CHECK_RETURN(pPrototype, E_FAIL);
 
 	CGameObject*		pGameObject = pPrototype->Clone(wstrPrototypeTag, pArg);
+	NULL_CHECK_RETURN(pGameObject, E_FAIL);
+
 
 	CLayer*		pLayer = Find_Layer(iLevelIndex, pLayerTag);
 

@@ -172,7 +172,7 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	tFireLightDesc.TransformDesc.vInitPos = _float3(1.652f, 3.439f, 24.013f);
 	tFireLightDesc.m_iNumber = 4;
 	tFireLightDesc.m_vTexSize = _float2(0.7f, 2.f);
-	for(_uint i =0; i<9; ++i)
+	for(_uint i =0; i<15; ++i)
 		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
 
 	ZeroMemory(&LightDesc, sizeof LightDesc);
@@ -194,7 +194,7 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	tFireLightDesc.TransformDesc.vInitPos = _float3(1.628f, 3.439f, 28.932f);
 	tFireLightDesc.m_iNumber = 5;
 	tFireLightDesc.m_vTexSize = _float2(0.7f, 2.f);
-	for (_uint i = 0; i<9; ++i)
+	for (_uint i = 0; i<15; ++i)
 		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
 
 	ZeroMemory(&LightDesc, sizeof LightDesc);
@@ -539,17 +539,17 @@ HRESULT CLevel_GamePlay::Ready_Layer_Trigger(const wstring wstrLayerTag)
 	_matrix PivotMatrix = XMMatrixIdentity();
 	CTrigger::TRIGGERDESC TriggerDesc;
 	// A->Knight
-	// PivotMatrix.r[3] = XMVectorSet(-10.815f, 0.015f, 31.333f, 1.f);
-	// TriggerDesc.m_eType = CTrigger::TRIGGER_A_TO_KNIGHT;
-	// pTrigger = (CTrigger*)pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Trigger", PivotMatrix, &TriggerDesc);
-	// NULL_CHECK_RETURN(pTrigger, E_FAIL);
-	// pTrigger->Set_Owner(pPlayer);
-
 	PivotMatrix.r[3] = XMVectorSet(-10.815f, 0.015f, 31.333f, 1.f);
-	TriggerDesc.m_eType = CTrigger::TRIGGER_C_TO_BOSS;
+	TriggerDesc.m_eType = CTrigger::TRIGGER_A_TO_KNIGHT;
 	pTrigger = (CTrigger*)pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Trigger", PivotMatrix, &TriggerDesc);
 	NULL_CHECK_RETURN(pTrigger, E_FAIL);
 	pTrigger->Set_Owner(pPlayer);
+
+	// PivotMatrix.r[3] = XMVectorSet(-10.815f, 0.015f, 31.333f, 1.f);
+	// TriggerDesc.m_eType = CTrigger::TRIGGER_C_TO_BOSS;
+	// pTrigger = (CTrigger*)pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Trigger", PivotMatrix, &TriggerDesc);
+	// NULL_CHECK_RETURN(pTrigger, E_FAIL);
+	// pTrigger->Set_Owner(pPlayer);
 
 	RELEASE_INSTANCE(CGameInstance);
 

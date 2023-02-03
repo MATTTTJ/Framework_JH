@@ -14,7 +14,7 @@ CLight::CLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 HRESULT CLight::Initialize(const LIGHTDESC& LightDesc)
 {
 	m_LightDesc = LightDesc;
-
+	
 	_vector vPos = XMLoadFloat4(&m_LightDesc.vPosition);
 	_vector vLook = XMLoadFloat4(&m_LightDesc.vDirection);
 	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);

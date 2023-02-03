@@ -1,9 +1,9 @@
 #pragma once
 #include "Base.h"
+#include "Light.h"
 
 BEGIN(Engine)
-
-class CLight_Manager final : public CBase
+	class CLight_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CLight_Manager)
 public:
@@ -21,7 +21,12 @@ public:
 	_float4x4 Get_Transform_TP(_uint iIndex, _uint eState);
 
 	void		CascadeUpdate(_float4x4 CamWorldMatrix, _float4* vFrustumCorners);
+	HRESULT		Delete_Light(_uint iLightIndex);
 
+	_bool&		Set_LightEnable(_uint iIndex)
+	{
+		return m_vecLight[iIndex]->Set_Enable();
+	}
 public:
 	HRESULT					Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc);
 	void					Render_Light(class CVIBuffer_Rect* pVIBuffer, class CShader* pShader);

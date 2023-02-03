@@ -548,12 +548,30 @@ void CGameInstance::Set_LightDirection(_uint iIndex, _float4 vDirection)
 	return m_pLight_Manager->Set_LightDirection(iIndex, vDirection);
 }
 
+HRESULT CGameInstance::Delete_Light(_uint iLightIndex)
+{
+	NULL_CHECK_RETURN(m_pLight_Manager, E_FAIL);
+
+	return m_pLight_Manager->Delete_Light(iLightIndex);
+}
+
 void CGameInstance::Clear_Lights()
 {
 	if (nullptr == m_pLight_Manager)
 		return;
 
 	return m_pLight_Manager->Clear();
+}
+
+_bool& CGameInstance::Set_LightEnable(_uint iIndex)
+{
+	if (nullptr == m_pLight_Manager)
+	{
+		_bool tmp = false;
+		return tmp;
+	}
+
+	return m_pLight_Manager->Set_LightEnable(iIndex);
 }
 
 HRESULT CGameInstance::Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag,

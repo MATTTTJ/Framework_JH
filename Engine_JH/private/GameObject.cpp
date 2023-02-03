@@ -136,7 +136,12 @@ void CGameObject::Free()
 		Safe_Release(m_pTransformCom);
 
 	for (auto& Pair : m_mapComponents)
+	{
+		if(Pair.second == nullptr)
+			continue;
+
 		Safe_Release(Pair.second);
+	}
 	m_mapComponents.clear();
 
 	Safe_Release(m_pDevice);

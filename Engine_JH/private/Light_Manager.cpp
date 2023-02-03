@@ -91,6 +91,23 @@ void CLight_Manager::CascadeUpdate(_float4x4 CamWorldMatrix, _float4* vFrustumCo
 	}
 }
 
+HRESULT CLight_Manager::Delete_Light(_uint iLightIndex)
+{
+	if (m_vecLight.size() < iLightIndex)
+		return E_FAIL;
+
+	// Safe_Release(m_vecLight[iLightIndex]);
+	m_vecLight[iLightIndex]->Set_LightEnable();
+	// for(auto& iter : m_vecLight)
+	// {
+	// 	
+	// }
+	//
+	// Safe_Release();
+
+	return S_OK;
+}
+
 HRESULT CLight_Manager::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc)
 {
 	CLight*		pLight = CLight::Create(pDevice, pContext, LightDesc);
@@ -108,7 +125,7 @@ void CLight_Manager::Render_Light(CVIBuffer_Rect* pVIBuffer, CShader* pShader)
 		if (LIGHTDESC::LIGHT_DIRECTIONAL == pLight->Get_LightDesc()->eType)
 			continue;
 
-		if (nullptr!= pLight)
+		if (nullptr!= pLight && pLight->Get_LightDesc()->isEnable == true)
 			pLight->Render(pVIBuffer, pShader);
 	}
 }

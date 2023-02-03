@@ -108,8 +108,9 @@ public: /* For. Light_Manager*/
 	void				Set_LightPos(_uint iIndex, _fvector vPos);
 	void				Set_LightRange(_uint iIndex, _float fRange);
 	void				Set_LightDirection(_uint iIndex, _float4 vDirection);
+	HRESULT				Delete_Light(_uint iLightIndex);
 	void				Clear_Lights();
-
+	_bool&				Set_LightEnable(_uint iIndex);
 
 public: /* For. Font_Manager*/
 	HRESULT				Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag, const _tchar* pFontFilePath);

@@ -17,12 +17,18 @@ public:
 	{
 		return &m_LightDesc;
 	}
-
+	_bool&					Set_Enable()
+	{
+		return m_LightDesc.isEnable;
+	}
 	void Set_LightPos(_fvector vPos) { XMStoreFloat4(&m_LightDesc.vPosition, vPos); }
 	void Set_LightRange(_float fRange) { m_LightDesc.fRange = fRange; }
 	void Set_LightDirection(_float4 vDirection) { m_LightDesc.vDirection = vDirection; }
 
-
+	void Set_LightEnable()
+	{
+		m_LightDesc.isEnable = false;
+	}
 
 public:
 	HRESULT					Initialize(const LIGHTDESC& LightDesc);
@@ -39,6 +45,7 @@ private:
 	ID3D11DeviceContext*	m_pContext = nullptr;
 	LIGHTDESC				m_LightDesc;
 
+	_int					m_iLightNumber;
 private:
 	_float4x4				m_TransformState[D3DTS_END];
 	_float4x4				m_TransformState_TP[D3DTS_END];
