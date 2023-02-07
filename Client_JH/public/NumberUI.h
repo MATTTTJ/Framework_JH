@@ -1,13 +1,20 @@
 #pragma once
 #include "Client_Defines.h"
-#include "UI.h"
+#include "GameObject.h"
+BEGIN(Engine)
+class CRenderer;
+class CShader;
+class CVIBuffer_Rect;
+class CTexture;
+END
 
 BEGIN(Client)
 
-class CNumberUI final :	public CUI
+class CNumberUI final :	public CGameObject
 {
 public:
 	enum NUMUITYPE { NUMUI_GOLD, NUMUI_BULLET, NUMUI_THROW, NUMUI_END };
+	enum NUMBUR { ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, SLASH, NUM_END };
 
 public:
 	CNumberUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -25,6 +32,16 @@ private:
 	HRESULT							SetUp_ShaderResources();
 
 private:
+	CRenderer*					m_pRendererCom = nullptr;
+	CShader*					m_pShaderCom = nullptr;
+	CVIBuffer_Rect*				m_pVIBufferCom = nullptr;
+	CTexture*					m_pNumberingTexCom[NUM_END] = { nullptr };
+	_float						m_fSizeX;
+	_float						m_fSizeY;
+	_float						m_fX;
+	_float						m_fY;
+	_float4x4					m_ViewMatrix;
+	_float4x4					m_ProjMatrix;
 	int								m_iNumCnt;
 	int								m_iNumber;
 	_float4							m_vNumColor;

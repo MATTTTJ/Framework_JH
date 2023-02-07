@@ -398,20 +398,21 @@ private:
 	wstring			m_wstrWeaponName = L"WEAPON_DEFAULT";
 
 	_uint			m_iPlayer_BulletCnt= 50;
-	_uint			m_iLastPlayer_BulletCnt;
-	_uint			m_iLastWeapon_BulletCnt;
+	_uint			m_iLastPlayer_BulletCnt = 99;
+	_uint			m_iLastWeapon_BulletCnt = 99;
 	_uint			m_iWeapon_BulletCnt = 50;
 	_uint			m_iThrowCnt;
 	_uint			m_iGoldCnt;
 	_uint			m_iEmeraldCnt;
-	_uint			m_iLastEmeraldCnt;
+	_uint			m_iLastEmeraldCnt = 99;
 	_uint			m_iLastGoldCnt = 99;
 	_uint			m_iLastThrowCnt = 99;
 
 
 	COUNTUI			m_eType = CNT_END;
 	CGameInstance*	m_pGameInstance = nullptr;
-	list<CUI*>		m_CountUIList;
+	list<CGameObject*>		m_CountUIList[CNT_END];
+	
 	WEAPONTYPE		m_eWeaponType = WEAPONTYPE_END;
 
 	_float2			m_vPlayerEmeraldCntPos = { 800.f, 640.f };

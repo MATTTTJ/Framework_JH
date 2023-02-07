@@ -140,8 +140,8 @@ _bool CBullet::Collision_Body()
 						EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
 						EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
 						CDefault_Bullet_Dead* pEffect = nullptr;
-						pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Default_Bullet_Dead", &EffectDesc));
 						pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Dust", &EffectDesc));
+						pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Default_Bullet_Dead", &EffectDesc));
 
 
 
@@ -651,15 +651,16 @@ void CBullet::Free()
 {
 	__super::Free();
 	
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pBulletColliderCom);
 	Safe_Release(m_pBoomColliderCom);
 	Safe_Release(m_pBladeColliderCom);
 	Safe_Release(m_pPointBuffer);
+	Safe_Release(m_pModelCom);
+	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShaderCom);
+
 	// CDamageFont_Mgr::GetInstance()->DestroyInstance();
 
 }

@@ -143,6 +143,7 @@ void CFire_Light::Tick(_double dTimeDelta)
 void CFire_Light::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+	__super::Compute_CamDistance();
 
 	if (m_pRendererCom != nullptr)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
@@ -151,11 +152,8 @@ void CFire_Light::Late_Tick(_double dTimeDelta)
 HRESULT CFire_Light::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
-
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
-
 	m_pShaderCom->Begin(12);
-
 	m_pPointBuffer->Render();
 
 	return S_OK;
@@ -165,7 +163,7 @@ HRESULT CFire_Light::SetUp_Component()
 {
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxPointInstance", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Point_Instancing", L"Com_VIBuffer", (CComponent**)&m_pPointBuffer, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Bullet_Instancing", L"Com_VIBuffer", (CComponent**)&m_pPointBuffer, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_RedFire_Lamp", L"Com_Texture", (CComponent**)&m_pTextureCom, this), E_FAIL);
 
 	return S_OK;

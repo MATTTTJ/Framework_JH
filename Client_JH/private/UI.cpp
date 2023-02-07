@@ -84,8 +84,7 @@ void CUI::Free()
 	__super::Free();
 
 	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pVIBufferCom);
+	// Safe_Release(m_pModelCom);
 	Safe_Release(m_pOnTextureCom);
 	Safe_Release(m_pOffTextureCom);
 	Safe_Release(m_pGlowTextureCom);
@@ -96,9 +95,9 @@ void CUI::Free()
 	for (_int i = 0; i < WEAPON_NUMEND; ++i)
 		Safe_Release(m_pWeaponNumberCom[i]);
 
-	for (_int i = 0; i < NUM_END; ++i)
-		Safe_Release(m_pNumberingTexCom[i]);
-
+	// for (_int i = 0; i < NUM_END; ++i)
+	// 	Safe_Release(m_pNumberingTexCom[i]);
+	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pPointBufferOther);
 	Safe_Release(m_pPointBuffer);
 	Safe_Release(m_pShaderCom);

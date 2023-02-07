@@ -81,6 +81,7 @@ void CStoneLight::Tick(_double TimeDelta)
 void CStoneLight::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
+	__super::Compute_CamDistance();
 
 	if (m_pRendererCom != nullptr)
 	{
@@ -95,15 +96,13 @@ void CStoneLight::Late_Tick(_double TimeDelta)
 HRESULT CStoneLight::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-
-
-		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices",3);
 	}

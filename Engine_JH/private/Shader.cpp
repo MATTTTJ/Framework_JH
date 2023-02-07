@@ -124,14 +124,16 @@ void CShader::ReCompileShader()
 {
 	for (auto& pInputLayout : m_InputLayouts)
 		Safe_Release(pInputLayout);
+
 	m_InputLayouts.clear();
+
 	Safe_Release(m_pEffect);
 
 
 	_uint			iHlslFlag = 0;
 	iHlslFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 	wstring Test = L"../Bin/ShaderFiles/Shader_VtxTex.hlsl";
-	FAILED_CHECK_RETURN(D3DX11CompileEffectFromFile(Test.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, iHlslFlag, 0, m_pDevice, &m_pEffect, nullptr), );
+	FAILED_CHECK_RETURN(D3DX11CompileEffectFromFile(m_wstrFilePath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, iHlslFlag, 0, m_pDevice, &m_pEffect, nullptr), );
 
 	ID3DX11EffectTechnique*	pTechnique = m_pEffect->GetTechniqueByIndex(0);
 

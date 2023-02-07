@@ -793,7 +793,6 @@ void CPlayer::Free()
 	Safe_Release(m_pSpecularMap_Arm);
 	Safe_Release(m_pSpecularMap_Weapon);
 
-	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pState);
 	Safe_Release(m_pNavigationCom);
 
@@ -802,4 +801,6 @@ void CPlayer::Free()
 		for (_uint i = 0; i < WEAPON_END; ++i)
 			Safe_Release(m_tWeaponDesc[i].m_pWeaponModelCom);
 	}
+	Safe_Release(m_pRendererCom);
+
 }

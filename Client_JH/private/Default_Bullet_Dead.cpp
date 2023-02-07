@@ -55,7 +55,7 @@ HRESULT CDefault_Bullet_Dead::Initialize_Clone(const wstring& wstrPrototypeTag, 
 	m_iUV_Max_Width_Num = 2;
 	m_iUV_Max_Height_Num = 2;
 	m_iFrameCnt = 2;
-	m_vPSize = _float2{ 2.f, 2.f };
+	m_vPSize = _float2{ 1.5f, 1.5f };
 	m_iUV_Cur_Width_Num = rand() % 2;
 	m_iUV_Cur_Height_Num = rand() % 2;
 	return S_OK;
@@ -67,50 +67,20 @@ void CDefault_Bullet_Dead::Tick(_double dTimeDelta)
 		return;
 
 	__super::Tick(dTimeDelta);
-	// _vector tmp = dynamic_cast<CPlayer*>(m_pOwner)->Get_MuzzlePtr()->Get_SphereCenter() + _float4((dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK) * 0.2f));
-	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, tmp);
 
-	// m_vUp = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_UP);
 
 	m_iPlayOnFrameCnt++;
 
 	if (m_iPlayOnFrameCnt == 3)
 		Set_Dead(true);
 
-	m_vPSize = _float2(m_vPSize.x + (_float)dTimeDelta, m_vPSize.y + (_float)dTimeDelta);
-
-	// if(m_iPlayOnFrameCnt == m_iFrameCnt)
-	// {
-	// 	if (m_iUV_Cur_Height_Num == m_iUV_Max_Height_Num - 1 && m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num - 1)
-	// 	{
-	// 		Set_Dead(true);
-	// 		return;
-	// 	}
-	//
-	// 	m_iUV_Cur_Width_Num++;
-	//
-	// 	m_iPlayOnFrameCnt = 0;
-	//
-	// 	if(m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num)
-	// 	{
-	// 		m_iUV_Cur_Width_Num = 0;
-	// 		m_iUV_Cur_Height_Num++;
-	// 	}
-	//
-	// 	
-	// 	// if(m_iUV_Cur_Height_Num == m_iUV_Max_Height_Num)
-	// 	// {
-	// 	// 	m_iUV_Cur_Height_Num = 0;
-	// 	// }
-	//
-	// 	
-	// }
-
+	m_vPSize = _float2(m_vPSize.x + (_float)dTimeDelta * 4.f, m_vPSize.y + (_float)dTimeDelta * 4.f);
 }
 
 void CDefault_Bullet_Dead::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+	__super::Compute_CamDistance();
 
 	if (m_pRendererCom != nullptr)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
@@ -133,7 +103,7 @@ HRESULT CDefault_Bullet_Dead::SetUp_Component()
 {
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxPointInstance", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Point_Instancing", L"Com_VIBuffer", (CComponent**)&m_pPointBuffer, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Bullet_Instancing", L"Com_VIBuffer", (CComponent**)&m_pPointBuffer, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_Bullet_DeadTex", L"Com_Texture", (CComponent**)&m_pTextureCom, this), E_FAIL);
 
 	return S_OK;
@@ -147,16 +117,12 @@ HRESULT CDefault_Bullet_Dead::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
-	// FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vLook", &m_vLook, sizeof(_float4)), E_FAIL);
-	// FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vUp", &m_vUp, sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_iUV_Max_Width_Num", &m_iUV_Max_Width_Num, sizeof(_int)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_iUV_Max_Height_Num", &m_iUV_Max_Height_Num, sizeof(_int)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_iUV_Cur_Width_Num", &m_iUV_Cur_Width_Num, sizeof(_int)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_iUV_Cur_Height_Num", &m_iUV_Cur_Height_Num, sizeof(_int)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vPSize", &m_vPSize, sizeof(_float2)), E_FAIL);
-
-	if (FAILED(m_pShaderCom->Set_RawValue(L"g_vCamPosition", &CGameInstance::GetInstance()->Get_CamPos(), sizeof(_float4))))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vCamPosition", &CGameInstance::GetInstance()->Get_CamPos(), sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);
 
 	return S_OK;

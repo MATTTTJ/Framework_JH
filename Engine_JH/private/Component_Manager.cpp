@@ -68,9 +68,6 @@ void CComponent_Manager::Free()
 	{
 		for (auto& Pair : m_mapPrototypes[i])
 		{
-			if (m_mapPrototypes[i].size() == 0)
-				continue;
-
 			Safe_Release(Pair.second);
 		}
 		m_mapPrototypes[i].clear();

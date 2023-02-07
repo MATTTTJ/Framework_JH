@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CNumberUI::CNumberUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CUI(pDevice,pContext)
+	:CGameObject(pDevice,pContext)
 {
 }
 
 CNumberUI::CNumberUI(const CNumberUI& rhs)
-	: CUI(rhs)
+	: CGameObject(rhs)
 {
 }
 
@@ -47,6 +47,7 @@ HRESULT CNumberUI::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 		m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
 	}
 
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 
 	return S_OK;
 }
@@ -54,6 +55,8 @@ HRESULT CNumberUI::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CNumberUI::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+
 }
 
 void CNumberUI::Late_Tick(_double dTimeDelta)
@@ -69,7 +72,7 @@ HRESULT CNumberUI::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
-	if (m_iType == 0)
+	if (m_iType == 1)
 	{
 		m_pShaderCom->Begin(4);
 	}
@@ -181,4 +184,16 @@ CGameObject* CNumberUI::Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CNumberUI::Free()
 {
 	__super::Free();
+
+	if (m_bIsClone == true)
+	{
+		for (_int i = 0; i < NUM_END; ++i)
+			Safe_Release(m_pNumberingTexCom[i]);
+	// if(false == m_bIsClone)
+	// 	Safe_Delete_Array(m_pNumberingTexCom);
+
+	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pRendererCom);
+	}
 }

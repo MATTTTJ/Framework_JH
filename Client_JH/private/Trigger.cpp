@@ -172,6 +172,7 @@ HRESULT CTrigger::Room_A_To_Knight()
 			CGameInstance::GetInstance()->Set_LightRange(5, 10.f);
 			BlueLightBool = true;
 		
+#pragma region TriggerSetting
 
 			m_pPlayer->Set_RoomType(CPlayer::ROOM_KIGHT);
 			_matrix PlayerMat = m_pPlayer->Get_WorldFloat4x4();
@@ -240,7 +241,7 @@ HRESULT CTrigger::Room_A_To_Knight()
 			MonsterDesc.m_iCellIndex = 402;
 			pMonster = dynamic_cast<CMonster*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
 			pMonster->Set_Player(m_pPlayer);
-
+#pragma endregion
 			m_bSpawnTrigger = true;
 		}
 		return S_OK;
@@ -342,7 +343,7 @@ HRESULT CTrigger::Knight_To_Room_B()
 			// BlueLightBool = true;
 
 
-
+#pragma region TriggerSetting
 			m_pPlayer->Set_RoomType(CPlayer::ROOM_B);
 			_matrix PlayerMat = m_pPlayer->Get_WorldFloat4x4();
 			PlayerMat.r[3] = XMVectorSet(-10.018f, 0.032f, 33.904f, 1.f);
@@ -480,6 +481,7 @@ HRESULT CTrigger::Knight_To_Room_B()
 			MonsterDesc.m_iCellIndex = 232;
 			pMonster = dynamic_cast<CMonster*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
 			pMonster->Set_Player(m_pPlayer);
+#pragma endregion
 
 			m_bSpawnTrigger = true;
 
@@ -514,9 +516,97 @@ HRESULT CTrigger::Room_B_To_Bug()
 			CGameInstance::GetInstance()->Delete_Light(6);
 			CGameInstance::GetInstance()->Delete_Light(7);
 
+			LIGHTDESC			LightDesc;
+			CGameObject::GAMEOBJECTDESC	tFireLightDesc;
+			ZeroMemory(&LightDesc, sizeof LightDesc);
+			// 4 
+			_bool& LightBool = CGameInstance::GetInstance()->Set_LightEnable(4);
+			CGameInstance::GetInstance()->Set_LightPos(4, XMVectorSet(-56.2f, 2.369f, 62.046f, 1.f));
+
+			LightBool = true;
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(-56.2f, 2.7f, 62.046f);
+			tFireLightDesc.m_iNumber = 4;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			for (_uint i = 0; i<15; ++i)
+				FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
 
 
 
+
+			// Num 5
+			_bool& BlueLightBool = CGameInstance::GetInstance()->Set_LightEnable(5);
+			CGameInstance::GetInstance()->Set_LightPos(5, XMVectorSet(-61.219f, 2.549f, 62.046f, 1.f));
+			CGameInstance::GetInstance()->Set_LightRange(5, 10.f);
+			BlueLightBool = true;
+
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(-61.219f, 2.369f, 62.046f);
+			tFireLightDesc.m_iNumber = 5;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			for (_uint i = 0; i<15; ++i)
+				FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
+
+
+			// // Num 8
+			ZeroMemory(&LightDesc, sizeof LightDesc);
+
+			LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+			LightDesc.isEnable = true;
+			/*LightDesc.vDirection = _float4(1.f, -1.f, 1.0f, 0.f);*/
+			LightDesc.vPosition = _float4(-60.378f, 1.116f, 94.038f, 1.f);
+			LightDesc.fRange = 20.0f;
+			LightDesc.vDiffuse = _float4(0.6f, 0.87f, 0.9f, 1.f);
+			LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+			LightDesc.vSpecular = LightDesc.vDiffuse;
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+
+			// Num 9
+
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(-63.017f, 5.4f, 109.864f);
+			tFireLightDesc.m_iNumber = 9;
+			tFireLightDesc.m_vTexSize = _float2(0.7f, 2.f);
+			for (_uint i = 0; i<15; ++i)
+				FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
+
+			ZeroMemory(&LightDesc, sizeof LightDesc);
+
+			LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+			LightDesc.isEnable = true;
+
+
+			LightDesc.vPosition = _float4(-63.017f, 5.42f, 109.864f, 1.f);
+			LightDesc.fRange = 8.0f;
+			LightDesc.vDiffuse = _float4(0.6f, 0.87f, 0.9f, 1.f);
+			LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+			LightDesc.vSpecular = LightDesc.vDiffuse;
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+
+			// Num 10
+
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(-58.f, 5.42f, 109.864f);
+			tFireLightDesc.m_iNumber = 10;
+			tFireLightDesc.m_vTexSize = _float2(0.7f, 2.f);
+			for (_uint i = 0; i<15; ++i)
+				FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
+
+			ZeroMemory(&LightDesc, sizeof LightDesc);
+
+			LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+			LightDesc.isEnable = true;
+
+
+			LightDesc.vPosition = _float4(-58.f, 5.4f, 109.864f, 1.f);
+			LightDesc.fRange = 8.0f;
+			LightDesc.vDiffuse = _float4(0.6f, 0.87f, 0.9f, 1.f);
+			LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+			LightDesc.vSpecular = LightDesc.vDiffuse;
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+
+
+#pragma region TriggerSetting
 
 			m_pPlayer->Set_RoomType(CPlayer::ROOM_BUG);
 			_matrix PlayerMat = m_pPlayer->Get_WorldFloat4x4();
@@ -741,6 +831,7 @@ HRESULT CTrigger::Room_B_To_Bug()
 			MonsterDesc.m_iCellIndex = 479;
 			pMonster = dynamic_cast<CMonster*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Elite_Bug", PivotMatrix, &MonsterDesc));
 			pMonster->Set_Player(m_pPlayer);
+#pragma endregion
 
 			m_bSpawnTrigger = true;
 
@@ -765,6 +856,45 @@ HRESULT CTrigger::Bug_To_Room_C()
 
 		if (CGameInstance::GetInstance()->Key_Down(DIK_F))
 		{
+			CGameInstance::GetInstance()->Delete_Light(4);
+			CGameInstance::GetInstance()->Delete_Light(5);
+			CGameInstance::GetInstance()->Delete_Light(8);
+			CGameInstance::GetInstance()->Delete_Light(9);
+			CGameInstance::GetInstance()->Delete_Light(10);
+
+			LIGHTDESC			LightDesc;
+			CGameObject::GAMEOBJECTDESC	tFireLightDesc;
+			//Num2
+			_bool& LightBool = CGameInstance::GetInstance()->Set_LightEnable(2);
+			CGameInstance::GetInstance()->Set_LightPos(2, XMVectorSet(-37.9f, 1.36f, 62.449f, 1.f));
+
+			LightBool = true;
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(-37.9f, 1.36f, 62.449f);
+			tFireLightDesc.m_iNumber = 2;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
+			// Num3
+			_bool& LightBool3 = CGameInstance::GetInstance()->Set_LightEnable(3);
+			CGameInstance::GetInstance()->Set_LightPos(3, XMVectorSet(-30.824f, -0.213f, 95.397f, 1.f));
+
+			LightBool3 = true;
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(-30.824f, -0.213f, 95.397f);
+			tFireLightDesc.m_iNumber = 3;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
+			//Num4
+			_bool& LightBool4 = CGameInstance::GetInstance()->Set_LightEnable(4);
+			CGameInstance::GetInstance()->Set_LightPos(4, XMVectorSet(-29.974f, -0.5f, 77.489f, 1.f));
+			CGameInstance::GetInstance()->Set_LightRange(4, 50.f);
+			LightBool4 = true;
+
+
+#pragma region TriggerSetting
+
 			m_pPlayer->Set_RoomType(CPlayer::ROOM_C);
 			_matrix PlayerMat = m_pPlayer->Get_WorldFloat4x4();
 			PlayerMat.r[3] = XMVectorSet( -32.028f, 0.03f, 62.767f, 1.f);
@@ -855,7 +985,7 @@ HRESULT CTrigger::Bug_To_Room_C()
 			MonsterDesc.m_iCellIndex = 313;
 			pMonster = dynamic_cast<CMonster*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
 			pMonster->Set_Player(m_pPlayer);
-
+#pragma endregion
 			m_bSpawnTrigger = true;
 
 		}
@@ -883,11 +1013,111 @@ HRESULT CTrigger::Room_C_To_Boss()
 		if (CGameInstance::GetInstance()->Key_Down(DIK_F))
 		{
 			
-			// CGameInstance::GetInstance()->Delete_Light(2);
-			// CGameInstance::GetInstance()->Delete_Light(3);
-			// CGameInstance::GetInstance()->Delete_Light(4);
-			// CGameInstance::GetInstance()->Delete_Light(5);
-			// CGameInstance::GetInstance()->Delete_Light(6);
+			CGameInstance::GetInstance()->Delete_Light(2);
+			CGameInstance::GetInstance()->Delete_Light(3);
+			CGameInstance::GetInstance()->Delete_Light(4);
+
+			LIGHTDESC			LightDesc;
+			CGameObject::GAMEOBJECTDESC	tFireLightDesc;
+
+			//Num2
+			_bool& LightBool = CGameInstance::GetInstance()->Set_LightEnable(2);
+			CGameInstance::GetInstance()->Set_LightPos(2, XMVectorSet(104.693f, 1.3f, 73.738f, 1.f));
+
+			LightBool = true;
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(104.693f, 1.3f, 73.738f);
+			tFireLightDesc.m_iNumber = 2;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
+			// Num3
+			_bool& LightBool3 = CGameInstance::GetInstance()->Set_LightEnable(3);
+			CGameInstance::GetInstance()->Set_LightPos(3, XMVectorSet(104.720f, 1.3f, 84.802f, 1.f));
+
+			LightBool3 = true;
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(104.720f, 1.3f, 84.802f);
+			tFireLightDesc.m_iNumber = 3;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
+			// Num 6
+			_bool& LightBool6 = CGameInstance::GetInstance()->Set_LightEnable(6);
+			CGameInstance::GetInstance()->Set_LightPos(6, XMVectorSet(121.618f, 1.3f, 84.842f, 1.f));
+
+			LightBool6 = true;
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(121.618f, 1.3f, 84.842f);
+			tFireLightDesc.m_iNumber = 6;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
+			// Num7
+			_bool& LightBool7 = CGameInstance::GetInstance()->Set_LightEnable(7);
+			CGameInstance::GetInstance()->Set_LightPos(7, XMVectorSet(121.628f, 1.3f, 73.727f, 1.f));
+
+			LightBool7 = true;
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(121.628f, 1.3f, 73.727f);
+			tFireLightDesc.m_iNumber = 7;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
+			// Blue Light
+
+			// Num 4
+			_bool& LightBool4 = CGameInstance::GetInstance()->Set_LightEnable(4);
+			CGameInstance::GetInstance()->Set_LightPos(4, XMVectorSet(116.673f, 4.945f, 61.882f, 1.f));
+
+			LightBool4 = true;
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(116.673f, 4.945f, 61.882f);
+			tFireLightDesc.m_iNumber = 4;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			for (_uint i = 0; i<15; ++i)
+				FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
+
+			// Num 5
+			_bool& BlueLightBool5 = CGameInstance::GetInstance()->Set_LightEnable(5);
+			CGameInstance::GetInstance()->Set_LightPos(5, XMVectorSet(109.6f, 4.945f, 61.882f, 1.f));
+			CGameInstance::GetInstance()->Set_LightRange(5, 10.f);
+			BlueLightBool5 = true;
+
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(109.6f, 4.945f, 61.882f);
+			tFireLightDesc.m_iNumber = 5;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			for (_uint i = 0; i<15; ++i)
+				FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
+
+			// Num 9
+			_bool& LightBool9 = CGameInstance::GetInstance()->Set_LightEnable(9);
+			CGameInstance::GetInstance()->Set_LightPos(9, XMVectorSet(109.034f, 6.74f, 96.769f, 1.f));
+
+			LightBool9 = true;
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(109.034f, 6.74f, 96.769f);
+			tFireLightDesc.m_iNumber = 9;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			for (_uint i = 0; i<15; ++i)
+				FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
+
+			// Num 10
+			_bool& BlueLightBool10 = CGameInstance::GetInstance()->Set_LightEnable(10);
+			CGameInstance::GetInstance()->Set_LightPos(10, XMVectorSet(117.173f, 6.74f, 96.741f, 1.f));
+			CGameInstance::GetInstance()->Set_LightRange(10, 10.f);
+			BlueLightBool10 = true;
+
+			ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+			tFireLightDesc.TransformDesc.vInitPos = _float3(117.173f, 6.74f, 96.741f);
+			tFireLightDesc.m_iNumber = 10;
+			tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+			for (_uint i = 0; i<15; ++i)
+				FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc), E_FAIL);
+
+
+
 
 			CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_BackGround")->front()->Set_Dead(true);
 

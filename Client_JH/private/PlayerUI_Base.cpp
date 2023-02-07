@@ -1848,11 +1848,13 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 			m_iGoldCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_GoldCnt();
 			if (m_iGoldCnt != m_iLastGoldCnt)
 			{
-				for (auto& iter : m_CountUIList)
-					Safe_Release(iter);
-				m_CountUIList.clear();
+				for (auto& iter : m_CountUIList[CNT_GOLD])
+					iter->Set_Dead(true);
 
-				InttoString(m_iGoldCnt, m_vPlayerGoldCntPos, m_vGoldNumColor, m_vGoldNumberSize, 1);
+					// Safe_Release(iter);
+				m_CountUIList[CNT_GOLD].clear();
+
+				InttoString(m_iGoldCnt, m_vPlayerGoldCntPos, m_vGoldNumColor, m_vGoldNumberSize, CNT_GOLD);
 			}
 		}
 			break;
@@ -1869,12 +1871,14 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 				m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_RifleBulletCnt();
 				m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
-				for (auto& iter : m_CountUIList)
-					Safe_Release(iter);
-				m_CountUIList.clear();
+				for (auto& iter : m_CountUIList[CNT_BULLET])
+					iter->Set_Dead(true);
 
-				InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vRifleNumColor, m_vBulletNumberSize,0);
-				InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vRifleNumColor, m_vBulletNumberSize,0);
+					// Safe_Release(iter);
+				m_CountUIList[CNT_BULLET].clear();
+
+				InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vRifleNumColor, m_vBulletNumberSize,CNT_BULLET);
+				InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vRifleNumColor, m_vBulletNumberSize, CNT_BULLET);
 			}
 			else if (m_wstrWeaponName == L"WEAPON_FIREDRAGON")
 			{
@@ -1884,12 +1888,14 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 				m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_InjectorBulletCnt();
 				m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
-				for (auto& iter : m_CountUIList)
-					Safe_Release(iter);
-				m_CountUIList.clear();
+				for (auto& iter : m_CountUIList[CNT_BULLET])
+					iter->Set_Dead(true);
 
-				InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vInjectorNumColor, m_vBulletNumberSize,0);
-				InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vInjectorNumColor, m_vBulletNumberSize,0);
+					// Safe_Release(iter);
+				m_CountUIList[CNT_BULLET].clear();
+
+				InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vInjectorNumColor, m_vBulletNumberSize, CNT_BULLET);
+				InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vInjectorNumColor, m_vBulletNumberSize, CNT_BULLET);
 
 			}
 			else if (m_wstrWeaponName == L"WEAPON_FLAMEBULLET" || m_wstrWeaponName == L"WEAPON_DEFAULT")
@@ -1900,12 +1906,15 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 				m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_PistolBulletCnt();
 				m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
-				for (auto& iter : m_CountUIList)
-					Safe_Release(iter);
-				m_CountUIList.clear();
+				for (auto& iter : m_CountUIList[CNT_BULLET])
+				{
+					iter->Set_Dead(true);
+					// Safe_Release(iter);
+				}
+				m_CountUIList[CNT_BULLET].clear();
 
-				InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vPistolNumColor, m_vBulletNumberSize,0);
-				InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vPistolNumColor, m_vBulletNumberSize,0);
+				InttoString(m_iWeapon_BulletCnt, m_vWeaponBulletCntPos, m_vPistolNumColor, m_vBulletNumberSize, CNT_BULLET);
+				InttoString(m_iPlayer_BulletCnt, m_vPlayerBulletCntPos, m_vPistolNumColor, m_vBulletNumberSize, CNT_BULLET);
 
 			}
 		}
@@ -1920,12 +1929,14 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 
 			if (m_iThrowCnt != m_iLastThrowCnt)
 			{
-				for (auto& iter : m_CountUIList)
-					Safe_Release(iter);
-				m_CountUIList.clear();
+				for (auto& iter : m_CountUIList[CNT_THROW])
+					iter->Set_Dead(true);
+
+					// Safe_Release(iter);
+				m_CountUIList[CNT_THROW].clear();
 
 				// m_vPlayerThrowCntPos = _float2{ 533.f, -447.f };
-				InttoString(m_iThrowCnt, m_vPlayerThrowCntPos, m_vThrowNumColor, m_vThrowNumberSize,3);
+				InttoString(m_iThrowCnt, m_vPlayerThrowCntPos, m_vThrowNumColor, m_vThrowNumberSize,CNT_THROW);
 			}
 			break;
 		}
@@ -1938,11 +1949,13 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 
 			if (m_iEmeraldCnt != m_iLastEmeraldCnt)
 			{
-				for (auto& iter : m_CountUIList)
-					Safe_Release(iter);
-				m_CountUIList.clear();
+				for (auto& iter : m_CountUIList[CNT_EMERALD])
+					iter->Set_Dead(true);
 
-				InttoString(m_iEmeraldCnt, m_vPlayerEmeraldCntPos, m_vThrowNumColor, m_vGoldNumberSize, 2);
+					// Safe_Release(iter);
+				m_CountUIList[CNT_EMERALD].clear();
+
+				InttoString(m_iEmeraldCnt, m_vPlayerEmeraldCntPos, m_vThrowNumColor, m_vGoldNumberSize, CNT_EMERALD);
 			}
 			break;
 		}
@@ -1950,17 +1963,22 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 		break;
 	}
 
-	for (auto& iter : m_CountUIList)
-		iter->Tick(dTimeDelta);
+
+	// for (_uint i = 0; i < CNT_END; ++i)
+	// {
+	// 	for (auto& pGameObject : m_CountUIList[i])
+	// 		pGameObject->Tick(dTimeDelta);
+	// }
 }
 
 void CPlayer_UI_CountMachine::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
-
-
-	for (auto& iter : m_CountUIList)
-		iter->Late_Tick(dTimeDelta);
+	// for (_uint i = 0; i < CNT_END; ++i)
+	// {
+		// for (auto& pGameObject : m_CountUIList[i])
+			// pGameObject->Late_Tick(dTimeDelta);
+	// }
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
@@ -2006,6 +2024,7 @@ void CPlayer_UI_CountMachine::InttoString(_uint ConvertCnt, _float2 vPos, _float
 
 			CGameObject*		pNumberUI = nullptr;
 			CGameObject::GAMEOBJECTDESC		tmp;
+
 			if (v2.size() == 1)
 				tmp.TransformDesc.vInitPos = _float3(vPos.x + 36.f, vPos.y, 0.f);
 			else
@@ -2016,10 +2035,11 @@ void CPlayer_UI_CountMachine::InttoString(_uint ConvertCnt, _float2 vPos, _float
 			tmp.m_vNumColor = vColor;
 			tmp.m_vTexSize = vSize;
 			tmp.m_iCountType = iType;
-			pNumberUI = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Player_NumberUI", &tmp);
+			pNumberUI = CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, 
+				L"Layer_NumUI",L"Prototype_GameObject_Player_NumberUI", &tmp);
 			NULL_CHECK_RETURN(pNumberUI, );
 
-			m_CountUIList.push_back(dynamic_cast<vector<CUI*>::value_type>(pNumberUI));
+			m_CountUIList[iType].push_back((pNumberUI));
 
 			m_iLastPlayer_BulletCnt = m_iPlayer_BulletCnt;
 			m_iLastWeapon_BulletCnt = m_iWeapon_BulletCnt;
@@ -2105,8 +2125,16 @@ void CPlayer_UI_CountMachine::Free()
 {
 	__super::Free();
 
-	for (auto& pUI : m_CountUIList)
-		Safe_Release(pUI);
-	m_CountUIList.clear();
+	// for (auto& pUI : m_CountUIList)
+	// 	Safe_Release(pUI);
+	//
+	// m_CountUIList.clear();
 
+	// for (_uint i = 0; i < CNT_END; ++i)
+	// {
+	// 	for (auto& pGameObject : m_CountUIList[i])
+	// 		Safe_Release(pGameObject);
+	//
+	// 	m_CountUIList[i].clear();
+	// }
 }

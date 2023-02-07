@@ -269,6 +269,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_RedFire_Lamp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Fire/ui_succes_fire.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_BlueFire_Lamp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Fire/BlueFire.dds", 1)), E_FAIL);
 
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Spark", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Glow/glow_%d.png", 3)), E_FAIL);
 
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_SphereTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/Untitled-1.png", 1)), E_FAIL);
@@ -285,7 +286,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Cube", CVIBuffer_Cube::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Sphere", CVIBuffer_Sphere::Create(m_pDevice, m_pContext)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Point_Instancing", CVIBuffer_Point_Instancing::Create(m_pDevice, m_pContext, 30)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Point_Instancing", CVIBuffer_Point_Instancing::Create(m_pDevice, m_pContext, 15)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Bullet_Instancing", CVIBuffer_Point_Instancing::Create(m_pDevice, m_pContext,1)), E_FAIL);
 
 	m_wstrLoadingText = L"콜라이더를 로딩중입니다.";

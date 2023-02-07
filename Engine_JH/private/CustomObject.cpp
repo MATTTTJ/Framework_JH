@@ -275,8 +275,7 @@ void CCustomObject::Free()
 
 	if(m_bIsClone)
 	{
-		if (m_pRendererCom != nullptr)
-			Safe_Release(m_pRendererCom);
+
 		if (m_pVIBufferCom != nullptr)
 			Safe_Release(m_pVIBufferCom);
 		if (m_pShaderCom != nullptr)
@@ -293,6 +292,7 @@ void CCustomObject::Free()
 
 		if (m_pColliderCom != nullptr)
 			Safe_Release(m_pColliderCom);
-		
+		if (m_pRendererCom != nullptr)
+			Safe_Release(m_pRendererCom);
 	}
 }

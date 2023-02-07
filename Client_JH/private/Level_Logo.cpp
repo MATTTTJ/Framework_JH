@@ -28,7 +28,7 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 	// CGameInstance::GetInstance()->Clear_ImguiObjects();
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_Setting::Create());
-	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
+	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_ProtoMgr::Create(m_pDevice, m_pContext));
 	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_MapEditor::Create());
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_AnimationMgr::Create());

@@ -118,9 +118,9 @@ void CSky::Tick(_double dTimeDelta)
 void CSky::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
-
+	// __super::Compute_CamDistance();
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
 }
 
 HRESULT CSky::Render()

@@ -56,7 +56,7 @@ HRESULT CDefault_Bullet_Birth::Initialize_Clone(const wstring& wstrPrototypeTag,
 	m_iUV_Max_Width_Num = 2;
 	m_iUV_Max_Height_Num = 2;
 	m_iFrameCnt = 2;
-	m_vPSize = _float2{ 0.6f, 0.6f };
+	m_vPSize = _float2{ 0.3f, 0.3f };
 	m_iUV_Cur_Width_Num = 0;
 	m_iUV_Cur_Height_Num = 0;
 	return S_OK;
@@ -107,6 +107,7 @@ void CDefault_Bullet_Birth::Tick(_double dTimeDelta)
 void CDefault_Bullet_Birth::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+	__super::Compute_CamDistance();
 
 	if (m_pRendererCom != nullptr)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
@@ -129,7 +130,7 @@ HRESULT CDefault_Bullet_Birth::SetUp_Component()
 {
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxPointInstance", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Point_Instancing", L"Com_VIBuffer", (CComponent**)&m_pPointBuffer, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Bullet_Instancing", L"Com_VIBuffer", (CComponent**)&m_pPointBuffer, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_Bullet_BirthTex", L"Com_Texture", (CComponent**)&m_pTextureCom, this), E_FAIL);
 
 	return S_OK;

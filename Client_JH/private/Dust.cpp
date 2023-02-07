@@ -49,6 +49,7 @@ HRESULT CDust::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 	m_vPSize = _float2{ 2.f, 2.f };
 	m_iUV_Cur_Width_Num = 0;
 	m_iUV_Cur_Height_Num = 0;
+	m_fAlpha = 0.7f;
 	return S_OK;
 }
 
@@ -101,6 +102,7 @@ void CDust::Tick(_double dTimeDelta)
 void CDust::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+	__super::Compute_CamDistance();
 
 	if (m_pRendererCom != nullptr)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
@@ -186,10 +188,10 @@ CGameObject* CDust::Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CDust::Free()
 {
 	__super::Free();
-	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pNoiseTextureCom);
 	Safe_Release(m_pAlphaTextureCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pPointBuffer);
+	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 }

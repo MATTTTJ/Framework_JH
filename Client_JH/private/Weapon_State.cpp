@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "Default_Bullet_Birth.h"
+#include "Effect_Point_Instancing.h"
 #include "Player.h"
 
 
@@ -322,6 +323,19 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 		CDefault_Bullet_Birth* pEffect = nullptr;
 		pEffect = (CDefault_Bullet_Birth*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Default_Bullet_Birth", &EffectDesc));
 		NULL_CHECK_RETURN(pEffect, );
+
+		// CEffect_Point_Instancing::SPARKOPTION SparkOption;
+		// ZeroMemory(&SparkOption, sizeof(CEffect_Point_Instancing::SPARKOPTION));
+		// SparkOption.m_eColor = CEffect_Point_Instancing::COLOR_ORANGE;
+		// SparkOption.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+		// SparkOption.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
+		// SparkOption.m_tGameObjectDesc.m_vTexSize = _float2(0.1f, 0.1f);
+		// CEffect_Point_Instancing* pPoint = nullptr;
+		// for (_uint i = 0; i < 15; ++i)
+		// {
+		// 	pPoint = (CEffect_Point_Instancing*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Spark", L"Prototype_GameObject_Effect_Point_Instancing", &SparkOption));
+		// 	NULL_CHECK_RETURN(pPoint, );
+		// }
 
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName)

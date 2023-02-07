@@ -307,22 +307,52 @@ void CBoss_Golem_State::Start_Intro1(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimIndex(GOLEM_INTRO1);
 
+	CGameInstance::GetInstance()->Delete_Light(2);
+	CGameInstance::GetInstance()->Delete_Light(3);
+	CGameInstance::GetInstance()->Delete_Light(6);
+	CGameInstance::GetInstance()->Delete_Light(7);
+	CGameInstance::GetInstance()->Delete_Light(4);
+	CGameInstance::GetInstance()->Delete_Light(5);
+	CGameInstance::GetInstance()->Delete_Light(9);
+	CGameInstance::GetInstance()->Delete_Light(10);
 
-	// _bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Get_RenderState();
-	// _bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_RenderState();
-	//
-	//
-	// DynamicCamera = !DynamicCamera;
-	// StaticCamera = !StaticCamera;
-	//
-	//
-	// _float scale[3], Rot[3], Pos[3];
-	// Pos[0] = { 111.4f }; Pos[1] = { 11.47f }; Pos[2] = { 129.6f };
-	// Rot[0] = { -12.84f }; Rot[1] = { -34.574f }; Rot[2] = { 0.0f };
-	// scale[0] = { 1.f }; scale[1] = { 1.f }; scale[2] = { 1.f };
-	// _matrix camWorld;
-	// ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
-	// m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
+	// Num 9
+	CGameObject::GAMEOBJECTDESC	tFireLightDesc;
+
+	_bool& LightBool9 = CGameInstance::GetInstance()->Set_LightEnable(9);
+	CGameInstance::GetInstance()->Set_LightPos(9, XMVectorSet(117.142f, 6.359f, 100.323f, 1.f));
+
+	LightBool9 = true;
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(117.142f, 6.659f, 100.323f);
+	tFireLightDesc.m_iNumber = 9;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	for (_uint i = 0; i<15; ++i)
+		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc);
+
+	// Num 10
+	_bool& BlueLightBool10 = CGameInstance::GetInstance()->Set_LightEnable(10);
+	CGameInstance::GetInstance()->Set_LightPos(10, XMVectorSet(108.996f, 6.359f, 100.267f, 1.f));
+	CGameInstance::GetInstance()->Set_LightRange(10, 10.f);
+	BlueLightBool10 = true;
+
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(108.996f, 6.359f, 100.267f);
+	tFireLightDesc.m_iNumber = 10;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	for (_uint i = 0; i<15; ++i)
+		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc);
+
+	// Num2 
+	_bool& LightBool = CGameInstance::GetInstance()->Set_LightEnable(2);
+	CGameInstance::GetInstance()->Set_LightPos(2, XMVectorSet(94.705f, 0.581f, 100.278f, 1.f));
+
+	LightBool = true;
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(94.705f, 0.581f, 100.278f);
+	tFireLightDesc.m_iNumber = 2;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
 }
 
 void CBoss_Golem_State::Start_Intro2(_double dTimeDelta)

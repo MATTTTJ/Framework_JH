@@ -203,6 +203,11 @@ void CImgui_MapEditor::Imgui_RenderWindow()
 					for (_int i = 0; i < iSelectCloneObject; ++i)
 						iter++;
 
+					if(*iter == nullptr)
+					{
+						return;
+					}
+
 					CGameObject*	pGameObject = *iter;
 
 					ImGui::BulletText("Current Selected Object : %s", ppCloneTags[iSelectCloneObject]);

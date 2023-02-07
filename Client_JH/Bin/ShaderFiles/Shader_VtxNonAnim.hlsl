@@ -301,18 +301,29 @@ struct PS_OUT_EFFECT
 	float4		vFlag : SV_TARGET1;
 };
 
-PS_OUT PS_MAIN_OBJ(PS_IN In)
+PS_OUT_EFFECT PS_MAIN_OBJ(PS_IN In)
 {
-	PS_OUT			Out = (PS_OUT)0;
+	PS_OUT_EFFECT			Out = (PS_OUT_EFFECT)0;
 
 	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	if (vDiffuse.a < 0.1f)
+	if (vDiffuse.a < 0.001f)
 		discard;
 
-	Out.vDiffuse = vDiffuse  * g_fAlpha;
-	Out.vFlag.r = 1.f;
-	Out.vFlag.g = 1.f;
-	Out.vFlag.b = 1.f;
+	Out.vColor = vDiffuse  * g_fAlpha;
+
+	if (Out.vColor.a > 0.f)
+	{
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 1.f;
+		Out.vFlag.b = 0.f;
+	}
+	else
+	{
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 0.f;
+		Out.vFlag.b = 0.f;
+	}
+
 	return Out;
 }
 

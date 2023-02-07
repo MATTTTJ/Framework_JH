@@ -22,6 +22,7 @@ public:
 	HRESULT				Add_DebugRenderGroup(class CComponent* pComponent);
 	HRESULT				Draw_RenderGroup();
 
+	virtual void		Imgui_RenderProperty() override;
 private:
 	list<class CGameObject*>			m_RenderObjectList[RENDER_END];
 	typedef list<class CGameObject*>	RENDEROBJECTS;

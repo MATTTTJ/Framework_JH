@@ -38,7 +38,7 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
-		m_vPSize = _float2{ 0.5f, 0.5f };
+		m_vPSize = _float2{ 2.5f, 0.5f };
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tBulletOption.BulletDesc.TransformDesc.vInitPos.x, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.y, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.z, 1.f));
 
 		_matrix matpivot;
@@ -108,6 +108,7 @@ void CDefault_Pistol::Tick(_double dTimeDelta)
 void CDefault_Pistol::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+	__super::Compute_CamDistance();
 
 	m_vTest = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_UP);
 
@@ -144,7 +145,7 @@ HRESULT CDefault_Pistol::SetUp_Component()
 {
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxPointInstance", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Point_Instancing", L"Com_VIBuffer", (CComponent**)&m_pPointBuffer, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_VIBuffer_Bullet_Instancing", L"Com_VIBuffer", (CComponent**)&m_pPointBuffer, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Bullet", L"Com_Texture", (CComponent**)&m_pTextureCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_BulletAdd", L"Com_AddTexture", (CComponent**)&m_pTestTexture, this), E_FAIL);
 
@@ -221,13 +222,13 @@ void CDefault_Pistol::Free()
 
 
 
-	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTestTexture);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pBulletColliderCom);
 	Safe_Release(m_pPointBuffer);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pRendererCom);
 
 
 }

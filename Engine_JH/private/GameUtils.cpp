@@ -643,6 +643,7 @@ _bool CGameUtils::CollisionSphereSphere(CCollider * pColliderA, CCollider * pCol
 
 _float CGameUtils::GetRandomFloat(_float lowBound, _float highBound)
 {
+
 	if (lowBound >= highBound)
 		return lowBound;
 

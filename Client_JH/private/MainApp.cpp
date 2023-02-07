@@ -123,6 +123,7 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 	/* For.Prototype_Component_Renderer */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", m_pRenderer = CRenderer::Create(m_pDevice, m_pContext)), E_FAIL);
+	Safe_AddRef(m_pRenderer);
 
 	/* For.Prototype_Component_VIBuffer_Rect */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", CVIBuffer_Rect::Create(m_pDevice, m_pContext)), E_FAIL);
@@ -135,7 +136,6 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 
 
-	Safe_AddRef(m_pRenderer);
 
 	return S_OK;
 }
