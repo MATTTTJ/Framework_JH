@@ -297,8 +297,8 @@ void CImgui_MapEditor::CheckNewPrototype()
 
 	for(auto Pair : *m_mapPrototypes)
 	{
-		// if (!Pair.second->Get_HasModel())
-		// 	continue;
+		if (!Pair.second->Get_HasModel())
+			continue;
 		
 		auto iter = find_if(m_mapPrototypeModels.begin(), m_mapPrototypeModels.end(), CTag_Finder(Pair.first));
 

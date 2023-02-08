@@ -601,49 +601,49 @@ HRESULT CBullet::SetUp_ShaderResources()
 void CBullet::Create_DamageFont()
 {
 
-	string s = to_string(m_tBulletOption.BulletDesc.m_iDamage);
-	_float4 vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	_float3 Right = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
-	_float4 Dir;
-	_float4 MinVec{ -1.f,-1.f,-1.f,0.f };
-	_float4 MaxVec{ 1.f,1.f,1.f,0.f };
-	CGameUtils::GetRandomVector(&Dir, &MinVec, &MaxVec);
-	vector<int> v, v2;
-
-	for (char c : s)
-	{
-		v.push_back(c);
-	}
-
-	for (int i = 0; i < v.size(); i++)
-	{
-		v2.push_back(s[i] - '0');
-	}
-
-	for (int i = 0; i < v2.size(); ++i)
-	{
-		for (int Number : v2)
-		{
-			if (v2[i] != Number)
-				continue;
-
-			GAMEOBJECTDESC		tDamageFontDesc;
-			if (v2.size() == 1)
-				tDamageFontDesc.TransformDesc.vInitPos = _float3(vPos.x, vPos.y, vPos.z);
-			else
-				tDamageFontDesc.TransformDesc.vInitPos = _float3(vPos.x, vPos.y, vPos.z) + (i* Right);
-
-			tDamageFontDesc.m_iNumCnt = i;
-			tDamageFontDesc.m_iNumber = Number;
-			// tmp.m_vNumColor = vColor;
-			tDamageFontDesc.m_vTexSize = _float2(1.f, 1.f);
-			tDamageFontDesc.m_iCountType = 1;
-			tDamageFontDesc.m_vBulletLook = XMVector3Normalize(Dir);
-			CDamageFont_Mgr* pMgr = CDamageFont_Mgr::GetInstance();
-
-			pMgr->Add_DamageFont(LEVEL_GAMEPLAY, L"Layer_DamageFont", &tDamageFontDesc);
-		}
-	}
+	// string s = to_string(m_tBulletOption.BulletDesc.m_iDamage);
+	// _float4 vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	// _float3 Right = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
+	// _float4 Dir;
+	// _float4 MinVec{ -1.f,-1.f,-1.f,0.f };
+	// _float4 MaxVec{ 1.f,1.f,1.f,0.f };
+	// CGameUtils::GetRandomVector(&Dir, &MinVec, &MaxVec);
+	// vector<int> v, v2;
+	//
+	// for (char c : s)
+	// {
+	// 	v.push_back(c);
+	// }
+	//
+	// for (int i = 0; i < v.size(); i++)
+	// {
+	// 	v2.push_back(s[i] - '0');
+	// }
+	//
+	// for (int i = 0; i < v2.size(); ++i)
+	// {
+	// 	for (int Number : v2)
+	// 	{
+	// 		if (v2[i] != Number)
+	// 			continue;
+	//
+	// 		GAMEOBJECTDESC		tDamageFontDesc;
+	// 		if (v2.size() == 1)
+	// 			tDamageFontDesc.TransformDesc.vInitPos = _float3(vPos.x, vPos.y, vPos.z);
+	// 		else
+	// 			tDamageFontDesc.TransformDesc.vInitPos = _float3(vPos.x, vPos.y, vPos.z) + (i* Right);
+	//
+	// 		tDamageFontDesc.m_iNumCnt = i;
+	// 		tDamageFontDesc.m_iNumber = Number;
+	// 		// tmp.m_vNumColor = vColor;
+	// 		tDamageFontDesc.m_vTexSize = _float2(1.f, 1.f);
+	// 		tDamageFontDesc.m_iCountType = 1;
+	// 		tDamageFontDesc.m_vBulletLook = XMVector3Normalize(Dir);
+	// 		CDamageFont_Mgr* pMgr = CDamageFont_Mgr::GetInstance();
+	//
+	// 		pMgr->Add_DamageFont(LEVEL_GAMEPLAY, L"Layer_DamageFont", &tDamageFontDesc);
+	// 	}
+	// }
 }
 
 

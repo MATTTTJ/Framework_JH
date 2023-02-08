@@ -30,13 +30,32 @@ HRESULT CTrigger::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 	if (nullptr != pArg)
 	{
 		m_tTriggerOption = *(TRIGGERDESC*)pArg;
+
+		if(m_tTriggerOption.m_eType == 0)
+		{
+			m_iTextureIndex = 0;
+		}
+		else if(m_tTriggerOption.m_eType == 1)
+		{
+			m_iTextureIndex = 1;
+		}
+		else if (m_tTriggerOption.m_eType == 2)
+		{
+			m_iTextureIndex = 2;
+		}
+		else if (m_tTriggerOption.m_eType == 3)
+		{
+			m_iTextureIndex = 3;
+		}
 	}
 	else
 	{
 		m_tTriggerOption.m_eType = TRIGGERTYPE_END;
 	}
-
-	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
+	GAMEOBJECTDESC	GameObjectDesc;
+	ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
+	GameObjectDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(-20.f);
+	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
@@ -46,6 +65,13 @@ HRESULT CTrigger::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 void CTrigger::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	if (m_fTime > 1.f)
+		m_fTime = 0.f;
+
+	m_fTime += 0.005f;
+
+	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), TimeDelta);
 
 	if(m_tTriggerOption.m_eType == TRIGGER_A_TO_KNIGHT)
 	{
@@ -76,7 +102,13 @@ void CTrigger::Tick(_double TimeDelta)
 
 		if (m_tTriggerOption.m_eType == TRIGGER_A_TO_KNIGHT)
 		{
-			PivotMatrix.r[3] = XMVectorSet(25.232f, 0.02f, 59.929f, 1.f);
+			// PivotMatrix.r[3] = XMVectorSet(25.232f, 0.02f, 59.929f, 1.f);
+			_float	vPos[3], vScale[3], vAngle[3];
+			// ImGuizmo::DecomposeMatrixToComponents((_float*)&PivotMatrix, vPos, vAngle, vScale);
+			vPos[0] = 25.232f;	vPos[1] = 2.6f; vPos[2] = 59.39f;
+			vScale[0] = 4.5f;	vScale[1] = 4.5f;	vScale[2] = 1.0f;
+			vAngle[0] = 0.f;	vAngle[1] = -0.f;	vAngle[2] = 0.f;
+			ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&PivotMatrix);
 			TriggerDesc.m_eType = CTrigger::TRIGGER_KNIGHT_TO_B;
 			pTrigger = (CTrigger*)CGameInstance::GetInstance()->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Trigger", L"Prototype_GameObject_Trigger", PivotMatrix, &TriggerDesc);
 			pTrigger->Set_Owner(m_pPlayer);
@@ -86,6 +118,13 @@ void CTrigger::Tick(_double TimeDelta)
 		else if (m_tTriggerOption.m_eType == TRIGGER_KNIGHT_TO_B)
 		{
 			PivotMatrix.r[3] = XMVectorSet(-31.863f, 0.013f, 61.017f, 1.f);
+
+			_float	vPos[3], vScale[3], vAngle[3];
+			// ImGuizmo::DecomposeMatrixToComponents((_float*)&PivotMatrix, vPos, vAngle, vScale);
+			vPos[0] = -31.863f;	vPos[1] = 2.6f; vPos[2] = 61.017f;
+			vScale[0] = 4.5f;	vScale[1] = 4.5f;	vScale[2] = 1.0f;
+			vAngle[0] = 0.f;	vAngle[1] = -0.f;	vAngle[2] = 0.f;
+			ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&PivotMatrix);
 			TriggerDesc.m_eType = CTrigger::TRIGGER_B_TO_BUG;
 			pTrigger = (CTrigger*)CGameInstance::GetInstance()->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Trigger", L"Prototype_GameObject_Trigger", PivotMatrix, &TriggerDesc);
 			pTrigger->Set_Owner(m_pPlayer);
@@ -94,7 +133,13 @@ void CTrigger::Tick(_double TimeDelta)
 		}
 		else if (m_tTriggerOption.m_eType == TRIGGER_B_TO_BUG)
 		{
-			PivotMatrix.r[3] = XMVectorSet(-60.485f, 2.031f, 110.085f, 1.f);
+			// PivotMatrix.r[3] = XMVectorSet(-60.485f, 2.031f, 110.085f, 1.f);
+			_float	vPos[3], vScale[3], vAngle[3];
+			// ImGuizmo::DecomposeMatrixToComponents((_float*)&PivotMatrix, vPos, vAngle, vScale);
+			vPos[0] = -60.485f;	vPos[1] = 4.6f; vPos[2] = 109.374f;
+			vScale[0] = 4.5f;	vScale[1] = 4.5f;	vScale[2] = 1.0f;
+			vAngle[0] = 0.f;	vAngle[1] = -0.f;	vAngle[2] = 0.f;
+			ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&PivotMatrix);
 			TriggerDesc.m_eType = CTrigger::TRIGGER_BUG_TO_C;
 			pTrigger = (CTrigger*)CGameInstance::GetInstance()->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Trigger", L"Prototype_GameObject_Trigger", PivotMatrix, &TriggerDesc);
 			pTrigger->Set_Owner(m_pPlayer);
@@ -103,7 +148,13 @@ void CTrigger::Tick(_double TimeDelta)
 		}
 		else if (m_tTriggerOption.m_eType == TRIGGER_BUG_TO_C)
 		{
-			PivotMatrix.r[3] = XMVectorSet(-26.953f, -1.484f, 102.057f, 1.f);
+			// PivotMatrix.r[3] = XMVectorSet(-26.953f, -1.484f, 102.057f, 1.f);
+			_float	vPos[3], vScale[3], vAngle[3];
+			// ImGuizmo::DecomposeMatrixToComponents((_float*)&PivotMatrix, vPos, vAngle, vScale);
+			vPos[0] = -26.953f;	vPos[1] = 1.2f; vPos[2] = 101.292f;
+			vScale[0] = 4.5f;	vScale[1] = 4.5f;	vScale[2] = 1.0f;
+			vAngle[0] = 0.f;	vAngle[1] = -0.f;	vAngle[2] = 0.f;
+			ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&PivotMatrix);
 			TriggerDesc.m_eType = CTrigger::TRIGGER_C_TO_BOSS;
 			pTrigger = (CTrigger*)CGameInstance::GetInstance()->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Trigger", L"Prototype_GameObject_Trigger", PivotMatrix, &TriggerDesc);
 			pTrigger->Set_Owner(m_pPlayer);
@@ -118,9 +169,11 @@ void CTrigger::Tick(_double TimeDelta)
 void CTrigger::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
+	__super::Compute_CamDistance();
 
 	if (nullptr != m_pRendererCom)
 	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
 		m_pRendererCom->Add_DebugRenderGroup(m_pTriggerCollCom);
 	}
 }
@@ -128,6 +181,12 @@ void CTrigger::Late_Tick(_double TimeDelta)
 HRESULT CTrigger::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+
+	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+
+	m_pShaderCom->Begin(12);
+
+	m_pVIBufferCom->Render();
 
 	return S_OK;
 }
@@ -1167,9 +1226,38 @@ HRESULT CTrigger::SetUp_Components()
 
 	CCollider::COLLIDERDESC			ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(3.f, 3.f, 3.f);
+	ColliderDesc.vSize = _float3(1.5f, 1.5f, 1.5f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_ExplodeSPHERE", (CComponent**)&m_pTriggerCollCom, this, &ColliderDesc), E_FAIL);
+
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Shader_VtxTex", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
+
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom, this), E_FAIL);
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_PortalTex", L"Com_Texture", (CComponent**)&m_pTextureCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_PortalDistortionTex", L"Com_DistortionTexture", (CComponent**)&m_pDistortionTexCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_PortalCircleTex", L"Com_CircleTexture", (CComponent**)&m_pCircleTexCom, this), E_FAIL);
+
+
+	return S_OK;
+}
+
+HRESULT CTrigger::SetUp_ShaderResources()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_ShaderResourceView(L"g_DepthTexture", CGameInstance::GetInstance()->Get_DepthTargetSRV()), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_fAlpha", &m_fMaxMoveDistance, sizeof(_float)), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pShaderCom->Set_ShaderResourceView(L"g_Texture", CGameInstance::GetInstance()->Get_DiffuseTargetSRV()), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_DisTime", &m_fTime, sizeof(_float)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture", m_iTextureIndex), E_FAIL);
+	FAILED_CHECK_RETURN(m_pCircleTexCom->Bind_ShaderResource(m_pShaderCom, L"g_CircleTexture"), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pDistortionTexCom->Bind_ShaderResource(m_pShaderCom, L"g_DistortionTexture"), E_FAIL);
+
 	return S_OK;
 }
 
@@ -1221,7 +1309,11 @@ void CTrigger::Free()
 	}
 	
 	__super::Free();
-
+	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTriggerCollCom);
+	Safe_Release(m_pDistortionTexCom);
+	Safe_Release(m_pCircleTexCom);
+	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
 }

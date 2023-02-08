@@ -2,6 +2,7 @@
 #include "Client_Defines.h"
 #include "Level.h"
 BEGIN(Engine)
+class CGameObject;
 class CVIBuffer_Terrain;
 END
 
@@ -30,8 +31,19 @@ private:
 	HRESULT			Ready_Layer_UI(const wstring wstrLayerTag);
 	HRESULT			Ready_Layer_BossMonster(const wstring wstrLayerTag);
 	HRESULT			Ready_Layer_Trigger(const wstring wstrLayerTag);
+private:
+	// For Lobby
+	HRESULT			Ready_Layer_LaiHome(const wstring wstrLayerTag);
+	HRESULT			Ready_Layer_Lobby(const wstring wstrLayerTag);
+	HRESULT			Ready_Layer_LobbyButton(const wstring wstrLayerTag);
 
 
+private:
+	vector<CGameObject*> m_vecLobbyObject;
+
+	vector<CGameObject*>	m_vecButton;
+
+	_bool					m_bButton = false;
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

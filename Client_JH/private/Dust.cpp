@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\public\Dust.h"
 #include "GameInstance.h"
-#include "Player.h"
 
 CDust::CDust(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -46,7 +45,7 @@ HRESULT CDust::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 	m_iUV_Max_Width_Num = 3;
 	m_iUV_Max_Height_Num = 4;
 	m_iFrameCnt = 3;
-	m_vPSize = _float2{ 2.f, 2.f };
+	m_vPSize = _float2{ 1.f, 1.f };
 	m_iUV_Cur_Width_Num = 0;
 	m_iUV_Cur_Height_Num = 0;
 	m_fAlpha = 0.7f;
@@ -63,7 +62,7 @@ void CDust::Tick(_double dTimeDelta)
 	if (m_fAlpha < 0.f)
 		Set_Dead(true);
 
-	m_fAlpha -= (_float)dTimeDelta;
+	m_fAlpha -= (_float)dTimeDelta * 3.f;
 
 	// m_vPSize = _float2(m_vPSize.x + (_float)dTimeDelta, m_vPSize.y + (_float)dTimeDelta);
 

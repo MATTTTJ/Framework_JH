@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\public\LaiLuo_Home.h"
+
+#include "Dynamic_Camera.h"
 #include "GameInstance.h"
 
 CLaiLuo_Home::CLaiLuo_Home(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -37,17 +39,47 @@ HRESULT CLaiLuo_Home::Initialize_Clone(const wstring& wstrPrototypeTag, void * p
 	// m_pModelCom->Set_CurAnimIndex(rand() % 20);
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f));
 
-	m_pModelCom->Set_CurAnimIndex(3);
+	m_pModelCom->Set_CurAnimIndex(1);
 
+	_bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Get_RenderState();
+	_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_RenderState();
+	DynamicCamera = !DynamicCamera;
+	StaticCamera = !StaticCamera;
+	_float scale[3]{ 1.f, 1.f, 1.f }, Rot[3]{ 21.148f, -41.228f, 0.f }, Pos[3]{ -20.526f, 5.805f, -30.465f };
+	_matrix camWorld;
+	ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
+	CGameInstance::GetInstance()->Change_Camera();
+	dynamic_cast<CDynamic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Set_Boss_IntroCam(camWorld);
+	dynamic_cast<CDynamic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Set_LobbyCam(true);
+
+	m_pModelCom->Set_CurAnimIndex(1);
+	// _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	// CGameInstance::GetInstance()->Set_LightPos(0, vPos);
+	_float4 vDirection;
+	_matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(32.2158));
+	XMStoreFloat4(&vDirection, XMVector3TransformNormal(XMVectorSet(-cosf(XMConvertToRadians(60.f)), -sinf(XMConvertToRadians(60.f)), 0.f, 0.f), RotationMatrix));
+
+	CGameInstance::GetInstance()->Set_LightDirection(1, vDirection);
 	return S_OK;
 }
 
 void CLaiLuo_Home::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-
 	
-	m_pModelCom->Set_CurAnimIndex(0);
+	// CGameInstance::GetInstance()->Set_Far(6.f);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	CGameInstance::GetInstance()->Set_LightPos(0, vPos);
+
+	// if (CGameInstance::GetInstance()->Key_Pressing(DIK_F3))
+	// {
+	// 	m_fDegree += (_float)TimeDelta * 10.f;
+	// 	_float4 vDirection;
+	// 	_matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(32.2158));
+	// 	XMStoreFloat4(&vDirection, XMVector3TransformNormal(XMVectorSet(-cosf(XMConvertToRadians(60.f)), -sinf(XMConvertToRadians(60.f)), 0.f, 0.f), RotationMatrix));
+	// 	
+	// 	CGameInstance::GetInstance()->Set_LightDirection(1, vDirection); 
+	// }
 
 	m_pModelCom->Play_Animation(TimeDelta);
 
@@ -143,6 +175,7 @@ CGameObject * CLaiLuo_Home::Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 void CLaiLuo_Home::Free()
 {
+
 	__super::Free();
 
 	Safe_Release(m_pModelCom);

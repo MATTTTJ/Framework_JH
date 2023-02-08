@@ -6,6 +6,7 @@
 #include "BackGround.h"
 #include "Blade.h"
 #include "Boom.h"
+#include "Button_Play.h"
 #include "CursorUI.h"
 #include "Damage_Font.h"
 #include "DangerRing.h"
@@ -29,6 +30,7 @@
 #include "Laser.h"
 #include "LaserBullet.h"
 #include "Little_Bug.h"
+#include "Loading_Fire.h"
 #include "MagicStone.h"
 #include "Monster.h"
 #include "MonsterUI.h"
@@ -43,6 +45,7 @@
 #include "Weapon.h"
 #include "Sky.h"
 #include "SkySphere.h"
+#include "Smoke.h"
 #include "StoneLight.h"
 #include "StonePillar.h"
 #include "Trigger.h"
@@ -87,6 +90,23 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelID)
 	if (0 == m_hThread)
 		return E_FAIL;
 
+	if(m_eNextLevelID == 2)
+	{
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		CGameObject* pGameObject = nullptr;
+		pGameObject = pGameInstance->Clone_GameObjectReturnPtr(pGameInstance->Get_StaticLevelIndex(), L"Layer_Logo", L"Prototype_GameObject_BackGround");
+		NULL_CHECK_RETURN(pGameObject, E_FAIL);
+		m_vecLogo.push_back(pGameObject);
+		
+		CGameObject::GAMEOBJECTDESC LogoDesc;
+		
+		ZeroMemory(&LogoDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+		LogoDesc.TransformDesc.vInitPos = _float3(1080.f, -480.f, 0.f);
+		pGameObject = pGameInstance->Clone_GameObjectReturnPtr(pGameInstance->Get_StaticLevelIndex(), L"Layer_Logo", L"Prototype_GameObject_Loading_Fire", &LogoDesc);
+		NULL_CHECK_RETURN(pGameObject, E_FAIL);
+		m_vecLogo.push_back(pGameObject);
+	}
+
 	return S_OK;
 }
 
@@ -97,13 +117,29 @@ HRESULT CLoader::Loading_For_Logo()
 	Safe_AddRef(pGameInstance);
 
 	m_wstrLoadingText = L"텍스쳐를 로딩중입니다.";
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Logo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Loading/Loading0.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Logo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Loading/Loading%d.png", 4)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Logo_Fire", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Loading_Fire/img_logofire_%d.png", 30)), E_FAIL);
+
 	m_wstrLoadingText = L"버퍼를 로딩중입니다.";
 	m_wstrLoadingText = L"모델을 로딩중입니다.";
+	_matrix PivotMatrix = XMMatrixIdentity();
+
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Model_Lobby", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Lobby_Home/Lobby_Light.model", PivotMatrix)), E_FAIL);
+
+	// PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Model_LaiHome", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/LaiLuo_Home/Lai_Home.model", PivotMatrix)), E_FAIL);
+
+
 	m_wstrLoadingText = L"셰이더를 로딩중입니다.";
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_VtxNonAnim", CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxNonAnim.hlsl", CShader::DECLARATION_VTXMODEL, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_VtxAnimModel", CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl", CShader::DECLARATION_VTXANIMMODEL, VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements)), E_FAIL);
+
 	m_wstrLoadingText = L"객체원형을 생성중입니다.";
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_BackGround",	CBackGround::Create(m_pDevice, m_pContext)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Home", CHome::Create(m_pDevice, m_pContext)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_LaiHome", CLaiLuo_Home::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Loading_Fire", CLoading_Fire::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	m_wstrLoadingText = L"로딩끝.";
 
@@ -260,6 +296,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 	// 커서
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Battle_Cursor", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/Cusor.png", 1)), E_FAIL);
 
+	// 버튼
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_ButtonTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Button/Button_%d.png", 3)), E_FAIL);
+
+
 	// 이펙트 텍스쳐
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_DustTexture_Noise", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/noise/NoiseClouds01.png", 1)), E_FAIL);
@@ -269,7 +309,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_RedFire_Lamp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Fire/ui_succes_fire.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_BlueFire_Lamp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Fire/BlueFire.dds", 1)), E_FAIL);
 
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Spark", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Glow/glow_%d.png", 3)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Spark", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Glow/glow_%d.png", 4)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Smoke", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/smoke0.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/bac_%d.png", 4)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalDistortionTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/noise_cp_033.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalCircleTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/GW_2181_ring_001.png", 1)), E_FAIL);
 
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_SphereTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/Untitled-1.png", 1)), E_FAIL);
@@ -304,6 +348,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// PivotMatrix = XMMatrixScaling(0.009f, 0.009f, 0.009f) * XMMatrixRotationY(XMConvertToRadians(180.f)) *XMMatrixRotationX(XMConvertToRadians(90.f));
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Home", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/StartMap/StartMap_Normal.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Lobby", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Lobby_Home/Final/Lobby_Test_Tex.model", PivotMatrix)), E_FAIL);
+
+
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_NormalMap", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/StartMap/Lite_StartMap.model", PivotMatrix)), E_FAIL);
 
 
@@ -371,7 +418,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Terrain", CTerrain::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player", CPlayer::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_ForkLift", CForkLift::Create(m_pDevice, m_pContext)), E_FAIL);
-	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Home", CHome::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NormalMap", CNormalMap::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Normal_BossMap", CNormal_BossMap::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_SkySphere", CSkySphere::Create(m_pDevice, m_pContext)), E_FAIL);
@@ -451,11 +497,17 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Default_Bullet_Birth", CDefault_Bullet_Birth::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Default_Bullet_Dead", CDefault_Bullet_Dead::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Dust", CDust::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Smoke", CSmoke::Create(m_pDevice, m_pContext)), E_FAIL);
+
+	// 버튼
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Button", CButton_Play::Create(m_pDevice, m_pContext)), E_FAIL);
+
 
 	// 불꽃
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Fire_Light", CFire_Light::Create(m_pDevice, m_pContext)), E_FAIL);
 
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Home", CHome::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	// Cursor
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Battle_Cursor", CCursorUI::Create(m_pDevice, m_pContext)), E_FAIL);
@@ -480,6 +532,17 @@ HRESULT CLoader::Loading_For_GamePlay()
 HRESULT CLoader::Loading_For_MapTool()
 {
 	return S_OK;
+}
+
+void CLoader::Kill_LogoObject()
+{
+	_uint Size = (_uint)m_vecLogo.size();
+
+	for(_uint i =0; i<Size; ++i)
+	{
+		m_vecLogo[i]->Set_Dead(true);
+	}
+	m_vecLogo.clear();
 }
 
 CLoader * CLoader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVEL eNextLevelID)

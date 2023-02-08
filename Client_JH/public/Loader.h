@@ -3,6 +3,10 @@
 #include "Client_Defines.h"
 #include "Base.h"
 
+BEGIN(Engine)
+class CGameObject;
+END
+
 BEGIN(Client)
 
 class CLoader final : public CBase
@@ -33,6 +37,8 @@ public:
 	HRESULT	Loading_For_Logo();
 	HRESULT	Loading_For_GamePlay();
 	HRESULT	Loading_For_MapTool();
+
+	void	Kill_LogoObject();
 private:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pContext = nullptr;
@@ -43,6 +49,7 @@ private:
 	_bool		m_bIsLoadingFinished = false;
 	wstring		m_wstrLoadingText = L"";
 
+	vector<CGameObject*> m_vecLogo;
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID);
 	virtual void Free() override;

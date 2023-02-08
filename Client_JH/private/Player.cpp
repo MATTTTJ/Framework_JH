@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Player.h"
+
+#include "Dynamic_Camera.h"
 #include "GameInstance.h"
 #include "Monster.h"
 #include "Static_Camera.h"
@@ -181,6 +183,8 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-14.f, 0.f, 0.8f, 1.f));
 	// m_pNavigationCom->Set_CellIndex(40);
+
+	dynamic_cast<CDynamic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Set_LobbyCam(false);
 
 	m_bCurRoomType[ROOM_A] = true;
 	

@@ -625,6 +625,20 @@ void CGameInstance::Clear_ImguiObjects()
 	m_pImgui_Manager->Clear_ImguiObjects();
 }
 
+ID3D11ShaderResourceView* CGameInstance::Get_DepthTargetSRV()
+{
+	NULL_CHECK_RETURN(m_pTarget_Manager, nullptr);
+
+	return m_pTarget_Manager->Get_SRV(TEXT("Target_Depth"));
+}
+
+ID3D11ShaderResourceView* CGameInstance::Get_DiffuseTargetSRV()
+{
+	NULL_CHECK_RETURN(m_pTarget_Manager, nullptr);
+
+	return m_pTarget_Manager->Get_SRV(TEXT("Target_Diffuse"));
+}
+
 _bool CGameInstance::isInFrustum_WorldSpace(_fvector vWorldPos, _float fRange)
 {
 	NULL_CHECK_RETURN(m_pFrustum, false);

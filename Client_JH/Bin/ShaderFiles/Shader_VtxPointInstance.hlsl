@@ -572,19 +572,19 @@ PS_OUT PS_MAIN_UVDust(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	float4	Origin = g_Texture.Sample(LinearSampler, In.vTexUV);
-	// if (Origin.a < 0.1f)
-	// 	discard;
+	if (Origin.a < 0.001f)
+		discard;
 
-	float Noise1 = g_NoiseTexture.Sample(LinearSampler, In.vTexUV).r;
+	// float Noise1 = g_NoiseTexture.Sample(LinearSampler, In.vTexUV).r;
 
 	// Mask.r = g_fDustAlpha;
-	Out.vColor = Origin *  Noise1;
-	Out.vColor.a = Origin.a * g_fDustAlpha;
+	Out.vColor = Origin; //*  Noise1;
+	Out.vColor.a = g_fDustAlpha;
 
 	if (Out.vColor.a > 0.f)
 	{
-		Out.vFlag.r = 0.f;
-		Out.vFlag.g = 1.f;
+		Out.vFlag.r = 1.f;
+		Out.vFlag.g = 0.f;
 		Out.vFlag.b = 0.f;
 	}
 	else
@@ -712,7 +712,7 @@ technique11 DefaultTechnique
 	pass Monster2
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Test_UI_RED, 0);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -725,7 +725,7 @@ technique11 DefaultTechnique
 	pass Monster_UI_Red3
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -855,7 +855,7 @@ technique11 DefaultTechnique
 	pass Spark13
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();

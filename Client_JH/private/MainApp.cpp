@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "..\public\MainApp.h"
 
+#include "BackGround.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "Dynamic_Camera.h"
 #include "Static_Camera.h"
 #include "DamageFont_Mgr.h"
+#include "Loading_Fire.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -56,7 +58,7 @@ HRESULT CMainApp::Render()
 		return E_FAIL;
 
 	m_pGameInstance->Render_ImGui();
-	m_pGameInstance->Clear_Graphic_Device(&_float4(0.46f, 0.42f, 0.37f, 1.f));
+	m_pGameInstance->Clear_Graphic_Device(&_float4(0.f, 0.f, 0.f, 1.f));
 
 	m_pRenderer->Draw_RenderGroup();
 
@@ -130,7 +132,8 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 	/* For.Prototype_Component_Shader_VtxTex */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Shader_VtxTex",	CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_VtxTex.hlsl",CShader::DECLARATION_VTXNORTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements)), E_FAIL);
-
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Texture_Logo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Loading/Loading%d.png", 4)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Texture_Logo_Fire", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Loading_Fire/img_logofire_%d.png", 30)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_State", CState::Create(m_pDevice, m_pContext)), E_FAIL);
 
 
@@ -146,6 +149,20 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Camera_Dynamic", CDynamic_Camera::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Camera_Static", CStatic_Camera::Create(m_pDevice, m_pContext)), E_FAIL);
+
+	CBackGround* pBack = nullptr;
+	if(	FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_BackGround", pBack = CBackGround::Create(m_pDevice, m_pContext))))
+	{
+		Safe_Release(pBack);
+	}
+	CLoading_Fire* pFire = nullptr;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Loading_Fire", pFire = CLoading_Fire::Create(m_pDevice, m_pContext))))
+	{
+		Safe_Release(pFire);
+	}
+	// FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Loading_Fire", CLoading_Fire::Create(m_pDevice, m_pContext)), E_FAIL);
+
 
 	return S_OK;
 }
@@ -164,7 +181,7 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
-	m_pGameInstance->Clear_ImguiObjects();
+	// m_pGameInstance->Clear_ImguiObjects();
 
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pRenderer);

@@ -123,6 +123,12 @@ public: // for imgui manager
 	void				Add_ImguiWindowObject(class CImguiObject* ImguiObject);
 	void				Clear_ImguiObjects();
 
+public:
+	// For Target_Manager
+	ID3D11ShaderResourceView*	Get_DepthTargetSRV();
+	ID3D11ShaderResourceView*	Get_DiffuseTargetSRV();
+
+
 public: /* For.Frustum */
 	_bool isInFrustum_WorldSpace(_fvector vWorldPos, _float fRange = 0.f);
 	_bool isInFrustum_LocalSpace(_fvector vLocalPos, _float fRange = 0.f);

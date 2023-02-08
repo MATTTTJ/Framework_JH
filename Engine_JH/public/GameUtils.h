@@ -31,6 +31,8 @@ public:
 	static void					Cell_Sorting(_float3* vPoints);
 	static _bool				FloatCmp(const _float& f1, const _float& f2, _float fEpsilon);
 
+	static _bool				Rect_Picking(HWND& hWnd, const RECT& Rect);
+
 	static _matrix			Get_PlayerPivotMatrix();
 	static	_bool			CollisionSphereSphere(class CCollider* pColliderA, class CCollider* pColliderB, _float4& vDir);
 	static _float			GetRandomFloat(_float lowBound, _float highBound);

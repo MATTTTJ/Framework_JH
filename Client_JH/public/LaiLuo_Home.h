@@ -30,6 +30,7 @@ private:
 	CModel*					m_pModelCom		= nullptr;
 	CTexture*				m_pTexture		= nullptr;
 
+	_float					m_fDegree = 0.f;
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();

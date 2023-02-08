@@ -6,6 +6,9 @@ BEGIN(Engine)
 class CShader;
 class CRenderer;
 class CCollider;
+class CTexture;
+class CShader;
+class CVIBuffer_Rect;
 END
 
 BEGIN(Client)
@@ -57,11 +60,20 @@ private:
 	class CPlayer*			m_pPlayer = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CCollider*				m_pTriggerCollCom = nullptr;
+	CShader*				m_pShaderCom = nullptr;
+	CTexture*				m_pTextureCom = nullptr;
+	CTexture*				m_pDistortionTexCom = nullptr;
+	CTexture*				m_pCircleTexCom = nullptr;
+
+	CVIBuffer_Rect*			m_pVIBufferCom = nullptr;
 	TRIGGERDESC				m_tTriggerOption;
 
+	_float					m_fTime = 0.f;
+	_uint					m_iTextureIndex = 0;
 	_bool					m_bSpawnTrigger = false;
 private:
 	HRESULT					SetUp_Components();
+	HRESULT					SetUp_ShaderResources();
 
 public:
 	static	CTrigger*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

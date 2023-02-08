@@ -35,7 +35,7 @@ void CLayer::Tick(_double TimeDelta)
 			continue;
 		}
 
-		if (nullptr != (*iter) && !(*iter)->IsDisabled())
+		if (nullptr != (*iter))
 			(*iter)->Tick(TimeDelta);
 
 		++iter;

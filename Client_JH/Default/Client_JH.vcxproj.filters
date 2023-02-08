@@ -295,6 +295,15 @@
     <Filter Include="02. GameObjects\01. GamePlay\Effect\Fire_Light">
       <UniqueIdentifier>{8dad337f-59c2-404a-a78a-757fec276e70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Effect\Smoke">
+      <UniqueIdentifier>{214bfe9b-9267-4917-9649-2dcc2ee1140f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\01. Logo\Lobby_Object">
+      <UniqueIdentifier>{09e3fb12-b8fe-4424-a14c-3f91f9cc653a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\01. Logo\LoadingFire">
+      <UniqueIdentifier>{83b9f6cd-bf38-4a8e-85d9-388c5a7a1f91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -552,6 +561,13 @@
     <ClInclude Include="..\public\Fire_Light.h">
       <Filter>02. GameObjects\01. GamePlay\Effect\Fire_Light</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Smoke.h" />
+    <ClInclude Include="..\public\Button_Play.h">
+      <Filter>01. Level\01. Logo\Lobby_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Loading_Fire.h">
+      <Filter>01. Level\01. Logo\LoadingFire</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -793,6 +809,13 @@
     </ClCompile>
     <ClCompile Include="..\private\Fire_Light.cpp">
       <Filter>02. GameObjects\01. GamePlay\Effect\Fire_Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Smoke.cpp" />
+    <ClCompile Include="..\private\Button_Play.cpp">
+      <Filter>01. Level\01. Logo\Lobby_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Loading_Fire.cpp">
+      <Filter>01. Level\01. Logo\LoadingFire</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

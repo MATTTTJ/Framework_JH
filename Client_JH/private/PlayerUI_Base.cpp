@@ -2020,7 +2020,9 @@ void CPlayer_UI_CountMachine::InttoString(_uint ConvertCnt, _float2 vPos, _float
 		for (int Number : v2)
 		{
 			if (v2[i] != Number)
+			{
 				continue;
+			}
 
 			CGameObject*		pNumberUI = nullptr;
 			CGameObject::GAMEOBJECTDESC		tmp;

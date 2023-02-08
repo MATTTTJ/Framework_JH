@@ -9,10 +9,14 @@ texture2D		g_Texture;
 texture2D		g_RingTexture;
 texture2D		g_SlashTexture;
 texture2D       g_SkillGlowTexture;
+texture2D		g_DistortionTexture;
 float			g_fTime = 1.f;
 texture2D		g_DepthTexture;
-float			g_fFadeAlpha = 0.f;
+texture2D		g_CircleTexture;
 
+float			g_fFadeAlpha = 0.f;
+float			g_fAlpha;
+float			g_DisTime;
 /* 샘플링 해오는 함수 */
 /* dx9 : tex2D(DefaultSampler, In.vTexUV);*/
 /* dx11 : g_Texture.Sample(DefaultSampler, In.vTexUV); */
@@ -60,6 +64,12 @@ struct PS_OUT
 	float4		vColor : SV_TARGET0;
 };
 
+struct PS_OUT_EFFECT
+{
+	/*SV_TARGET0 : 모든 정보가 결정된 픽셀이다. AND 0번째 렌더타겟에 그리기위한 색상이다. */
+	float4		vColor : SV_TARGET0;
+	float4		vFlag : SV_TARGET1;
+};
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -68,6 +78,69 @@ PS_OUT PS_MAIN(PS_IN In)
 	// Out.vColor = vector(0.f, 0.f, 0.f, 1.f);
 	return Out;
 }
+
+PS_OUT PS_MAIN_PORTAL(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	float4 vFX_tex = g_DistortionTexture.Sample(LinearSampler,float2( In.vTexUV.x , g_DisTime));
+	if (vFX_tex.a == 0.f)
+		vFX_tex.r = 0.f;
+	// discard;
+	float fWeight = vFX_tex.r * 0.1f;
+
+	float4 CircleTex = g_CircleTexture.Sample(LinearSampler, float2(In.vTexUV.x, In.vTexUV.y) + fWeight);
+
+	// float3 center = float3(0.5f, 0.5f, 0);
+	// float3 top = float3(0.5f, 0, 0);
+	// float3 curUV = float3(In.vTexUV.xy, 0);
+	// float angle = 0;daasd
+	//
+	// float3 centerToTop = top - center;
+	// float3 centerToCurUV = curUV - center;
+	//
+	// centerToTop = normalize(centerToTop);
+	// centerToCurUV = normalize(centerToCurUV);
+	//
+	// angle = acos(dot(centerToTop, centerToCurUV));
+	// angle = angle * (180.0f / 3.141592654f); // radian to degree
+	//
+	// angle = (centerToTop.x * centerToCurUV.x - centerToTop.y * centerToCurUV.x > 0.0f) ? angle : (-angle) + 360.0f;
+	//
+	// float condition = 360 * g_DisTime;
+	//
+	// if (angle >= condition)
+	// 	CircleTex.a = g_DisTime;
+
+	// CircleTex = CircleTex * g_fAlpha;
+
+
+	
+	float4 vColor = (float4)0.f;
+	vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+
+	if(CircleTex.r > 0.f)
+		Out.vColor = saturate(vColor* CircleTex) ;
+	else
+		Out.vColor = vColor;
+
+	float2		vTexUV;
+	vTexUV.x = (In.vProjPos.x / In.vProjPos.w) * 0.5f + 0.5f;
+	vTexUV.y = (In.vProjPos.y / In.vProjPos.w) * -0.5f + 0.5f;
+
+	vector		vDepthDesc = g_DepthTexture.Sample(LinearSampler, vTexUV);;
+
+	float		fOldViewZ = vDepthDesc.y * 300.f;
+	float		fViewZ = In.vProjPos.w;
+
+	Out.vColor.a = Out.vColor.a * (saturate(fOldViewZ - fViewZ) * 2.5f);
+
+	// Out.vColor = 
+	// g_DistortionTexture
+	// Out.vColor = vector(0.f, 0.f, 0.f, 1.f);
+	return Out;
+}
+
 PS_OUT PS_MAIN_Ring(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -112,7 +185,8 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
-
+	if (Out.vColor.a == 0.f)
+		discard;
 	float2		vTexUV;
 
 	vTexUV.x = (In.vProjPos.x / In.vProjPos.w) * 0.5f + 0.5f;
@@ -123,7 +197,21 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 	float		fOldViewZ = vDepthDesc.y * 300.f;
 	float		fViewZ = In.vProjPos.w;
 
-	Out.vColor.a = Out.vColor.a * (saturate(fOldViewZ - fViewZ) * 2.5f);
+	Out.vColor.a = Out.vColor.a * (saturate(fOldViewZ - fViewZ) * 2.5f) ;
+	Out.vColor.a = Out.vColor.a * g_fAlpha * 0.1f;
+	// if (Out.vColor.a > 0.f)
+	// {
+	// 	Out.vFlag.r = 0.f;
+	// 	Out.vFlag.g = 1.f;
+	// 	Out.vFlag.b = 0.f;
+	// }
+	// else
+	// {
+	// 	Out.vFlag.r = 0.f;
+	// 	Out.vFlag.g = 0.f;
+	// 	Out.vFlag.b = 0.f;
+	// }
+
 
 	return Out;
 }
@@ -207,8 +295,8 @@ PS_OUT PS_MAIN_GLOW(PS_IN In)
 
 	Out.vColor = saturate(textureColor + (glowColor * g_glowStrength) );
 	 
-	if (Out.vColor.a < 0.1f)
-		discard;
+	// if (Out.vColor.a < 0.001f)
+	// 	discard;
 
 	return Out;
 }
@@ -296,9 +384,9 @@ technique11 DefaultTechnique
 
 	pass Rect6
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_None);
 		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend , float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
@@ -371,5 +459,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_WhiteNum();
+	}
+
+	pass PORTAL12
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_PORTAL();
 	}
 }

@@ -47,6 +47,26 @@ HRESULT CDynamic_Camera::Initialize_Clone(const wstring& wstrPrototypeTag, void 
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	for(_uint i=0; i< 5; ++i)
+	{
+		CAMFRAME KeyFrame;
+		ZeroMemory(&KeyFrame, sizeof(CAMFRAME));
+
+		KeyFrame.dTime = 0.6f * (i + 1);
+
+		m_vecCamKeyFrame.push_back(KeyFrame);
+	}
+
+	m_vFinalScale = _float3(1.f, 1.f, 1.f);
+	m_vFinalPos = _float3(-20.526f, 5.805f, -30.465f);
+	m_vFinalRotation = _float4(21.148f, -41.228f, 0.f, 0.f);
+	
+	m_vInitScale = _float3(1.f, 1.f, 1.f);
+	m_vInitPos = _float3(-18.092f, 5.205f, -33.586f);
+	m_vInitRotation = _float4(34.817f, -38.979f, 0.f,0.f);
+
+
+
 	return S_OK;
 }
 
@@ -54,8 +74,62 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 {
 	if (!m_bRender)
 		return;
+	_vector vScale;
+	_vector vRotation;
+	_vector vPosition;
+	_matrix TransformMatrix;
 
-	// m_pTransformCom->Go_Straight(TimeDelta * 0.15f, CTransform::TRANS_BULLET);
+
+
+	if(m_bLobby == true)
+	{
+		if (m_bArrivedCam == false)
+		{
+			m_fCurPlayTime += (_float)TimeDelta;
+		}
+
+		if (m_fCurPlayTime >= 3.f)
+		{
+			vScale = m_vFinalScale;
+			vRotation = m_vFinalRotation;
+			vPosition = m_vFinalPos;
+			vPosition = XMVectorSetW(vPosition, 1.f);
+			m_bArrivedCam = true;
+		}
+		else
+		{
+			// while (m_fCurPlayTime >= m_vecKeyframes[m_iCurrentKeyframeIndex + 1].dTime)
+			// {
+			// 	// 애니메이션 재생시간이 키프레임 사이에 존재할 때
+			// 	// 플레이타임 시간이 다음 키프레임 시간보다 클 때 현재 키프레임 인덱스를 증가
+			// 	++m_iCurrentKeyframeIndex;
+			// }
+			// 현재 시간 - 현재 키프레임 인덱스 시간 / 현재 키프레임 인덱스 시간 - 현재 시간 
+			_double	dRatio = (m_fCurPlayTime - 1.5f) / (3.f - 1.5f);
+			// 위 비율은 키 프레임 사이의 데이터 변경 값을 보간해주기 위한 비율이다.
+
+			vScale = _float3(1.f,1.f,1.f);
+			vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_vInitRotation), XMLoadFloat4(&m_vFinalRotation), (_float)dRatio);
+			vPosition = XMVectorLerp(XMLoadFloat3(&m_vInitPos), XMLoadFloat3(&m_vFinalPos), (_float)dRatio);
+			vPosition = XMVectorSetW(vPosition, 1.f);
+		}
+		// 백터들을 받아서 행렬로 만들어주는 함수. 2번째 인자는 기준점인데 원점이 들어간다.
+		TransformMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+		_matrix PivotMatrix = XMMatrixIdentity();
+		_float3 P, S, R;
+		_float	vPos[3], vscale[3], vAngle[3];
+		P = vPosition; S = vScale; R = vRotation;
+
+		vPos[0] = P.x;	vPos[1] = P.y; vPos[2] = P.z;
+		vscale[0] = S.x;	vscale[1] = S.y;	vscale[2] = S.z;
+		vAngle[0] = R.x;	vAngle[1] = R.y;	vAngle[2] = R.z;
+		ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vscale, (_float*)&PivotMatrix);
+
+		m_pTransformCom->Set_WorldMatrix(PivotMatrix);
+	}
+	else
+		m_pTransformCom->Go_Straight(TimeDelta * 0.15f, CTransform::TRANS_BULLET);
+
 
 	if (GetKeyState(VK_UP) & 0x8000)
 	{

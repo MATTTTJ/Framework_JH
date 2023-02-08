@@ -220,15 +220,5 @@ void CDefault_Pistol::Free()
 
 	__super::Free();
 
-
-
-	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTestTexture);
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pBulletColliderCom);
-	Safe_Release(m_pPointBuffer);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pRendererCom);
-
-
 }

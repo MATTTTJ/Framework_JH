@@ -473,16 +473,16 @@ PS_OUT PS_HORIZONTALBLUR(PS_IN_BLUR In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	float weight0, weight1, weight2, weight3, weight4;
-	// weight0 = 1.0f;
-	// weight1 = 0.75f;
-	// weight2 = 0.55f;
-	// weight3 = 0.18f;
-	// weight4 = 0.1f;
-	weight0 = 0.199471f;
-	weight1 = 0.176033f;
-	weight2 = 0.120985f;
-	weight3 = 0.064759f;
-	weight4 = 0.025995f;
+	weight0 = 1.0f;
+	weight1 = 0.75f;
+	weight2 = 0.55f;
+	weight3 = 0.18f;
+	weight4 = 0.1f;
+	// weight0 = 0.199471f;
+	// weight1 = 0.176033f;
+	// weight2 = 0.120985f;
+	// weight3 = 0.064759f;
+	// weight4 = 0.025995f;
 
 	float normalization = (weight0 + 2.0f * (weight1 + weight2 + weight3 + weight4));
 
@@ -514,16 +514,16 @@ PS_OUT PS_VERTICALBLUR(PS_IN_BLUR In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	float weight0, weight1, weight2, weight3, weight4;
-	// weight0 = 1.0f;
-	// weight1 = 0.75f;
-	// weight2 = 0.55f;
-	// weight3 = 0.18f;
-	// weight4 = 0.1f;
-	weight0 = 0.199471f;
-	weight1 = 0.176033f;
-	weight2 = 0.120985f;
-	weight3 = 0.064759f;
-	weight4 = 0.025995f;
+	weight0 = 1.0f;
+	weight1 = 0.75f;
+	weight2 = 0.55f;
+	weight3 = 0.18f;
+	weight4 = 0.1f;
+	// weight0 = 0.199471f;
+	// weight1 = 0.176033f;
+	// weight2 = 0.120985f;
+	// weight3 = 0.064759f;
+	// weight4 = 0.025995f;
 
 
 	float normalization = (weight0 + 2.0f * (weight1 + weight2 + weight3 + weight4));
@@ -578,28 +578,36 @@ PS_OUT PS_BLOOMFLAG(PS_IN In)
 	// 블룸을 블러한 텍스쳐, 블러 안한 블룸텍스쳐, HDR컬러는 적용시킬 장면에 블룸을 추출한 텍스쳐 
 
 	vector vFlag = g_FlagTexture.Sample(LinearSampler, In.vTexUV);
-	if (vFlag.g != 1.f)
-		discard;
-
-	vector vHDRColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
-	vector vBloomColor = g_BlurTexture.Sample(LinearSampler, In.vTexUV);
-	vector vBloomOrigin = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
-
-	float fBrightness = dot(vHDRColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
-
-	if (fBrightness > 0.99f)
+	if (vFlag.r == 1.f)
 	{
-		vBloomOrigin = vector(vHDRColor.rgb, 1.f);
+		Out.vColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
 	}
 
-	float4 vBloom = pow(pow(abs(vBloomColor), 2.2f) + pow(abs(vBloomOrigin), 2.2f), 1.f / 2.2f);
+	else if (vFlag.g == 1.f)
+	{
+		vector vHDRColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
+		vector vBloomColor = g_BlurTexture.Sample(LinearSampler, In.vTexUV);
+		vector vBloomOrigin = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
 
-	float4 vOut = (vHDRColor);
+		float fBrightness = dot(vHDRColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
 
-	vOut = pow(abs(vOut), 2.2f);
-	vBloom = pow(abs(vBloom), 2.2f);
-	vOut += vBloom;
-	Out.vColor = pow(abs(vOut), 1 / 2.2f);;
+		if (fBrightness > 0.99f)
+		{
+			vBloomOrigin = vector(vHDRColor.rgb, 1.f);
+		}
+
+		float4 vBloom = pow(pow(abs(vBloomColor), 2.2f) + pow(abs(vBloomOrigin), 2.2f), 1.f / 2.2f);
+
+		float4 vOut = (vHDRColor);
+
+		vOut = pow(abs(vOut), 2.2f);
+		vBloom = pow(abs(vBloom), 2.2f);
+		vOut += vBloom;
+		Out.vColor = pow(abs(vOut), 1 / 2.2f);;
+	}
+
+
+
 	return Out;
 
 	

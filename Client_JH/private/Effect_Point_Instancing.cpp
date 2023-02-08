@@ -60,7 +60,7 @@ void CEffect_Point_Instancing::Tick(_double dTimeDelta)
 	if (m_fSizeable < 0.f)
 		Set_Dead(true);
 
-	m_fSizeable -= _float(dTimeDelta) * 0.25f;
+	m_fSizeable -= _float(dTimeDelta) * 0.5f;
 
 	m_vPSize = _float2(m_fSizeable, m_fSizeable);
 
@@ -70,7 +70,7 @@ void CEffect_Point_Instancing::Tick(_double dTimeDelta)
 
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, BoomPos);
 	m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_BULLET);
-	m_fJumpPower += CGameUtils::GetRandomFloat(-0.1f, -0.25f);
+	m_fJumpPower -= 0.25f;
 
 	// m_pVIBufferCom->Tick(dTimeDelta);
 }

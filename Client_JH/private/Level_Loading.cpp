@@ -42,8 +42,8 @@ void CLevel_Loading::Late_Tick(_double TimeDelta)
 
 	if (m_pLoader->IsFinished() == true)
 	{
-		if (pGameInstance->Get_DIMouseState(DIM_RB))
-		{
+		// if (pGameInstance->Get_DIMouseState(DIM_RB))
+		// {
 			CLevel*		pLevel = nullptr;
 
 			switch (m_eNextLevelID)
@@ -52,7 +52,11 @@ void CLevel_Loading::Late_Tick(_double TimeDelta)
 				pLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL_GAMEPLAY:
-				pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+				{
+					m_pLoader->Kill_LogoObject();
+					pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+					
+				}
 				break;
 			// case LEVEL_MAPEDITOR:
 			// 	pLevel = CLevel_MapEditor::Create(m_pDevice, m_pContext);
@@ -64,7 +68,7 @@ void CLevel_Loading::Late_Tick(_double TimeDelta)
 					Safe_Release(pGameInstance);
 					return;
 				}
-		}
+		// }
 	}
 
 	Safe_Release(pGameInstance);

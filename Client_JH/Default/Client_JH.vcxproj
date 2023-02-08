@@ -177,6 +177,7 @@
     <ClInclude Include="..\public\Boss_Golem_State.h" />
     <ClInclude Include="..\public\Bullet.h" />
     <ClInclude Include="..\public\BulletEffect.h" />
+    <ClInclude Include="..\public\Button_Play.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\CursorUI.h" />
     <ClInclude Include="..\public\DamageFont_Mgr.h" />
@@ -227,6 +228,7 @@
     <ClInclude Include="..\public\Little_Bug.h" />
     <ClInclude Include="..\public\Little_Bug_State.h" />
     <ClInclude Include="..\public\Loader.h" />
+    <ClInclude Include="..\public\Loading_Fire.h" />
     <ClInclude Include="..\public\MagicStone.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Monster.h" />
@@ -240,6 +242,7 @@
     <ClInclude Include="..\public\RocketArm.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\SkySphere.h" />
+    <ClInclude Include="..\public\Smoke.h" />
     <ClInclude Include="..\public\Static_Camera.h" />
     <ClInclude Include="..\public\StoneLight.h" />
     <ClInclude Include="..\public\StonePillar.h" />
@@ -261,6 +264,7 @@
     <ClCompile Include="..\private\Boss_Golem_State.cpp" />
     <ClCompile Include="..\private\Bullet.cpp" />
     <ClCompile Include="..\private\BulletEffect.cpp" />
+    <ClCompile Include="..\private\Button_Play.cpp" />
     <ClCompile Include="..\private\CursorUI.cpp" />
     <ClCompile Include="..\private\DamageFont_Mgr.cpp" />
     <ClCompile Include="..\private\Damage_Font.cpp" />
@@ -312,6 +316,7 @@
     <ClCompile Include="..\private\Little_Bug.cpp" />
     <ClCompile Include="..\private\Little_Bug_State.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
+    <ClCompile Include="..\private\Loading_Fire.cpp" />
     <ClCompile Include="..\private\MagicStone.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
@@ -325,6 +330,7 @@
     <ClCompile Include="..\private\RocketArm.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\SkySphere.cpp" />
+    <ClCompile Include="..\private\Smoke.cpp" />
     <ClCompile Include="..\private\Static_Camera.cpp" />
     <ClCompile Include="..\private\StoneLight.cpp" />
     <ClCompile Include="..\private\StonePillar.cpp" />

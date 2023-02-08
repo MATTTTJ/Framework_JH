@@ -74,7 +74,7 @@ void CImgui_LevelSwitcher::Render_ImguiSetting()
 void CImgui_LevelSwitcher::Render_EffectTool()
 {
 	static _uint item_current_idx = 0;
-	m_iEffectTagCnt = m_EffectTagList.size();
+	m_iEffectTagCnt = (_uint)m_EffectTagList.size();
 	if (ImGui::BeginTabItem("Effect_Tool"))
 	{
 		m_eTabId = TAB_EFFECT;

@@ -32,11 +32,11 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pGameO
 
 HRESULT CRenderer::Add_DebugRenderGroup(CComponent* pComponent)
 {
-	NULL_CHECK_RETURN(pComponent, E_FAIL);
-
-	m_DebugObject.push_back(pComponent);
-
-	Safe_AddRef(pComponent);
+	// NULL_CHECK_RETURN(pComponent, E_FAIL);
+	//
+	// m_DebugObject.push_back(pComponent);
+	//
+	// Safe_AddRef(pComponent);
 
 	return S_OK;
 }
@@ -162,13 +162,13 @@ HRESULT CRenderer::Draw_RenderGroup()
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonLight(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_FADE(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Glow(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
-	FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
+	// FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
 
 	if (nullptr != m_pTarget_Manager)
 	{
@@ -185,15 +185,13 @@ HRESULT CRenderer::Draw_RenderGroup()
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Bloom"), 700.0f, 100.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 700.0f, 300.f, 200.f, 200.f), E_FAIL);
 
-
-
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_Effect"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_Bloom"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_Blur"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_Outline"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Effect"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Bloom"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Blur"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Outline"));
 
 	}
 #endif
@@ -651,18 +649,16 @@ HRESULT CRenderer::Render_Glow()
 #ifdef _DEBUG
 HRESULT CRenderer::Render_DebugObject()
 {
-	if (m_bRender_Collider)
+	for (auto & pComponent : m_DebugObject)
 	{
-		for (auto & pComponent : m_DebugObject)
-		{
-			if (nullptr != pComponent)
-				pComponent->Render();
+		if (nullptr != pComponent)
+			pComponent->Render();
 
-			Safe_Release(pComponent);
-		}
-
-		m_DebugObject.clear();
+		Safe_Release(pComponent);
 	}
+
+	m_DebugObject.clear();
+	
 
 	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);

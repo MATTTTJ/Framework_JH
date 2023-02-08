@@ -594,6 +594,18 @@ _bool CGameUtils::FloatCmp(const _float& f1, const _float& f2, _float fEpsilon)
 	return fabs(f1 - f2) < fEpsilon;
 }
 
+_bool CGameUtils::Rect_Picking(HWND& hWnd, const RECT& Rect)
+{
+	POINT		pt;
+	GetCursorPos(&pt);
+	ScreenToClient(hWnd, &pt);
+
+	if (PtInRect(&Rect, pt))
+		return true;
+
+	return false;
+}
+
 _matrix CGameUtils::Get_PlayerPivotMatrix()
 {
 	return XMMatrixIdentity() * XMMatrixRotationY(XMConvertToRadians(180.f));
