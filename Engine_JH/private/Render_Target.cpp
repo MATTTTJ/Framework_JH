@@ -40,8 +40,8 @@ HRESULT CRender_Target::Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePix
 	ZeroMemory(&m_ViewPort, sizeof(D3D11_VIEWPORT));
 	m_ViewPort.TopLeftX = 0.f;
 	m_ViewPort.TopLeftY = 0.f;
-	m_ViewPort.Width = iWidth;
-	m_ViewPort.Height = iHeight;
+	m_ViewPort.Width = (_float)iWidth;
+	m_ViewPort.Height = (_float)iHeight;
 	m_ViewPort.MinDepth = 0.f;
 	m_ViewPort.MaxDepth = 1.f;
 

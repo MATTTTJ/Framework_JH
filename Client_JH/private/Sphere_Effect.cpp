@@ -53,7 +53,7 @@ void CSphere_Effect::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMLoadFloat4(&CGameInstance::GetInstance()->Get_CamPos()));
-	m_fTime += dTimeDelta;
+	m_fTime += (_float)dTimeDelta;
 
 	if (m_fTime > 1.f)
 		Set_Dead(true);

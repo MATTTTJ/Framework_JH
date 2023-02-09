@@ -599,7 +599,11 @@ _bool CBullet::Collision_To_Player(CCollider* pBulletCollider)
 	{
 		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pCollider->Get_Owner());
 		NULL_CHECK_RETURN(pPlayer, false);
-		pPlayer->Collision_Event(dynamic_cast<CMonster*>(m_pOwner));
+		CMonster* pMonster = dynamic_cast<CMonster*>(m_pOwner);
+		if (nullptr != pMonster)
+		{
+			pPlayer->Collision_Event(pMonster);
+		}
 		Set_Dead(true);
 
 		return true;

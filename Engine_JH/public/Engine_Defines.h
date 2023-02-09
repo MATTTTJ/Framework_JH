@@ -3,6 +3,8 @@
 #pragma warning (disable : 4005)
 #pragma warning (disable : 4251)
 #pragma warning (disable : 4996) // strcat 
+#pragma warning (disable : 4172) // strcat 
+#pragma warning (disable : 4996) // strcat 
 
 #include <d3d11.h>
 #include <Effects11/d3dx11effect.h>
