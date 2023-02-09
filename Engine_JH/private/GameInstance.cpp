@@ -79,6 +79,8 @@ void CGameInstance::Tick_Engine(_double TimeDelta)
 
 	
 	m_pObject_Manager->Tick(TimeDelta);
+
+	
 	m_pCamera_Manager->Tick();
 
 	m_pLevel_Manager->Tick(TimeDelta);
@@ -637,6 +639,13 @@ ID3D11ShaderResourceView* CGameInstance::Get_DiffuseTargetSRV()
 	NULL_CHECK_RETURN(m_pTarget_Manager, nullptr);
 
 	return m_pTarget_Manager->Get_SRV(TEXT("Target_Diffuse"));
+}
+
+ID3D11ShaderResourceView* CGameInstance::Get_OutLineTargetSRV()
+{
+	NULL_CHECK_RETURN(m_pTarget_Manager, nullptr);
+
+	return m_pTarget_Manager->Get_SRV(TEXT("Target_Outline"));
 }
 
 _bool CGameInstance::isInFrustum_WorldSpace(_fvector vWorldPos, _float fRange)

@@ -57,6 +57,9 @@ HRESULT CFire_Light::Initialize_Clone(const wstring& wstrPrototypeTag, void* pAr
 	m_iFrameCnt = 2;
 	m_iUV_Cur_Width_Num = 0;
 	m_iUV_Cur_Height_Num = 0;
+
+	m_fMaxRange = 0.f;
+	m_fMinRange = 9.f;
 	return S_OK;
 }
 
@@ -76,29 +79,54 @@ void CFire_Light::Tick(_double dTimeDelta)
 
 	// m_vUp = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_UP);
 
-
-	if(m_fMaxRange <= 1.f && m_bRangeChange == false)
+	_float fRange = CGameInstance::GetInstance()->Get_LightDesc(m_iLightNumber)->fRange;
+	if (m_bLobby == true)
 	{
-		m_fMaxRange += (_float)dTimeDelta * 2.f;
+		if (m_fMaxRange <= 1.f && m_bRangeChange == false)
+		{
+			m_fMaxRange += (_float)dTimeDelta;
 
-		if (m_fMaxRange > 1.f)
-			m_bRangeChange = true;
+			if (m_fMaxRange > 1.f)
+				m_bRangeChange = true;
 
-		if(m_bRangeChange == false)
-			CGameInstance::GetInstance()->Set_LightRange(m_iLightNumber, 8.f + m_fMaxRange);
+			if (m_bRangeChange == false)
+				CGameInstance::GetInstance()->Set_LightRange(m_iLightNumber, 3.f + m_fMaxRange);
 
-		
+
+		}
+		else if (m_bRangeChange == true)
+		{
+			m_fMaxRange -= (_float)dTimeDelta;
+
+			if (m_fMaxRange < 0.f)
+				m_bRangeChange = false;
+
+			CGameInstance::GetInstance()->Set_LightRange(m_iLightNumber, 3.f + m_fMaxRange);
+		}
 	}
-	else if (m_bRangeChange == true)
+	else
 	{
-		m_fMaxRange -= (_float)dTimeDelta * 4.f;
+		if (m_fMaxRange <= 1.f && m_bRangeChange == false)
+		{
+			m_fMaxRange += (_float)dTimeDelta * 2.f;
 
-		if (m_fMaxRange < 0.f)
-			m_bRangeChange = false;
+			if (m_fMaxRange > 1.f)
+				m_bRangeChange = true;
 
-		CGameInstance::GetInstance()->Set_LightRange(m_iLightNumber, 8.f + m_fMaxRange);
+			if (m_bRangeChange == false)
+				CGameInstance::GetInstance()->Set_LightRange(m_iLightNumber, 8.f + m_fMaxRange);
 
-		
+
+		}
+		else if (m_bRangeChange == true)
+		{
+			m_fMaxRange -= (_float)dTimeDelta * 4.f;
+
+			if (m_fMaxRange < 0.f)
+				m_bRangeChange = false;
+
+			CGameInstance::GetInstance()->Set_LightRange(m_iLightNumber, 8.f + m_fMaxRange);
+		}
 	}
 
 

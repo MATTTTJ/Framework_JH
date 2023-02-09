@@ -18,8 +18,18 @@ CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	, m_fDashTime(0.17f)
 	, m_fCurDashTime(0.f)
 	, m_bCanDash(true)
-{
 	
+{
+	m_PlayerOption.m_iMaxHp = 100;
+	m_PlayerOption.m_iHp = m_PlayerOption.m_iMaxHp;
+	m_PlayerOption.m_iGold = 500;
+	m_PlayerOption.m_iEmeraldCnt = 0;
+	m_PlayerOption.m_iMaxShieldPoint = 100;
+	m_PlayerOption.m_iShieldPoint = m_PlayerOption.m_iMaxShieldPoint;
+	m_PlayerOption.m_iPistol_BulletCnt = 300;
+	m_PlayerOption.m_iRifle_BulletCnt = 50;
+	m_PlayerOption.m_iInjector_BulletCnt = 50;
+	m_PlayerOption.m_iThrowCnt = 4;
 }
 
 CPlayer::CPlayer(const CPlayer & rhs)
@@ -32,22 +42,23 @@ CPlayer::CPlayer(const CPlayer & rhs)
 	, m_fDashTime(rhs.m_fDashTime)
 	, m_fCurDashTime(rhs.m_fCurDashTime)
 	, m_bCanDash(rhs.m_bCanDash)
+	, m_PlayerOption(rhs.m_PlayerOption)
 {
 	m_tWeaponDesc[WEAPON_DEFAULT].m_wstrWeaponName = L"WEAPON_DEFAULT";
 	m_tWeaponDesc[WEAPON_FLAMEBULLET].m_wstrWeaponName = L"WEAPON_FLAMEBULLET";
 	m_tWeaponDesc[WEAPON_FIREDRAGON].m_wstrWeaponName = L"WEAPON_FIREDRAGON";
 	m_tWeaponDesc[WEAPON_POISON].m_wstrWeaponName = L"WEAPON_POISON";
-
-	m_PlayerOption.m_iMaxHp = 100;
-	m_PlayerOption.m_iHp = m_PlayerOption.m_iMaxHp;
-	m_PlayerOption.m_iGold = 500;
-	m_PlayerOption.m_iEmeraldCnt = 0;
-	m_PlayerOption.m_iMaxShieldPoint = 100;
-	m_PlayerOption.m_iShieldPoint = m_PlayerOption.m_iMaxShieldPoint;
-	m_PlayerOption.m_iPistol_BulletCnt = 300;
-	m_PlayerOption.m_iRifle_BulletCnt = 50;
-	m_PlayerOption.m_iInjector_BulletCnt = 50;
-	m_PlayerOption.m_iThrowCnt = 4;
+	//
+	// m_PlayerOption.m_iMaxHp = 100;
+	// m_PlayerOption.m_iHp = m_PlayerOption.m_iMaxHp;
+	// m_PlayerOption.m_iGold = 500;
+	// m_PlayerOption.m_iEmeraldCnt = 0;
+	// m_PlayerOption.m_iMaxShieldPoint = 100;
+	// m_PlayerOption.m_iShieldPoint = m_PlayerOption.m_iMaxShieldPoint;
+	// m_PlayerOption.m_iPistol_BulletCnt = 300;
+	// m_PlayerOption.m_iRifle_BulletCnt = 50;
+	// m_PlayerOption.m_iInjector_BulletCnt = 50;
+	// m_PlayerOption.m_iThrowCnt = 4;
 
 	memset(&m_bCurRoomType, false, sizeof(_bool) * ROOMTYPE_END);
 }
@@ -183,7 +194,7 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-14.f, 0.f, 0.8f, 1.f));
 	// m_pNavigationCom->Set_CellIndex(40);
-
+	// m_pCamera = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back();
 	dynamic_cast<CDynamic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Set_LobbyCam(false);
 
 	m_bCurRoomType[ROOM_A] = true;
@@ -297,6 +308,12 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_bNowIsDash = true;
 		m_bCanDash = false;
 	}
+
+	if (CGameInstance::GetInstance()->Key_Down(DIK_END))
+	{
+		m_bPlayFinish = true;
+	}
+
 	// if (CGameInstance::GetInstance()->Key_Down(DIK_F6))
 	// {
 	// 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
@@ -454,7 +471,7 @@ HRESULT CPlayer::Render()
 		if(hNormal == S_FALSE)
 		{
 			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-			m_pSpecularMap_Arm->Bind_ShaderResource(m_pShaderCom, L"g_ModelSpecularTexture");
+			// m_pSpecularMap_Arm->Bind_ShaderResource(m_pShaderCom, L"g_ModelSpecularTexture");
 			m_bNormalTexOn = false;
 		}
 		else if (hNormal == S_OK)
@@ -465,15 +482,15 @@ HRESULT CPlayer::Render()
 			m_bNormalTexOn = true;
 		}
 
-		HRESULT hSpecular = m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_OPACITY, L"g_ModelSpecularTexture");
-		if(hSpecular == S_FALSE)
-		{
-			m_bSpecularTexOn = false;
-		}
-		if(hSpecular== S_OK)
-		{
-			m_bSpecularTexOn = true;
-		}
+		// HRESULT hSpecular = m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_OPACITY, L"g_ModelSpecularTexture");
+		// if(hSpecular == S_FALSE)
+		// {
+			// m_bSpecularTexOn = false;
+		// }
+		// if(hSpecular== S_OK)
+		// {
+			// m_bSpecularTexOn = true;
+		// }
 		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices",1);
@@ -600,17 +617,20 @@ HRESULT CPlayer::SetUp_ShaderResources()
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	_float3 tmp;
-	XMStoreFloat3(&tmp, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	// _float3 tmp;
+	// XMStoreFloat3(&tmp, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_PixelOffset", &(_float4(1 / (_float)g_iWinSizeX, 1 / (_float)g_iWinSizeY, 0.f, 0.f)) , sizeof(_float4)), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_PixelOffset", &(_float4(1 / (_float)g_iWinSizeX, 1 / (_float)g_iWinSizeY, 0.f, 0.f)) , sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
-	
-	m_vCamPos = static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_Transform()->Get_State(CTransform::STATE_TRANSLATION);
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vCameraPos", &XMVector3Normalize(_float3(m_vCamPos.x, m_vCamPos.y, m_vCamPos.z)), sizeof(_float3)), E_FAIL);
+
+	// if(m_pCamera != nullptr)
+	// {
+		// m_vCamPos = m_pCamera->Get_Transform()->Get_State(CTransform::STATE_TRANSLATION);
+	// }
+	// FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vCameraPos", &XMVector3Normalize(_float3(m_vCamPos.x, m_vCamPos.y, m_vCamPos.z)), sizeof(_float3)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &XMVectorSet(0.f,0.f,0.f,1.f), sizeof(_vector)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bHit", &m_bHitColor, sizeof(_bool)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_Outline_Offset", &m_fOutLineOffset, sizeof(_float)), E_FAIL);
@@ -633,84 +653,84 @@ HRESULT CPlayer::Ready_UI()
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Enter"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Base"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Hp"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 	
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Shield"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_Player_Skill_BaseTex"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Skill"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_Player_GoldTex"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_Player_EmeraldTex"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Throw"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Dash"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Weapon"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_Number_1"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_WeaponPic"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 	
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_BulletPic"));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
@@ -721,28 +741,28 @@ HRESULT CPlayer::Ready_UI()
 
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_BulletCnt", &eType));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	eType.m_eType = CUI::CNT_GOLD;
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_GoldCnt", &eType));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	eType.m_eType = CUI::CNT_THROW;
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_ThrowCnt", &eType));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
 	eType.m_eType = CUI::CNT_EMERALD;
 	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_PlayerUI_EmeraldCnt", &eType));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
-	pPlayerUI->Set_Owner(this);
+	pPlayerUI->Set_Player(this);
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
@@ -792,8 +812,17 @@ void CPlayer::Free()
 	Safe_Release(m_pFirstAimColliderCom);
 	Safe_Release(m_pSecondAimColliderCom);
 
-	for (auto& pUI : m_vecPlayerUI)
-		Safe_Release(pUI);
+	_uint size = (_uint)m_vecPlayerUI.size();
+
+	for(_uint i =0; i < size; ++i)
+	{
+		Safe_Release(m_vecPlayerUI[i]);
+	}
+
+	// for (auto& pUI : m_vecPlayerUI)
+		// Safe_Release(pUI);
+
+
 	Safe_Release(m_pSpecularMap_Arm);
 	Safe_Release(m_pSpecularMap_Weapon);
 

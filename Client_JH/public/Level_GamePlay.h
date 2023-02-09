@@ -44,6 +44,11 @@ private:
 	vector<CGameObject*>	m_vecButton;
 
 	_bool					m_bButton = false;
+
+	CGameObject*			m_pPlayer = nullptr;
+	_float					m_fCurClickedDelay = 0.f;
+	_float					m_fClickedDelay = 0.5f;
+	_bool					m_bIsClicked = false;
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

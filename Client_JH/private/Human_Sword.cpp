@@ -121,8 +121,9 @@ void CHuman_Sword::Late_Tick(_double TimeDelta)
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 	{
-		if(m_bIsOnPlayerEyes)
+		// if(m_bIsOnPlayerEyes)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_OUTLINE, this);
+
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -373,8 +374,15 @@ HRESULT CHuman_Sword::Render_OutLineFlag()
 
 	/* 셰이더 전역변수에 값을 던진다. */
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+	if (m_bIsOnPlayerEyes)
+	{
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &m_vOnAimOutLineColor, sizeof(_float4)), E_FAIL);
+	}
+	else
+	{
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &XMVectorSet(1.f, 0.3f, 0.3f, 1.f), sizeof(_float4)), E_FAIL);
+	}
 
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &m_vOnAimOutLineColor, sizeof(_float)), E_FAIL);
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 

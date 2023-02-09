@@ -493,7 +493,7 @@ PS_OUT PS_MAIN_UVSPRITE(PS_IN In)
 	// 	discard;
 	if (Out.vColor.a > 0.f)
 	{
-		Out.vFlag.r = 0.f;
+		Out.vFlag.r = 1.f;
 		Out.vFlag.g = 1.f;
 		Out.vFlag.b = 0.f;
 	}

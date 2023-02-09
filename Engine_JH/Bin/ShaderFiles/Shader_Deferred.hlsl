@@ -39,7 +39,7 @@ texture2D		g_DiffuseTexture_Deferred;
 texture2D		g_ShadeTexture_Deferred;
 texture2D		g_SpecularTexture_Deferred;
 texture2D		g_OutlineTexture;
-
+texture2D		g_OutlineFlagTexture;
 
 sampler LinearSampler = sampler_state
 {
@@ -354,8 +354,8 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	// 	Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
 	// }
 
-	if (vOutline.a == 1.f)
-		Out.vColor.rgb = vOutline.rgb;
+	// if (vOutline.a == 1.f)
+	// 	Out.vColor.rgb = vOutline.rgb;
 
 	if (Out.vColor.a == 0.f)
 		discard;
@@ -656,30 +656,41 @@ float mask[9] =
 	-1, -1, -1
 }; //라플라스 필터
 
-float coord[3] = { -0.5f, 0.f, 0.5f };
+float coord[3] = { -1.5f, 0.f, 1.5f };
 
 PS_OUT PS_OUTLINE(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	vector vFlag = g_FlagTexture.Sample(LinearSampler, In.vTexUV);
+	vector vFlag = g_OutlineFlagTexture.Sample(LinearSampler, In.vTexUV);
 	float fFlag;
 
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			fFlag += g_FlagTexture.Sample(LinearSampler, In.vTexUV + float2(coord[j] / g_iWinCX, coord[i] / g_iWinCY)).r;
+			fFlag += g_OutlineFlagTexture.Sample(LinearSampler, In.vTexUV + float2(coord[j] / 2540, coord[i] / 1369)).r;
 		}
 	}
 	fFlag /= 9.f;
 	
-	if (vFlag.r > 0.f && vFlag.r != fFlag )
-		Out.vColor = vector(vFlag.rgb, 1.f);
+	if (vFlag.r > 0.f && vFlag.r != fFlag)
+	{
+		if (vFlag.r == 1.f)
+		{
+			Out.vColor = vector(0.f, 0.f, 0.f, 1.f);
+		}
+		else
+			Out.vColor = vector(vFlag.rgb, 1.f);
+	}
 	else
+	{
+		Out.vColor.a = 0.f;
 		discard;
+	}
 
-
+	// if (Out.vColor.a == 0.f)
+	// 	discard;
 
 	// for (int i = 0; i < 3; i++)
 	// {

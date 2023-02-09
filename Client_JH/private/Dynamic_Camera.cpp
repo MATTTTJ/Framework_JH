@@ -128,7 +128,17 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 		m_pTransformCom->Set_WorldMatrix(PivotMatrix);
 	}
 	else
-		m_pTransformCom->Go_Straight(TimeDelta * 0.15f, CTransform::TRANS_BULLET);
+	{
+		// m_pTransformCom->Go_Straight(TimeDelta * 0.15f, CTransform::TRANS_BULLET);
+	}
+
+	// m_bLobby = false;
+
+
+	// if(m_bArrivedCam == true)
+	// {
+	// 	m_bLobby = false;
+	// }
 
 
 	if (GetKeyState(VK_UP) & 0x8000)

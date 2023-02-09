@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Camera_Manager.h"
+
+#include "GameInstance.h"
 #include "Object_Manager.h"
 #include "PipeLine.h"
 #include "Light_Manager.h"
@@ -16,22 +18,32 @@ void CCamera_Manager::Tick()
 	if (0 == m_vecCamera.size())
 		return;
 
-	CCamera* pCamera = m_vecCamera[m_iIndex];
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-	NULL_CHECK(pCamera);
+	if (pGameInstance->Get_CurLevelIndex() == 2)
+	{
+		CCamera* pCamera = m_vecCamera[m_iIndex];
 
-	CPipeLine* pPipeLine = CPipeLine::GetInstance();
+		NULL_CHECK(pCamera);
 
-	CTransform* pTransformCom = dynamic_cast<CTransform*>(pCamera->Get_Component(L"Com_Transform"));
-	CCamera::CAMERADESC tCameraDesc = pCamera->Get_CamDesc();
+		CPipeLine* pPipeLine = CPipeLine::GetInstance();
 
-	_matrix ViewMatrix = XMMatrixInverse(nullptr, pTransformCom->Get_WorldMatrix());
-	pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, ViewMatrix);
+		CTransform* pTransformCom = dynamic_cast<CTransform*>(pCamera->Get_Component(L"Com_Transform"));
+		CCamera::CAMERADESC tCameraDesc = pCamera->Get_CamDesc();
 
-	_matrix ProjMatrix = XMMatrixPerspectiveFovLH(tCameraDesc.fFovy, tCameraDesc.fAspect, tCameraDesc.fNear, tCameraDesc.fFar);
-	pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJ, ProjMatrix);
+		_matrix ViewMatrix = XMMatrixInverse(nullptr, pTransformCom->Get_WorldMatrix());
+		pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, ViewMatrix);
 
-	Set_Cascade();
+		_matrix ProjMatrix = XMMatrixPerspectiveFovLH(tCameraDesc.fFovy, tCameraDesc.fAspect, tCameraDesc.fNear, tCameraDesc.fFar);
+		pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJ, ProjMatrix);
+
+		Set_Cascade();
+	}
+
+	if(pGameInstance->Get_CurLevelIndex() == 1)
+	{
+		m_vecCamera.clear();
+	}
 }
 
 HRESULT CCamera_Manager::Add_Camera(_uint iLevelIndex, const wstring pLayerTag, const wstring pPrototypeTag,
@@ -40,6 +52,7 @@ HRESULT CCamera_Manager::Add_Camera(_uint iLevelIndex, const wstring pLayerTag, 
 	CGameObject* pCamera = nullptr;
 	pCamera = CObject_Manager::GetInstance()->Clone_GameObjectReturnPtr(iLevelIndex, pLayerTag, pPrototypeTag, &tCameraDesc);
 	NULL_CHECK_RETURN(pCamera, E_FAIL);
+
 	m_vecCamera.push_back(dynamic_cast<CCamera*>(pCamera));
 
 	return S_OK;
@@ -126,7 +139,7 @@ void CCamera_Manager::Clear()
 
 void CCamera_Manager::Set_Cascade()
 {// 스태틱카메라
-	CCamera* pCamera = m_vecCamera[1];
+	CCamera* pCamera = m_vecCamera[m_iIndex];
 	if (nullptr == pCamera)
 		return;
 

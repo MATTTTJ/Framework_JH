@@ -11,14 +11,14 @@ texture2D		g_NormalTexture;
 texture2D		g_ModelGlowTexture;
 texture2D		g_ModelTestTexture;
 texture2D		g_ModelSpecularTexture;
-float3			g_vColor = float3(0.f, 0.f, 0.f);
+float4			g_vColor = float4(0.f, 0.f, 0.f,0.f);
 bool			g_bNormalTexOn;
 bool			g_bSpecularTexOn;
 bool			g_bHit = false;
 float4			g_vLimColor; 
 float			g_Outline_Offset = 0.03f;
 float			g_fFar = 300.f;
-
+texture2D       g_OutLineTexture;
 
 struct VS_IN
 {
@@ -189,7 +189,14 @@ PS_OUT PS_MAIN(PS_IN In)
 		Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	}
 
-	Out.vDiffuse = vDiffuse;
+	// vector OutlineTex = g_OutLineTexture.Sample(LinearSampler, In.vTexUV);
+	//
+	// if(OutlineTex.a == 1.f)
+	// {
+	// 	Out.vDiffuse = vDiffuse + OutlineTex;
+	// }
+	// else
+		Out.vDiffuse = vDiffuse;
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 0.f);
 	return Out;
 }
@@ -306,7 +313,7 @@ PS_OUT_FLAG PS_OUTLINE(PS_IN In)
 {
 	PS_OUT_FLAG		Out = (PS_OUT_FLAG)0;
 	//¿Ü°û¼± À¯¹«
-	Out.vFlag = vector(g_vColor, 1.f);
+	Out.vFlag = vector(g_vColor.rgb, 1.f);
 
 	return Out;
 }
@@ -467,8 +474,8 @@ technique11 DefaultTechnique
 	pass Outline6
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;

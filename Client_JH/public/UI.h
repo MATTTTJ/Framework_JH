@@ -51,7 +51,8 @@ public:
 
 	virtual	void				SetProgress(_int iCurHP, _uint iMaxHP);
 	void						Set_Monster(class CMonster* pMonster, class CModel* pModel) { m_pMonster = pMonster; m_pModelCom = pModel; }
-	void						Set_Owner(CGameObject* pOwner) { m_pOwner = pOwner; }
+	void						Set_Player(CGameObject* pOwner) { m_pOwner = pOwner; }
+	void						Set_Player(CPlayer* pPlayer) { m_pPlayer = pPlayer; }
 	void						Set_Weapon_State(CWeapon_State* pState) { m_pWeapon_State = pState; }
 	virtual HRESULT				Initialize_Prototype() override;
 	virtual HRESULT				Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
@@ -84,6 +85,7 @@ protected:
 	CModel*						m_pModelCom = nullptr;
 	CWeapon_State*				m_pWeapon_State = nullptr;
 	CPlayer::PLAYEROPTION		m_PlayerOption;
+	CPlayer*					m_pPlayer = nullptr;
 protected:
 	_float						m_fX, m_fY, m_fSizeX, m_fSizeY;
 	_float4x4					m_ViewMatrix;

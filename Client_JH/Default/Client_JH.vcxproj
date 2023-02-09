@@ -229,6 +229,7 @@
     <ClInclude Include="..\public\Little_Bug_State.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\Loading_Fire.h" />
+    <ClInclude Include="..\public\Lobby_Owner.h" />
     <ClInclude Include="..\public\MagicStone.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Monster.h" />
@@ -317,6 +318,7 @@
     <ClCompile Include="..\private\Little_Bug_State.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\Loading_Fire.cpp" />
+    <ClCompile Include="..\private\Lobby_Owner.cpp" />
     <ClCompile Include="..\private\MagicStone.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />

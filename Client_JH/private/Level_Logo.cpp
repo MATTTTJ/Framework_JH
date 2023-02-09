@@ -33,9 +33,9 @@ HRESULT CLevel_Logo::Initialize()
 	// FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_ZCamera"), E_FAIL);
 
 
-	CGameInstance::GetInstance()->Clear_ImguiObjects();
+	// CGameInstance::GetInstance()->Clear_ImguiObjects();
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_Setting::Create());
-	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
+	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_ProtoMgr::Create(m_pDevice, m_pContext));
 	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_MapEditor::Create());
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_AnimationMgr::Create());

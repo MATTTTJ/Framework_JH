@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Level.h"
+#include "Light_Manager.h"
 
 IMPLEMENT_SINGLETON(CLevel_Manager)
 
@@ -18,7 +19,15 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel* pNewLevel)
 	Safe_AddRef(pGameInstance);
 
 	if (nullptr != m_pCurrentLevel)
+	{
 		pGameInstance->Clear_Level(m_iLevelIndex);
+
+		// if (iLevelIndex == 1 && m_iLevelIndex == 2)
+		// {
+		// 	CCamera_Manager::GetInstance()->DestroyInstance();
+		// 	// CLight_Manager::GetInstance()->DestroyInstance();
+		// }
+	}
 
 	Safe_Release(m_pCurrentLevel);
 

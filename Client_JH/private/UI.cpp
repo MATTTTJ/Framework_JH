@@ -40,6 +40,9 @@ void CUI::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
+	// if (m_pOwner != nullptr && m_pOwner->Check_Dead() == true)
+	// 	Safe_Release(m_pOwner);
+
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
 	// if (nullptr == m_pOwner)
@@ -61,11 +64,17 @@ void CUI::Tick(_double dTimeDelta)
 void CUI::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
+	if (m_pOwner !=nullptr && m_pOwner->Check_Dead() == true)
+		Set_Dead(true);
+
 }
 
 HRESULT CUI::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+	if (m_pOwner != nullptr && m_pOwner->Check_Dead() == true)
+		Set_Dead(true);
 
 	return S_OK;
 }

@@ -43,7 +43,6 @@ protected:
 	virtual HRESULT Render() override;
 
 private:
-	CPlayer*		m_pPlayer = nullptr;
 
 private:
 	HRESULT			SetUp_Component();

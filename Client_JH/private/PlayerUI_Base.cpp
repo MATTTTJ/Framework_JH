@@ -150,6 +150,9 @@ HRESULT CPlayerUI_Enter::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 1.f));
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(200.f, -150.f, 0.f, 1.f));
+
+	m_pPlayer = dynamic_cast<CPlayer*>(m_pOwner);
+
 	return S_OK;
 }
 
@@ -168,12 +171,12 @@ void CPlayerUI_Enter::Late_Tick(_double dTimeDelta)
 
 HRESULT CPlayerUI_Enter::Render()
 {
-	if (m_pOwner != nullptr)
-	{
-		if (dynamic_cast<CPlayer*>(m_pOwner)->Get_PortalUI() == true)
-		{
-			FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
+	if (m_pPlayer != nullptr)
+	{
+		if (m_pPlayer->Check_Dead() == false && m_pPlayer->Get_PortalUI() == true )
+		{
 			FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
 			m_pShaderCom->Begin(1);
@@ -291,7 +294,7 @@ void CPlayerUI_Hp_Red::Tick(_double dTimeDelta)
 	__super::Tick(dTimeDelta);
 
 
-	m_PlayerOption = dynamic_cast<CPlayer*>(m_pOwner)->Get_PlayerStat();
+	m_PlayerOption = m_pPlayer->Get_PlayerStat();
 	m_iCurHP = m_PlayerOption.m_iHp;
 	if (m_iCurHP != m_iLastHP)
 	{
@@ -421,7 +424,7 @@ void CPlayerUI_Hp_Shield::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	m_PlayerOption = dynamic_cast<CPlayer*>(m_pOwner)->Get_PlayerStat();
+	m_PlayerOption = m_pPlayer->Get_PlayerStat();
 	m_iCurHP = m_PlayerOption.m_iShieldPoint;
 
 	if (m_iCurHP != m_iLastHP)
@@ -1035,10 +1038,10 @@ void CPlayer_UI_Throw::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	if (nullptr == m_pOwner)
+	if (nullptr == m_pPlayer)
 		return;
 
-	m_iThrownCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_ThrowCnt();
+	m_iThrownCnt = m_pPlayer->Get_ThrowCnt();
 
 
 }
@@ -1157,7 +1160,7 @@ HRESULT CPlayer_UI_Dash::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeX, 1.f));
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(880.f, -480.f, 0.f, 1.f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(-850.f, -470.f, 0.f, 1.f));
-
+	
 	return S_OK;
 }
 
@@ -1205,7 +1208,8 @@ HRESULT CPlayer_UI_Dash::SetUp_ShaderResources()
 	m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix");
 	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
 	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
-	if (dynamic_cast<CPlayer*>(m_pOwner)->Get_CanDash() == true)
+
+	if (m_pPlayer->Get_CanDash() == true)
 		m_pOnTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
 	else
 		m_pOffTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
@@ -1403,10 +1407,10 @@ void CPlayer_UI_Weapon_Number::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	if (nullptr == m_pOwner)
+	if (nullptr == m_pPlayer)
 		return;
 
-	m_wstrWeaponNumber = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponNumber();
+	m_wstrWeaponNumber =	m_pPlayer->Get_CurWeaponNumber();
 }
 
 void CPlayer_UI_Weapon_Number::Late_Tick(_double dTimeDelta)
@@ -1538,10 +1542,10 @@ void CPlayer_UI_Weapon_Pic::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	if (nullptr == m_pOwner)
+	if (nullptr == m_pPlayer)
 		return;
 
-	m_wstrWeaponName = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponName();
+	m_wstrWeaponName = m_pPlayer->Get_CurWeaponName();
 
 	if (m_wstrWeaponName == L"WEAPON_FIREDRAGON")
 	{
@@ -1687,10 +1691,10 @@ void CPlayer_UI_BulletType::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	if (nullptr == m_pOwner)
+	if (nullptr == m_pPlayer)
 		return;
 
-	m_wstrWeaponName = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponName();
+	m_wstrWeaponName = m_pPlayer->Get_CurWeaponName();
 }
 
 void CPlayer_UI_BulletType::Late_Tick(_double dTimeDelta)
@@ -1833,19 +1837,19 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	if (nullptr == m_pOwner || CNT_END == m_eType)
+	if (nullptr == m_pPlayer || CNT_END == m_eType)
 		return;
 
-	m_wstrWeaponName = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponName();
+	m_wstrWeaponName = m_pPlayer->Get_CurWeaponName();
 
 	switch (m_eType)
 	{
 	case CNT_GOLD:
-		if (m_iLastGoldCnt == dynamic_cast<CPlayer*>(m_pOwner)->Get_GoldCnt())
+		if (m_iLastGoldCnt == m_pPlayer->Get_GoldCnt())
 			break;
 		else
 		{
-			m_iGoldCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_GoldCnt();
+			m_iGoldCnt = m_pPlayer->Get_GoldCnt();
 			if (m_iGoldCnt != m_iLastGoldCnt)
 			{
 				for (auto& iter : m_CountUIList[CNT_GOLD])
@@ -1868,7 +1872,7 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 			{
 				//Rifle
 				m_eWeaponType = WEAPON_RIFLE;
-				m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_RifleBulletCnt();
+				m_iPlayer_BulletCnt = m_pPlayer->Get_RifleBulletCnt();
 				m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
 				for (auto& iter : m_CountUIList[CNT_BULLET])
@@ -1885,7 +1889,7 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 				//Injector
 				m_eWeaponType = WEAPON_INJECTOR;
 
-				m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_InjectorBulletCnt();
+				m_iPlayer_BulletCnt = m_pPlayer->Get_InjectorBulletCnt();
 				m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
 				for (auto& iter : m_CountUIList[CNT_BULLET])
@@ -1903,7 +1907,7 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 				//Pistol
 				m_eWeaponType = WEAPON_PISTOL;
 
-				m_iPlayer_BulletCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_PistolBulletCnt();
+				m_iPlayer_BulletCnt = m_pPlayer->Get_PistolBulletCnt();
 				m_iWeapon_BulletCnt = m_pWeapon_State->Get_CurWeaponBulletCnt(m_wstrWeaponName);
 
 				for (auto& iter : m_CountUIList[CNT_BULLET])
@@ -1921,11 +1925,11 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 		break;
 
 	case CNT_THROW:
-		if (m_iLastThrowCnt == dynamic_cast<CPlayer*>(m_pOwner)->Get_ThrowCnt())
+		if (m_iLastThrowCnt == m_pPlayer->Get_ThrowCnt())
 			break;
 		else
 		{
-			m_iThrowCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_ThrowCnt();
+			m_iThrowCnt = m_pPlayer->Get_ThrowCnt();
 
 			if (m_iThrowCnt != m_iLastThrowCnt)
 			{
@@ -1941,11 +1945,11 @@ void CPlayer_UI_CountMachine::Tick(_double dTimeDelta)
 			break;
 		}
 	case CNT_EMERALD:
-		if (m_iLastEmeraldCnt == dynamic_cast<CPlayer*>(m_pOwner)->Get_EmeraldCnt())
+		if (m_iLastEmeraldCnt == m_pPlayer->Get_EmeraldCnt())
 			break;
 		else
 		{
-			m_iEmeraldCnt = dynamic_cast<CPlayer*>(m_pOwner)->Get_EmeraldCnt();
+			m_iEmeraldCnt = m_pPlayer->Get_EmeraldCnt();
 
 			if (m_iEmeraldCnt != m_iLastEmeraldCnt)
 			{

@@ -23,12 +23,14 @@ public:
 	virtual void			Tick(_double TimeDelta) override;
 	virtual void			Late_Tick(_double TimeDelta) override;
 	virtual HRESULT			Render() override;
+	virtual HRESULT			Render_ShadowDepth();
+	virtual HRESULT			Render_OutLineFlag();
 
 private:
 	CShader*				m_pShaderCom	= nullptr;
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
-	CTexture*				m_pTexture		= nullptr;
+	_float					m_fOutLineOffset = 0.003f;
 
 	_float					m_fDegree = 0.f;
 private:

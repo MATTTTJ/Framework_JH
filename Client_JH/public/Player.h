@@ -67,7 +67,7 @@ public:
 	_bool					Get_CurRoomType(ROOMTYPE eType) { return m_bCurRoomType[eType]; }
 	void					Set_CellIndex(_uint iCellIdx);
 
-
+	_bool					Check_PlayFinish() { return m_bPlayFinish; }
 
 	void					Get_Damaged() { m_PlayerOption.m_iHp -= 30; }
 	PLAYEROPTION			Get_PlayerStat() { return m_PlayerOption; }
@@ -87,7 +87,7 @@ public:
 	const wstring&			Get_CurWeaponName(void) const { return m_PlayerOption.m_wstrCurWeaponName; }
 	const wstring&			Get_CurWeaponNumber(void) const { return m_PlayerOption.m_wstrWeaponNumber; }
 	CWeapon_State*			Get_WeaponStatePtr(void) { return m_pWeaponState; }
-
+	
 	CModel*					Get_CurWeaponModelCom(void);
 	_float4x4				Get_HeadModelCom(void);
 	_uint					Get_EmeraldCnt(void) { return m_PlayerOption.m_iEmeraldCnt; }
@@ -114,13 +114,15 @@ public :
 	void					Is_Dash(); 
 
 	_float					m_fDegree = 0.f;
-
+	_bool					m_bPlayFinish = false;
 private:
 	CShader*				m_pShaderCom	= nullptr;
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
 	CTexture*				m_pSpecularMap_Arm = nullptr;
 	CTexture*				m_pSpecularMap_Weapon = nullptr;
+
+	CGameObject*			m_pCamera = nullptr;
 
 	CCollider*				m_pFirstAimColliderCom = nullptr;
 	CCollider*				m_pSecondAimColliderCom = nullptr;

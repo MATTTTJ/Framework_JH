@@ -31,6 +31,7 @@
 #include "LaserBullet.h"
 #include "Little_Bug.h"
 #include "Loading_Fire.h"
+#include "Lobby_Owner.h"
 #include "MagicStone.h"
 #include "Monster.h"
 #include "MonsterUI.h"
@@ -360,7 +361,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Normal_BossMap", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Normal_3909Area/Remove_CTex_3909.model", PivotMatrix)), E_FAIL);
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LaiHome", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/LaiLuo_Home/LaiHome2.fbx", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LaiHome", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/LaiLuo_Home/Lai_Home.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LobbyOwner", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Lobby_Owner/Lobby_Owner.model", PivotMatrix)), E_FAIL);
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Default_Pistol", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Default_Pistol/Default_Pistol_Alpha.model", PivotMatrix)), E_FAIL);
@@ -508,6 +510,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Fire_Light", CFire_Light::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Home", CHome::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Lobby_Owner", CLobby_Owner::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	// Cursor
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Battle_Cursor", CCursorUI::Create(m_pDevice, m_pContext)), E_FAIL);

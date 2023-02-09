@@ -15,6 +15,7 @@
 #include "Imgui_NavigationEditor.h"
 #include "Trigger.h"
 #include "Camera.h"
+#include "Fire_Light.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -25,6 +26,11 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * p
 HRESULT CLevel_GamePlay::Initialize()
 {
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
+	CGameInstance::GetInstance()->Clear_Lights();
+	CGameInstance::GetInstance()->Clear_Camera();
+
+	// CGameInstance::GetInstance()->Clear_();
+
 	FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
 	// FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
 	// FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
@@ -50,24 +56,51 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	_uint ButtonSize = (_uint)m_vecButton.size();
-
-	for (_uint i = 0; i < ButtonSize; ++i)
+	if(m_bButton == true)
 	{
-		if(dynamic_cast<CButton_Play*>(m_vecButton[i])->Check_Clicked())
+		m_fCurClickedDelay += (_float)TimeDelta;
+	}
+
+	if(m_fCurClickedDelay >= m_fClickedDelay)
+	{
+		m_fCurClickedDelay = 0.f;
+		m_bIsClicked = true;
+		m_bButton = false;
+	}
+
+	if(m_pPlayer != nullptr)
+	{
+		if(dynamic_cast<CPlayer*>(m_pPlayer)->Check_PlayFinish())
 		{
-			if(i == 0)
+			Ready_Layer_Camera(L"Layer_ZCamera");
+			Ready_Layer_LaiHome(L"Layer_LaiHome");
+			Ready_Layer_Lobby(L"Layer_LobbyMap");
+			Ready_Layer_LobbyButton(L"Layer_Button");
+		}
+	}
+
+
+	if (m_bButton == false && m_bIsClicked == false)
+	{
+		_uint ButtonSize = (_uint)m_vecButton.size();
+
+		for (_uint i = 0; i < ButtonSize; ++i)
+		{
+			if (dynamic_cast<CButton_Play*>(m_vecButton[i])->Check_Clicked())
 			{
-				m_bButton = true;
-			}
-			else if(i ==1)
-			{
-				// »óÁ¡ Ã¢ ¶ç¿ì±â 
+				if (i == 0)
+				{
+					m_bButton = true;
+				}
+				else if (i == 1)
+				{
+					// »óÁ¡ Ã¢ ¶ç¿ì±â 
+				}
 			}
 		}
 	}
 
-	if(CGameInstance::GetInstance()->Key_Down(DIK_HOME) || m_bButton == true)
+	if(m_bIsClicked == true)
 	{
 		_uint vecsize = (_uint)m_vecLobbyObject.size();
 	
@@ -90,7 +123,28 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		Ready_Layer_Monster(L"Layer_Monster");
 		Ready_Layer_Effect(L"Layer_Smoke");
 		Ready_Layer_Trigger(L"Layer_Trigger");
-	
+
+		CGameInstance::GetInstance()->Set_LightPos(2, XMVectorSet(-11.08f, 1.734f, -3.234f, 1.f));
+		
+
+		CGameInstance::GetInstance()->Set_LightPos(3, XMVectorSet(-6.242f, 1.088f, 19.687f, 1.f));
+
+		CGameObject::GAMEOBJECTDESC	tFireLightDesc;
+		ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+		tFireLightDesc.TransformDesc.vInitPos = _float3(-11.08f, 1.335f, -3.234f);
+		tFireLightDesc.m_iNumber = 2;
+		tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+		CFire_Light*	pFire = nullptr;
+		pFire = (CFire_Light*)CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
+		pFire->Set_Lobby(false);
+
+		ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+		tFireLightDesc.TransformDesc.vInitPos = _float3(-6.242f, 1.335f, 19.687f);
+		tFireLightDesc.m_iNumber = 3;
+		tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+		pFire = (CFire_Light*)CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
+		pFire->Set_Lobby(false);
+
 		_bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Get_RenderState();
 		_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_RenderState();
 		DynamicCamera = !DynamicCamera;
@@ -99,6 +153,8 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		CGameInstance::GetInstance()->Change_Camera();
 
 		m_bButton = false;
+		m_bIsClicked = false;
+
 	}
 
 }
@@ -180,12 +236,18 @@ HRESULT CLevel_GamePlay::Ready_Light()
 
 #pragma region LIGHT_2
 	CGameObject::GAMEOBJECTDESC	tFireLightDesc;
-	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
-	tFireLightDesc.TransformDesc.vInitPos = _float3(-11.08f, 1.335f, -3.234f);
-	tFireLightDesc.m_iNumber = 2;
-	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
-	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
-	
+	// ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	// tFireLightDesc.TransformDesc.vInitPos = _float3(-11.08f, 1.335f, -3.234f);
+	// tFireLightDesc.m_iNumber = 2;
+	// tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	// FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+	//
+	// ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	// tFireLightDesc.TransformDesc.vInitPos = _float3(-6.242f, 1.335f, 19.687f);
+	// tFireLightDesc.m_iNumber = 3;
+	// tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	// FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 	
 	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
@@ -200,12 +262,11 @@ HRESULT CLevel_GamePlay::Ready_Light()
 #pragma endregion
 
 #pragma region LIGHT_3
-	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
-	tFireLightDesc.TransformDesc.vInitPos = _float3(-6.242f, 1.335f, 19.687f);
-	tFireLightDesc.m_iNumber = 3;
-	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
-
-	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+	// ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	// tFireLightDesc.TransformDesc.vInitPos = _float3(-6.242f, 1.335f, 19.687f);
+	// tFireLightDesc.m_iNumber = 3;
+	// tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	// FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
 
 	ZeroMemory(&LightDesc, sizeof LightDesc);
 
@@ -538,8 +599,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Player"), E_FAIL);
-	
+	CGameObject* pGameObject = nullptr;
+	pGameObject = pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Player");
+	NULL_CHECK_RETURN(pGameObject, E_FAIL);
+	m_pPlayer = pGameObject;
+
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -551,9 +615,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_LaiHome(const wstring wstrLayerTag)
 	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 	_matrix PivotMatrix = XMMatrixIdentity();
 	_float	vPos[3], vScale[3], vAngle[3];
-	ImGuizmo::DecomposeMatrixToComponents((_float*)&PivotMatrix, vPos, vAngle, vScale);
+	// ImGuizmo::DecomposeMatrixToComponents((_float*)&PivotMatrix, vPos, vAngle, vScale);
 	vPos[0] = -24.316f;	vPos[1] = 0.f; vPos[2] = -24.043f;
-	// vScale[0] = 6.397f;	vScale[1] = 8.087f;	vScale[2] = 1.0f;
 	vScale[0] = 1.f;	vScale[1] = 1.f;	vScale[2] = 1.0f;
 	vAngle[0] = 0.f;	vAngle[1] = -0.f;	vAngle[2] = 0.f;
 	ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&PivotMatrix);
@@ -561,6 +624,14 @@ HRESULT CLevel_GamePlay::Ready_Layer_LaiHome(const wstring wstrLayerTag)
 	ZeroMemory(&tmp, sizeof(CGameObject::GAMEOBJECTDESC));
 	CGameObject* pObject = nullptr;
 	pObject = pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_LaiHome", PivotMatrix, &tmp);
+	NULL_CHECK_RETURN(pObject, E_FAIL);
+	m_vecLobbyObject.push_back(pObject);
+
+	vPos[0] = -21.986f;	vPos[1] = 1.598f;  vPos[2] = -23.475f;
+	vScale[0] = 1.f;	vScale[1] = 1.f;	vScale[2] = 1.0f;
+	vAngle[0] = 180.f;	vAngle[1] = 1.003f;	vAngle[2] = 180.f;
+	ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&PivotMatrix);
+	pObject = pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Lobby_Owner", PivotMatrix, &tmp);
 	NULL_CHECK_RETURN(pObject, E_FAIL);
 	m_vecLobbyObject.push_back(pObject);
 
@@ -585,6 +656,39 @@ HRESULT CLevel_GamePlay::Ready_Layer_Lobby(const wstring wstrLayerTag)
 	pObject = pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Home", PivotMatrix, &tmp);
 	NULL_CHECK_RETURN(pObject, E_FAIL);
 	m_vecLobbyObject.push_back(pObject);
+
+	CGameObject::GAMEOBJECTDESC	tFireLightDesc;
+	// -24.316f;	vPos[1] = 0.f; vPos[2] = -24.043f
+
+	CGameInstance::GetInstance()->Set_LightPos(2, XMVectorSet(-21.837f, 3.311f, -25.421f, 1.f));
+	CGameInstance::GetInstance()->Set_LightRange(2, 3.f);
+
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(-21.837f, 3.311f, -25.421f);
+	tFireLightDesc.m_iNumber = 2;
+	tFireLightDesc.m_vTexSize = _float2(0.2f, 0.5f);
+	pObject = CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
+	NULL_CHECK_RETURN(pObject, E_FAIL);
+	CFire_Light* pFire = nullptr;
+	pFire = (CFire_Light*)pObject;
+	pFire->Set_Lobby(true);
+	m_vecLobbyObject.push_back(pObject);
+
+	CGameInstance::GetInstance()->Set_LightPos(3, XMVectorSet(-33.580f, 5.57f, -20.514f, 1.f));
+	CGameInstance::GetInstance()->Set_LightRange(3, 3.f);
+	
+
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(-33.580f, 5.57f, -20.514f);
+	tFireLightDesc.m_iNumber = 3;
+	tFireLightDesc.m_vTexSize = _float2(0.2f, 0.5f);
+	pObject = CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
+	NULL_CHECK_RETURN(pObject, E_FAIL);
+	pFire = (CFire_Light*)pObject;
+	pFire->Set_Lobby(true);
+	m_vecLobbyObject.push_back(pObject);
+
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -628,7 +732,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const wstring wstrLayerTag)
 	ZeroMemory(&EffectDesc, sizeof(CGameObject::GAMEOBJECTDESC));
 	EffectDesc.TransformDesc.vInitPos = _float3(-14.f, 3.f, 0.f);
 	EffectDesc.TransformDesc.fRotationPerSec = -68.454f;
-
 	for(_uint i =0; i< 2; ++i)
 		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Effect_Smoke", &EffectDesc), E_FAIL);
 
@@ -637,18 +740,17 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const wstring wstrLayerTag)
 	EffectDesc.TransformDesc.fRotationPerSec = -28.f;
 	for (_uint i = 0; i< 2; ++i)
 		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Effect_Smoke", &EffectDesc), E_FAIL);
-	RELEASE_INSTANCE(CGameInstance);
 
-	EffectDesc.TransformDesc.vInitPos = _float3(-9.629f, 0.729f, 43.134f);
-	EffectDesc.TransformDesc.fRotationPerSec = -28.f;
-	for (_uint i = 0; i< 2; ++i)
-		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Effect_Smoke", &EffectDesc), E_FAIL);
-	RELEASE_INSTANCE(CGameInstance);
+	// EffectDesc.TransformDesc.vInitPos = _float3(-9.629f, 0.729f, 43.134f);
+	// EffectDesc.TransformDesc.fRotationPerSec = -28.f;
+	// for (_uint i = 0; i< 2; ++i)
+	// 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Effect_Smoke", &EffectDesc), E_FAIL);
 
 	EffectDesc.TransformDesc.vInitPos = _float3(-34.f, 1.2f, 52.7f);
 	EffectDesc.TransformDesc.fRotationPerSec = 17.f;
 	for (_uint i = 0; i< 2; ++i)
 		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Effect_Smoke", &EffectDesc), E_FAIL);
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

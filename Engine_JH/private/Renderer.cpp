@@ -77,7 +77,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	m_pTarget_Manager->Find_RenderTarget(TEXT("Target_Dynamic_ShadowDepth"))->Ready_DepthStencilRenderTargetView(iShadowMapCX, iShadowMapCY, DXGI_FORMAT_D24_UNORM_S8_UINT);
 
 	// For Target_OutLine
-	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Outline"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Outline"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(1.f, 1.f, 1.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_OutlineFlag"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Diffuse")), E_FAIL);  // 디퍼드 렌더링 (빛)을 수행하기 위한 
@@ -155,11 +155,15 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_ShadowDepth_Dynamic(), E_FAIL);
+
 	FAILED_CHECK_RETURN(Render_NonAlphaBlend(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_OutLine(), E_FAIL);
+
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
+
 	// FAILED_CHECK_RETURN(Render_ShadowBlur(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_OutLine(), E_FAIL);
+
 	FAILED_CHECK_RETURN(Render_NonLight(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_FADE(), E_FAIL);
@@ -185,13 +189,13 @@ HRESULT CRenderer::Draw_RenderGroup()
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Bloom"), 700.0f, 100.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 700.0f, 300.f, 200.f, 200.f), E_FAIL);
 
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Effect"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Bloom"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Blur"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Outline"));
+		m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
+		m_pTarget_Manager->Render_Debug(TEXT("MRT_Effect"));
+		m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"));
+		m_pTarget_Manager->Render_Debug(TEXT("MRT_Bloom"));
+		m_pTarget_Manager->Render_Debug(TEXT("MRT_Blur"));
+		m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"));
+		m_pTarget_Manager->Render_Debug(TEXT("MRT_Outline"));
 
 	}
 #endif
@@ -542,7 +546,7 @@ HRESULT CRenderer::Render_OutLine()
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_Outline")), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_Outline")), E_FAIL);
 
 	D3D11_VIEWPORT			ViewPortDesc;
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
@@ -554,7 +558,7 @@ HRESULT CRenderer::Render_OutLine()
 	m_pShader->Set_RawValue(L"g_iWinCX", &ViewPortDesc.Width, sizeof(_float));
 	m_pShader->Set_RawValue(L"g_iWinCY", &ViewPortDesc.Height, sizeof(_float));
 
-	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_FlagTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_OutlineFlag"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_OutlineFlagTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_OutlineFlag"))), E_FAIL);
 
 	m_pShader->Set_Matrix(L"g_WorldMatrix", &m_WorldMatrix);
 	m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
@@ -563,7 +567,7 @@ HRESULT CRenderer::Render_OutLine()
 	m_pShader->Begin(10);
 
 	m_pVIBuffer->Render();
-	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
 
 	return S_OK;
 }

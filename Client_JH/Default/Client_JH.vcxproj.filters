@@ -304,6 +304,9 @@
     <Filter Include="01. Level\01. Logo\LoadingFire">
       <UniqueIdentifier>{83b9f6cd-bf38-4a8e-85d9-388c5a7a1f91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. Logo\00. LobbyObject\Lobby_Owner">
+      <UniqueIdentifier>{8e15f76b-d3cd-401a-8d49-b6654f1e6ffd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -568,6 +571,9 @@
     <ClInclude Include="..\public\Loading_Fire.h">
       <Filter>01. Level\01. Logo\LoadingFire</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Lobby_Owner.h">
+      <Filter>02. GameObjects\01. Logo\00. LobbyObject\Lobby_Owner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client_JH.cpp">
@@ -816,6 +822,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Loading_Fire.cpp">
       <Filter>01. Level\01. Logo\LoadingFire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lobby_Owner.cpp">
+      <Filter>02. GameObjects\01. Logo\00. LobbyObject\Lobby_Owner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

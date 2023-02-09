@@ -127,6 +127,8 @@ public:
 	// For Target_Manager
 	ID3D11ShaderResourceView*	Get_DepthTargetSRV();
 	ID3D11ShaderResourceView*	Get_DiffuseTargetSRV();
+	ID3D11ShaderResourceView*	Get_OutLineTargetSRV();
+
 
 
 public: /* For.Frustum */
