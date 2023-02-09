@@ -16,6 +16,7 @@
 #include "Trigger.h"
 #include "Camera.h"
 #include "Fire_Light.h"
+#include "Level_Loading.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -61,6 +62,15 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 		m_fCurClickedDelay += (_float)TimeDelta;
 	}
 
+	// if (CGameInstance::GetInstance()->Key_Down(DIK_END))
+	// {
+	// 	// m_bPlayFinish = true;
+	//
+	// 	FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)LEVEL_LOGO)), );
+	//
+	// 	return;
+	// }
+
 	if(m_fCurClickedDelay >= m_fClickedDelay)
 	{
 		m_fCurClickedDelay = 0.f;
@@ -70,12 +80,55 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 
 	if(m_pPlayer != nullptr)
 	{
-		if(dynamic_cast<CPlayer*>(m_pPlayer)->Check_PlayFinish())
+		if(m_pPlayer->Get_CurRoomType(CPlayer::ROOM_KIGHT) == true  && m_bRenderLoading ==false)
 		{
-			Ready_Layer_Camera(L"Layer_ZCamera");
-			Ready_Layer_LaiHome(L"Layer_LaiHome");
-			Ready_Layer_Lobby(L"Layer_LobbyMap");
-			Ready_Layer_LobbyButton(L"Layer_Button");
+			CGameInstance* pGameInstance = CGameInstance::GetInstance();
+			CGameObject* pGameObject = nullptr;
+			CGameObject::GAMEOBJECTDESC	GameObjectDesc;
+			GameObjectDesc.m_iCountType = 2;
+			pGameObject = pGameInstance->Clone_GameObjectReturnPtr(pGameInstance->Get_StaticLevelIndex(), L"Layer_Logo", L"Prototype_GameObject_BackGround", &GameObjectDesc);
+			NULL_CHECK_RETURN(pGameObject, );
+			m_bRenderLoading = true;
+		}
+		else if (m_pPlayer->Get_CurRoomType(CPlayer::ROOM_B) == true && m_bRenderLoading == true)
+		{
+			CGameInstance* pGameInstance = CGameInstance::GetInstance();
+			CGameObject* pGameObject = nullptr;
+			CGameObject::GAMEOBJECTDESC	GameObjectDesc;
+			GameObjectDesc.m_iCountType = 3;
+			pGameObject = pGameInstance->Clone_GameObjectReturnPtr(pGameInstance->Get_StaticLevelIndex(), L"Layer_Logo", L"Prototype_GameObject_BackGround", &GameObjectDesc);
+			NULL_CHECK_RETURN(pGameObject, );
+			m_bRenderLoading = false;
+		}
+		else if (m_pPlayer->Get_CurRoomType(CPlayer::ROOM_BUG) == true && m_bRenderLoading == false)
+		{
+			CGameInstance* pGameInstance = CGameInstance::GetInstance();
+			CGameObject* pGameObject = nullptr;
+			CGameObject::GAMEOBJECTDESC	GameObjectDesc;
+			GameObjectDesc.m_iCountType = 4;
+			pGameObject = pGameInstance->Clone_GameObjectReturnPtr(pGameInstance->Get_StaticLevelIndex(), L"Layer_Logo", L"Prototype_GameObject_BackGround", &GameObjectDesc);
+			NULL_CHECK_RETURN(pGameObject, );
+			m_bRenderLoading = true;
+		}
+		else if (m_pPlayer->Get_CurRoomType(CPlayer::ROOM_C) == true && m_bRenderLoading == true)
+		{
+			CGameInstance* pGameInstance = CGameInstance::GetInstance();
+			CGameObject* pGameObject = nullptr;
+			CGameObject::GAMEOBJECTDESC	GameObjectDesc;
+			GameObjectDesc.m_iCountType = 5;
+			pGameObject = pGameInstance->Clone_GameObjectReturnPtr(pGameInstance->Get_StaticLevelIndex(), L"Layer_Logo", L"Prototype_GameObject_BackGround", &GameObjectDesc);
+			NULL_CHECK_RETURN(pGameObject, );
+			m_bRenderLoading = false;
+		}
+		else if (m_pPlayer->Get_CurRoomType(CPlayer::ROOM_BOSS) == true && m_bRenderLoading == false)
+		{
+			CGameInstance* pGameInstance = CGameInstance::GetInstance();
+			CGameObject* pGameObject = nullptr;
+			CGameObject::GAMEOBJECTDESC	GameObjectDesc;
+			GameObjectDesc.m_iCountType = 6;
+			pGameObject = pGameInstance->Clone_GameObjectReturnPtr(pGameInstance->Get_StaticLevelIndex(), L"Layer_Logo", L"Prototype_GameObject_BackGround", &GameObjectDesc);
+			NULL_CHECK_RETURN(pGameObject, );
+			m_bRenderLoading = true;
 		}
 	}
 
@@ -91,10 +144,24 @@ void CLevel_GamePlay::Tick(_double TimeDelta)
 				if (i == 0)
 				{
 					m_bButton = true;
+
+					CGameInstance* pGameInstance = CGameInstance::GetInstance();
+					CGameObject* pGameObject = nullptr;
+					CGameObject::GAMEOBJECTDESC	GameObjectDesc;
+					GameObjectDesc.m_iCountType = 1;
+					pGameObject = pGameInstance->Clone_GameObjectReturnPtr(pGameInstance->Get_StaticLevelIndex(), L"Layer_Logo", L"Prototype_GameObject_BackGround", &GameObjectDesc);
+					NULL_CHECK_RETURN(pGameObject, );
 				}
 				else if (i == 1)
 				{
-					// »óÁ¡ Ã¢ ¶ç¿ì±â 
+					// »óÁ¡ Ã¢ ¶ç¿ì±â
+					CGameInstance* pGameInstance = CGameInstance::GetInstance();
+					CGameObject* pGameObject = nullptr;
+					CGameObject::GAMEOBJECTDESC	GameObjectDesc;
+					GameObjectDesc.m_iCountType = 7;
+					pGameObject = pGameInstance->Clone_GameObjectReturnPtr(pGameInstance->Get_StaticLevelIndex(), L"Layer_Logo", L"Prototype_GameObject_BackGround", &GameObjectDesc);
+					NULL_CHECK_RETURN(pGameObject, );
+
 				}
 			}
 		}
@@ -393,7 +460,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	CPlayer*			pPlayer = dynamic_cast<CPlayer*>(pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Player")->front());
 	NULL_CHECK_RETURN(pPlayer, E_FAIL);
 
-	_matrix PivotMatrix = XMMatrixIdentity() * XMMatrixRotationAxis(XMVectorSet(0.f,1.f,0.f, 0.f),XMConvertToRadians(180.f));
+	_matrix PivotMatrix = XMMatrixIdentity(); //* XMMatrixRotationAxis(XMVectorSet(0.f,1.f,0.f, 0.f),XMConvertToRadians(180.f));
 	// PivotMatrix.r[3] = XMVectorSet(110.f, 1.3f, 179.f, 1.f);
 	// // SWORD
 	PivotMatrix.r[3] = XMVectorSet(-14.f, 0.f, 0.8f, 1.f);
@@ -602,7 +669,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring wstrLayerTag)
 	CGameObject* pGameObject = nullptr;
 	pGameObject = pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Player");
 	NULL_CHECK_RETURN(pGameObject, E_FAIL);
-	m_pPlayer = pGameObject;
+	m_pPlayer = (CPlayer*)pGameObject;
 
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -615,7 +682,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_LaiHome(const wstring wstrLayerTag)
 	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 	_matrix PivotMatrix = XMMatrixIdentity();
 	_float	vPos[3], vScale[3], vAngle[3];
-	// ImGuizmo::DecomposeMatrixToComponents((_float*)&PivotMatrix, vPos, vAngle, vScale);
 	vPos[0] = -24.316f;	vPos[1] = 0.f; vPos[2] = -24.043f;
 	vScale[0] = 1.f;	vScale[1] = 1.f;	vScale[2] = 1.0f;
 	vAngle[0] = 0.f;	vAngle[1] = -0.f;	vAngle[2] = 0.f;
@@ -660,29 +726,29 @@ HRESULT CLevel_GamePlay::Ready_Layer_Lobby(const wstring wstrLayerTag)
 	CGameObject::GAMEOBJECTDESC	tFireLightDesc;
 	// -24.316f;	vPos[1] = 0.f; vPos[2] = -24.043f
 
-	CGameInstance::GetInstance()->Set_LightPos(2, XMVectorSet(-21.837f, 3.311f, -25.421f, 1.f));
-	CGameInstance::GetInstance()->Set_LightRange(2, 3.f);
+	pGameInstance->Set_LightPos(2, XMVectorSet(-21.837f, 3.311f, -25.421f, 1.f));
+	pGameInstance->Set_LightRange(2, 3.f);
 
 	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
 	tFireLightDesc.TransformDesc.vInitPos = _float3(-21.837f, 3.311f, -25.421f);
 	tFireLightDesc.m_iNumber = 2;
 	tFireLightDesc.m_vTexSize = _float2(0.2f, 0.5f);
-	pObject = CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
+	pObject = pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
 	NULL_CHECK_RETURN(pObject, E_FAIL);
 	CFire_Light* pFire = nullptr;
 	pFire = (CFire_Light*)pObject;
 	pFire->Set_Lobby(true);
 	m_vecLobbyObject.push_back(pObject);
 
-	CGameInstance::GetInstance()->Set_LightPos(3, XMVectorSet(-33.580f, 5.57f, -20.514f, 1.f));
-	CGameInstance::GetInstance()->Set_LightRange(3, 3.f);
+	pGameInstance->Set_LightPos(3, XMVectorSet(-33.580f, 5.57f, -20.514f, 1.f));
+	pGameInstance->Set_LightRange(3, 3.f);
 	
 
 	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
 	tFireLightDesc.TransformDesc.vInitPos = _float3(-33.580f, 5.57f, -20.514f);
 	tFireLightDesc.m_iNumber = 3;
 	tFireLightDesc.m_vTexSize = _float2(0.2f, 0.5f);
-	pObject = CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
+	pObject = pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
 	NULL_CHECK_RETURN(pObject, E_FAIL);
 	pFire = (CFire_Light*)pObject;
 	pFire->Set_Lobby(true);

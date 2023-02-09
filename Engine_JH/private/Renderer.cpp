@@ -166,10 +166,10 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 	FAILED_CHECK_RETURN(Render_NonLight(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_FADE(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Glow(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_FADE(), E_FAIL);
 
 #ifdef _DEBUG
 	// FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);

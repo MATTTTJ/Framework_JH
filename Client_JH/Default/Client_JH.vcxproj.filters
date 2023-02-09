@@ -307,6 +307,12 @@
     <Filter Include="02. GameObjects\01. Logo\00. LobbyObject\Lobby_Owner">
       <UniqueIdentifier>{8e15f76b-d3cd-401a-8d49-b6654f1e6ffd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\FlameBullet_Dead">
+      <UniqueIdentifier>{b39ec323-2d1d-485f-8b4e-6e8570efb8ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\Sphere_Effect">
+      <UniqueIdentifier>{368a7ffe-97c5-4285-adc9-e1c27f7a310a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client_JH.h">
@@ -564,7 +570,6 @@
     <ClInclude Include="..\public\Fire_Light.h">
       <Filter>02. GameObjects\01. GamePlay\Effect\Fire_Light</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Smoke.h" />
     <ClInclude Include="..\public\Button_Play.h">
       <Filter>01. Level\01. Logo\Lobby_Object</Filter>
     </ClInclude>
@@ -573,6 +578,18 @@
     </ClInclude>
     <ClInclude Include="..\public\Lobby_Owner.h">
       <Filter>02. GameObjects\01. Logo\00. LobbyObject\Lobby_Owner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Smoke.h">
+      <Filter>02. GameObjects\01. GamePlay\Effect\Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Flame_Bullet.h">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Flame_Bullet_Dead.h">
+      <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\FlameBullet_Dead</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Sphere_Effect.h">
+      <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\Sphere_Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -816,7 +833,6 @@
     <ClCompile Include="..\private\Fire_Light.cpp">
       <Filter>02. GameObjects\01. GamePlay\Effect\Fire_Light</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Smoke.cpp" />
     <ClCompile Include="..\private\Button_Play.cpp">
       <Filter>01. Level\01. Logo\Lobby_Object</Filter>
     </ClCompile>
@@ -825,6 +841,18 @@
     </ClCompile>
     <ClCompile Include="..\private\Lobby_Owner.cpp">
       <Filter>02. GameObjects\01. Logo\00. LobbyObject\Lobby_Owner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Smoke.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Effect\Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Flame_Bullet.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Bullet\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Flame_Bullet_Dead.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\FlameBullet_Dead</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sphere_Effect.cpp">
+      <Filter>02. GameObjects\01. GamePlay\Effect\PlayerBullet_Effect\Sphere_Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

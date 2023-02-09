@@ -108,7 +108,7 @@ void CFire_Light::Tick(_double dTimeDelta)
 	{
 		if (m_fMaxRange <= 1.f && m_bRangeChange == false)
 		{
-			m_fMaxRange += (_float)dTimeDelta * 2.f;
+			m_fMaxRange += (_float)dTimeDelta;
 
 			if (m_fMaxRange > 1.f)
 				m_bRangeChange = true;
@@ -120,7 +120,7 @@ void CFire_Light::Tick(_double dTimeDelta)
 		}
 		else if (m_bRangeChange == true)
 		{
-			m_fMaxRange -= (_float)dTimeDelta * 4.f;
+			m_fMaxRange -= (_float)dTimeDelta;
 
 			if (m_fMaxRange < 0.f)
 				m_bRangeChange = false;

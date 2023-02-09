@@ -13,6 +13,7 @@ texture2D		g_DistortionTexture;
 float			g_fTime = 1.f;
 texture2D		g_DepthTexture;
 texture2D		g_CircleTexture;
+texture2D		g_NoiseTexture;
 
 float			g_fFadeAlpha = 0.f;
 float			g_fAlpha;
@@ -79,11 +80,29 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_SPHERE_EFFECT(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+	float4 Noise = g_NoiseTexture.Sample(LinearSampler, In.vTexUV);
+	float fWeight;
+
+	if (Noise.r > 0.f)
+		fWeight = Noise.r * 0.3f;
+	else
+		fWeight = 0.f;
+
+	float4 Origin = g_Texture.Sample(LinearSampler, In.vTexUV + fWeight);
+
+	Out.vColor = Origin;
+
+	return Out;
+}
+
 PS_OUT PS_MAIN_PORTAL(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	float4 vFX_tex = g_DistortionTexture.Sample(LinearSampler,float2( In.vTexUV.x , g_DisTime));
+	float4 vFX_tex = g_DistortionTexture.Sample(LinearSampler, float2(In.vTexUV.x, In.vTexUV.y * g_DisTime));// g_DisTime));
 	if (vFX_tex.a == 0.f)
 		vFX_tex.r = 0.f;
 	// discard;
@@ -117,7 +136,7 @@ PS_OUT PS_MAIN_PORTAL(PS_IN In)
 
 	
 	float4 vColor = (float4)0.f;
-	vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	vColor = g_Texture.Sample(LinearSampler,float2(In.vTexUV.x, g_DisTime));
 
 	if(CircleTex.r > 0.f)
 		Out.vColor = saturate(vColor* CircleTex) ;
@@ -307,8 +326,8 @@ technique11 DefaultTechnique
 	pass Rect0
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
@@ -472,5 +491,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_PORTAL();
+	}
+
+
+	pass Rect13
+	{
+		SetRasterizerState(RS_CW);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SPHERE_EFFECT();
 	}
 }

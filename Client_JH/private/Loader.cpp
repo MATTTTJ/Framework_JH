@@ -26,6 +26,8 @@
 #include "Elite_Knight.h"
 #include "FadeInOut.h"
 #include "Fire_Light.h"
+#include "Flame_Bullet.h"
+#include "Flame_Bullet_Dead.h"
 #include "LaiLuo_Home.h"
 #include "Laser.h"
 #include "LaserBullet.h"
@@ -47,6 +49,7 @@
 #include "Sky.h"
 #include "SkySphere.h"
 #include "Smoke.h"
+#include "Sphere_Effect.h"
 #include "StoneLight.h"
 #include "StonePillar.h"
 #include "Trigger.h"
@@ -158,8 +161,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 	Safe_AddRef(pGameInstance);
 
 	m_wstrLoadingText = L"텍스쳐를 로딩중입니다.";
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Arm_s", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Weapon/Default_Pistol/hero_fpp_104_A_s.png", 1)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Default_Pistol_s", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Weapon/Default_Pistol/Test.png", 1)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Arm_s", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Weapon/Default_Pistol/hero_fpp_104_A_s.png", 1)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Default_Pistol_s", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Weapon/Default_Pistol/Test.png", 1)), E_FAIL);
 
 	// 플레이어 스페큘러 텍스쳐
 	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_UI_PlayerInfo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/PlayerInfo.png", 1)), E_FAIL);
@@ -239,12 +242,17 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Emerald", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/InGame_PlayerUI/icon_cash.png", 1)), E_FAIL);
 
 	// 빨간 총알 텍스쳐
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Bullet", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Bullet/bullet_red.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Bullet", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Bullet/bullet_%d.png", 3)), E_FAIL);
+
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Bullet", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Bullet/bullet_red.png", 1)), E_FAIL);
+
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_BulletAdd", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Trail/DJS_trail_007.png", 1)), E_FAIL);
 	
 
 	// 머즐 텍스쳐
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_Bullet_BirthTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/J_H_004.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_Bullet_BirthTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/J_H_%d.png", 2)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_FlameBullet_Tex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Flame_%d.png", 3)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Sphere_Tex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/SphereTex_%d.png", 2)), E_FAIL);
 
 	// DefaultPistol 타격 이펙트
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_Bullet_DeadTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/speak_hit_05.png", 1)), E_FAIL);
@@ -310,11 +318,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_RedFire_Lamp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Fire/ui_succes_fire.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_BlueFire_Lamp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Fire/BlueFire.dds", 1)), E_FAIL);
 
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Spark", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Glow/glow_%d.png", 4)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Spark", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Glow/glow_%d.png", 5)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Smoke", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/smoke0.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/bac_%d.png", 4)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalDistortionTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/noise_cp_033.png", 1)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalCircleTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/GW_2181_ring_001.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalDistortionTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/1054_mask.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalCircleTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/39247_ray_11.png", 1)), E_FAIL);
 
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_SphereTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/Untitled-1.png", 1)), E_FAIL);
@@ -365,14 +373,15 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LobbyOwner", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Lobby_Owner/Lobby_Owner.model", PivotMatrix)), E_FAIL);
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Default_Pistol", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Default_Pistol/Default_Pistol_Alpha.model", PivotMatrix)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Flame_Bullet/Flame_Bullet_Spec.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Default_Pistol", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Default_Pistol/Default_Pistol_Final.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Flame_Bullet/Flame_Bullet_Final.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Fire_Dragon", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Fire_Dragon/Fire_Dragon_Alpha0.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Poison", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Weapon/Poison/Poison_Normal.model", PivotMatrix)), E_FAIL);
 
 
 
 	// 노말맵 몬스터 모델
+
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Sword", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Human_Sword/Normal_Human_Sword.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Spear", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Human_Spear/Normal_Human_Spear.model", PivotMatrix)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Human_Granade", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resources/Meshes/Monster/Normal_Human_Granade/Normal_Granade.model", PivotMatrix)), E_FAIL);
@@ -401,6 +410,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_StonePillar", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/StonePillar/StonePillar_1.model", PivotMatrix)), E_FAIL);
 	// 기둥 라이트
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_StonePillar_Light", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/StoneLight.model", PivotMatrix)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Sphere_Effect", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Textures/Effect/Player/Sphere_Effect.model", PivotMatrix)), E_FAIL);
 
 	// 보스 주먹 
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LeftArm", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resources/Meshes/Monster/3909_NormalBoss/LeftHand_Fix.model", PivotMatrix)), E_FAIL);
@@ -498,6 +508,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 	// 이펙트
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Default_Bullet_Birth", CDefault_Bullet_Birth::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Default_Bullet_Dead", CDefault_Bullet_Dead::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Flame_Bullet_Dead", CFlame_Bullet_Dead::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Sphere", CSphere_Effect::Create(m_pDevice, m_pContext)), E_FAIL);
+
+
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Dust", CDust::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Smoke", CSmoke::Create(m_pDevice, m_pContext)), E_FAIL);
 
@@ -522,6 +536,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// Bullet
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_Default_PistolTex", CDefault_Pistol::Create(m_pDevice, m_pContext)), E_FAIL);
+	// FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player_Flame_BulletTex", CFlame_Bullet::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	m_wstrLoadingText = L"로딩끝. ";
 

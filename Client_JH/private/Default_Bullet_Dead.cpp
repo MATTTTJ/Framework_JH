@@ -48,9 +48,9 @@ HRESULT CDefault_Bullet_Dead::Initialize_Clone(const wstring& wstrPrototypeTag, 
 		m_pTransformCom->Set_Scaled(_float3(1000.f, 1000.f, 1.f));
 	}
 
-	_float4 vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	// _float4 vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 	// m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(45.f));
-	m_vLook = XMVector3Normalize(XMVector3Cross(m_vDir, vUp));
+	// m_vLook = XMVector3Normalize(XMVector3Cross(m_vDir, vUp));
 
 	m_iUV_Max_Width_Num = 2;
 	m_iUV_Max_Height_Num = 2;

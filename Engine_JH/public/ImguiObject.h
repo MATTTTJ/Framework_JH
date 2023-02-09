@@ -19,7 +19,7 @@ public:
 	virtual void	Imgui_RenderTab(){}
 	virtual void	Imgui_RenderWindow(){}
 	virtual void	Render() {}
-	
+	virtual void	Imgui_GotoLogo() {}
 	virtual void	Free() override {}
 
 protected:

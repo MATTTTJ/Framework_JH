@@ -16,6 +16,7 @@ public:
 
 	virtual HRESULT					Initialize(void* pArg) override;
 	virtual void					Imgui_RenderWindow() override;
+	virtual void					Imgui_GotoLogo() override;
 	void							Render_LevelSwitch();
 	void							Render_ImguiSetting();
 	void							Render_EffectTool();

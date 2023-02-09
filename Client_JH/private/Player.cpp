@@ -3,6 +3,7 @@
 
 #include "Dynamic_Camera.h"
 #include "GameInstance.h"
+#include "Level_Loading.h"
 #include "Monster.h"
 #include "Static_Camera.h"
 #include "State.h"
@@ -30,6 +31,8 @@ CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	m_PlayerOption.m_iRifle_BulletCnt = 50;
 	m_PlayerOption.m_iInjector_BulletCnt = 50;
 	m_PlayerOption.m_iThrowCnt = 4;
+
+	m_pTestOption = &m_PlayerOption;
 }
 
 CPlayer::CPlayer(const CPlayer & rhs)
@@ -43,11 +46,15 @@ CPlayer::CPlayer(const CPlayer & rhs)
 	, m_fCurDashTime(rhs.m_fCurDashTime)
 	, m_bCanDash(rhs.m_bCanDash)
 	, m_PlayerOption(rhs.m_PlayerOption)
+	, m_pTestOption(rhs.m_pTestOption)
 {
+
 	m_tWeaponDesc[WEAPON_DEFAULT].m_wstrWeaponName = L"WEAPON_DEFAULT";
 	m_tWeaponDesc[WEAPON_FLAMEBULLET].m_wstrWeaponName = L"WEAPON_FLAMEBULLET";
 	m_tWeaponDesc[WEAPON_FIREDRAGON].m_wstrWeaponName = L"WEAPON_FIREDRAGON";
 	m_tWeaponDesc[WEAPON_POISON].m_wstrWeaponName = L"WEAPON_POISON";
+
+	// PLAYEROPTION& tmp = rhs.m_PlayerOption;
 	//
 	// m_PlayerOption.m_iMaxHp = 100;
 	// m_PlayerOption.m_iHp = m_PlayerOption.m_iMaxHp;
@@ -145,7 +152,7 @@ CModel* CPlayer::Get_CurWeaponModelCom()
 			return m_tWeaponDesc[i].m_pWeaponModelCom;
 		}
 		else
-			return nullptr;
+			continue;
 	}
 
 	return nullptr;
@@ -196,6 +203,8 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	// m_pNavigationCom->Set_CellIndex(40);
 	// m_pCamera = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back();
 	dynamic_cast<CDynamic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Set_LobbyCam(false);
+
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
 	m_bCurRoomType[ROOM_A] = true;
 	
@@ -285,6 +294,12 @@ void CPlayer::Tick(_double dTimeDelta)
 	{
 		static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Set_FixControl();
 	}
+	// if (CGameInstance::GetInstance()->Key_Down(DIK_F1))
+	// {
+	// 	m_PlayerOption.m_iEmeraldCnt += 10;
+	// }
+
+
 
 	if (CGameInstance::GetInstance()->Key_Pressing(DIK_W))
 	{
@@ -309,10 +324,16 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_bCanDash = false;
 	}
 
-	if (CGameInstance::GetInstance()->Key_Down(DIK_END))
-	{
-		m_bPlayFinish = true;
-	}
+
+
+	// if (CGameInstance::GetInstance()->Key_Down(DIK_END))
+	// {
+	// 	// m_bPlayFinish = true;
+	//
+	// 	FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)LEVEL_LOGO)), );
+	//
+	// 	return;
+	// }
 
 	// if (CGameInstance::GetInstance()->Key_Down(DIK_F6))
 	// {
@@ -544,8 +565,8 @@ HRESULT CPlayer::SetUp_Components()
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Flame_Bullet", L"Com_Flame_Bullet_Model", (CComponent**)&m_tWeaponDesc[WEAPON_FLAMEBULLET].m_pWeaponModelCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_Poison", L"Com_Poison_Model", (CComponent**)&m_tWeaponDesc[WEAPON_POISON].m_pWeaponModelCom, this), E_FAIL);
 
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Arm_s", L"Com_ArmSTextureCom", (CComponent**)&m_pSpecularMap_Arm, this), E_FAIL);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Default_Pistol_s", L"Com_WeaponSTextureCom", (CComponent**)&m_pSpecularMap_Weapon, this), E_FAIL);
+	// FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Arm_s", L"Com_ArmSTextureCom", (CComponent**)&m_pSpecularMap_Arm, this), E_FAIL);
+	// FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Player_Default_Pistol_s", L"Com_WeaponSTextureCom", (CComponent**)&m_pSpecularMap_Weapon, this), E_FAIL);
 
 
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_State", L"Com_State", (CComponent**)&m_pState, this), E_FAIL);
@@ -800,6 +821,12 @@ CGameObject * CPlayer::Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 void CPlayer::Free()
 {
+	// if(m_bIsClone == true)
+	// 	m_PlayerOption.m_iEmeraldCnt = 40;
+
+	if (m_bIsClone == true)
+		m_pTestOption->m_iEmeraldCnt = m_PlayerOption.m_iEmeraldCnt;
+
 	__super::Free();
 
 	Safe_Release(m_pWeaponState);

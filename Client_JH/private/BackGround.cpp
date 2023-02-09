@@ -26,10 +26,19 @@ HRESULT CBackGround::Initialize_Clone(const wstring& wstrPrototypeTag, void * pA
 	CGameObject::GAMEOBJECTDESC		GameObjectDesc;
 	ZeroMemory(&GameObjectDesc, sizeof(GameObjectDesc));
 
+	if (nullptr != pArg)
+	{
+		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
+		m_iTextureIndex = (_uint)GameObjectDesc.m_iCountType;
+
+	}
+	else
+		m_iTextureIndex = 0;
+
 	GameObjectDesc.TransformDesc.fSpeedPerSec = 5.f;
 	GameObjectDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(CGameObject::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc)))
+	if (FAILED(__super::Initialize_Clone(wstrPrototypeTag, &GameObjectDesc)))
 		return E_FAIL;
 
 	if (FAILED(SetUp_Components()))
@@ -48,6 +57,7 @@ HRESULT CBackGround::Initialize_Clone(const wstring& wstrPrototypeTag, void * pA
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 
+	m_fLifeTime = 5.f;
 
 	return S_OK;
 }
@@ -55,6 +65,31 @@ HRESULT CBackGround::Initialize_Clone(const wstring& wstrPrototypeTag, void * pA
 void CBackGround::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	if(m_iTextureIndex == 0)
+	{
+		
+	}
+	else if(m_iTextureIndex == 7)
+	{
+		
+	}
+	else
+	{
+		if(m_bLifeTimeDone == false)
+		{
+			m_fCurLifeTime += (_float)TimeDelta;
+
+			if(m_fCurLifeTime >= m_fLifeTime)
+			{
+				m_fCurLifeTime = 0.f;
+				m_bLifeTimeDone = true;
+
+				Set_Dead(true);
+			}
+		}
+	}
+
 }
 
 void CBackGround::Late_Tick(_double TimeDelta)
@@ -62,7 +97,7 @@ void CBackGround::Late_Tick(_double TimeDelta)
 	__super::Late_Tick(TimeDelta);
 
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_FADE, this);
 }
 
 HRESULT CBackGround::Render()
@@ -103,7 +138,7 @@ HRESULT CBackGround::SetUp_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture")))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture", m_iTextureIndex)))
 		return E_FAIL;
 
 	return S_OK;

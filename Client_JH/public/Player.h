@@ -167,6 +167,9 @@ private: // State
 	_float					m_fCurDashCoolTime = 0.f;
 	_bool					m_bCanDash = false;
 	PLAYEROPTION			m_PlayerOption;
+
+	PLAYEROPTION*			m_pTestOption;
+
 	vector<CGameObject*>	m_vecPlayerUI;
 
 	_bool					m_bHitColor = false;

@@ -248,100 +248,11 @@ void CWeapon_State::Start_Fire(_double TimeDelta)
 {
 	if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName)
 	{
-		if (m_pPlayer->Get_PistolBulletCnt() <= 0)
-			m_bGoReload = true;
-
-		m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
-		m_tWeaponOption[DEFAULT_PISTOL].iCurBullet -= 1;
-	
-		// TODO:: 카메라 룩 설정할 수 있게 작업하기 
-		CBullet::BULLETOPTION BulletDesc;
-		CDefault_Bullet_Birth::EFFECTDESC EffectDesc;
-
-		_float4 Position;
-		XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
-		
-		if (nullptr != m_pPlayer->Collision_AimBox_To_Monster())
-		{
-			if (nullptr == m_pPlayer->m_pFirstAimColliderCom)
-				return;
-	
-			_float4x4 fmatrix = m_pPlayer->Collision_AimBox_To_Monster()->Get_WorldFloat4x4();
-	
-			_vector MonsterPos = fmatrix.Translation();
-	
-			_vector FirstAimSpherePos = m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter();
-	
-			_vector SecondAimSpherePos = m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter();
-	
-			_float MonsterToFirstAim, MonsterToSecondAim;
-	
-			XMStoreFloat(&MonsterToFirstAim, XMVector3Length(MonsterPos - FirstAimSpherePos));
-			XMStoreFloat(&MonsterToSecondAim, XMVector3Length(MonsterPos - SecondAimSpherePos));
-	
-			
-	
-			if (fabsf(MonsterToFirstAim) - fabsf(MonsterToSecondAim) < EPSILON)
-			{
-				BulletDesc.BulletDesc.TransformDesc.vInitPos  = _float3(Position.x, Position.y, Position.z);
-				BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter());
-				BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
-				BulletDesc.m_pOwner = m_pPlayer;
-				CBullet*		pBullet = nullptr;
-				pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
-				NULL_CHECK_RETURN(pBullet, );
-				m_vecBullet.push_back(pBullet);
-			}
-			else
-			{
-				BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-				BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter());
-				BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
-				BulletDesc.m_pOwner = m_pPlayer;
-				CBullet*		pBullet = nullptr;
-				pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
-				NULL_CHECK_RETURN(pBullet, );
-				m_vecBullet.push_back(pBullet);
-			}
-		}
-		else
-		{
-			BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-			BulletDesc.BulletDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
-			BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
-			BulletDesc.m_pOwner = m_pPlayer;
-			CBullet*		pBullet = nullptr;
-			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
-			NULL_CHECK_RETURN(pBullet, );
-
-			
-		}
-
-		EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-		EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
-		EffectDesc.m_pOwner = m_pPlayer;
-		CDefault_Bullet_Birth* pEffect = nullptr;
-		pEffect = (CDefault_Bullet_Birth*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Default_Bullet_Birth", &EffectDesc));
-		NULL_CHECK_RETURN(pEffect, );
-
-		CEffect_Point_Instancing::SPARKOPTION SparkOption;
-		ZeroMemory(&SparkOption, sizeof(CEffect_Point_Instancing::SPARKOPTION));
-		SparkOption.m_eColor = CEffect_Point_Instancing::COLOR_ORANGE;
-		SparkOption.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-		SparkOption.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
-		SparkOption.m_tGameObjectDesc.m_vTexSize = _float2(0.1f, 0.1f);
-		CEffect_Point_Instancing* pPoint = nullptr;
-		for (_uint i = 0; i < 7; ++i)
-		{
-			pPoint = (CEffect_Point_Instancing*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Spark", L"Prototype_GameObject_Effect_Point_Instancing", &SparkOption));
-			NULL_CHECK_RETURN(pPoint, );
-		}
-
+		Fire_DefaultPistol();
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName)
 	{
-		m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_FIRE);
-		m_tWeaponOption[FLAME_BULLET].iCurBullet -= 1;
+		Fire_FlameBullet();
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FIRE_DRAGON].wstrWeaponName)
 	{
@@ -615,6 +526,193 @@ _bool CWeapon_State::Animation_Finish()
 _bool CWeapon_State::Is_Empty_Bullet()
 {
 	return m_bGoReload;
+}
+
+void CWeapon_State::Fire_DefaultPistol()
+{
+	if (m_tWeaponOption[DEFAULT_PISTOL].iCurBullet <= 0 && m_pPlayer->Get_PistolBulletCnt() > 0)
+		m_bGoReload = true;
+
+	m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_FIRE);
+	m_tWeaponOption[DEFAULT_PISTOL].iCurBullet -= 1;
+
+	// TODO:: 카메라 룩 설정할 수 있게 작업하기 
+	CBullet::BULLETOPTION BulletDesc;
+	CDefault_Bullet_Birth::EFFECTDESC EffectDesc;
+
+	_float4 Position;
+	XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
+
+	if (nullptr != m_pPlayer->Collision_AimBox_To_Monster())
+	{
+		if (nullptr == m_pPlayer->m_pFirstAimColliderCom)
+			return;
+
+		_float4x4 fmatrix = m_pPlayer->Collision_AimBox_To_Monster()->Get_WorldFloat4x4();
+
+		_vector MonsterPos = fmatrix.Translation();
+
+		_vector FirstAimSpherePos = m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter();
+
+		_vector SecondAimSpherePos = m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter();
+
+		_float MonsterToFirstAim, MonsterToSecondAim;
+
+		XMStoreFloat(&MonsterToFirstAim, XMVector3Length(MonsterPos - FirstAimSpherePos));
+		XMStoreFloat(&MonsterToSecondAim, XMVector3Length(MonsterPos - SecondAimSpherePos));
+
+
+		BulletDesc.BulletDesc.m_iCountType = 0;
+		if (fabsf(MonsterToFirstAim) - fabsf(MonsterToSecondAim) < EPSILON)
+		{
+			BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+			BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter());
+			BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
+			BulletDesc.m_pOwner = m_pPlayer;
+			CBullet*		pBullet = nullptr;
+			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
+			NULL_CHECK_RETURN(pBullet, );
+			m_vecBullet.push_back(pBullet);
+		}
+		else
+		{
+			BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+			BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter());
+			BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
+			BulletDesc.m_pOwner = m_pPlayer;
+			CBullet*		pBullet = nullptr;
+			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
+			NULL_CHECK_RETURN(pBullet, );
+			m_vecBullet.push_back(pBullet);
+		}
+	}
+	else
+	{
+		BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+		BulletDesc.BulletDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
+		BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
+		BulletDesc.m_pOwner = m_pPlayer;
+		CBullet*		pBullet = nullptr;
+		pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
+		NULL_CHECK_RETURN(pBullet, );
+
+
+	}
+
+	EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
+	EffectDesc.m_pOwner = m_pPlayer;
+	CDefault_Bullet_Birth* pEffect = nullptr;
+	pEffect = (CDefault_Bullet_Birth*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Default_Bullet_Birth", &EffectDesc));
+	NULL_CHECK_RETURN(pEffect, );
+
+	CEffect_Point_Instancing::SPARKOPTION SparkOption;
+	ZeroMemory(&SparkOption, sizeof(CEffect_Point_Instancing::SPARKOPTION));
+	SparkOption.m_eColor = CEffect_Point_Instancing::COLOR_ORANGE;
+	SparkOption.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	SparkOption.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
+	SparkOption.m_tGameObjectDesc.m_vTexSize = _float2(0.1f, 0.1f);
+	CEffect_Point_Instancing* pPoint = nullptr;
+	for (_uint i = 0; i < 7; ++i)
+	{
+		pPoint = (CEffect_Point_Instancing*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Spark", L"Prototype_GameObject_Effect_Point_Instancing", &SparkOption));
+		NULL_CHECK_RETURN(pPoint, );
+	}
+}
+
+void CWeapon_State::Fire_FlameBullet()
+{
+	if (m_tWeaponOption[FLAME_BULLET].iCurBullet <= 0 && m_pPlayer->Get_PistolBulletCnt() > 0)
+		m_bGoReload = true;
+
+	m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_FIRE);
+	m_tWeaponOption[FLAME_BULLET].iCurBullet -= 1;
+
+	// TODO:: 카메라 룩 설정할 수 있게 작업하기 
+	CBullet::BULLETOPTION BulletDesc;
+	CDefault_Bullet_Birth::EFFECTDESC EffectDesc;
+
+	_float4 Position;
+	XMStoreFloat4(&Position, (m_pPlayer->Get_CurWeaponModelCom()->Get_BoneMatrix("Att001") * CGameUtils::Get_PlayerPivotMatrix() *m_pPlayer->m_pTransformCom->Get_WorldMatrix()).r[3]);
+
+	if (nullptr != m_pPlayer->Collision_AimBox_To_Monster())
+	{
+		if (nullptr == m_pPlayer->m_pFirstAimColliderCom)
+			return;
+
+		_float4x4 fmatrix = m_pPlayer->Collision_AimBox_To_Monster()->Get_WorldFloat4x4();
+
+		_vector MonsterPos = fmatrix.Translation();
+
+		_vector FirstAimSpherePos = m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter();
+
+		_vector SecondAimSpherePos = m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter();
+
+		_float MonsterToFirstAim, MonsterToSecondAim;
+
+		XMStoreFloat(&MonsterToFirstAim, XMVector3Length(MonsterPos - FirstAimSpherePos));
+		XMStoreFloat(&MonsterToSecondAim, XMVector3Length(MonsterPos - SecondAimSpherePos));
+
+
+		BulletDesc.BulletDesc.m_iCountType = 1;
+
+		if (fabsf(MonsterToFirstAim) - fabsf(MonsterToSecondAim) < EPSILON)
+		{
+			BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+			BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pFirstAimColliderCom->Get_SphereCenter());
+			BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
+			BulletDesc.m_pOwner = m_pPlayer;
+			CBullet*		pBullet = nullptr;
+			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
+			NULL_CHECK_RETURN(pBullet, );
+			m_vecBullet.push_back(pBullet);
+		}
+		else
+		{
+			BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+			BulletDesc.BulletDesc.m_vBulletLook = XMVector4Normalize(m_pPlayer->m_pSecondAimColliderCom->Get_SphereCenter());
+			BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
+			BulletDesc.m_pOwner = m_pPlayer;
+			CBullet*		pBullet = nullptr;
+			pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
+			NULL_CHECK_RETURN(pBullet, );
+			m_vecBullet.push_back(pBullet);
+		}
+	}
+	else
+	{
+		BulletDesc.BulletDesc.m_iCountType = 1;
+		BulletDesc.BulletDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+		BulletDesc.BulletDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
+		BulletDesc.m_eOwner = CBullet::BULLETOWNERTYPE::OWNER_PLAYER;
+		BulletDesc.m_pOwner = m_pPlayer;
+		CBullet*		pBullet = nullptr;
+		pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Player_Default_PistolTex", &BulletDesc));
+		NULL_CHECK_RETURN(pBullet, );
+
+
+	}
+
+	EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
+	EffectDesc.m_pOwner = m_pPlayer;
+	EffectDesc.m_tGameObjectDesc.m_iCountType = 1;
+	CDefault_Bullet_Birth* pEffect = nullptr;
+	pEffect = (CDefault_Bullet_Birth*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Default_Bullet_Birth", &EffectDesc));
+	NULL_CHECK_RETURN(pEffect, );
+
+	CEffect_Point_Instancing::SPARKOPTION SparkOption;
+	ZeroMemory(&SparkOption, sizeof(CEffect_Point_Instancing::SPARKOPTION));
+	SparkOption.m_eColor = CEffect_Point_Instancing::COLOR_RED;
+	SparkOption.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	SparkOption.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
+	SparkOption.m_tGameObjectDesc.m_vTexSize = _float2(0.1f, 0.1f);
+	CEffect_Point_Instancing* pPoint = nullptr;
+	for (_uint i = 0; i < 7; ++i)
+	{
+		pPoint = (CEffect_Point_Instancing*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Spark", L"Prototype_GameObject_Effect_Point_Instancing", &SparkOption));
+		NULL_CHECK_RETURN(pPoint, );
+	}
 }
 
 CWeapon_State* CWeapon_State::Create(CPlayer* pPlayer, CState* pStateMachineCom, CModel * pModel, CTransform * pTransform, CNavigation* pNavigation)

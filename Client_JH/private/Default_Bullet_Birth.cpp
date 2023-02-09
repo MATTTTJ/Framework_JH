@@ -30,6 +30,8 @@ HRESULT CDefault_Bullet_Birth::Initialize_Clone(const wstring& wstrPrototypeTag,
 		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tEffectDesc), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
+		m_iBirthType = m_tEffectDesc.m_tGameObjectDesc.m_iCountType;
+
 		m_vPSize = _float2{ 1.f, 1.f };
 		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMVector3Normalize(XMVectorSet(m_tEffectDesc.m_tGameObjectDesc.m_vBulletLook.x, m_tEffectDesc.m_tGameObjectDesc.m_vBulletLook.y, m_tEffectDesc.m_tGameObjectDesc.m_vBulletLook.z, 0.f)));
 		// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION,
@@ -37,10 +39,8 @@ HRESULT CDefault_Bullet_Birth::Initialize_Clone(const wstring& wstrPrototypeTag,
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, (XMVectorSet(m_tEffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos.x, m_tEffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos.y, m_tEffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos.z, 1.f) 
 			+ m_pTransformCom->Get_State(CTransform::STATE_LOOK)));
 
-		 _matrix matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
 
-		m_vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
-			(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1202_Bone004") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+		
 
 	}
 	else
@@ -53,12 +53,32 @@ HRESULT CDefault_Bullet_Birth::Initialize_Clone(const wstring& wstrPrototypeTag,
 
 	m_vLook = XMVector3Normalize(XMVector3Cross(m_vDir, vUp));
 
-	m_iUV_Max_Width_Num = 2;
-	m_iUV_Max_Height_Num = 2;
-	m_iFrameCnt = 2;
-	m_vPSize = _float2{ 0.3f, 0.3f };
-	m_iUV_Cur_Width_Num = 0;
-	m_iUV_Cur_Height_Num = 0;
+	if (m_iBirthType == 0)
+	{
+		_matrix matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
+
+		m_vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
+			(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1202_Bone004") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+		m_iUV_Max_Width_Num = 2;
+		m_iUV_Max_Height_Num = 2;
+		m_iFrameCnt = 2;
+		m_vPSize = _float2{ 0.3f, 0.3f };
+		m_iUV_Cur_Width_Num = 0;
+		m_iUV_Cur_Height_Num = 0;
+	}
+	if (m_iBirthType == 1)
+	{
+		_matrix matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
+
+		m_vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
+			(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1205_Bone001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+		m_iUV_Max_Width_Num = 4;
+		m_iUV_Max_Height_Num = 4;
+		m_iFrameCnt = 1;
+		m_vPSize = _float2{ 0.5f, 0.5f };
+		m_iUV_Cur_Width_Num = 0;
+		m_iUV_Cur_Height_Num = 0;
+	}
 	return S_OK;
 }
 
@@ -154,7 +174,7 @@ HRESULT CDefault_Bullet_Birth::SetUp_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Set_RawValue(L"g_vCamPosition", &CGameInstance::GetInstance()->Get_CamPos(), sizeof(_float4))))
 		return E_FAIL;
-	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture", (_uint)m_iBirthType), E_FAIL);
 
 	return S_OK;
 }

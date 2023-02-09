@@ -61,7 +61,7 @@ void CLoading_Fire::Late_Tick(_double dTimeDelta)
 	__super::Late_Tick(dTimeDelta);
 
 	if (m_pRendererCom != nullptr)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_FADE, this);
 }
 
 HRESULT CLoading_Fire::Render()

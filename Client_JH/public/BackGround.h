@@ -26,6 +26,11 @@ public:
 	virtual void	Late_Tick(_double TimeDelta)	override;
 	virtual HRESULT Render()						override;
 	CShader*		Get_ShaderCom() { return m_pShaderCom; }
+
+public:
+	
+
+
 private:
 	CShader*				m_pShaderCom	= nullptr;
 	CRenderer*				m_pRendererCom	= nullptr;
@@ -35,8 +40,12 @@ private:
 private:
 	_float4x4				m_ViewMatrix;
 	_float4x4				m_ProjMatrix;
-
+	_uint					m_iTextureIndex = 0;
 	_float					m_fX, m_fY, m_fSizeX, m_fSizeY;
+
+	_float					m_fCurLifeTime = 0.f;
+	_float					m_fLifeTime = 3.f;
+	_bool					m_bLifeTimeDone = false;
 
 private:
 	HRESULT SetUp_Components();

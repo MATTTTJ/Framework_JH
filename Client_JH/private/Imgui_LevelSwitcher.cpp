@@ -33,6 +33,11 @@ void CImgui_LevelSwitcher::Imgui_RenderWindow()
 
 }
 
+void CImgui_LevelSwitcher::Imgui_GotoLogo()
+{
+	FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)LEVEL_LOGO)), );
+}
+
 void CImgui_LevelSwitcher::Render_LevelSwitch()
 {
 	if (ImGui::BeginTabItem("Level_Switch"))

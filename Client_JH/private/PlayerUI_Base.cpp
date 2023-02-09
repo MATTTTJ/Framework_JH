@@ -2031,11 +2031,13 @@ void CPlayer_UI_CountMachine::InttoString(_uint ConvertCnt, _float2 vPos, _float
 			CGameObject*		pNumberUI = nullptr;
 			CGameObject::GAMEOBJECTDESC		tmp;
 
-			if (v2.size() == 1)
-				tmp.TransformDesc.vInitPos = _float3(vPos.x + 36.f, vPos.y, 0.f);
-			else
-				tmp.TransformDesc.vInitPos = _float3(vPos.x + (i * 36.f), vPos.y, 0.f);
-
+			// if (iType == 1 && )
+			{
+				if (v2.size() == 1)
+					tmp.TransformDesc.vInitPos = _float3(vPos.x + 36.f, vPos.y, 0.f);
+				else
+					tmp.TransformDesc.vInitPos = _float3(vPos.x + (i * 36.f), vPos.y, 0.f);
+			}
 			tmp.m_iNumCnt = i;
 			tmp.m_iNumber = Number;
 			tmp.m_vNumColor = vColor;

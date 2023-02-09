@@ -97,6 +97,12 @@ private:
 	_bool						MouseInput_LB(void);
 	_bool						Animation_Finish(void);
 	_bool						Is_Empty_Bullet(void);
+
+
+private:
+	void						Fire_DefaultPistol();
+	void						Fire_FlameBullet();
+
 private:
 	class CGameInstance*		m_pGameInstance = nullptr;
 

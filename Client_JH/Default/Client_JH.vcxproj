@@ -198,6 +198,8 @@
     <ClInclude Include="..\public\Elite_Knight_State.h" />
     <ClInclude Include="..\public\FadeInOut.h" />
     <ClInclude Include="..\public\Fire_Light.h" />
+    <ClInclude Include="..\public\Flame_Bullet.h" />
+    <ClInclude Include="..\public\Flame_Bullet_Dead.h" />
     <ClInclude Include="..\public\ForkLift.h" />
     <ClInclude Include="..\public\Home.h" />
     <ClInclude Include="..\public\Home_Deco.h" />
@@ -244,6 +246,7 @@
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\SkySphere.h" />
     <ClInclude Include="..\public\Smoke.h" />
+    <ClInclude Include="..\public\Sphere_Effect.h" />
     <ClInclude Include="..\public\Static_Camera.h" />
     <ClInclude Include="..\public\StoneLight.h" />
     <ClInclude Include="..\public\StonePillar.h" />
@@ -287,6 +290,8 @@
     <ClCompile Include="..\private\Elite_Knight_State.cpp" />
     <ClCompile Include="..\private\FadeInOut.cpp" />
     <ClCompile Include="..\private\Fire_Light.cpp" />
+    <ClCompile Include="..\private\Flame_Bullet.cpp" />
+    <ClCompile Include="..\private\Flame_Bullet_Dead.cpp" />
     <ClCompile Include="..\private\ForkLift.cpp" />
     <ClCompile Include="..\private\Home.cpp" />
     <ClCompile Include="..\private\Home_Deco.cpp" />
@@ -333,6 +338,7 @@
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\SkySphere.cpp" />
     <ClCompile Include="..\private\Smoke.cpp" />
+    <ClCompile Include="..\private\Sphere_Effect.cpp" />
     <ClCompile Include="..\private\Static_Camera.cpp" />
     <ClCompile Include="..\private\StoneLight.cpp" />
     <ClCompile Include="..\private\StonePillar.cpp" />

@@ -60,6 +60,15 @@ HRESULT CHuman_Sword::Initialize_Clone(const wstring& wstrPrototypeTag, void* pA
 	}
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.f, 0.f, 10.f, 1.f));
 
+	// m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-180.f));
+
+	// _float4x4 WorldMat = m_pTransformCom->Get_WorldFloat4x4();
+	// _float4x4 RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-180.f));
+	// WorldMat *= RotationMatrix;
+	// m_pTransformCom->Set_WorldMatrix(WorldMat);
+	// _vector vRot = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+	
+	// m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
 	return S_OK;
 }
 

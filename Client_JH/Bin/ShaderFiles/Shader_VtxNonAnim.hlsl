@@ -9,11 +9,12 @@ float			g_fFar;
 float3			g_vColor;
 float2			g_vUVScale;
 float2			g_vUVPos;
-
+texture2D		g_NoiseTexture;
+float			g_fTime;
 bool			g_bBlur;
 bool			g_bBloom;
 bool			g_bGlow;
-
+vector			g_vMtrlDif;
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -327,6 +328,67 @@ PS_OUT_EFFECT PS_MAIN_OBJ(PS_IN In)
 	return Out;
 }
 
+PS_OUT_EFFECT PS_MAIN_SPHERE(PS_IN In)
+{
+	PS_OUT_EFFECT			Out = (PS_OUT_EFFECT)0;
+
+
+	// float2 NewUV = In.vTexUV * float2(1.f, 1.f) * float2(0.f, -g_fTime);
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	vector		vNoise = g_NoiseTexture.Sample(LinearSampler, In.vTexUV);
+
+	
+
+
+
+	if (vDiffuse.a == 0.f)
+		clip(-1);
+
+	if (vNoise.r >= g_vMtrlDif.a)
+		vDiffuse.a = 1;
+	else
+		vDiffuse.a = 0;
+
+	if (vDiffuse.a < 0.001f)
+		discard;
+	// if (vNoise.r >= g_vMtrlDif.a - 0.05 && vNoise.r <= g_vMtrlDif.a + 0.05)
+	// 	vDiffuse = float4(1, 0, 0, 1); // »¡
+	// else
+	// 	;
+	//
+	// if (vNoise.r >= g_vMtrlDif.a - 0.03 && vNoise.r <= g_vMtrlDif.a + 0.03)
+	// 	vDiffuse = float4(1, 1, 0, 1); // ³ë
+	// else
+	// 	;
+	//
+	// if (vNoise.r >= g_vMtrlDif.a - 0.025 && vNoise.r <= g_vMtrlDif.a + 0.025)
+	// 	vDiffuse = float4(1, 1, 1, 1); // Èò
+	// else
+	// 	;
+
+	Out.vColor = vDiffuse;
+	// return output;
+
+	// Out.vColor = vDiffuse * vNoise;
+	Out.vColor.a = saturate((vNoise.r * 1.3f) * 1 - g_fTime);
+
+	if (Out.vColor.a > 0.f)
+	{
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 1.f;
+		Out.vFlag.b = 0.f;
+	}
+	else
+	{
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 0.f;
+		Out.vFlag.b = 0.f;
+	}
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Default0
@@ -407,5 +469,16 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
 	}
 
+	pass OBJ6
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SPHERE();
+	}
 }

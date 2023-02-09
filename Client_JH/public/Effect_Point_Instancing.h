@@ -14,7 +14,7 @@ BEGIN(Client)
 class CEffect_Point_Instancing final :	public CGameObject
 {
 public:
-	enum COLOR { COLOR_ORANGE, COLOR_SKY, COLOR_GREEN, COLOR_BLUE, COLOR_END};
+	enum COLOR { COLOR_ORANGE, COLOR_SKY, COLOR_GREEN, COLOR_BLUE,COLOR_RED, COLOR_END};
 
 	typedef struct tagSparkOption
 	{

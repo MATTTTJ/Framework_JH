@@ -18,6 +18,7 @@ public:
 	void Render_Imgui();
 	void Render_Update_ImGui();
 	void ImGui_DockSpace();
+	void ImGui_GotoLogo();
 	// imgui object를 tab에 추가한다.
 	void Add_ImguiTabObject(CImguiObject* ImguiObject);
 

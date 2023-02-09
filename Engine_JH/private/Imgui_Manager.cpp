@@ -124,10 +124,14 @@ void CImgui_Manager::Ready_Imgui(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceC
 
 void CImgui_Manager::Tick_Imgui()
 {
-
 	if (CGameInstance::GetInstance()->Key_Down(DIK_T) && CGameInstance::GetInstance()->Get_DIKeyState(DIK_LCONTROL) & 0x80)
 	{
 		m_bDrawImGui = !m_bDrawImGui;
+	}
+
+	if(CGameInstance::GetInstance()->Key_Down(DIK_END))
+	{
+		ImGui_GotoLogo();
 	}
 
 	if (!m_bDrawImGui)
@@ -208,6 +212,16 @@ void CImgui_Manager::ImGui_DockSpace()
 	}
 
 	ImGui::End();
+}
+
+void CImgui_Manager::ImGui_GotoLogo()
+{
+	for (const auto& imWinObj : m_vecWin)
+	{
+		// ImGui::Begin(imWinObj->GetWindowName());
+		imWinObj->Imgui_GotoLogo();
+		// ImGui::End();
+	}
 }
 
 void CImgui_Manager::Add_ImguiTabObject(CImguiObject* ImguiObject)

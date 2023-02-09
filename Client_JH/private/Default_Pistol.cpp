@@ -37,7 +37,7 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 		m_pOwner = m_tBulletOption.m_pOwner;
 		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
-
+		m_iTextureIndex = m_tBulletOption.BulletDesc.m_iCountType;
 		m_vPSize = _float2{ 2.5f, 0.5f };
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tBulletOption.BulletDesc.TransformDesc.vInitPos.x, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.y, m_tBulletOption.BulletDesc.TransformDesc.vInitPos.z, 1.f));
 
@@ -45,10 +45,64 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 		matpivot = XMMatrixIdentity();
 		matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
 
-		_float4 vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
-			(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1202_Bone004") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+		if (m_iTextureIndex == 0)
+		{
+			m_vPSize = _float2{ 2.5f, 0.5f };
 
-		m_vDir = vDir;
+			_float4 vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
+				(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1202_Bone004") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+			m_vDir = vDir;
+			_matrix matpivot;
+			matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
+
+			_matrix matTransform = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4());
+			_vector S, R, P;
+			XMMatrixDecompose(&S, &R, &P, matTransform);
+			_float4 vPosition;
+			XMStoreFloat4(&vPosition, (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+			XMStoreFloat4(&m_vCamPos, P);
+
+			matTransform = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1202_Bone009") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4());
+
+			XMMatrixDecompose(&S, &R, &P, matTransform);
+
+			XMStoreFloat4(&m_vInitPos, P);
+
+			_float4 vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+			m_vLook = XMVector3Normalize(XMVector3Cross(m_vDir, vUp));
+
+
+		}
+		else if(m_iTextureIndex ==1)
+		{
+			m_vPSize = _float2{ 10.f, 0.5f };
+
+			_float4 vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
+				(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1205_Bone001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+			m_vDir = vDir;
+			_matrix matpivot;
+			matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
+
+			_matrix matTransform = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4());
+			_vector S, R, P;
+			XMMatrixDecompose(&S, &R, &P, matTransform);
+			_float4 vPosition;
+			XMStoreFloat4(&vPosition, (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+			XMStoreFloat4(&m_vCamPos, P);
+
+			matTransform = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1205_Bone001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4());
+
+			XMMatrixDecompose(&S, &R, &P, matTransform);
+
+			XMStoreFloat4(&m_vInitPos, P);
+
+			_float4 vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+
+			m_vLook = XMVector3Normalize(XMVector3Cross(m_vDir, vUp));
+
+		}
+
 
 		// _float4   fCamLook = *dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_CamLook();
 		// _float4 fPlayerLook = dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK);
@@ -61,26 +115,7 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 		m_pTransformCom->Set_Scaled(_float3(1000.f, 1000.f, 1.f));
 	}
 
-	_matrix matpivot;
-	matpivot = XMMatrixIdentity();
-	matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
-
-	_matrix matTransform = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4());
-	_vector S, R, P;
-	XMMatrixDecompose(&S, &R, &P, matTransform);
-	_float4 vPosition;
-	XMStoreFloat4(&vPosition, (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
-	XMStoreFloat4(&m_vCamPos, P);
-
-	matTransform = dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1202_Bone009") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4());
-
-	XMMatrixDecompose(&S, &R, &P, matTransform);
-
-	XMStoreFloat4(&m_vInitPos, P);
-
-	_float4 vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-
-	m_vLook = XMVector3Normalize(XMVector3Cross(m_vDir, vUp));
+	
 
 	m_fTrailCount = 1.f;
 	m_fStrong = 0.0f;
@@ -166,7 +201,7 @@ HRESULT CDefault_Pistol::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vUp", &m_vUp, sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vPSize", &m_vPSize, sizeof(_float2)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTestTexture->Bind_ShaderResource(m_pShaderCom, L"g_AddTexture"), E_FAIL);
-	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture", m_iTextureIndex), E_FAIL);
 
 	return S_OK;
 }

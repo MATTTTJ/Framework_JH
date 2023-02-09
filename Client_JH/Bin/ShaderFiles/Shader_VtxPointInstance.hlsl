@@ -10,7 +10,7 @@ vector			g_vInitPos;
 vector			g_vLook;
 vector			g_vRightSrc;
 vector			g_vUp;
-
+float			g_fTime;
 float			g_fProgress = 1.f;
 float			g_fPreProgress = 1.f;
 float			g_fTest;
@@ -20,6 +20,7 @@ float			g_fLaserAlpha = 0.f;
 
 texture2D		g_AlphaTexture;
 texture2D		g_NoiseTexture;
+texture2D		g_GlowTexture;
 
 
 
@@ -567,6 +568,75 @@ PS_OUT PS_MAIN_UVDEFAULTBULLET_Dead(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_FLAME_DEAD(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+
+	if (Out.vColor.a > 0.f)
+	{
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 1.f;
+		Out.vFlag.b = 0.f;
+	}
+	else
+	{
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 0.f;
+		Out.vFlag.b = 0.f;
+	}
+
+	if (Out.vColor.a < 0.001f)
+		discard;
+
+
+
+	//
+	return Out;
+}
+
+PS_OUT PS_MAIN_FLAME_DEAD_W_GLOW(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+	float4 Origin = g_Texture.Sample(LinearSampler, In.vTexUV);
+	float4 glow = g_GlowTexture.Sample(LinearSampler, In.vTexUV);
+	if(glow.a < 0.f)
+	{
+		discard;
+	}
+
+	if (glow.r > 0.f)
+	{
+		glow.rgb = Origin.rgb;
+	}
+	else
+		discard;
+
+	Out.vColor = saturate(Origin * (glow * 1 - g_fTime));
+	Out.vColor.a = Origin.a;
+	if (Out.vColor.a > 0.f)
+	{
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 1.f;
+		Out.vFlag.b = 0.f;
+	}
+	else
+	{
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 0.f;
+		Out.vFlag.b = 0.f;
+	}
+
+	if (Out.vColor.a < 0.001f)
+		discard;
+
+
+
+	//
+	return Out;
+}
+
 PS_OUT PS_MAIN_UVDust(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
@@ -791,7 +861,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_None);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
-		SetBlendState(BS_One, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN_UVSPRITE();
@@ -864,5 +934,29 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SPARK();
 	}
-	
+	pass UVSprite_14
+	{
+		SetRasterizerState(RS_None);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_UVSPRITE();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FLAME_DEAD();
+	}
+
+	pass UVSprite_15
+	{
+		SetRasterizerState(RS_None);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_UVSPRITE();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FLAME_DEAD_W_GLOW();
+	}
 }

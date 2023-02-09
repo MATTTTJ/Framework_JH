@@ -9,6 +9,7 @@ class CCollider;
 class CTexture;
 class CShader;
 class CVIBuffer_Rect;
+class CGameInstance;
 END
 
 BEGIN(Client)
@@ -71,6 +72,9 @@ private:
 	_float					m_fTime = 0.f;
 	_uint					m_iTextureIndex = 0;
 	_bool					m_bSpawnTrigger = false;
+	_bool					m_bReverseTime = false;
+
+	CGameInstance*			m_pGameInstance = nullptr;
 private:
 	HRESULT					SetUp_Components();
 	HRESULT					SetUp_ShaderResources();

@@ -45,10 +45,13 @@ private:
 
 	_bool					m_bButton = false;
 
-	CGameObject*			m_pPlayer = nullptr;
+	// CGameObject*			m_pPlayer = nullptr;
+	class CPlayer*				m_pPlayer = nullptr;
 	_float					m_fCurClickedDelay = 0.f;
 	_float					m_fClickedDelay = 0.5f;
 	_bool					m_bIsClicked = false;
+
+	_bool					m_bRenderLoading = false;
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
