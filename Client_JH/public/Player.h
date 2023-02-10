@@ -119,8 +119,8 @@ private:
 	CShader*				m_pShaderCom	= nullptr;
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
-	CTexture*				m_pSpecularMap_Arm = nullptr;
-	CTexture*				m_pSpecularMap_Weapon = nullptr;
+	// CTexture*				m_pSpecularMap_Arm = nullptr;
+	// CTexture*				m_pSpecularMap_Weapon = nullptr;
 
 	CGameObject*			m_pCamera = nullptr;
 

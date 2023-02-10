@@ -142,6 +142,8 @@ void CNormal_Boss::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
+#ifdef _DEBUG
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
@@ -157,6 +159,7 @@ void CNormal_Boss::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_BODY]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_ELBOW_L]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_ELBOW_R]);
+#endif
 	}
 }
 

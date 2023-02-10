@@ -120,8 +120,10 @@ void CStonePillar::Late_Tick(_double TimeDelta)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+#ifdef _DEBUG
 		m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarColliderCom);
 		m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarExplodeCollCom);
+#endif
 	}
 }
 

@@ -21,7 +21,7 @@ HRESULT CTarget_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	m_pContext = pContext;
 	Safe_AddRef(m_pContext);
 
-#ifdef _DEBUG
+// #ifdef _DEBUG
 
 	D3D11_VIEWPORT			ViewportDesc;
 	ZeroMemory(&ViewportDesc, sizeof (D3D11_VIEWPORT));
@@ -36,7 +36,7 @@ HRESULT CTarget_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	NULL_CHECK_RETURN(m_pShader, E_FAIL);
 	m_pVIBuffer = CVIBuffer_Rect::Create(pDevice, pContext);
 	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
-#endif
+// #endif
 
 	return S_OK;
 }
@@ -199,7 +199,7 @@ HRESULT CTarget_Manager::Begin_ShadowDepthRenderTarget(ID3D11DeviceContext* pCon
 	return S_OK;
 }
 
-#ifdef _DEBUG
+// #ifdef _DEBUG
 
 HRESULT CTarget_Manager::Ready_Debug(const _tchar* pTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {
@@ -225,7 +225,7 @@ HRESULT CTarget_Manager::Render_Debug(const _tchar* pMRTTag)
 
 	return S_OK;
 }
-#endif // _DEBUG
+// #endif // _DEBUG
 
 CRender_Target* CTarget_Manager::Find_RenderTarget(const _tchar* pTargetTag)
 {
@@ -249,6 +249,13 @@ list<CRender_Target*>* CTarget_Manager::Find_MRT(const _tchar* pMRTTag)
 
 void CTarget_Manager::Free()
 {
+
+#ifdef _DEBUG
+	Safe_Release(m_pShader);
+	Safe_Release(m_pVIBuffer);
+
+#endif
+
 	for (auto& Pair : m_mapMRTs)
 	{
 		for (auto& pRenderTarget : Pair.second)
@@ -266,11 +273,7 @@ void CTarget_Manager::Free()
 	// Safe_Release(m_pBackBufferView);
 	// Safe_Release(m_pDepthStencilView);
 
-#ifdef _DEBUG
-	Safe_Release(m_pShader);
-	Safe_Release(m_pVIBuffer);
 
-#endif
 
 	Safe_Release(m_pContext);
 

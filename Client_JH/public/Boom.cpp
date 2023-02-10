@@ -109,7 +109,9 @@ void CBoom::Late_Tick(_double dTimeDelta)
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 	{
+#ifdef _DEBUG
 		m_pRendererCom->Add_DebugRenderGroup(m_pBoomColliderCom);
+#endif
 	}
 
 }

@@ -72,7 +72,8 @@ void CBackGround::Tick(_double TimeDelta)
 	}
 	else if(m_iTextureIndex == 7)
 	{
-		
+		if (CGameInstance::GetInstance()->Key_Down(DIK_ESCAPE))
+			Set_Dead(true);
 	}
 	else
 	{

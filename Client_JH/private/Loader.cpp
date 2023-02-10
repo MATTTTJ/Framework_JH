@@ -303,7 +303,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	// 보스 노말
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_NormalBoss_NormalMap", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/3909_c_Test_B.png", 1)), E_FAIL);
 	// 커서
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Battle_Cursor", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/Cusor.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Battle_Cursor", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/UI/Player_UI/Cusor_%d.png", 2)), E_FAIL);
 
 	// 버튼
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_ButtonTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/2DTexture/Button/Button_%d.png", 3)), E_FAIL);

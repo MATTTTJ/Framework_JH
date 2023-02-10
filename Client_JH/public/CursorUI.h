@@ -26,6 +26,8 @@ private:
 private:
 	_bool			m_bShowCursor = false;
 	_bool			m_bLastShowCursor = false;
+
+	_uint			m_iTextureIndex = 0;
 public:
 	static CCursorUI*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;

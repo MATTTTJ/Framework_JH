@@ -183,7 +183,10 @@ void CTrigger::Late_Tick(_double TimeDelta)
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+
+#ifdef _DEBUG
 		m_pRendererCom->Add_DebugRenderGroup(m_pTriggerCollCom);
+#endif
 	}
 }
 
@@ -463,16 +466,16 @@ HRESULT CTrigger::Knight_To_Room_B()
 			pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Human_Spear", PivotMatrix, &MonsterDesc));
 			pMonster->Set_Player(m_pPlayer);
 
-			ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-			PivotMatrix.r[3] = XMVectorSet(-23.7f, 1.4f, 45.7f, 1.f);
-			MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-			MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-			MonsterDesc.MonsterDesc.m_iDamage = 15;
-			MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-			MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 5.f;
-			MonsterDesc.m_iCellIndex = 237;
-			pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Human_Spear", PivotMatrix, &MonsterDesc));
-			pMonster->Set_Player(m_pPlayer);
+			// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+			// PivotMatrix.r[3] = XMVectorSet(-23.7f, 1.4f, 45.7f, 1.f);
+			// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+			// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+			// MonsterDesc.MonsterDesc.m_iDamage = 15;
+			// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+			// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 5.f;
+			// MonsterDesc.m_iCellIndex = 237;
+			// pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Human_Spear", PivotMatrix, &MonsterDesc));
+			// pMonster->Set_Player(m_pPlayer);
 
 			ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
 			PivotMatrix.r[3] = XMVectorSet(-32.3f, 1.4f, 52.8f, 1.f);

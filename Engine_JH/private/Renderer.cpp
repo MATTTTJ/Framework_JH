@@ -32,11 +32,11 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pGameO
 
 HRESULT CRenderer::Add_DebugRenderGroup(CComponent* pComponent)
 {
-	// NULL_CHECK_RETURN(pComponent, E_FAIL);
-	//
-	// m_DebugObject.push_back(pComponent);
-	//
-	// Safe_AddRef(pComponent);
+	NULL_CHECK_RETURN(pComponent, E_FAIL);
+	
+	m_DebugObject.push_back(pComponent);
+	
+	Safe_AddRef(pComponent);
 
 	return S_OK;
 }
@@ -99,7 +99,15 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Bloom"), TEXT("Target_Bloom")), E_FAIL);
 
-#ifdef _DEBUG
+	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
+	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
+	m_pShader = CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
+	NULL_CHECK_RETURN(m_pShader, E_FAIL);
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(ViewportDesc.Width, ViewportDesc.Height, 1.f));
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixTranspose(XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f)));
+
+// #ifdef _DEBUG
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 50.0f, 50.f, 100.f, 100.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 50.0f, 150.f, 100.f, 100.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 50.0f, 250.f, 100.f, 100.f), E_FAIL);
@@ -111,22 +119,10 @@ HRESULT CRenderer::Initialize_Prototype()
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Dynamic_ShadowDepth"), 150.0f, 250.f, 100.f, 100.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Bloom"), 150.0f, 350.f, 100.f, 100.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 150.0f, 450.f, 100.f, 100.f), E_FAIL);
-#endif
+// #endif
+	
 
-	_matrix			WorldMatrix = XMMatrixIdentity();
-	WorldMatrix.r[0] = XMVectorSet(ViewportDesc.Width, 0.f, 0.f, 0.f);
-	WorldMatrix.r[1] = XMVectorSet(0.f, ViewportDesc.Height, 0.f, 0.f);
 
-	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixTranspose(WorldMatrix));
-
-	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-
-	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixTranspose(XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f)));
-
-	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
-	NULL_CHECK_RETURN(m_pVIBuffer, E_FAIL);
-	m_pShader = CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
-	NULL_CHECK_RETURN(m_pShader, E_FAIL);
 
 	return S_OK;
 }
@@ -140,7 +136,7 @@ HRESULT CRenderer::Initialize_Clone(CGameObject* pOwner, void* pArg)
 
 HRESULT CRenderer::Draw_RenderGroup()
 {
-	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
+	// FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	// D3D11_VIEWPORT		ViewportDesc;
 	// ZeroMemory(&ViewportDesc, sizeof(D3D11_VIEWPORT));
@@ -155,15 +151,11 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_ShadowDepth_Dynamic(), E_FAIL);
-
 	FAILED_CHECK_RETURN(Render_NonAlphaBlend(), E_FAIL);
-
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
-
 	// FAILED_CHECK_RETURN(Render_ShadowBlur(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_OutLine(), E_FAIL);
-
 	FAILED_CHECK_RETURN(Render_NonLight(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Glow(), E_FAIL);
@@ -173,21 +165,32 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 #ifdef _DEBUG
 	// FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
+#endif
+
+#ifdef _DEBUG
+
+	// for (auto& pComponent : m_DebugObject)
+	// 	Safe_Release(pComponent);
+	//
+	// m_DebugObject.clear();
+#endif
+
+#ifdef _DEBUG
 
 	if (nullptr != m_pTarget_Manager)
 	{
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f), E_FAIL);
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f), E_FAIL);
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f), E_FAIL);
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Flag"), 100.0f, 700.f, 200.f, 200.f), E_FAIL);
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Outline"), 300.0f, 100.f, 200.f, 200.f), E_FAIL);
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_OriginEffect"), 300.0f, 300.f, 200.f, 200.f), E_FAIL);
-		
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 500.0f, 100.f, 200.f, 200.f), E_FAIL);
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 500.0f, 300.f, 200.f, 200.f), E_FAIL);
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Dynamic_ShadowDepth"), 500.0f, 500.f, 200.f, 200.f), E_FAIL);
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Bloom"), 700.0f, 100.f, 200.f, 200.f), E_FAIL);
-		FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 700.0f, 300.f, 200.f, 200.f), E_FAIL);
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f), E_FAIL);
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f), E_FAIL);
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f), E_FAIL);
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Flag"), 100.0f, 700.f, 200.f, 200.f), E_FAIL);
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Outline"), 300.0f, 100.f, 200.f, 200.f), E_FAIL);
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_OriginEffect"), 300.0f, 300.f, 200.f, 200.f), E_FAIL);
+		//
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 500.0f, 100.f, 200.f, 200.f), E_FAIL);
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 500.0f, 300.f, 200.f, 200.f), E_FAIL);
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Dynamic_ShadowDepth"), 500.0f, 500.f, 200.f, 200.f), E_FAIL);
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Bloom"), 700.0f, 100.f, 200.f, 200.f), E_FAIL);
+		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 700.0f, 300.f, 200.f, 200.f), E_FAIL);
 
 		m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
 		m_pTarget_Manager->Render_Debug(TEXT("MRT_Effect"));
@@ -203,12 +206,13 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 	return S_OK;
 }
-
+#ifdef _DEBUG
 void CRenderer::Imgui_RenderProperty()
 {
 	if (ImGui::Button("Recompile Shader"))
 		m_pShader->ReCompileShader();
 }
+#endif
 
 
 HRESULT CRenderer::Render_Priority()
@@ -650,7 +654,7 @@ HRESULT CRenderer::Render_Glow()
 
 	return S_OK;
 }
-#ifdef _DEBUG
+
 HRESULT CRenderer::Render_DebugObject()
 {
 	for (auto & pComponent : m_DebugObject)
@@ -664,13 +668,12 @@ HRESULT CRenderer::Render_DebugObject()
 	m_DebugObject.clear();
 	
 
-	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix), E_FAIL);
-	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);
 
 
 	return S_OK;
 }
-#endif
 
 
 CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -697,11 +700,6 @@ void CRenderer::Free()
 {
 	__super::Free();
 
-	for (auto& pComponent : m_DebugObject)
-		Safe_Release(pComponent);
-
-	m_DebugObject.clear();
-
 	for (_uint i = 0; i < RENDER_END; ++i)
 	{
 		for (auto& pGameObject : m_RenderObjectList[i])
@@ -709,6 +707,13 @@ void CRenderer::Free()
 
 		m_RenderObjectList[i].clear();
 	}
+
+	for (auto& pComponent : m_DebugObject)
+		Safe_Release(pComponent);
+
+	m_DebugObject.clear();
+
+	
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pVIBuffer);

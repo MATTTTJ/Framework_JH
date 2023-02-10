@@ -24,13 +24,14 @@ public:
 	D3D11_VIEWPORT				GetViewPortDesc() { return m_ViewPort; }
 
 
-#ifdef _DEBUG
+// #ifdef _DEBUG
 
 public:
 	HRESULT						Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);
+// #endif
+
 	HRESULT						Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 
-#endif
 
 
 private:
@@ -46,11 +47,9 @@ private:
 	ID3D11RenderTargetView*		m_pRTV = nullptr;
 	ID3D11ShaderResourceView*	m_pSRV = nullptr;
 
-#ifdef _DEBUG
 private:
 	_float4x4					m_WorldMatrix;
 
-#endif
 
 
 public:

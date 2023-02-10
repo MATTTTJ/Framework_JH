@@ -229,6 +229,56 @@ _bool CBullet::Collision_Head()
 
 					pMonster->Set_HitColor();
 					pMonster->Collision_Head(this); // 총알이 어디 충돌했는지 판단하니까
+
+					if (Check_Dead() == false && m_bIsClone == true)
+					{
+						if (m_tBulletOption.BulletDesc.m_iCountType == 0)
+						{
+							CDefault_Bullet_Dead::EFFECTDESC EffectDesc;
+							_float4 Position;
+							XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+
+							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+							CDefault_Bullet_Dead* pEffect = nullptr;
+							pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Dust", &EffectDesc));
+							pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Default_Bullet_Dead", &EffectDesc));
+						}
+						else if (m_tBulletOption.BulletDesc.m_iCountType == 1)
+						{
+							CDefault_Bullet_Dead::EFFECTDESC EffectDesc;
+							_float4 Position;
+							XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+							EffectDesc.m_pOwner = m_pOwner;
+							EffectDesc.m_tGameObjectDesc.m_iCountType = 0;
+							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+							CDefault_Bullet_Dead* pEffect = nullptr;
+							pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
+
+							XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+							EffectDesc.m_pOwner = m_pOwner;
+							EffectDesc.m_tGameObjectDesc.m_iCountType = 1;
+							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+							for (_uint i = 0; i < 4; ++i)
+								pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
+
+
+
+							GAMEOBJECTDESC GameObjectDesc;
+							ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
+							GameObjectDesc.m_iCountType = 0;
+							GameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							GameObjectDesc.m_vBulletLook = _float4(0.5f, 0.5f, 0.5f, 0.f);
+
+							pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Sphere", &GameObjectDesc);
+
+						}
+
+						// Create_DamageFont();
+					}
+
 					Set_Dead(true);
 
 					// m_bCollOnce = true;

@@ -127,7 +127,7 @@ HRESULT CRender_Target::Ready_DepthStencilRenderTargetView(_uint iWidth, _uint i
 
 
 }
-#ifdef _DEBUG
+// #ifdef _DEBUG
 HRESULT CRender_Target::Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY)
 {
 	D3D11_VIEWPORT			ViewportDesc;
@@ -147,6 +147,7 @@ HRESULT CRender_Target::Ready_Debug(_float fX, _float fY, _float fSizeX, _float 
 
 	return S_OK;
 }
+// #endif
 
 HRESULT CRender_Target::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
@@ -161,7 +162,6 @@ HRESULT CRender_Target::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 	return S_OK;
 }
-#endif
 
 CRender_Target* CRender_Target::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4* pClearColor)
 {

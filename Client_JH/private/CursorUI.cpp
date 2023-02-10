@@ -27,12 +27,20 @@ HRESULT CCursorUI::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 	m_fX = m_fSizeX * 0.5f;
 	m_fY = m_fSizeY * 0.5f;
 
+	if(nullptr != pArg)
+	{
+		GAMEOBJECTDESC CursorDesc;
+		ZeroMemory(&CursorDesc, sizeof(GAMEOBJECTDESC));
+
+		CursorDesc = *(GAMEOBJECTDESC*)pArg;
+		m_iTextureIndex = (_uint)CursorDesc.m_iCountType;
+	}
 	FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, pArg), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scaled(_float3(m_fSizeX, m_fSizeY, 0.f));
-	// ShowCursor(false);
+	ShowCursor(false);
 	return S_OK;
 }
 
@@ -87,7 +95,7 @@ HRESULT CCursorUI::SetUp_ShaderResources()
 	m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix");
 	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
 	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
-	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
+	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture", m_iTextureIndex);
 
 	return S_OK;
 }

@@ -113,6 +113,7 @@ void CElite_Knight::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+#ifdef _DEBUG
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
@@ -123,6 +124,7 @@ void CElite_Knight::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_DebugRenderGroup(m_pLeftArmColliderCom);
 		m_pRendererCom->Add_DebugRenderGroup(m_pRightArmColliderCom);
 		m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+#endif
 	}
 }
 

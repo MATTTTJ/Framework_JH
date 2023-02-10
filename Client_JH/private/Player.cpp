@@ -285,11 +285,12 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * TurnY * 0.1f);
 	}
 
+#ifdef _DEBUG
 	if (CGameInstance::GetInstance()->Key_Down(DIK_F2))
 	{
 		m_pRendererCom->Switch_Collider_Render();
 	}
-
+#endif
 	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_F1))
 	{
 		static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Set_FixControl();
@@ -467,7 +468,7 @@ void CPlayer::Late_Tick(_double dTimeDelta)
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
-
+#ifdef _DEBUG
 		for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 		{
 			if (nullptr != m_pColliderCom[i])
@@ -476,6 +477,7 @@ void CPlayer::Late_Tick(_double dTimeDelta)
 		m_pRendererCom->Add_DebugRenderGroup(m_pFirstAimColliderCom);
 		m_pRendererCom->Add_DebugRenderGroup(m_pSecondAimColliderCom);
 		m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+#endif
 	}
 }
 
@@ -787,7 +789,10 @@ HRESULT CPlayer::Ready_UI()
 	pPlayerUI->Set_Weapon_State(m_pWeaponState);
 	m_vecPlayerUI.push_back(pPlayerUI);
 
-	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_Battle_Cursor"));
+	CGameObject::GAMEOBJECTDESC tmp;
+	tmp.m_iCountType = 0;
+
+	pPlayerUI = dynamic_cast<CUI*>(pGameInstance->Clone_GameObject(L"Prototype_GameObject_Battle_Cursor", &tmp));
 	NULL_CHECK_RETURN(pPlayerUI, E_FAIL);
 	m_vecPlayerUI.push_back(pPlayerUI);
 	RELEASE_INSTANCE(CGameInstance);
@@ -831,7 +836,13 @@ void CPlayer::Free()
 
 	Safe_Release(m_pWeaponState);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pModelCom);
+	// Safe_Release(m_pModelCom);
+
+	if (m_bIsClone)
+	{
+		for (_uint i = 0; i < WEAPON_END; ++i)
+			Safe_Release(m_tWeaponDesc[i].m_pWeaponModelCom);
+	}
 
 	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
 		Safe_Release(m_pColliderCom[i]);
@@ -850,17 +861,13 @@ void CPlayer::Free()
 		// Safe_Release(pUI);
 
 
-	Safe_Release(m_pSpecularMap_Arm);
-	Safe_Release(m_pSpecularMap_Weapon);
+	// Safe_Release(m_pSpecularMap_Arm);
+	// Safe_Release(m_pSpecularMap_Weapon);
 
 	Safe_Release(m_pState);
 	Safe_Release(m_pNavigationCom);
 
-	if (m_bIsClone)
-	{
-		for (_uint i = 0; i < WEAPON_END; ++i)
-			Safe_Release(m_tWeaponDesc[i].m_pWeaponModelCom);
-	}
+	
 	Safe_Release(m_pRendererCom);
 
 }

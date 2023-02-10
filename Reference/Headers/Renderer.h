@@ -17,12 +17,19 @@ public:
 	virtual HRESULT		Initialize_Clone(class CGameObject* pOwner, void* pArg) override;
 
 public:
+#ifdef _DEBUG
+
 	void				Switch_Collider_Render() { m_bRender_Collider = !m_bRender_Collider; }
+#endif
+
 	HRESULT				Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
 	HRESULT				Add_DebugRenderGroup(class CComponent* pComponent);
 	HRESULT				Draw_RenderGroup();
 
+#ifdef _DEBUG
 	virtual void		Imgui_RenderProperty() override;
+#endif
+
 private:
 	list<class CGameObject*>			m_RenderObjectList[RENDER_END];
 	typedef list<class CGameObject*>	RENDEROBJECTS;
@@ -37,7 +44,10 @@ private:
 	class CVIBuffer_Rect*				m_pVIBuffer = nullptr;
 	class CShader*						m_pShader = nullptr;
 	_float4x4							m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
-	_bool								m_bRender_Collider;
+#ifdef _DEBUG
+	_bool m_bRender_Collider;
+#endif
+
 private:
 	HRESULT				Render_Priority();
 	HRESULT				Render_ShadowDepth_Dynamic();
@@ -60,10 +70,9 @@ private:
 	HRESULT				Render_OutLine();
 	HRESULT				Render_ShadowBlur();
 
-#ifdef _DEBUG
 private:
 	HRESULT				Render_DebugObject();
-#endif
+
 public:
 	static CRenderer*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(class CGameObject* pOwner, void* pArg = nullptr) override;

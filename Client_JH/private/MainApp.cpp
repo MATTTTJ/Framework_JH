@@ -40,7 +40,8 @@ HRESULT CMainApp::Initialize()
 void CMainApp::Tick(_double TimeDelta)
 {
 	NULL_CHECK(m_pGameInstance)
-	srand(time(NULL));
+
+	srand((unsigned)time(NULL));
 
 #ifdef  _DEBUG
 		m_TimeAcc += TimeDelta;
