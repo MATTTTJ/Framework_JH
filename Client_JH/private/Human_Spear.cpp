@@ -89,9 +89,9 @@ void CHuman_Spear::Tick(_double TimeDelta)
 
 	if (m_bPlayAnimation)
 		m_pModelCom->Play_Animation(TimeDelta);
+	Set_On_NaviMesh();
 
 	Collider_Tick(TimeDelta);
-	Set_On_NaviMesh();
 	Collision_PlayerEyes(); // When Have Hide Anim
 
 
@@ -101,6 +101,8 @@ void CHuman_Spear::Tick(_double TimeDelta)
 	{
 		m_vecMonsterUI[i]->Tick(TimeDelta);
 	}
+
+
 }
 
 void CHuman_Spear::Late_Tick(_double TimeDelta)
@@ -121,20 +123,19 @@ void CHuman_Spear::Late_Tick(_double TimeDelta)
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 	{
-		if (m_bIsOnPlayerEyes)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_OUTLINE, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_OUTLINE, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 #ifdef _DEBUG
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTPOS]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTPOS]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 #endif
 	}
 }
@@ -150,7 +151,7 @@ HRESULT CHuman_Spear::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 2);
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 3);
 	}
 
 	return S_OK;
@@ -219,8 +220,15 @@ HRESULT CHuman_Spear::Render_OutLineFlag()
 
 	/* 셰이더 전역변수에 값을 던진다. */
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+	if (m_bIsOnPlayerEyes)
+	{
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &m_vOnAimOutLineColor, sizeof(_float4)), E_FAIL);
+	}
+	else
+	{
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &XMVectorSet(1.f, 0.3f, 0.3f, 1.f), sizeof(_float4)), E_FAIL);
+	}
 
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &m_vOnAimOutLineColor, sizeof(_float)), E_FAIL);
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
@@ -328,18 +336,18 @@ HRESULT CHuman_Spear::SetUp_Components()
 	CCollider::COLLIDERDESC	ColliderDesc;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(17.f, 17.f, 17.f);
+	ColliderDesc.vSize = _float3(10.f, 10.f, 10.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_DetectedSphere", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(0.7f, 0.1f, 0.1f);
-	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vPosition = _float3(0.25f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_HitBodySphere", (CComponent**)&m_pColliderCom[COLLTYPE_HITBODY], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vSize = _float3(0.5f, 0.5f, 0.5f);
-	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vPosition = _float3(0.25f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_HitHeadSphere", (CComponent**)&m_pColliderCom[COLLTYPE_HITHEAD], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));

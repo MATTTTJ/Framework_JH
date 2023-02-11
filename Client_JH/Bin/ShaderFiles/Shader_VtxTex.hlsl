@@ -14,10 +14,11 @@ float			g_fTime = 1.f;
 texture2D		g_DepthTexture;
 texture2D		g_CircleTexture;
 texture2D		g_NoiseTexture;
-
+bool			g_bFlow = false;
 float			g_fFadeAlpha = 0.f;
 float			g_fAlpha;
 float			g_DisTime;
+float			g_fFlowTime;
 /* 샘플링 해오는 함수 */
 /* dx9 : tex2D(DefaultSampler, In.vTexUV);*/
 /* dx11 : g_Texture.Sample(DefaultSampler, In.vTexUV); */
@@ -198,14 +199,21 @@ PS_OUT PS_MAIN_HP_RED(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_MAIN_EFFECT(PS_IN In)
+PS_OUT_EFFECT PS_MAIN_EFFECT(PS_IN In)
 {
-	//Soft Effect
-	PS_OUT			Out = (PS_OUT)0;
+	//Soft Effectwdaw
+	PS_OUT_EFFECT			Out = (PS_OUT_EFFECT)0;
 
-	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
-	if (Out.vColor.a == 0.f)
+	if(g_bFlow == false)
+		Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	else
+		Out.vColor = g_Texture.Sample(LinearSampler, float2(In.vTexUV.x, In.vTexUV.y));
+	// if (Out.vColor.a == 0.f)
+	// 	discard;
+
+	if (Out.vColor.a < 0.00001f)
 		discard;
+
 	float2		vTexUV;
 
 	vTexUV.x = (In.vProjPos.x / In.vProjPos.w) * 0.5f + 0.5f;
@@ -217,19 +225,20 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 	float		fViewZ = In.vProjPos.w;
 
 	Out.vColor.a = Out.vColor.a * (saturate(fOldViewZ - fViewZ) * 2.5f) ;
-	Out.vColor.a = Out.vColor.a * g_fAlpha * 0.1f;
-	// if (Out.vColor.a > 0.f)
-	// {
-	// 	Out.vFlag.r = 0.f;
-	// 	Out.vFlag.g = 1.f;
-	// 	Out.vFlag.b = 0.f;
-	// }
-	// else
-	// {
-	// 	Out.vFlag.r = 0.f;
-	// 	Out.vFlag.g = 0.f;
-	// 	Out.vFlag.b = 0.f;
-	// }
+	Out.vColor.a = Out.vColor.a * g_fAlpha * 0.23f;
+
+	if (Out.vColor.a > 0.f)
+	{
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 0.f;
+		Out.vFlag.b = 0.f;
+	}
+	else
+	{
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 0.f;
+		Out.vFlag.b = 0.f;
+	}
 
 
 	return Out;
@@ -327,7 +336,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
@@ -403,7 +412,7 @@ technique11 DefaultTechnique
 
 	pass Rect6
 	{
-		SetRasterizerState(RS_None);
+		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_AlphaBlend , float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
 

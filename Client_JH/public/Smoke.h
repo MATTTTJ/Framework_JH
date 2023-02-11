@@ -46,7 +46,11 @@ private:
 	_float4								m_vDir;
 	_float4								m_vLook;
 
+
+	_uint								m_iTextureIndex = 0;
 	_bool								m_bCloseCam = false;
+	_bool								m_bFlowSmoke = false;
+	_float								m_fFlowTime = 0.f;
 private:
 	_int								m_iPlayOnFrameCnt = 0;
 	_int								m_iFrameCnt = 0;

@@ -33,7 +33,6 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 
 		m_tBulletOption.BulletDesc.TransformDesc.fSpeedPerSec = 70.f;
 		m_tBulletOption.m_eType = CBullet::BULLETOPTION::TYPE_FIRE;
-		m_tBulletOption.BulletDesc.m_iDamage = 30;
 		m_pOwner = m_tBulletOption.m_pOwner;
 		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
@@ -48,6 +47,7 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 		if (m_iTextureIndex == 0)
 		{
 			m_vPSize = _float2{ 2.5f, 0.5f };
+			m_tBulletOption.BulletDesc.m_iDamage = 30;
 
 			_float4 vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
 				(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1202_Bone004") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
@@ -77,6 +77,7 @@ HRESULT CDefault_Pistol::Initialize_Clone(const wstring& wstrPrototypeTag, void*
 		else if(m_iTextureIndex ==1)
 		{
 			m_vPSize = _float2{ 10.f, 0.5f };
+			m_tBulletOption.BulletDesc.m_iDamage = 70;
 
 			_float4 vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
 				(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1205_Bone001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);

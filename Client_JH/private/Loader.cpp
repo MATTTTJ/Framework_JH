@@ -251,7 +251,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	// 머즐 텍스쳐
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_Bullet_BirthTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/J_H_%d.png", 2)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_FlameBullet_Tex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Flame_%d.png", 3)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Default_FlameBullet_Tex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Flame_%d.png", 5)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Texture_Sphere_Tex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/SphereTex_%d.png", 2)), E_FAIL);
 
 	// DefaultPistol 타격 이펙트
@@ -286,8 +286,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Monster_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Human_Sword/monster_body_2001_s.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Elite_Bug_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Elite_Bug/monster_body_2001_n #1777379.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Elite_Knight_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Elite_Knight/monster_body_3123_n.png", 1)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Human_Tall_Bow_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Tall_Human_Bow/monster_body_2161_01_n.png", 1)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Bow_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Tall_Human_Bow/monster_body_2161_02_n.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_LobbyOwner_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Lobby_Owner/monster_body_2042_n.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Bow_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Tall_Human_Bow/Bow_Normal_%d.png", 2)), E_FAIL);
 
 	// 몬스터 아웃라인 글로우 텍스쳐 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Sword_NormalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/Normal_Human_Sword/monster_body_2001_s.png", 1)), E_FAIL);
@@ -319,13 +319,13 @@ HRESULT CLoader::Loading_For_GamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_BlueFire_Lamp", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Fire/BlueFire.dds", 1)), E_FAIL);
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Spark", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/Glow/glow_%d.png", 5)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Smoke", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/smoke0.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_Smoke", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/smoke%d.png", 2)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/bac_%d.png", 4)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalDistortionTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/1054_mask.png", 1)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_PortalCircleTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Textures/Effect/Player/39247_ray_11.png", 1)), E_FAIL);
 
 
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_SphereTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/Untitled-1.png", 1)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, L"Prototype_Component_SphereTex", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resources/Meshes/Monster/3909_NormalBoss/999.jpg", 1)), E_FAIL);
 
 
 

@@ -53,6 +53,7 @@ private:
 	CShader*					m_pShaderCom = nullptr;
 	class CHuman_Bow_State*		m_pHuman_Bow_State = nullptr;
 
+	// CTexture*					m_pNormalTexCom = nullptr;
 public:
 	static CHuman_Bow*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;

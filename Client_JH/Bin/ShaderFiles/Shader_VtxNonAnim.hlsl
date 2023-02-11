@@ -314,8 +314,8 @@ PS_OUT_EFFECT PS_MAIN_OBJ(PS_IN In)
 
 	if (Out.vColor.a > 0.f)
 	{
-		Out.vFlag.r = 0.f;
-		Out.vFlag.g = 1.f;
+		Out.vFlag.r = 1.f;
+		Out.vFlag.g = 0.f;
 		Out.vFlag.b = 0.f;
 	}
 	else

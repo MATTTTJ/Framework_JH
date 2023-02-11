@@ -30,6 +30,7 @@ private:
 	CShader*				m_pShaderCom	= nullptr;
 	CRenderer*				m_pRendererCom	= nullptr;
 	CModel*					m_pModelCom		= nullptr;
+	CTexture*				m_pNormalTex = nullptr;
 	_bool					m_bNormalTexOn = false;
 	_float					m_fDegree = 0.f;
 private:

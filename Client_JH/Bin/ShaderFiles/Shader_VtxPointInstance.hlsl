@@ -22,7 +22,7 @@ texture2D		g_AlphaTexture;
 texture2D		g_NoiseTexture;
 texture2D		g_GlowTexture;
 
-
+texture2D		g_DepthTexture;
 
 int			g_iUV_Max_Width_Num;
 int			g_iUV_Max_Height_Num;
@@ -126,6 +126,7 @@ struct GS_OUT_UVSPRITE
 {
 	float4		vPosition : SV_POSITION;
 	float2		vTexUV : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
 };
 
 [maxvertexcount(6)]		// 정점은 숫자가 관계없으나 20개 이하가 지오메트리의 성능을 발휘하기에 좋다,
@@ -158,23 +159,29 @@ void	GS_MAIN_UVSPRITE(point GS_IN In[1], inout TriangleStream<GS_OUT_UVSPRITE> V
 	Out[0].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[0].vTexUV = float2(1.f / g_iUV_Max_Width_Num * (g_iUV_Cur_Width_Num),
 		(1.f) / g_iUV_Max_Height_Num * (g_iUV_Cur_Height_Num));
+	Out[0].vProjPos = Out[0].vPosition;
+
 
 	vPosition = In[0].vPosition - vRight + vUp;
 	Out[1].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[1].vTexUV = float2(1.f / g_iUV_Max_Width_Num *(g_iUV_Cur_Width_Num + 1.f),
 		(1.f) / g_iUV_Max_Height_Num* (g_iUV_Cur_Height_Num));
+	Out[1].vProjPos = Out[0].vPosition;
+
 
 	vPosition = In[0].vPosition - vRight - vUp;
 	Out[2].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[2].vTexUV = float2(1.f / g_iUV_Max_Width_Num* (g_iUV_Cur_Width_Num + 1.f),
 		(1.f) / g_iUV_Max_Height_Num * (g_iUV_Cur_Height_Num + 1.f));
+	Out[2].vProjPos = Out[0].vPosition;
 
 	vPosition = In[0].vPosition + vRight - vUp;
 	Out[3].vPosition = mul(vector(vPosition, 1.f), matVP);
 	Out[3].vTexUV = float2(1.f / g_iUV_Max_Width_Num * g_iUV_Cur_Width_Num,
 		(1.f) / g_iUV_Max_Height_Num* (g_iUV_Cur_Height_Num + 1.f));
+	Out[3].vProjPos = Out[0].vPosition;
 
-
+	
 
 	Vertices.Append(Out[0]);
 	Vertices.Append(Out[1]);
@@ -431,6 +438,7 @@ struct PS_IN_UVSPRITE
 {
 	float4		vPosition : SV_POSITION;
 	float2		vTexUV : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
 };
 
 struct PS_OUT
@@ -477,7 +485,7 @@ PS_OUT PS_MAIN_BULLET(PS_IN In)
 
 	// Out.vColor.rgb = float3(1.f, 0.f, 0.f);
 	//
-	Out.vFlag = float4(0.f, 1.f, 0.f, 0.f);
+	Out.vFlag = float4(1.f, 1.f, 0.f, 0.f);
 
 	if (Out.vColor.a < 0.001f)
 		discard;
@@ -490,13 +498,14 @@ PS_OUT PS_MAIN_UVSPRITE(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
-	// if (Out.vColor.a < 0.1f)
-	// 	discard;
+	if (Out.vColor.a < 0.00001f)
+		discard;
+
 	if (Out.vColor.a > 0.f)
 	{
 		Out.vFlag.r = 1.f;
-		Out.vFlag.g = 1.f;
-		Out.vFlag.b = 0.f;
+		Out.vFlag.g = 0.f;
+		Out.vFlag.b = 1.f;
 	}
 	else
 	{
@@ -504,6 +513,8 @@ PS_OUT PS_MAIN_UVSPRITE(PS_IN In)
 		Out.vFlag.g = 0.f;
 		Out.vFlag.b = 0.f;
 	}
+
+	
 	
 	return Out;
 }
@@ -513,12 +524,12 @@ PS_OUT PS_MAIN_UVDEFAULTBULLET(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
-	if (Out.vColor.a < 0.001f)
+	if (Out.vColor.a < 0.00001f)
 		discard;
 
 	if (Out.vColor.a > 0.f)
 	{
-		Out.vFlag.r = 1.f;
+		Out.vFlag.r = 0.f;
 		Out.vFlag.g = 1.f;
 		Out.vFlag.b = 0.f;
 	}
@@ -568,12 +579,13 @@ PS_OUT PS_MAIN_UVDEFAULTBULLET_Dead(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_MAIN_FLAME_DEAD(PS_IN In)
+PS_OUT PS_MAIN_FLAME_DEAD(PS_IN_UVSPRITE In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
-
+	if (Out.vColor.a < 0.00001f)
+		discard;
 	if (Out.vColor.a > 0.f)
 	{
 		Out.vFlag.r = 0.f;
@@ -586,11 +598,21 @@ PS_OUT PS_MAIN_FLAME_DEAD(PS_IN In)
 		Out.vFlag.g = 0.f;
 		Out.vFlag.b = 0.f;
 	}
+	//
+	// if (Out.vColor.a < 0.001f)
+	// 	discard;
 
-	if (Out.vColor.a < 0.001f)
-		discard;
+	float2		vTexUV;
 
+	vTexUV.x = (In.vProjPos.x / In.vProjPos.w) * 0.5f + 0.5f;
+	vTexUV.y = (In.vProjPos.y / In.vProjPos.w) * -0.5f + 0.5f;
 
+	vector		vDepthDesc = g_DepthTexture.Sample(LinearSampler, vTexUV);
+
+	float		fOldViewZ = vDepthDesc.y * 300.f;
+	float		fViewZ = In.vProjPos.w;
+
+	Out.vColor.a = Out.vColor.a * (saturate(fOldViewZ - fViewZ) * 2.5f);
 
 	//
 	return Out;
@@ -615,6 +637,7 @@ PS_OUT PS_MAIN_FLAME_DEAD_W_GLOW(PS_IN In)
 
 	Out.vColor = saturate(Origin * (glow * 1 - g_fTime));
 	Out.vColor.a = Origin.a;
+
 	if (Out.vColor.a > 0.f)
 	{
 		Out.vFlag.r = 0.f;
@@ -628,8 +651,7 @@ PS_OUT PS_MAIN_FLAME_DEAD_W_GLOW(PS_IN In)
 		Out.vFlag.b = 0.f;
 	}
 
-	if (Out.vColor.a < 0.001f)
-		discard;
+	
 
 
 
@@ -699,7 +721,9 @@ PS_OUT PS_MAIN_Laser(PS_IN In)
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 	if (Out.vColor.a < 0.001f)
 		discard;
-	Out.vColor.a = g_fLaserAlpha;
+	else
+		Out.vColor.a = g_fLaserAlpha;
+
 	if (Out.vColor.a < 0.001f)
 		discard;
 	if (Out.vColor.a > 0.f)
@@ -732,9 +756,9 @@ PS_OUT PS_MAIN_SPARK(PS_IN In)
 
 	if (Out.vColor.a > 0.f)
 	{
-		Out.vFlag.r = 0.f;
+		Out.vFlag.r = 1.f;
 		Out.vFlag.g = 0.f;
-		Out.vFlag.b = 0.f;
+		Out.vFlag.b = 1.f;
 	}
 	else
 	{
@@ -913,7 +937,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(RS_None);
 		SetDepthStencilState(DS_Default, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 1.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN_UVSPRITE();
@@ -958,5 +982,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_FLAME_DEAD_W_GLOW();
+	}
+
+	pass MagicStoneFire16
+	{
+		SetRasterizerState(RS_None);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN_UVSPRITE();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FLAME_DEAD();
 	}
 }

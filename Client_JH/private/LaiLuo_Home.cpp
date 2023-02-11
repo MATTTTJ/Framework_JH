@@ -56,6 +56,9 @@ HRESULT CLaiLuo_Home::Initialize_Clone(const wstring& wstrPrototypeTag, void * p
 	// _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 	// CGameInstance::GetInstance()->Set_LightPos(0, vPos);
 	_float4 vDirection;
+	
+	// _matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-221.33f));
+
 	_matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(32.2158f));
 	XMStoreFloat4(&vDirection, XMVector3TransformNormal(XMVectorSet(-cosf(XMConvertToRadians(60.f)), -sinf(XMConvertToRadians(60.f)), 0.f, 0.f), RotationMatrix));
 
@@ -141,10 +144,13 @@ HRESULT CLaiLuo_Home::SetUp_ShaderResources()
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW)), E_FAIL);
-
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &XMVectorSet(0.f, 0.f, 0.f, 1.f), sizeof(_vector)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_Outline_Offset", &m_fOutLineOffset, sizeof(_float)), E_FAIL);
+	_bool tmp = false;
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bNormalTexOn", &tmp, sizeof(_bool)), E_FAIL);
+
+
+	// FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_OutLineColor", &XMVectorSet(0.f, 0.f, 0.f, 1.f), sizeof(_vector)), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_Outline_Offset", &m_fOutLineOffset, sizeof(_float)), E_FAIL);
 
 	RELEASE_INSTANCE(CGameInstance);
 

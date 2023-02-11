@@ -277,6 +277,47 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector		vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexUV);
 	vector		vOutline = g_OutlineTexture.Sample(LinearSampler, In.vTexUV);
 
+	if (vBlur.a >= 0.05f)
+	{
+		//vBlur.rgb *= 3.f;
+		Out.vColor = vector(vBlur.rgb * vBlur.a + vDiffuse.rgb * (1.f - vBlur.a), 1.f) * vShade + vSpecular;
+
+		//글로우
+		if (vFlag.b == 1.f)
+		{
+			if (vEffect.a > 0.1f)
+			{
+				Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f) * vShade + vSpecular;
+			}
+		}
+	}
+	else
+	{
+		//이펙트 효과 없을 때
+		if (vEffect.a > 0.1f && vFlag.r == 0.f && vFlag.g == 0.f && vFlag.b == 0.f)
+		{
+			vDiffuse = vDiffuse * vShade + vSpecular;
+			Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
+		}
+		else
+		{
+			Out.vColor = vDiffuse * vShade + vSpecular;
+		}
+
+	}
+	//블룸
+	if (vFlag.g >= 0.1f)
+	{
+		vEffect.rgb = pow(pow(abs(vBloom.rgb), 2.2f) + pow(abs(vEffect.rgb), 2.2f), 1.f / 2.2f);
+		Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
+	}
+	//
+	if (vOutline.a == 1.f)
+		Out.vColor.rgb = vOutline.rgb;
+
+	if (Out.vColor.a == 0.f)
+		discard;
+
 	// if (vBlur.a >= 0.05f)
 	// {
 	// 	//vBlur.rgb *= 3.f;
@@ -317,8 +358,8 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	// 	discard;
 	//
 	// return Out;
-
-
+	//
+	//
 	// if (vBlur.a >= 0.05f)
 	// {
 	// 	//vBlur.rgb *= 3.f;
@@ -343,7 +384,7 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	// 	}
 	// 	else
 	// 	{
-			Out.vColor = vDiffuse * vShade + vSpecular;
+	// 		Out.vColor = vDiffuse * vShade + vSpecular; // 원래 쓰던거
 	// 	}
 	//
 	// }
@@ -353,12 +394,12 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	// 	vEffect.rgb = pow(pow(abs(vBloom.rgb), 2.2f) + pow(abs(vEffect.rgb), 2.2f), 1.f / 2.2f);
 	// 	Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
 	// }
-
-	// if (vOutline.a == 1.f)
-	// 	Out.vColor.rgb = vOutline.rgb;
-
-	if (Out.vColor.a == 0.f)
-		discard;
+	//
+	// // if (vOutline.a == 1.f)
+	// // 	Out.vColor.rgb = vOutline.rgb;
+	//
+	// if (Out.vColor.a == 0.f)
+	// 	discard;
 
 	return Out;
 }
@@ -393,7 +434,7 @@ VS_OUT_BLUR VS_HORIZONTALBLUR(VS_IN In)
 	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
 
-	texelSize = 1.f / g_iWinCX;
+	texelSize = 1.f / 1280.f;
 
 	Out.texCoord1 = In.vTexUV + float2(texelSize * -4.0f, 0.0f);
 	Out.texCoord2 = In.vTexUV + float2(texelSize * -3.0f, 0.0f);
@@ -421,7 +462,7 @@ VS_OUT_BLUR VS_VERTICALBLUR(VS_IN In)
 	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
 
-	texelSize = 1.f / g_iWinCY;
+	texelSize = 1.f / 720.f;
 
 	Out.texCoord1 = In.vTexUV + float2(0.f, texelSize * -4.0f);
 	Out.texCoord2 = In.vTexUV + float2(0.f, texelSize * -3.0f);
@@ -573,40 +614,73 @@ float4 vGaussFilter[7] =
 
 PS_OUT PS_BLOOMFLAG(PS_IN In)
 {
+	// PS_OUT			Out = (PS_OUT)0;
+	//
+	// // 블룸을 블러한 텍스쳐, 블러 안한 블룸텍스쳐, HDR컬러는 적용시킬 장면에 블룸을 추출한 텍스쳐 
+	//
+	// vector vFlag = g_FlagTexture.Sample(LinearSampler, In.vTexUV);
+	// if (vFlag.r == 1.f)
+	// {
+	// 	Out.vColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
+	// }
+	//
+	// else if (vFlag.g == 1.f)
+	// {
+	// 	vector vHDRColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
+	// 	vector vBloomColor = g_BlurTexture.Sample(LinearSampler, In.vTexUV);
+	// 	vector vBloomOrigin = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
+	//
+	// 	float fBrightness = dot(vHDRColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
+	//
+	// 	if (fBrightness > 0.99f)
+	// 	{
+	// 		vBloomOrigin = vector(vHDRColor.rgb, 1.f);
+	// 	}
+	//
+	// 	float4 vBloom = pow(pow(abs(vBloomColor), 2.2f) + pow(abs(vBloomOrigin), 2.2f), 1.f / 2.2f);
+	//
+	// 	float4 vOut = (vHDRColor);
+	//
+	// 	vOut = pow(abs(vOut), 2.2f);
+	// 	vBloom = pow(abs(vBloom), 2.2f);
+	// 	vOut += vBloom;
+	// 	Out.vColor = pow(abs(vOut), 1 / 2.2f);;
+	// }
+
+	// 위에가 원래
 	PS_OUT			Out = (PS_OUT)0;
 
-	// 블룸을 블러한 텍스쳐, 블러 안한 블룸텍스쳐, HDR컬러는 적용시킬 장면에 블룸을 추출한 텍스쳐 
-
 	vector vFlag = g_FlagTexture.Sample(LinearSampler, In.vTexUV);
-	if (vFlag.r == 1.f)
-	{
-		Out.vColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
-	}
+	vector vColor;
+	if (vFlag.g != 1.f)
+		discard;
+	else
+		vColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
 
-	else if (vFlag.g == 1.f)
-	{
-		vector vHDRColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
-		vector vBloomColor = g_BlurTexture.Sample(LinearSampler, In.vTexUV);
-		vector vBloomOrigin = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
+	// float fBrightness = dot(vColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
+	// if (fBrightness > 0.99f)
+	// {
+	// 	Out.vColor = vector(vColor.rgb * 4.f, 1.f);
+	// }
+	float4 vSatColor = saturate(vColor);
+	float4 vHDRColor = vSatColor * pow(2.f, 0.6f);
+	vHDRColor.a = vSatColor.a;
+	Out.vColor = vHDRColor;
+	Out.vColor.a = vColor.a;
 
-		float fBrightness = dot(vHDRColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
-
-		if (fBrightness > 0.99f)
-		{
-			vBloomOrigin = vector(vHDRColor.rgb, 1.f);
-		}
-
-		float4 vBloom = pow(pow(abs(vBloomColor), 2.2f) + pow(abs(vBloomOrigin), 2.2f), 1.f / 2.2f);
-
-		float4 vOut = (vHDRColor);
-
-		vOut = pow(abs(vOut), 2.2f);
-		vBloom = pow(abs(vBloom), 2.2f);
-		vOut += vBloom;
-		Out.vColor = pow(abs(vOut), 1 / 2.2f);;
-	}
-
-
+	//float texelSize = 1.f / g_iWinCY;
+	//vector vColor;
+	//
+	//for (int i = 0; i < 7; ++i)
+	//{
+	//	vColor += g_DiffuseTexture.Sample(DefaultSampler, float2(In.vTexUV.x, In.vTexUV.y + vGaussFilter[i].y * texelSize)) * vGaussFilter[i].w;
+	//}
+	//vColor = vColor * 4.f;
+	
+	// else
+	// {
+	// 	Out.vColor = vFlag;
+	// }
 
 	return Out;
 
@@ -640,12 +714,29 @@ PS_OUT PS_BLURFLAG(PS_IN In)
 	PS_OUT			Out = (PS_OUT)0;
 
 	vector vFlag = g_FlagTexture.Sample(LinearSampler, In.vTexUV);
-
-	if (vFlag.r != 1.f)
-		discard;
-
-	Out.vColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
 	
+	if (vFlag.r != 1.f)
+	{
+		discard;
+	}
+	else
+	{
+		Out.vColor = g_DiffuseTexture_Deferred.Sample(LinearSampler, In.vTexUV);
+
+		// if (vFlag.b == 1.f)
+		// {
+		// 	if (Out.vColor.a > 0.1f)
+		// 	{
+		// 		Out.vColor = vector(Out.vColor.rgb * Out.vColor.a + Out.vColor.rgb * (1.f - Out.vColor.a), 1.f);
+		// 	}
+		// }
+	}
+
+	// Out.vColor = g_FlagTexture.Sample(LinearSampler, In.vTexUV);
+	//
+	// if (Out.vColor.r != 1.f)
+	// 	discard;
+
 	return Out;
 }
 
@@ -848,7 +939,7 @@ technique11 DefaultTechnique
 
 	pass HorizontalBlur5
 	{
-		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
 		SetRasterizerState(RS_Default);
 
@@ -859,7 +950,7 @@ technique11 DefaultTechnique
 
 	pass VerticalBlur6
 	{
-		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
 		SetRasterizerState(RS_Default);
 
@@ -870,7 +961,7 @@ technique11 DefaultTechnique
 
 	pass Blur7
 	{
-		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
 		SetRasterizerState(RS_Default);
 
@@ -881,7 +972,7 @@ technique11 DefaultTechnique
 
 	pass BloomFlag8
 	{
-		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
 		SetRasterizerState(RS_Default);
 
@@ -892,7 +983,7 @@ technique11 DefaultTechnique
 
 	pass BlurFlag9
 	{
-		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
 		SetRasterizerState(RS_Default);
 

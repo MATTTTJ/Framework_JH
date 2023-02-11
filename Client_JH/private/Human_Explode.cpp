@@ -82,9 +82,9 @@ void CHuman_Explode::Tick(_double TimeDelta)
 
 	if (m_bPlayAnimation)
 		m_pModelCom->Play_Animation(TimeDelta);
+	Set_On_NaviMesh();
 
 	Collider_Tick(TimeDelta);
-	Set_On_NaviMesh();
 	Collision_PlayerEyes();
 
 	_uint UISize = (_uint)m_vecMonsterUI.size();
@@ -93,6 +93,8 @@ void CHuman_Explode::Tick(_double TimeDelta)
 	{
 		m_vecMonsterUI[i]->Tick(TimeDelta);
 	}
+
+
 }
 
 void CHuman_Explode::Late_Tick(_double TimeDelta)
@@ -120,13 +122,13 @@ void CHuman_Explode::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 #ifdef _DEBUG
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTPOS]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTPOS]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 #endif
 	}
 }
@@ -142,7 +144,7 @@ HRESULT CHuman_Explode::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 2);
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 3);
 	}
 
 	return S_OK;
@@ -210,8 +212,15 @@ HRESULT CHuman_Explode::Render_OutLineFlag()
 
 	/* 셰이더 전역변수에 값을 던진다. */
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+	if (m_bIsOnPlayerEyes)
+	{
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &m_vOnAimOutLineColor, sizeof(_float4)), E_FAIL);
+	}
+	else
+	{
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &XMVectorSet(1.f, 0.3f, 0.3f, 1.f), sizeof(_float4)), E_FAIL);
+	}
 
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &m_vOnAimOutLineColor, sizeof(_float)), E_FAIL);
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 

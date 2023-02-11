@@ -61,6 +61,8 @@ private:
 	_int								m_iFrameCnt = 0;
 
 	_int								m_iBirthType = 0;
+
+	class CMonster*							m_pMonster = nullptr;
 public:
 	static CFlame_Bullet_Dead*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*				Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;

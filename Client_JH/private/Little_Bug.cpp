@@ -80,9 +80,9 @@ void CLittle_Bug::Tick(_double TimeDelta)
 
 	if (m_bPlayAnimation)
 		m_pModelCom->Play_Animation(TimeDelta);
+	Set_On_NaviMesh();
 
 	Collider_Tick(TimeDelta);
-	Set_On_NaviMesh();
 	Collision_PlayerEyes(); // When Have Hide Anim
 
 
@@ -92,6 +92,8 @@ void CLittle_Bug::Tick(_double TimeDelta)
 	{
 		m_vecMonsterUI[i]->Tick(TimeDelta);
 	}
+
+
 }
 
 void CLittle_Bug::Late_Tick(_double TimeDelta)
@@ -107,11 +109,71 @@ void CLittle_Bug::Late_Tick(_double TimeDelta)
 		m_vecMonsterUI[i]->Late_Tick(TimeDelta);
 	}
 
+	_float4	fDir;
+
+	if (m_bPlayerDetected == true)
+	{
+		list<CGameObject*>* CloneMonsters = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
+		if (CloneMonsters == nullptr || CloneMonsters->size() == 0)
+			return;
+		else
+		{
+			for (auto& pMonster : *CloneMonsters)
+			{
+				CMonster* ppMonster = dynamic_cast<CMonster*>(pMonster);
+	
+				if (ppMonster == this || ppMonster == nullptr)
+					continue;
+	
+	
+				if (m_pColliderCom[COLLTYPE_HITBODY]->Get_ColliderType() != CCollider::COLLIDER_SPHERE)
+					continue;
+	
+				if (ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY)->Get_ColliderType() == CCollider::COLLIDER_SPHERE &&
+					CGameUtils::CollisionSphereSphere(m_pColliderCom[CMonster::COLLTYPE_HITBODY], ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY), fDir))
+				{
+					_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+					fDir.y = 0.f;
+					_vector	vMovePos = XMVectorAdd(vPos, fDir);
+	
+					_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+					_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+	
+					if (m_pNavigationCom == nullptr)
+					{
+						m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vPos);
+						continue;
+					}
+	
+					if (true == m_pNavigationCom->IsMove_OnNavigation(vPos, vBlockedLine, vBlockedLineNormal))
+						m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+					else
+					{
+						_vector vInDir = vMovePos - vPos;
+						_vector vOutDir = vPos - vMovePos;
+						_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+	
+						_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+	
+						vMovePos = vPos + vSlidingDir;
+	
+						if (m_pNavigationCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+						{
+							m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+						}
+					}
+				}
+			}
+	
+		}
+	}
+
+
+
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 	{
-		if (m_bIsOnPlayerEyes)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_OUTLINE, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_OUTLINE, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
@@ -122,7 +184,7 @@ void CLittle_Bug::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTPOS]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 #endif
 	}
 }
@@ -217,8 +279,15 @@ HRESULT CLittle_Bug::Render_OutLineFlag()
 
 	/* 셰이더 전역변수에 값을 던진다. */
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+	if (m_bIsOnPlayerEyes)
+	{
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &m_vOnAimOutLineColor, sizeof(_float4)), E_FAIL);
+	}
+	else
+	{
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &XMVectorSet(1.f, 0.3f, 0.3f, 1.f), sizeof(_float4)), E_FAIL);
+	}
 
-	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_vColor", &m_vOnAimOutLineColor, sizeof(_float)), E_FAIL);
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
@@ -315,7 +384,7 @@ HRESULT CLittle_Bug::SetUp_Components()
 	CCollider::COLLIDERDESC	ColliderDesc;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(30.f, 17.f, 17.f);
+	ColliderDesc.vSize = _float3(20.f, 20.f, 20.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_DetectedSphere", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
 
@@ -364,6 +433,9 @@ HRESULT CLittle_Bug::SetUp_ShaderResources()
 
 	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	_bool	On = false;
+	m_pShaderCom->Set_RawValue(L"g_bNormalTexOn", &On, sizeof(_bool));
+
 
 	return S_OK;
 }

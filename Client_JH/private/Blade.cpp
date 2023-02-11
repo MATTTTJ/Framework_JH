@@ -28,9 +28,9 @@ HRESULT CBlade::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 	{
 		m_tBulletOption = *(BULLETOPTION*)pArg;
 
-		m_tBulletOption.BulletDesc.TransformDesc.fSpeedPerSec = 3.f;
+		m_tBulletOption.BulletDesc.TransformDesc.fSpeedPerSec = 30.f;
 		m_tBulletOption.m_eType = CBullet::BULLETOPTION::TYPE_FIRE;
-		m_tBulletOption.BulletDesc.m_iDamage = 30;
+		m_tBulletOption.BulletDesc.m_iDamage = 10;
 		m_pOwner = m_tBulletOption.m_pOwner;
 		FAILED_CHECK_RETURN(__super::Initialize_Clone(wstrPrototypeTag, &m_tBulletOption), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
@@ -69,7 +69,7 @@ void CBlade::Late_Tick(_double dTimeDelta)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 #ifdef _DEBUG
-		m_pRendererCom->Add_DebugRenderGroup(m_pBladeColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBladeColliderCom);
 #endif
 		}
 }
@@ -84,7 +84,7 @@ HRESULT CBlade::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-		m_pModelCom->Render(m_pShaderCom, i);
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices", 3);
 	}
 	return S_OK;
 }

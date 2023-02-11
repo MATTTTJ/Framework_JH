@@ -32,24 +32,46 @@ HRESULT CSmoke::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 		_float4 RandPos = _float4(m_tEffectDesc.TransformDesc.vInitPos.x + CGameUtils::GetRandomFloat(-3.f, 3.f), m_tEffectDesc.TransformDesc.vInitPos.y, m_tEffectDesc.TransformDesc.vInitPos.z + CGameUtils::GetRandomFloat(-1.f, 1.f), 1.f);
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, RandPos);//(XMVectorSet(m_tEffectDesc.TransformDesc.vInitPos.x, m_tEffectDesc.TransformDesc.vInitPos.y, m_tEffectDesc.TransformDesc.vInitPos.z, 1.f)));
+		m_iTextureIndex = m_tEffectDesc.m_iHP;
 	}
 	else
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 		m_pTransformCom->Set_Scaled(_float3(1000.f, 1000.f, 1.f));
 	}
-	m_vLook = CGameInstance::GetInstance()->Get_CamLook();
-	_vector CamLook = XMVectorSet(m_vLook.x, m_vLook.y, m_vLook.z, 0.f);
-	m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + CamLook);
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_tEffectDesc.TransformDesc.fRotationPerSec));
-	m_pTransformCom->Set_Scaled(_float3(12.9f, 10.f, 0.f));
-	m_iFrameCnt = 3;
-	m_fAlpha = 0.7f;
-	m_fMaxMoveDistance = 1.f;
-	_float4 min = { -1.0f, 0.0f, 0.0f, 0.f };
-	_float4 max = _float4(1.0f, 1.0f, 1.0f, 0.f);
-	CGameUtils::GetRandomVector(&m_vDir, &min, &max);
 
+	if (m_iTextureIndex == 0)
+	{
+		m_vLook = CGameInstance::GetInstance()->Get_CamLook();
+		_vector CamLook = XMVectorSet(m_vLook.x, m_vLook.y, m_vLook.z, 0.f);
+		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + CamLook);
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_tEffectDesc.TransformDesc.fRotationPerSec));
+		m_pTransformCom->Set_Scaled(_float3(12.9f, 10.f, 0.f));
+		m_iFrameCnt = 3;
+		m_fAlpha = 0.7f;
+		m_fMaxMoveDistance = 1.f;
+		_float4 min = { -1.0f, 0.0f, 0.0f, 0.f };
+		_float4 max = _float4(1.0f, 1.0f, 1.0f, 0.f);
+		CGameUtils::GetRandomVector(&m_vDir, &min, &max);
+		m_bFlowSmoke = false;
+		 
+	}
+	else if (m_iTextureIndex == 1)
+	{
+		m_vLook = CGameInstance::GetInstance()->Get_CamLook();
+		_vector CamLook = XMVectorSet(m_vLook.x, m_vLook.y, m_vLook.z, 0.f);
+		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + CamLook);
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_tEffectDesc.TransformDesc.fRotationPerSec));
+		m_pTransformCom->Set_Scaled(_float3(105.8f, 12.1f, 0.f));
+		m_iFrameCnt = 3;
+		m_fAlpha = 0.7f;
+		m_fMaxMoveDistance = 1.f;
+		m_bFlowSmoke = true;
+
+		_float4 min = { -1.0f, 0.0f, 0.0f, 0.f };
+		_float4 max = _float4(1.0f, 1.0f, 1.0f, 0.f);
+		CGameUtils::GetRandomVector(&m_vDir, &min, &max);
+	}
 	return S_OK;
 }
 
@@ -59,6 +81,11 @@ void CSmoke::Tick(_double dTimeDelta)
 		return;
 
 	__super::Tick(dTimeDelta);
+
+	m_fFlowTime += 0.05f;
+
+	if (m_fFlowTime > 1.f)
+		m_fFlowTime = 0.f;
 
 	if (m_bCloseCam == false)
 	{
@@ -117,11 +144,11 @@ void CSmoke::Late_Tick(_double dTimeDelta)
 
 	__super::Compute_CamDistance();
 
-	if (m_fCamDistance < 10.f)
+	if (m_fCamDistance < 15.f)
 		m_bCloseCam = true;
 
 	if (m_pRendererCom != nullptr)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
 }
 
 HRESULT CSmoke::Render()
@@ -156,8 +183,16 @@ HRESULT CSmoke::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_ShaderResourceView(L"g_DepthTexture", CGameInstance::GetInstance()->Get_DepthTargetSRV()), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_fAlpha", &m_fMaxMoveDistance, sizeof(_float)), E_FAIL);
-	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);
-
+	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture", m_iTextureIndex), E_FAIL);
+	if(m_iTextureIndex == 1)
+	{
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bFlow", &m_bFlowSmoke, sizeof(_bool)), E_FAIL);
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_fTime", &m_fFlowTime, sizeof(_float)), E_FAIL);
+	}
+	else
+	{
+		FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_bFlow", &m_bFlowSmoke, sizeof(_bool)), E_FAIL);
+	}
 	return S_OK;
 }
 

@@ -38,6 +38,8 @@ HRESULT CSkySphere::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
+	// m_pTransformCom->Set_Scaled(_float3(10.f, 10.f, 10.f));
+	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
 	return S_OK;
 }
 

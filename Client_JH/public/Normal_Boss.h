@@ -35,7 +35,7 @@ public:
 	virtual void				Late_Tick(_double TimeDelta) override;
 	virtual HRESULT				Render() override;
 	HRESULT						Ready_UI();
-
+	HRESULT						Ready_Light();
 
 public:
 	virtual void				Collider_Tick(_double TimeDelta) override;

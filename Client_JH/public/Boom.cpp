@@ -85,8 +85,9 @@ void CBoom::Tick(_double dTimeDelta)
 	if (BoomPos.y <= m_fDeadHeight.y)
 	{
 		m_bFallTime = true;
-		
-		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(BoomPos.x, BoomPos.y + 0.35f, BoomPos.z, 1.f));
+
+		Set_Dead(true);
+		// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(BoomPos.x, BoomPos.y + 0.35f, BoomPos.z, 1.f));
 		
 	}
 	m_pBoomColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
@@ -103,7 +104,7 @@ void CBoom::Late_Tick(_double dTimeDelta)
 	{
 		// TODO :: Æø¹ß ÀÌÆåÆ® Ãß°¡
 		Collision_To_Player(m_pBoomColliderCom);
-		Set_Dead(true);
+		// Set_Dead(true);
 	}
 
 	if (nullptr != m_pRendererCom &&

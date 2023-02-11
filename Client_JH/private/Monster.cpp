@@ -77,66 +77,6 @@ void CMonster::Tick(_double TimeDelta)
 void CMonster::Late_Tick(_double TimeDelta)
 {
 	__super::Late_Tick(TimeDelta);
-
-	_float4	fDir;
-
-	if (m_bPlayerDetected == true)
-	{
-		list<CGameObject*>* CloneMonsters = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
-		if (CloneMonsters == nullptr || CloneMonsters->size() == 0)
-			return;
-		else
-		{
-			for (auto& pMonster : *CloneMonsters)
-			{
-				CMonster* ppMonster = dynamic_cast<CMonster*>(pMonster);
-
-				if (ppMonster == this || ppMonster == nullptr)
-					continue;
-
-
-				if (m_pColliderCom[COLLTYPE_HITBODY]->Get_ColliderType() != CCollider::COLLIDER_SPHERE)
-					continue;
-
-				if (ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY)->Get_ColliderType() == CCollider::COLLIDER_SPHERE &&
-					CGameUtils::CollisionSphereSphere(m_pColliderCom[CMonster::COLLTYPE_HITBODY], ppMonster->Get_CollPtr(CMonster::COLLTYPE_HITBODY), fDir))
-				{
-					_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-					fDir.y = 0.f;
-					_vector	vMovePos = XMVectorAdd(vPos, fDir);
-
-					_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
-					_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
-
-					if (m_pNavigationCom == nullptr)
-					{
-						m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vPos);
-						continue;
-					}
-
-					if (true == m_pNavigationCom->IsMove_OnNavigation(vPos, vBlockedLine, vBlockedLineNormal))
-						m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
-					else
-					{
-						_vector vInDir = vMovePos - vPos;
-						_vector vOutDir = vPos - vMovePos;
-						_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
-
-						_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
-
-						vMovePos = vPos + vSlidingDir;
-
-						if (m_pNavigationCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
-						{
-							m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
-						}
-					}
-				}
-			}
-
-		}
-	}
-
 }
 
 HRESULT CMonster::Render()
@@ -144,11 +84,7 @@ HRESULT CMonster::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 #ifdef _DEBUG
-	// for (_uint i = 0; i < COLLTYPE_END; ++i)
-	// {
-	// 	if (nullptr != m_pColliderCom[i])
-	// 		m_pColliderCom[i]->Render();
-	// }
+
 
 #endif
 	return S_OK;

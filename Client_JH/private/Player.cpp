@@ -505,15 +505,6 @@ HRESULT CPlayer::Render()
 			m_bNormalTexOn = true;
 		}
 
-		// HRESULT hSpecular = m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_OPACITY, L"g_ModelSpecularTexture");
-		// if(hSpecular == S_FALSE)
-		// {
-			// m_bSpecularTexOn = false;
-		// }
-		// if(hSpecular== S_OK)
-		// {
-			// m_bSpecularTexOn = true;
-		// }
 		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices",1);

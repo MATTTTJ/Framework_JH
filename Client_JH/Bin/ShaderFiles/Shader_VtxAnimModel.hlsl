@@ -8,6 +8,8 @@ matrix			g_BoneMatrices[512];
 float3			g_vCameraPos;
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
+texture2D		g_MonsterNormalTexture;
+
 texture2D		g_ModelGlowTexture;
 texture2D		g_ModelTestTexture;
 texture2D		g_ModelSpecularTexture;
@@ -212,7 +214,7 @@ PS_OUT_UNNORM PS_MAIN_Boss(PS_IN In)
 
 	vDiffuse.a = 1.f;
 	
-	vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	vector		vNormalDesc = g_MonsterNormalTexture.Sample(LinearSampler, In.vTexUV);
 
 	float3		vNormal = vNormalDesc.xyz * 2.f - 1.f;
 	float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal, In.vNormal.xyz);
@@ -238,10 +240,10 @@ PS_OUT PS_MAIN_Monster_Normal(PS_IN In)
 	if (g_bNormalTexOn)
 	{
 		vector		SwapNormal;
-		vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
-		SwapNormal.x = vNormalDesc.z;
+		vector		vNormalDesc = g_MonsterNormalTexture.Sample(LinearSampler, In.vTexUV);
+		SwapNormal.x = vNormalDesc.x;
 		SwapNormal.y = vNormalDesc.y;
-		SwapNormal.z = vNormalDesc.x;
+		SwapNormal.z = vNormalDesc.z;
 		SwapNormal.w = 0;
 
 		float3		vNormal = SwapNormal.xyz * 2.f - 1.f;

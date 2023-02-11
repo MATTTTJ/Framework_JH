@@ -158,7 +158,6 @@ HRESULT CDefault_Bullet_Birth::SetUp_Component()
 
 HRESULT CDefault_Bullet_Birth::SetUp_ShaderResources()
 {
-	
 	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);

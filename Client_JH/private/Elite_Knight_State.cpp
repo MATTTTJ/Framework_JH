@@ -369,7 +369,7 @@ void CElite_Knight_State::Tick_Attack_WIND(_double dTimeDelta)
 {
 	// BOW È­»ì ½î´Â°Å¶û ¶È°°À½ 
 
-	if (m_pModelCom->Get_AnimationProgress() > 0.5f && m_bAttackOnce == false)
+	if (m_pModelCom->Get_AnimationProgress() > 0.2f && m_bAttackOnce == false)
 	{
 		CBullet::BULLETOPTION BulletDesc;
 		_float4 Position;

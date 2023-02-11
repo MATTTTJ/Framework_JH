@@ -317,42 +317,42 @@ void CBoss_Golem_State::Start_Intro1(_double dTimeDelta)
 	CGameInstance::GetInstance()->Delete_Light(10);
 
 	// Num 9
-	CGameObject::GAMEOBJECTDESC	tFireLightDesc;
-
-	_bool& LightBool9 = CGameInstance::GetInstance()->Set_LightEnable(9);
-	CGameInstance::GetInstance()->Set_LightPos(9, XMVectorSet(117.142f, 6.359f, 100.323f, 1.f));
-
-	LightBool9 = true;
-	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
-	tFireLightDesc.TransformDesc.vInitPos = _float3(117.142f, 6.659f, 100.323f);
-	tFireLightDesc.m_iNumber = 9;
-	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
-	for (_uint i = 0; i<15; ++i)
-		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc);
-
-	// Num 10
-	_bool& BlueLightBool10 = CGameInstance::GetInstance()->Set_LightEnable(10);
-	CGameInstance::GetInstance()->Set_LightPos(10, XMVectorSet(108.996f, 6.359f, 100.267f, 1.f));
-	CGameInstance::GetInstance()->Set_LightRange(10, 10.f);
-	BlueLightBool10 = true;
-
-	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
-	tFireLightDesc.TransformDesc.vInitPos = _float3(108.996f, 6.359f, 100.267f);
-	tFireLightDesc.m_iNumber = 10;
-	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
-	for (_uint i = 0; i<15; ++i)
-		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc);
-
-	// Num2 
-	_bool& LightBool = CGameInstance::GetInstance()->Set_LightEnable(2);
-	CGameInstance::GetInstance()->Set_LightPos(2, XMVectorSet(94.705f, 0.581f, 100.278f, 1.f));
-
-	LightBool = true;
-	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
-	tFireLightDesc.TransformDesc.vInitPos = _float3(94.705f, 0.581f, 100.278f);
-	tFireLightDesc.m_iNumber = 2;
-	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
-	CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
+	// CGameObject::GAMEOBJECTDESC	tFireLightDesc;
+	//
+	// _bool& LightBool9 = CGameInstance::GetInstance()->Set_LightEnable(9);
+	// CGameInstance::GetInstance()->Set_LightPos(9, XMVectorSet(117.142f, 6.359f, 100.323f, 1.f));
+	//
+	// LightBool9 = true;
+	// ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	// tFireLightDesc.TransformDesc.vInitPos = _float3(117.142f, 6.659f, 100.323f);
+	// tFireLightDesc.m_iNumber = 9;
+	// tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	// for (_uint i = 0; i<15; ++i)
+	// 	CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc);
+	//
+	// // Num 10
+	// _bool& BlueLightBool10 = CGameInstance::GetInstance()->Set_LightEnable(10);
+	// CGameInstance::GetInstance()->Set_LightPos(10, XMVectorSet(108.996f, 6.359f, 100.267f, 1.f));
+	// CGameInstance::GetInstance()->Set_LightRange(10, 10.f);
+	// BlueLightBool10 = true;
+	//
+	// ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	// tFireLightDesc.TransformDesc.vInitPos = _float3(108.996f, 6.359f, 100.267f);
+	// tFireLightDesc.m_iNumber = 10;
+	// tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	// for (_uint i = 0; i<15; ++i)
+	// 	CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_BlueLight", &tFireLightDesc);
+	//
+	// // Num2 
+	// _bool& LightBool = CGameInstance::GetInstance()->Set_LightEnable(2);
+	// CGameInstance::GetInstance()->Set_LightPos(2, XMVectorSet(94.705f, 0.581f, 100.278f, 1.f));
+	//
+	// LightBool = true;
+	// ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	// tFireLightDesc.TransformDesc.vInitPos = _float3(94.705f, 0.581f, 100.278f);
+	// tFireLightDesc.m_iNumber = 2;
+	// tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	// CGameInstance::GetInstance()->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc);
 }
 
 void CBoss_Golem_State::Start_Intro2(_double dTimeDelta)
@@ -646,6 +646,7 @@ void CBoss_Golem_State::End_Intro0(_double TimeDelta)
 
 void CBoss_Golem_State::End_Intro1(_double dTimeDelta)
 {
+	m_pMonster->Ready_Light();
 }
 
 void CBoss_Golem_State::End_Intro2(_double dTimeDelta)

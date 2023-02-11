@@ -31,11 +31,12 @@ HRESULT CFire_Light::Initialize_Clone(const wstring& wstrPrototypeTag, void* pAr
 		FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 		m_iLightNumber = m_tEffectDesc.m_tGameObjectDesc.m_iNumber;
 		m_vPSize = m_tEffectDesc.m_tGameObjectDesc.m_vTexSize;
+
 		// m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMVector3Normalize(XMVectorSet(m_tEffectDesc.m_tGameObjectDesc.m_vBulletLook.x, m_tEffectDesc.m_tGameObjectDesc.m_vBulletLook.y, m_tEffectDesc.m_tGameObjectDesc.m_vBulletLook.z, 0.f)));
 		// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION,
 		// 	dynamic_cast<CPlayer*>(m_pOwner)->Get_MuzzlePtr()->Get_SphereCenter());
 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, (XMVectorSet(m_tEffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos.x, m_tEffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos.y, m_tEffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos.z, 1.f)));
-
+		m_bBoss = m_tEffectDesc.m_tGameObjectDesc.m_iHP;
 		 // _matrix matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
 
 		// m_vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
@@ -104,6 +105,30 @@ void CFire_Light::Tick(_double dTimeDelta)
 			CGameInstance::GetInstance()->Set_LightRange(m_iLightNumber, 3.f + m_fMaxRange);
 		}
 	}
+	else if ( m_bBoss == true)
+		{
+		if (m_fMaxRange <= 1.f && m_bRangeChange == false)
+		{
+			m_fMaxRange += (_float)dTimeDelta;
+
+			if (m_fMaxRange > 1.f)
+				m_bRangeChange = true;
+
+			if (m_bRangeChange == false)
+				CGameInstance::GetInstance()->Set_LightRange(m_iLightNumber, 15.f + m_fMaxRange);
+
+
+		}
+		else if (m_bRangeChange == true)
+		{
+			m_fMaxRange -= (_float)dTimeDelta;
+
+			if (m_fMaxRange < 0.f)
+				m_bRangeChange = false;
+
+			CGameInstance::GetInstance()->Set_LightRange(m_iLightNumber, 15.f + m_fMaxRange);
+		}
+		}
 	else
 	{
 		if (m_fMaxRange <= 1.f && m_bRangeChange == false)

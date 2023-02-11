@@ -330,7 +330,7 @@ void CElite_Bug_State::Tick_Spawn_Junior(_double dTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, m_fLastPos);
 	CMonster::MONSTEROPTION			MonsterDesc;
 	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 100;
 	MonsterDesc.MonsterDesc.m_iDamage = 15;
 	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
 	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;

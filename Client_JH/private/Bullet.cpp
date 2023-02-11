@@ -54,12 +54,16 @@ void CBullet::Late_Tick(_double dTimeDelta)
 
 	if (m_tBulletOption.m_eOwner == OWNER_PLAYER)
 	{
-		Collision_Body();
-		Collision_Head();
+		if (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurRoomType(CPlayer::ROOM_KIGHT) == true)
+		{
+			Collision_Shield();
+			Collision_LArm();
+			Collision_RArm();
+		}
+
 		Collision_HideCollider();
-		Collision_Shield();
-		Collision_LArm();
-		Collision_RArm();
+		Collision_Head();
+		Collision_Body();
 
 		if (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurRoomType(CPlayer::ROOM_BOSS) == true)
 		{
@@ -85,9 +89,7 @@ void CBullet::Late_Tick(_double dTimeDelta)
 		}
 
 		m_pRendererCom->Add_DebugRenderGroup(m_pBulletColliderCom);
-		
 	}
-
 	
 }
 
@@ -253,8 +255,8 @@ _bool CBullet::Collision_Head()
 							EffectDesc.m_tGameObjectDesc.m_iCountType = 0;
 							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
 							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
-							CDefault_Bullet_Dead* pEffect = nullptr;
-							pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
+							// CDefault_Bullet_Dead* pEffect = nullptr;
+							(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
 
 							XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
 							EffectDesc.m_pOwner = m_pOwner;
@@ -262,7 +264,7 @@ _bool CBullet::Collision_Head()
 							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
 							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
 							for (_uint i = 0; i < 4; ++i)
-								pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
+								(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
 
 
 
@@ -371,6 +373,17 @@ _bool CBullet::Collision_Shield()
 
 					pMonster->Set_HitColor();
 					pMonster->Collision_Shield(this); // 총알이 어디 충돌했는지 판단하니까
+
+					CDefault_Bullet_Dead::EFFECTDESC EffectDesc;
+					_float4 Position;
+					XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+					EffectDesc.m_pOwner = m_pOwner;
+					EffectDesc.m_tGameObjectDesc.m_iCountType = 3;
+					EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+					EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+					CDefault_Bullet_Dead* pEffect = nullptr;
+					pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
+
 					Set_Dead(true);
 
 					// m_bCollOnce = true;
@@ -482,7 +495,7 @@ _bool CBullet::Collision_RArm()
 
 _bool CBullet::Collision_To_BossMonster()
 {
-	if ((CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front()) == nullptr)
+	if ((CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->empty()))
 		return false;
 
 	CMonster* pMonster = (CMonster*)(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZBossMonster")->front());
@@ -649,7 +662,10 @@ _bool CBullet::Collision_To_Player(CCollider* pBulletCollider)
 	{
 		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pCollider->Get_Owner());
 		NULL_CHECK_RETURN(pPlayer, false);
-		CMonster* pMonster = dynamic_cast<CMonster*>(m_pOwner);
+		CMonster* pMonster = nullptr;
+		if (m_pOwner != nullptr)
+			pMonster = (CMonster*)m_pOwner;
+
 		if (nullptr != pMonster)
 		{
 			pPlayer->Collision_Event(pMonster);

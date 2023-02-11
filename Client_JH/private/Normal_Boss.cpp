@@ -144,21 +144,21 @@ void CNormal_Boss::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 #ifdef _DEBUG
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
-		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
-		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pLeftArmColliderCom);
-		m_pRendererCom->Add_DebugRenderGroup(m_pRightArmColliderCom);
-		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_FORE_L]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_FORE_R]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_HAND_L]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_HAND_R]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_HEART]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_BODY]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_ELBOW_L]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_ELBOW_R]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
+		// // m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
+		// // m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pLeftArmColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pRightArmColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_FORE_L]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_FORE_R]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_HAND_L]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_HAND_R]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_HEART]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_BODY]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_ELBOW_L]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBodyColliderCom[BODYTYPE_ELBOW_R]);
 #endif
 	}
 }
@@ -184,6 +184,142 @@ HRESULT CNormal_Boss::Render()
 HRESULT CNormal_Boss::Ready_UI()
 {
 	
+
+	return S_OK;
+}
+
+HRESULT CNormal_Boss::Ready_Light()
+{
+	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
+
+	pGameInstance->Delete_Light(2);
+	pGameInstance->Delete_Light(3);
+	pGameInstance->Delete_Light(6);
+	pGameInstance->Delete_Light(7);
+	pGameInstance->Delete_Light(4);
+	pGameInstance->Delete_Light(5);
+	pGameInstance->Delete_Light(9);
+	pGameInstance->Delete_Light(10);
+
+	LIGHTDESC			LightDesc;
+	CGameObject::GAMEOBJECTDESC	tFireLightDesc;
+	// 2
+	_bool& LightBool = pGameInstance->Set_LightEnable(2);
+	pGameInstance->Set_LightPos(2, XMVectorSet(117.111f, 7.1f, 100.231f, 1.f));
+	pGameInstance->Set_LightRange(2, 15.f);
+	LightBool = true;
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(117.111f, 7.1f, 100.231f);
+	tFireLightDesc.m_iNumber = 2;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	tFireLightDesc.m_iHP = 1;
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+	//2
+
+	//3 
+	_bool& LightBool3 = pGameInstance->Set_LightEnable(3);
+	pGameInstance->Set_LightPos(3, XMVectorSet(109.095f, 7.1f, 100.313f, 1.f));
+	pGameInstance->Set_LightRange(3, 15.f);
+
+	LightBool3 = true;
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(109.095f, 7.1f, 100.313f);
+	tFireLightDesc.m_iNumber = 3;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	tFireLightDesc.m_iHP = 1;
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+	//3
+
+	// 6
+	_bool& LightBool6 = pGameInstance->Set_LightEnable(6);
+	pGameInstance->Set_LightPos(6, XMVectorSet(146.782f, 8.8f, 109.395f, 1.f));
+	pGameInstance->Set_LightRange(6, 15.f);
+
+	LightBool6 = true;
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(146.782f, 8.8f, 109.395f);
+	tFireLightDesc.m_iNumber = 6;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	tFireLightDesc.m_iHP = 1;
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+	//6
+
+	//7
+	_bool& LightBool7 = pGameInstance->Set_LightEnable(7);
+	pGameInstance->Set_LightPos(7, XMVectorSet(147.297f, 8.8f, 134.602f, 1.f));
+
+	LightBool7 = true;
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(147.297f, 8.8f, 134.602f);
+	tFireLightDesc.m_iNumber = 7;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	tFireLightDesc.m_iHP = 1;
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+	//7
+
+	//12
+	
+
+	ZeroMemory(&LightDesc, sizeof LightDesc);
+
+	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+	LightDesc.isEnable = true;
+	LightDesc.vPosition = _float4(146.738f, 8.8f, 159.536f, 1.f);
+	LightDesc.fRange = 8.0f;
+	LightDesc.vDiffuse = _float4(0.9f, 0.3f, 0.15f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(146.738f, 8.8f, 159.536f);
+	tFireLightDesc.m_iNumber = 12;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	tFireLightDesc.m_iHP = 1;
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
+	//13
+	ZeroMemory(&LightDesc, sizeof LightDesc);
+
+	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+	LightDesc.isEnable = true;
+	LightDesc.vPosition = _float4(77.606f, 8.8f, 122.343f, 1.f);
+	LightDesc.fRange = 8.0f;
+	LightDesc.vDiffuse = _float4(0.9f, 0.3f, 0.15f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(77.606f, 8.8f, 122.343f);
+	tFireLightDesc.m_iNumber = 13;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	tFireLightDesc.m_iHP = 1;
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+	//
+	//14
+	
+
+	ZeroMemory(&LightDesc, sizeof LightDesc);
+
+	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+	LightDesc.isEnable = true;
+	LightDesc.vPosition = _float4(77.725f, 8.8f, 147.178f, 1.f);
+	LightDesc.fRange = 8.0f;
+	LightDesc.vDiffuse = _float4(0.9f, 0.3f, 0.15f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+	ZeroMemory(&tFireLightDesc, sizeof(CGameObject::GAMEOBJECTDESC));
+	tFireLightDesc.TransformDesc.vInitPos = _float3(77.725f, 8.8f, 147.178f);
+	tFireLightDesc.m_iNumber = 14;
+	tFireLightDesc.m_vTexSize = _float2(1.f, 2.f);
+	tFireLightDesc.m_iHP = 1;
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_FireLight", L"Prototype_GameObject_Effect_Fire_Light", &tFireLightDesc), E_FAIL);
+
+	//
+
 
 	return S_OK;
 }
@@ -451,7 +587,8 @@ HRESULT CNormal_Boss::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
 	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
-	m_pNormalTexCom->Bind_ShaderResource(m_pShaderCom, L"g_NormalTexture");
+
+	m_pNormalTexCom->Bind_ShaderResource(m_pShaderCom, L"g_MonsterNormalTexture");
 
 
 	Safe_Release(pGameInstance);

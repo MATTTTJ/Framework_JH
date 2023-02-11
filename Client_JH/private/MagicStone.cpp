@@ -2,6 +2,8 @@
 #include "..\public\MagicStone.h"
 
 #include "Bullet.h"
+#include "Default_Bullet_Dead.h"
+#include "Flame_Bullet_Dead.h"
 #include "GameInstance.h"
 #include "Player.h"
 
@@ -59,6 +61,9 @@ HRESULT CMagicStone::Initialize_Clone(const wstring& wstrPrototypeTag, void* pAr
 	Ready_DangerEffect(); // 돌이모이면서 메시가 생기는거처럼
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
+
+
+
 	return S_OK;
 }
 
@@ -152,14 +157,15 @@ HRESULT CMagicStone::Render()
 
 void CMagicStone::Ready_DangerEffect()
 {
-	// CGameObject::GAMEOBJECTDESC GameObjectDesc;
-	// _float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-	// GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x, 3.68f, Pos.z);
-	// GameObjectDesc.m_iHP = 1;
-	// (CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_DangerRing", L"Prototype_GameObject_Danger_Ring", &GameObjectDesc));
-	// GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x, 3.68f, Pos.z);
-	// GameObjectDesc.m_iHP = 0;
-	// (CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_DangerRing", L"Prototype_GameObject_Danger_Ring", &GameObjectDesc));
+	CDefault_Bullet_Dead::EFFECTDESC EffectDesc;
+	_float4 Position;
+	XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+	EffectDesc.m_pOwner = this;
+	EffectDesc.m_tGameObjectDesc.m_iCountType = 4;
+	EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+	// CDefault_Bullet_Dead* pEffect = nullptr;
+	m_pStoneEffect = (CFlame_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
 }
 
 _bool CMagicStone::Collision_To_Bullet()
@@ -193,6 +199,8 @@ _bool CMagicStone::Collision_To_Bullet()
 					NULL_CHECK_RETURN(pBullet, false);
 
 					pBullet->Set_Dead(true); // 총알이 어디 충돌했는지 판단하니까
+					m_pStoneEffect->Set_Dead(true);
+
 					Set_Dead(true);
 					return true;
 				}
@@ -216,6 +224,8 @@ void CMagicStone::Fire_To_Player(_double TimeDelta)
 
 	if (CurPos.y < TargetPos.y)
 	{
+		m_pStoneEffect->Set_Dead(true);
+
 		Set_Dead(true);
 	}
 
@@ -308,6 +318,7 @@ CGameObject* CMagicStone::Clone(const wstring& wstrPrototypeTag, void* pArg)
 
 void CMagicStone::Free()
 {
+
 	__super::Free();
 	Safe_Release(m_pMagicStoneColliderCom);
 

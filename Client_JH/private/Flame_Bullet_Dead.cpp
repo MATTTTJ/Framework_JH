@@ -2,6 +2,7 @@
 #include "..\public\Flame_Bullet_Dead.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "Monster.h"
 
 CFlame_Bullet_Dead::CFlame_Bullet_Dead(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -84,7 +85,33 @@ HRESULT CFlame_Bullet_Dead::Initialize_Clone(const wstring& wstrPrototypeTag, vo
 
 		m_pTransformCom->LookAt(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION) + XMLoadFloat4(&Dir));
 	}
-	
+	if (m_iBirthType == 3)
+	{
+		// _matrix matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
+
+		// m_vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
+		// 	(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1205_Bone001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+		m_iUV_Max_Width_Num = 4;
+		m_iUV_Max_Height_Num = 4;
+		m_iFrameCnt = 1;
+		m_vPSize = _float2{ 1.5f, 1.5f };
+		m_iUV_Cur_Width_Num = 0;
+		m_iUV_Cur_Height_Num = 0;
+	}
+	if (m_iBirthType == 4)
+	{
+		// _matrix matpivot = XMMatrixRotationY(XMConvertToRadians(180.f));
+
+		// m_vDir = XMVector3Normalize((dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("Att001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3] -
+		// 	(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurWeaponModelCom()->Get_BoneMatrix("1205_Bone001") * matpivot * XMLoadFloat4x4(&dynamic_cast<CPlayer*>(m_pOwner)->Get_WorldFloat4x4())).r[3]);
+		m_iUV_Max_Width_Num = 3;
+		m_iUV_Max_Height_Num = 7;
+		m_iFrameCnt = 1;
+		m_vPSize = _float2{ 3.f, 3.f };
+		m_iUV_Cur_Width_Num = 0;
+		m_iUV_Cur_Height_Num = 0;
+		m_pMonster = (CMonster*)m_tEffectDesc.m_pOwner;
+	}
 	return S_OK;
 }
 
@@ -107,7 +134,28 @@ void CFlame_Bullet_Dead::Tick(_double dTimeDelta)
 		if (m_fTime > 1.f)
 			m_fTime = 1.f;
 
-		m_vPSize += _float2(_float(dTimeDelta) * 3.f, _float(dTimeDelta)* 3.f);
+		m_vPSize += _float2(_float(dTimeDelta) * 5.f, _float(dTimeDelta)* 5.f);
+
+		m_iPlayOnFrameCnt++;
+
+		if (m_iPlayOnFrameCnt == m_iFrameCnt)
+		{
+			if (m_iUV_Cur_Height_Num == m_iUV_Max_Height_Num - 1 && m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num - 1)
+			{
+				Set_Dead(true);
+				return;
+			}
+
+			m_iUV_Cur_Width_Num++;
+
+			m_iPlayOnFrameCnt = 0;
+
+			if (m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num)
+			{
+				m_iUV_Cur_Width_Num = 0;
+				m_iUV_Cur_Height_Num++;
+			}
+		}
 	}
 
 	else if(m_iBirthType ==1)
@@ -122,35 +170,101 @@ void CFlame_Bullet_Dead::Tick(_double dTimeDelta)
 		m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_BULLET);
 
 		m_fUpSpeed += 0.03f;
+
+		m_iPlayOnFrameCnt++;
+
+		if (m_iPlayOnFrameCnt == m_iFrameCnt)
+		{
+			if (m_iUV_Cur_Height_Num == m_iUV_Max_Height_Num - 1 && m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num - 1)
+			{
+				Set_Dead(true);
+				return;
+			}
+
+			m_iUV_Cur_Width_Num++;
+
+			m_iPlayOnFrameCnt = 0;
+
+			if (m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num)
+			{
+				m_iUV_Cur_Width_Num = 0;
+				m_iUV_Cur_Height_Num++;
+			}
+		}
 	}
-
-
-	m_iPlayOnFrameCnt++;
-
-	if(m_iPlayOnFrameCnt == m_iFrameCnt)
+	else if (m_iBirthType == 3)
 	{
-		if (m_iUV_Cur_Height_Num == m_iUV_Max_Height_Num - 1 && m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num - 1)
-		{
-			Set_Dead(true);
-			return;
-		}
+		m_fTime += (_float)dTimeDelta;
 
-		m_iUV_Cur_Width_Num++;
+		if (m_fTime > 1.f)
+			m_fTime = 1.f;
 
-		m_iPlayOnFrameCnt = 0;
-	
-		if(m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num)
+		m_vPSize += _float2(_float(dTimeDelta) * 5.f, _float(dTimeDelta)* 5.f);
+
+		m_iPlayOnFrameCnt++;
+
+		if (m_iPlayOnFrameCnt == m_iFrameCnt)
 		{
-			m_iUV_Cur_Width_Num = 0;
-			m_iUV_Cur_Height_Num++;
+			if (m_iUV_Cur_Height_Num == m_iUV_Max_Height_Num - 1 && m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num - 1)
+			{
+				Set_Dead(true);
+				return;
+			}
+
+			m_iUV_Cur_Width_Num++;
+
+			m_iPlayOnFrameCnt = 0;
+
+			if (m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num)
+			{
+				m_iUV_Cur_Width_Num = 0;
+				m_iUV_Cur_Height_Num++;
+			}
 		}
 	}
+
+	else if (m_iBirthType == 4)
+	{
+		m_fTime += (_float)dTimeDelta;
+
+		if (m_fTime > 1.f)
+			m_fTime = 1.f;
+
+		m_vPSize += _float2(_float(dTimeDelta) * 3.f, _float(dTimeDelta)* 3.f);
+		if (m_pMonster->Check_Dead() == false)
+		{
+			_float4 Pos = m_pMonster->Get_TransformState(CTransform::STATE_TRANSLATION);
+			m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, Pos);
+		}
+		m_iPlayOnFrameCnt++;
+
+		if (m_iPlayOnFrameCnt == m_iFrameCnt)
+		{
+			if (m_iUV_Cur_Height_Num == m_iUV_Max_Height_Num - 1 && m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num - 1)
+			{
+				m_iUV_Cur_Height_Num = 0;
+				m_iUV_Cur_Width_Num = 0;
+			}
+
+			m_iUV_Cur_Width_Num++;
+
+			m_iPlayOnFrameCnt = 0;
+
+			if (m_iUV_Cur_Width_Num == m_iUV_Max_Width_Num)
+			{
+				m_iUV_Cur_Width_Num = 0;
+				m_iUV_Cur_Height_Num++;
+			}
+		}
+	}
+	
 
 }
 
 void CFlame_Bullet_Dead::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
 	__super::Compute_CamDistance();
 
 	if (m_pRendererCom != nullptr)
@@ -163,8 +277,12 @@ HRESULT CFlame_Bullet_Dead::Render()
 
 	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
+
+
 	if(m_iBirthType == 0)
 		m_pShaderCom->Begin(15);
+	else if(m_iBirthType == 4)
+		m_pShaderCom->Begin(16);
 	else
 		m_pShaderCom->Begin(14);
 
@@ -198,6 +316,9 @@ HRESULT CFlame_Bullet_Dead::SetUp_ShaderResources()
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_iUV_Max_Height_Num", &m_iUV_Max_Height_Num, sizeof(_int)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_iUV_Cur_Width_Num", &m_iUV_Cur_Width_Num, sizeof(_int)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_RawValue(L"g_iUV_Cur_Height_Num", &m_iUV_Cur_Height_Num, sizeof(_int)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShaderCom->Set_ShaderResourceView(L"g_DepthTexture", CGameInstance::GetInstance()->Get_DepthTargetSRV()), E_FAIL);
+
+
 	if (FAILED(m_pShaderCom->Set_RawValue(L"g_fTime", &m_fTime, sizeof(_float))))
 		return E_FAIL;
 

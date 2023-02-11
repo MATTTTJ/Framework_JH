@@ -247,7 +247,9 @@ HRESULT CLevel_GamePlay::Render()
 HRESULT CLevel_GamePlay::Ready_Layer_Env(const wstring wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_SkySphere"), E_FAIL);
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -324,7 +326,7 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	LightDesc.fRange = 8.0f;
 	LightDesc.vDiffuse = _float4(0.9f, 0.3f, 0.15f, 1.f);
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
 #pragma endregion
 
@@ -344,7 +346,7 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	LightDesc.fRange = 8.0f;
 	LightDesc.vDiffuse = _float4(0.9f, 0.3f, 0.15f, 1.f);
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
 #pragma endregion
 
@@ -368,7 +370,7 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	LightDesc.fRange = 8.0f;
 	LightDesc.vDiffuse = _float4(0.6f, 0.87f, 0.9f, 1.f);
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
 #pragma endregion
 
@@ -389,7 +391,7 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	LightDesc.fRange = 8.0f;
 	LightDesc.vDiffuse = _float4(0.6f, 0.87f, 0.9f, 1.f);
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
 #pragma endregion
 
@@ -409,7 +411,7 @@ HRESULT CLevel_GamePlay::Ready_Light()
 	LightDesc.fRange = 8.0f;
 	LightDesc.vDiffuse = _float4(0.9f, 0.3f, 0.15f, 1.f);
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
 #pragma endregion
 
@@ -560,29 +562,29 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Bow", PivotMatrix, &MonsterDesc));
 	pMonster->Set_Player(pPlayer);
 	//
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(-15.3f, 0.f, 15.7f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 71;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
-	//
-	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	PivotMatrix.r[3] = XMVectorSet(4.f, 0.f, 13.7f, 1.f);
-	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;			// No Detected == Patrol
-	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	MonsterDesc.m_iCellIndex = 135;
-	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
-	pMonster->Set_Player(pPlayer);
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(-15.3f, 0.f, 15.7f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 71;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
+	// //
+	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	// PivotMatrix.r[3] = XMVectorSet(4.f, 0.f, 13.7f, 1.f);
+	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_NODETECTED] = true;			// No Detected == Patrol
+	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
+	// MonsterDesc.MonsterDesc.m_iDamage = 15;
+	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	// MonsterDesc.m_iCellIndex = 135;
+	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Granade", PivotMatrix, &MonsterDesc));
+	// pMonster->Set_Player(pPlayer);
 	//
 	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
 	// PivotMatrix.r[3] = XMVectorSet(11.f, 1.6f, 22.1f, 1.f);
@@ -622,29 +624,29 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring wstrLayerTag)
 	//
 	// // // Normal Explode
 	//
-	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	// PivotMatrix.r[3] = XMVectorSet(11.4f, 1.f, 12.9f, 1.f);
-	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	// MonsterDesc.MonsterDesc.m_iDamage = 15;
-	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	// MonsterDesc.m_iCellIndex = 140;
-	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
-	// pMonster->Set_Player(pPlayer);
-	//
-	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
-	// PivotMatrix.r[3] = XMVectorSet(13.6f, 1.f, 17.f, 1.f);
-	// MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
-	// MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	// MonsterDesc.MonsterDesc.m_iDamage = 15;
-	// MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	// MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
-	// MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
-	// MonsterDesc.m_iCellIndex = 151;
-	// pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
-	// pMonster->Set_Player(pPlayer);
+	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	PivotMatrix.r[3] = XMVectorSet(11.4f, 1.f, 12.9f, 1.f);
+	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 100;
+	MonsterDesc.MonsterDesc.m_iDamage = 15;
+	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	MonsterDesc.m_iCellIndex = 140;
+	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
+	pMonster->Set_Player(pPlayer);
+	
+	ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
+	PivotMatrix.r[3] = XMVectorSet(13.6f, 1.f, 17.f, 1.f);
+	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_ALREADYSPAWN] = true;
+	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 100;
+	MonsterDesc.MonsterDesc.m_iDamage = 15;
+	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
+	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 2.5f;
+	MonsterDesc.MonsterDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(180.f);
+	MonsterDesc.m_iCellIndex = 151;
+	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Normal_Human_Explode", PivotMatrix, &MonsterDesc));
+	pMonster->Set_Player(pPlayer);
 	//
 	// ZeroMemory(&MonsterDesc, sizeof(CMonster::MONSTEROPTION));
 	// PivotMatrix.r[3] = XMVectorSet(2.2f, 0.f, 22.1f, 1.f);
@@ -803,6 +805,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const wstring wstrLayerTag)
 	CGameObject::GAMEOBJECTDESC	EffectDesc;
 	ZeroMemory(&EffectDesc, sizeof(CGameObject::GAMEOBJECTDESC));
 	EffectDesc.TransformDesc.vInitPos = _float3(-14.f, 3.f, 0.f);
+	EffectDesc.m_iHP = 0;
 	EffectDesc.TransformDesc.fRotationPerSec = -68.454f;
 	for(_uint i =0; i< 2; ++i)
 		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Effect_Smoke", &EffectDesc), E_FAIL);
@@ -810,6 +813,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const wstring wstrLayerTag)
 
 	EffectDesc.TransformDesc.vInitPos = _float3(-9.629f, 0.729f, 43.134f);
 	EffectDesc.TransformDesc.fRotationPerSec = -28.f;
+	EffectDesc.m_iHP = 0;
+
 	for (_uint i = 0; i< 2; ++i)
 		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Effect_Smoke", &EffectDesc), E_FAIL);
 
@@ -820,6 +825,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const wstring wstrLayerTag)
 
 	EffectDesc.TransformDesc.vInitPos = _float3(-34.f, 1.2f, 52.7f);
 	EffectDesc.TransformDesc.fRotationPerSec = 17.f;
+	EffectDesc.m_iHP = 0;
+
 	for (_uint i = 0; i< 2; ++i)
 		FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, wstrLayerTag, L"Prototype_GameObject_Effect_Smoke", &EffectDesc), E_FAIL);
 

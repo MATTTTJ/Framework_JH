@@ -54,7 +54,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	m_pContext->RSGetViewports(&iNumViewPorts, &ViewportDesc);
 
 	//·»´õÅ¸°Ù »ý¼º //DXGI_FORMAT_B8G8R8A8_UNORM
-	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Diffuse"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.0f, 0.0f, 0.0f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Diffuse"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R8G8B8A8_UNORM, &_float4(0.0f, 0.0f, 0.0f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Normal"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Depth"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, &_float4(0.0f, 0.0f, 0.0f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Shade"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, &_float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
@@ -77,7 +77,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	m_pTarget_Manager->Find_RenderTarget(TEXT("Target_Dynamic_ShadowDepth"))->Ready_DepthStencilRenderTargetView(iShadowMapCX, iShadowMapCY, DXGI_FORMAT_D24_UNORM_S8_UINT);
 
 	// For Target_OutLine
-	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Outline"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(1.f, 1.f, 1.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Outline"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_OutlineFlag"), (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, &_float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Diffuse")), E_FAIL);  // µðÆÛµå ·»´õ¸µ (ºû)À» ¼öÇàÇÏ±â À§ÇÑ 
@@ -152,19 +152,22 @@ HRESULT CRenderer::Draw_RenderGroup()
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_ShadowDepth_Dynamic(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlphaBlend(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_OutLine(), E_FAIL);
+
+
 	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
 	// FAILED_CHECK_RETURN(Render_ShadowBlur(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
-	FAILED_CHECK_RETURN(Render_OutLine(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonLight(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Glow(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Effect(), E_FAIL);
+
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_FADE(), E_FAIL);
 
 #ifdef _DEBUG
-	// FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
 #endif
 
 #ifdef _DEBUG
@@ -192,13 +195,13 @@ HRESULT CRenderer::Draw_RenderGroup()
 		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Bloom"), 700.0f, 100.f, 200.f, 200.f), E_FAIL);
 		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 700.0f, 300.f, 200.f, 200.f), E_FAIL);
 
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_Effect"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_Bloom"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_Blur"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"));
-		m_pTarget_Manager->Render_Debug(TEXT("MRT_Outline"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Effect"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Bloom"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Blur"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"));
+		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Outline"));
 
 	}
 #endif
@@ -295,7 +298,7 @@ HRESULT CRenderer::Render_Effect()
 
 	m_RenderObjectList[RENDER_EFFECT].clear();
 
-	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, TEXT("MRT_Effect")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, TEXT("Target_OriginEffect")), E_FAIL);
 	//
 	FAILED_CHECK_RETURN(Render_Blur(TEXT("Target_OriginEffect")), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Bloom(TEXT("Target_OriginEffect")), E_FAIL);
@@ -344,9 +347,9 @@ HRESULT CRenderer::Render_DOF()
 
 HRESULT CRenderer::Render_Blend()
 {
-	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_WorldMatrix", &m_WorldMatrix), E_FAIL);
-	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix), E_FAIL);
-	FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_WorldMatrix", &m_WorldMatrix), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_DiffuseTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Diffuse"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_ShadeTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Shade"))), E_FAIL);
@@ -358,7 +361,10 @@ HRESULT CRenderer::Render_Blend()
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_EffectTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_OriginEffect"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_OutlineTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_Outline"))), E_FAIL);
 
-	
+	m_pShader->Set_Matrix(L"g_WorldMatrix", &m_WorldMatrix);
+	m_pShader->Set_Matrix(L"g_ViewMatrix", &m_ViewMatrix);
+	m_pShader->Set_Matrix(L"g_ProjMatrix", &m_ProjMatrix);
+
 
 	// m_pShader->Set_RawValue(L"g_WorldMatrix", &m_WorldMatrix, sizeof(_float4x4));
 	// m_pShader->Set_RawValue(L"g_ViewMatrix", &m_ViewMatrix, sizeof(_float4x4));
@@ -449,6 +455,7 @@ HRESULT CRenderer::Render_Blur(const _tchar* pTargetTag)
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_HorizontalBlur")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_DiffuseTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Blur"))), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_DiffuseTexture_Deferred", m_pTarget_Manager->Get_SRV(pTargetTag)), E_FAIL);
 
 	m_pShader->Begin(5);
 
@@ -464,21 +471,21 @@ HRESULT CRenderer::Render_Blur(const _tchar* pTargetTag)
 	m_pVIBuffer->Render();
 	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_Blur")), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_Blur")), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_VerticalBlurTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_VerticalBlur"))), E_FAIL);
 
 	m_pShader->Begin(7);
 
 	m_pVIBuffer->Render();
 
-	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
+	// FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
 
 	return S_OK;
 }
 
 HRESULT CRenderer::Render_Bloom(const _tchar* pTargetTag)
 {
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_Bloom")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_Bloom")), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_DiffuseTexture_Deferred", m_pTarget_Manager->Get_SRV(pTargetTag)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_BlurTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_Blur"))), E_FAIL);
@@ -504,30 +511,30 @@ HRESULT CRenderer::Render_Bloom(const _tchar* pTargetTag)
 
 	m_pVIBuffer->Render();
 
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
 
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_HorizontalBlur")), E_FAIL);
-	// FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_DiffuseTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Bloom"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_HorizontalBlur")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_DiffuseTexture_Deferred", m_pTarget_Manager->Get_SRV(TEXT("Target_Bloom"))), E_FAIL);
 
-	// m_pShader->Begin(5);
+	m_pShader->Begin(5);
 
-	// m_pVIBuffer->Render();
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL;)
+	m_pVIBuffer->Render();
+	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL;)
 
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_VerticalBlur")), E_FAIL);
-	// FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_HorizontalBlurTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_HorizontalBlur"))), E_FAIL);
+		FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_VerticalBlur")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_HorizontalBlurTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_HorizontalBlur"))), E_FAIL);
 
-	// m_pShader->Begin(6);
+	m_pShader->Begin(6);
 
-	// m_pVIBuffer->Render();
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
+	m_pVIBuffer->Render();
+	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
 
 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_Bloom")), E_FAIL);
-	// FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_VerticalBlurTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_VerticalBlur"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pShader->Set_ShaderResourceView(L"g_VerticalBlurTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_VerticalBlur"))), E_FAIL);
 
-	// m_pShader->Begin(7);
+	m_pShader->Begin(7);
 
-	// m_pVIBuffer->Render();
+	m_pVIBuffer->Render();
 
 	// FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
 
@@ -550,7 +557,7 @@ HRESULT CRenderer::Render_OutLine()
 
 	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
 
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_Outline")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->Begin_RenderTarget(m_pContext, TEXT("Target_Outline")), E_FAIL);
 
 	D3D11_VIEWPORT			ViewPortDesc;
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
@@ -571,7 +578,7 @@ HRESULT CRenderer::Render_OutLine()
 	m_pShader->Begin(10);
 
 	m_pVIBuffer->Render();
-	// FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTarget_Manager->End_MRT(m_pContext, L""), E_FAIL);
 
 	return S_OK;
 }

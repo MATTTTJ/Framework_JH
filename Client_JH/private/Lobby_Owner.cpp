@@ -56,35 +56,29 @@ void CLobby_Owner::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
-
-
 	}
 }
 
 HRESULT CLobby_Owner::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
-	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		/* 이 모델을 그리기위한 셰이더에 머테리얼 텍스쳐를 전달하낟. */
-
-		// m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-		HRESULT hNormal = m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
-		if (hNormal == S_FALSE)
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+		if (i == 1)
 		{
-			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
-			m_bNormalTexOn = false;
-		}
-		else if (hNormal == S_OK)
-		{
-			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+			m_pNormalTex->Bind_ShaderResource(m_pShaderCom, L"g_MonsterNormalTexture", 0);
 			m_bNormalTexOn = true;
 		}
-		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices");
+		else
+			m_bNormalTexOn = false;
+
+		FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+
+		m_pModelCom->Render(m_pShaderCom, i, L"g_BoneMatrices",2);
 	}
 
 	return S_OK;
@@ -138,6 +132,9 @@ HRESULT CLobby_Owner::SetUp_Components()
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer",	(CComponent**)&m_pRendererCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Shader_VtxAnimModel", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Model_LobbyOwner", L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_LobbyOwner_NormalTex", L"Com_NormalTex", (CComponent**)&m_pNormalTex, this), E_FAIL);
+
+
 	
 	return S_OK;
 }
@@ -192,6 +189,7 @@ void CLobby_Owner::Free()
 	__super::Free();
 
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pNormalTex);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 

@@ -83,33 +83,33 @@ void CHuman_Spear_State::Tick(_double dTimeDelta)
 void CHuman_Spear_State::Late_Tick(_double dTimeDelta)
 {
 	_float4	fDir;
-	if (CGameUtils::CollisionSphereSphere(m_pMonster->m_pPlayer->m_pColliderCom[CPlayer::COLLIDER_SPHERE], m_pMonster->m_pColliderCom[CMonster::COLLTYPE_HITBODY], fDir))
-	{
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
-		fDir.y = 0.f;
-		_vector	vMovePos = XMVectorAdd(vPos, fDir);
-
-		_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
-		_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
-
-		if (true == m_pNavigationCom->IsMove_OnNavigation(vPos, vBlockedLine, vBlockedLineNormal))
-			m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
-		else
-		{
-			_vector vInDir = vMovePos - vPos;
-			_vector vOutDir = vPos - vMovePos;
-			_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
-
-			_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
-
-			vMovePos = vPos + vSlidingDir;
-
-			if (m_pNavigationCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
-			{
-				m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
-			}
-		}
-	}
+	// if (CGameUtils::CollisionSphereSphere(m_pMonster->m_pPlayer->m_pColliderCom[CPlayer::COLLIDER_SPHERE], m_pMonster->m_pColliderCom[CMonster::COLLTYPE_HITBODY], fDir))
+	// {
+	// 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+	// 	fDir.y = 0.f;
+	// 	_vector	vMovePos = XMVectorAdd(vPos, fDir);
+	//
+	// 	_float4 vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+	// 	_float4 vBlockedLineNormal = { 0.f ,0.f, 0.f, 0.f };
+	//
+	// 	if (true == m_pNavigationCom->IsMove_OnNavigation(vPos, vBlockedLine, vBlockedLineNormal))
+	// 		m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+	// 	else
+	// 	{
+	// 		_vector vInDir = vMovePos - vPos;
+	// 		_vector vOutDir = vPos - vMovePos;
+	// 		_float	fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+	//
+	// 		_vector vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+	//
+	// 		vMovePos = vPos + vSlidingDir;
+	//
+	// 		if (m_pNavigationCom->IsMove_OnNavigation(vMovePos, vBlockedLine, vBlockedLineNormal))
+	// 		{
+	// 			m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, vMovePos);
+	// 		}
+	// 	}
+	// }
 
 	if (m_pPlayer != nullptr)
 	{
@@ -217,7 +217,6 @@ HRESULT CHuman_Spear_State::SetUp_State_No_Detected()
 		.Init_Start(this, &CHuman_Spear_State::Start_No_Detected)
 		.Init_Tick(this, &CHuman_Spear_State::Tick_No_Detected)
 		.Init_End(this, &CHuman_Spear_State::End_No_Detected)
-		.Init_Changer(L"STATE::DETECTED", this, &CHuman_Spear_State::Player_Detected)
 		.Init_Changer(L"STATE::DETECTED", this, &CHuman_Spear_State::Is_Damaged)
 
 		.Add_State(L"STATE::DETECTED")

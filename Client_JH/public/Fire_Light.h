@@ -31,6 +31,7 @@ public:
 	virtual void						Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT						Render() override;
 	void								Set_Lobby(_bool trueIsLobby) { m_bLobby = trueIsLobby; }
+	void								Set_Boss(_bool trueIsBoss) { m_bBoss = trueIsBoss; }
 private:
 	HRESULT								SetUp_Component();
 	HRESULT								SetUp_ShaderResources();
@@ -63,6 +64,7 @@ private:
 	_float								m_fMinRange = 9.f;
 	_bool								m_bRangeChange = false;
 	_bool								m_bLobby = false;
+	_bool								m_bBoss = false;
 public:
 	static CFire_Light*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*				Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;

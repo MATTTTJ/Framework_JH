@@ -55,6 +55,8 @@ private:
 
 	class CPlayer*			m_pPlayer = nullptr;
 
+	CGameObject*			m_pStoneEffect = nullptr;
+
 	MAGICSTONEDESC	m_tMagicStoneDesc;
 	list<CGameObject*>		m_BulletList;
 private:
