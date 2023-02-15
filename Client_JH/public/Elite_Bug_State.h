@@ -79,7 +79,7 @@ private:
 
 	// 리틀 버그 생성
 	_float						m_fCurSpawnJuniorCoolTime = {0.f};
-	_float						m_fSpawnJuniorCoolTime = { 15.f };
+	_float						m_fSpawnJuniorCoolTime = { 10.f };
 	_bool						m_bCanSpawnJunior = {false};
 
 	// 차징 시간
@@ -107,6 +107,12 @@ private:
 	_float						m_fCurDamagedAnimCoolTime = {0.f};
 	_float						m_fDamagedAnimCoolTime = {5.f};
 	_bool						m_bDamagedAnim = {false};
+
+	_bool						m_bWalkSoundOnce = false;
+	_float						m_fCurWalkSoundTime = 0.f;
+	_float						m_fWalkSoundTime = 0.6f;
+
+	_bool						m_bAttackSoundOnce = false;
 
 private:
 	void						Start_Idle(_double dTimeDelta);

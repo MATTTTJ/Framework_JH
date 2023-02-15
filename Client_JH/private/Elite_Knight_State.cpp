@@ -30,7 +30,7 @@ HRESULT CElite_Knight_State::Initialize(CElite_Knight* pOwner, CState* pStateMac
 		FAILED_CHECK_RETURN(SetUp_State_UpSpawn(), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	}
-
+	m_fWalkSoundTime = 0.6f;
 	return S_OK;
 }
 
@@ -38,6 +38,7 @@ void CElite_Knight_State::Tick(_double dTimeDelta)
 {
 	if (m_pMonster->m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 	{
+
 		m_pMonster->Set_Dead(true);
 		return;
 	}
@@ -51,6 +52,18 @@ void CElite_Knight_State::Tick(_double dTimeDelta)
 		m_fCurAttackCoolTime += (_float)dTimeDelta;
 		m_fCurDamagedAnimCoolTime += (_float)dTimeDelta;
 	}
+
+	if (m_bWalkSoundOnce == false && m_pState->Get_CurState() == L"STATE::RUN")
+	{
+		m_fCurWalkSoundTime += (_float)dTimeDelta;
+	}
+
+	if (m_fCurWalkSoundTime >= m_fWalkSoundTime)
+	{
+		m_fCurWalkSoundTime = 0.f;
+		m_bWalkSoundOnce = true;
+	}
+
 
 	if (m_fCurHideCoolTime >= m_fHideCoolTime && m_bCanHide == false)
 	{
@@ -278,9 +291,7 @@ void CElite_Knight_State::Start_Attack_WIND(_double dTimeDelta)
 	// 거리가 멀면 (Bow 활 쏘는 조건) 
 
 	m_pModelCom->Set_CurAnimIndex(KNIGHT_ATTACK_WIND);
-
-
-
+	m_bAttackSoundOnce = false;
 }
 
 void CElite_Knight_State::Start_Attack_IN_SHIELD(_double dTimeDelta)
@@ -293,6 +304,8 @@ void CElite_Knight_State::Start_Attack_IN_SHIELD(_double dTimeDelta)
 	}
 	else
 		m_pModelCom->Set_CurAnimIndex(KNIGHT_SHIELD_SHIELD);
+
+	m_bAttackSoundOnce = false;
 }
 
 void CElite_Knight_State::Start_Attack_USE_SHIELD(_double dTimeDelta)
@@ -317,6 +330,8 @@ void CElite_Knight_State::Start_Damaged(_double dTimeDelta)
 
 	if (m_bDamaged[HITHEAD] == true)
 		m_pModelCom->Set_CurAnimIndex(KNIGHT_HITHEAD);
+
+	m_pGameInstance->Play_Sound(L"Knight_Hit.mp3", 0.5f, false, true);
 
 	m_bDamaged[HIT] = false;
 }
@@ -363,6 +378,19 @@ void CElite_Knight_State::Tick_Idle(_double dTimeDelta)
 void CElite_Knight_State::Tick_Run(_double dTimeDelta)
 {
 	m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 3.f, m_pNavigationCom);
+
+	if (m_bWalkSoundOnce == true)
+	{
+		CSound::SOUND_DESC SoundDesc;
+		SoundDesc.fRange = 10.f;
+		SoundDesc.bIs3D = true;
+		SoundDesc.pStartTransform = m_pTransformCom;
+		SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+		CGameInstance::GetInstance()->Set_SoundDesc(L"Knight_Walk.mp3", SoundDesc);
+
+		m_pGameInstance->Play_Sound(L"Knight_Walk.mp3", 1.0f, false, true);
+		m_bWalkSoundOnce = false;
+	}
 }
 
 void CElite_Knight_State::Tick_Attack_WIND(_double dTimeDelta)
@@ -390,6 +418,15 @@ void CElite_Knight_State::Tick_Attack_WIND(_double dTimeDelta)
 		pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Bullet", L"Prototype_GameObject_Normal_Elite_Knight_Blade", &BulletDesc));
 		NULL_CHECK(pBullet);
 
+		CSound::SOUND_DESC SoundDesc;
+		SoundDesc.fRange = 15.f;
+		SoundDesc.bIs3D = true;
+		SoundDesc.pStartTransform = m_pTransformCom;
+		SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+		CGameInstance::GetInstance()->Set_SoundDesc(L"Knight_Wind.mp3", SoundDesc);
+
+		m_pGameInstance->Play_Sound(L"Knight_Wind.mp3", 1.f, false, true);
+
 		m_bAttackOnce = true;
 	}
 
@@ -403,15 +440,27 @@ void CElite_Knight_State::Tick_Attack_IN_SHIELD(_double dTimeDelta)
 		m_pMonster->m_pPlayer->Collision_Event(m_pMonster);
 		m_bAttackOnce = true;
 	}
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.3f && m_bAttackSoundOnce == false)
+	{
+		m_pGameInstance->Play_Sound(L"Knight_HideAttack.mp3", 0.8f, false, false);
+		m_bAttackSoundOnce = true;
+	}
 }
 
 void CElite_Knight_State::Tick_Attack_USE_SHIELD(_double dTimeDelta)
 {
-	if (m_pMonster->m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTPOS]))
-	{
-		m_pMonster->m_pPlayer->Collision_Event(m_pMonster);
-		m_bAttackOnce = true;
-	}
+	// if (m_pMonster->m_pPlayer->Collision_Detected(m_pMonster->m_pColliderCom[CMonster::COLLTYPE_ATTPOS]))
+	// {
+	// 	m_pMonster->m_pPlayer->Collision_Event(m_pMonster);
+	// 	m_bAttackOnce = true;
+	// }
+	//
+	// if (m_pModelCom->Get_AnimationProgress() > 0.3f && m_bAttackSoundOnce == false)
+	// {
+	// 	m_pGameInstance->Play_Sound(L"Knight_ShieldAttack.mp3", 0.8f, false, false);
+	// 	m_bAttackSoundOnce = true;
+	// }
 }
 
 void CElite_Knight_State::Tick_Hide(_double dTimeDelta)

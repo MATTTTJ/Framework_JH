@@ -257,6 +257,8 @@ void CHuman_Granade::Collision_Body(CBullet* pBullet)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
 	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 	{
+		CGameInstance::GetInstance()->Play_Sound(L"Stone_Dead.mp3", 1.f, false, false);
+
 		Set_Dead(true);
 		return;
 	}
@@ -275,6 +277,8 @@ void CHuman_Granade::Collision_Head(CBullet* pBullet)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage * 2;
 	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 	{
+		CGameInstance::GetInstance()->Play_Sound(L"Stone_Dead.mp3", 1.f, false, false);
+
 		Set_Dead(true);
 		return;
 	}

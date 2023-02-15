@@ -46,7 +46,7 @@ HRESULT CStoneLight::Initialize_Clone(const wstring& wstrPrototypeTag, void* pAr
 
 	m_pTransformCom->Rotation(XMVectorSet(0.1f, 1.0f, 0.1f, 0.f), XMConvertToRadians(50.f + CGameUtils::GetRandomFloat(-50.f, 50.f)));
 
-	m_fLifeTime = 1.5f;
+	m_fLifeTime = 0.8f;
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 	return S_OK;
 }
@@ -70,8 +70,9 @@ void CStoneLight::Tick(_double TimeDelta)
 
 	}
 	_float3 Scale =  m_pTransformCom->Get_Scaled();
-	_float Time = (_float)(TimeDelta);
+	_float Time = (_float)(TimeDelta) * 2.f;
 	m_pTransformCom->Set_Scaled(_float3(Scale.x + Time, 1.5f, Scale.z+ Time));
+
 	if(m_fCurLifeTime > m_fLifeTime)
 	{
 		Set_Dead(true);

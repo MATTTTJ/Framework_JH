@@ -59,6 +59,11 @@ HRESULT CBackGround::Initialize_Clone(const wstring& wstrPrototypeTag, void * pA
 
 	m_fLifeTime = 5.f;
 
+	if (m_iTextureIndex == 0)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"Ready_Logo.mp3", 1.f);
+	}
+
 	return S_OK;
 }
 
@@ -66,9 +71,9 @@ void CBackGround::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	if(m_iTextureIndex == 0)
+
+	if (m_iTextureIndex == 0)
 	{
-		
 	}
 	else if(m_iTextureIndex == 7)
 	{
@@ -90,6 +95,7 @@ void CBackGround::Tick(_double TimeDelta)
 			}
 		}
 	}
+
 
 }
 
@@ -172,6 +178,12 @@ CGameObject * CBackGround::Clone(const wstring& wstrPrototypeTag, void * pArg)
 
 void CBackGround::Free()
 {
+	// if(m_iTextureIndex == 0)
+	// {
+	// 	CGameInstance::GetInstance()->Stop_All_Sound();
+	// }
+
+
 	__super::Free();
 
 	Safe_Release(m_pTextureCom);

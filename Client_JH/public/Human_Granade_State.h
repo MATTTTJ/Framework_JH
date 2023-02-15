@@ -93,6 +93,10 @@ private:					// Pattern CoolTime
 	_float						m_fDamagedAnimCoolTime = 5.f;
 	_bool						m_bDamagedAnim = false;
 
+	_bool						m_bWalkSoundOnce = false;
+	_float						m_fCurWalkSoundTime = 0.f;
+	_float						m_fWalkSoundTime = 0.3f;
+
 	_bool						m_bShotOnce = false;
 private:
 	void						Start_Idle(_double dTimeDelta);

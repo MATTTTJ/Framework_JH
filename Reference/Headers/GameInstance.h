@@ -5,6 +5,7 @@
 
 #include "Base.h"
 #include "Input_Device.h"
+#include "SoundMgr.h"
 #include "Component_Manager.h"
 #include "PipeLine.h"
 #include "Graphic_Device.h"
@@ -123,6 +124,14 @@ public: // for imgui manager
 	void				Add_ImguiWindowObject(class CImguiObject* ImguiObject);
 	void				Clear_ImguiObjects();
 
+public:		/* For Sound Manager */
+	void					Play_Sound(const wstring& pSoundKey, _float fVolume, _bool bIsBGM = false, _bool bRefresh = false, _int iManualChannelIndex = -1);
+	void					Stop_Sound(_uint iManualChannelIndex);
+	void					Stop_All_Sound();
+	void					Set_Volume(_uint iManualChannelIndex, _float fVolume);
+	void					Set_MasterVolume(_float fVolume);
+	void					Set_SoundDesc(const wstring& wstrSoundKey, CSound::SOUND_DESC& SoundDesc);
+	HRESULT					Copy_Sound(_tchar* pOriginSoundKey, _tchar* pCopySoundKeyOut);
 public:
 	// For Target_Manager
 	ID3D11ShaderResourceView*	Get_DepthTargetSRV();
@@ -137,6 +146,8 @@ public: /* For.Frustum */
 private:
 	class CGraphic_Device*			m_pGraphic_Device = nullptr;
 	class CInput_Device*			m_pInput_Device = nullptr;
+	class CSoundMgr*				m_pSoundMgr = nullptr;
+
 	class CLevel_Manager*			m_pLevel_Manager = nullptr;
 	class CObject_Manager*			m_pObject_Manager = nullptr;
 	class CComponent_Manager*		m_pComponent_Manager = nullptr;

@@ -85,7 +85,7 @@ void CMonsterUI::Late_Tick(_double dTimeDelta)
 
 HRESULT CMonsterUI::Render()
 {
-	if (m_pMonster->Get_MonsterUIRender())
+	if (m_pMonster->Get_MonsterUIRender() && m_pMonster != nullptr)
 	{
 		FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 

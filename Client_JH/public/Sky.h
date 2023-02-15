@@ -19,6 +19,9 @@ public:
 	CSky(const CSky& rhs);
 	virtual ~CSky() = default;
 
+public:
+	void					Set_PlayerTransform(CTransform* pTrans) { m_pTargetTransform = pTrans; }
+
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void			Tick(_double dTimeDelta) override;
@@ -31,7 +34,7 @@ private:
 	CTexture*				m_pTextureCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CVIBuffer_Cube*			m_pVIBufferCom = nullptr;
-
+	CTransform*				m_pTargetTransform = nullptr;
 private:
 	_float					m_vColorDown = 1.f; 
 	_float4					m_vInitPos;

@@ -68,16 +68,16 @@ void CBoss_Golem_State::Tick(_double dTimeDelta)
 	// 	Spawn_RocketHand(false);
 	// }
 
-	if (m_pGameInstance->Key_Down(DIK_F3))
-	{
-		_float scale[3], Rot[3], Pos[3];
-		Pos[0] = {111.4f}; Pos[1] = { 11.47f }; Pos[2] = { 129.6f };
-		Rot[0] = { -12.84f }; Rot[1] = { -34.574f }; Rot[2] = { 0.0f };
-		scale[0] = { 1.f }; scale[1] = { 1.f }; scale[2] = { 1.f };
-		_matrix camWorld;
-		ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
-		m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
-	}
+	// if (m_pGameInstance->Key_Down(DIK_F3))
+	// {
+	// 	_float scale[3], Rot[3], Pos[3];
+	// 	Pos[0] = {111.4f}; Pos[1] = { 11.47f }; Pos[2] = { 129.6f };
+	// 	Rot[0] = { -12.84f }; Rot[1] = { -34.574f }; Rot[2] = { 0.0f };
+	// 	scale[0] = { 1.f }; scale[1] = { 1.f }; scale[2] = { 1.f };
+	// 	_matrix camWorld;
+	// 	ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
+	// 	m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
+	// }
 	// if (m_pGameInstance->Key_Down(DIK_F4))
 	// {
 	// 	m_pFadeInOut->Fade_Out(true);
@@ -306,7 +306,7 @@ void CBoss_Golem_State::Start_Intro0(_double dTimeDelta)
 void CBoss_Golem_State::Start_Intro1(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimIndex(GOLEM_INTRO1);
-
+	CGameInstance::GetInstance()->Stop_Sound(10);
 	CGameInstance::GetInstance()->Delete_Light(2);
 	CGameInstance::GetInstance()->Delete_Light(3);
 	CGameInstance::GetInstance()->Delete_Light(6);
@@ -315,6 +315,7 @@ void CBoss_Golem_State::Start_Intro1(_double dTimeDelta)
 	CGameInstance::GetInstance()->Delete_Light(5);
 	CGameInstance::GetInstance()->Delete_Light(9);
 	CGameInstance::GetInstance()->Delete_Light(10);
+
 
 	// Num 9
 	// CGameObject::GAMEOBJECTDESC	tFireLightDesc;
@@ -357,6 +358,9 @@ void CBoss_Golem_State::Start_Intro1(_double dTimeDelta)
 
 void CBoss_Golem_State::Start_Intro2(_double dTimeDelta)
 {
+	CGameInstance::GetInstance()->Play_Sound(L"1_Boss_Show4_Start.mp3", 0.7f);
+
+
 	_float scale[3]{1.f, 1.f, 1.f}, Rot[3]{ -1.35f, 0.702f, 0.f }, Pos[3]{ 110.486f, 13.789f, 120.949f };
 	_matrix camWorld;
 	ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
@@ -405,6 +409,9 @@ void CBoss_Golem_State::Start_Ready_Arm_Fire(_double dTimeDelta)
 
 
 	m_pModelCom->Set_CurAnimIndex(GOLEM_READY_ARMFIRE);
+
+	CGameInstance::GetInstance()->Play_Sound(L"5_Boss_Locket_Arm_Ready.mp3", 1.f);
+
 }
 
 void CBoss_Golem_State::Start_Fire_Arm_RightArm(_double dTimeDelta)
@@ -413,6 +420,7 @@ void CBoss_Golem_State::Start_Fire_Arm_RightArm(_double dTimeDelta)
 
 	m_pModelCom->Set_CurAnimIndex(GOLEM_FIRE_RIGHTARM);
 	Spawn_RocketHand(false);
+	CGameInstance::GetInstance()->Play_Sound(L"5_Boss_LocketArm_Fire.mp3", 1.f);
 
 }
 
@@ -422,6 +430,8 @@ void CBoss_Golem_State::Start_Fire_Arm_LeftArm(_double dTimeDelta)
 
 	m_pModelCom->Set_CurAnimIndex(GOLEM_FIRE_LEFTARM);
 	Spawn_RocketHand(true);
+	CGameInstance::GetInstance()->Play_Sound(L"5_Boss_LocketArm_Fire.mp3", 1.f);
+
 
 }
 
@@ -431,6 +441,9 @@ void CBoss_Golem_State::Start_End_Arm_Fire(_double dTimeDelta)
 
 
 	m_pModelCom->Set_CurAnimIndex(GOLEM_END_FIREARM);
+
+	CGameInstance::GetInstance()->Play_Sound(L"5_Boss_LockectArm_End.mp3", 1.f);
+
 }
 
 void CBoss_Golem_State::Start_Ready_Lazer(_double dTimeDelta)
@@ -440,6 +453,8 @@ void CBoss_Golem_State::Start_Ready_Lazer(_double dTimeDelta)
 	m_pModelCom->Set_CurAnimIndex(GOLEM_READY_LAZER);
 
 	// 레이저 생성
+	CGameInstance::GetInstance()->Play_Sound(L"3_Boss_Lazer_Ready.mp3", 0.7f);
+
 
 }
 
@@ -463,6 +478,9 @@ void CBoss_Golem_State::Start_Fire_Lazer(_double dTimeDelta)
 	CBullet*		pBullet = nullptr;
 	pBullet = (CBullet*)(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_LaserBullet", L"Prototype_GameObject_Normal_Boss_Laser_Bullet", &BulletDesc));
 	NULL_CHECK(pBullet);
+
+	CGameInstance::GetInstance()->Play_Sound(L"3_Boss_Lazer_Fire.mp3", 1.f);
+
 }
 
 void CBoss_Golem_State::Start_Ready_MagicStone(_double dTimeDelta)
@@ -470,6 +488,8 @@ void CBoss_Golem_State::Start_Ready_MagicStone(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.2f);
 
 	m_pModelCom->Set_CurAnimIndex(GOLEM_START_MAGICSTONE);
+
+
 }
 
 void CBoss_Golem_State::Start_End_MagicStone(_double dTimeDelta)
@@ -483,6 +503,8 @@ void CBoss_Golem_State::Start_Start_SpawnPillars(_double dTimeDelta)
 {
 	m_pModelCom->Set_LerpTime(0.2f);
 	m_pModelCom->Set_CurAnimIndex(GOLEM_START_SPAWNPILLARS);
+
+	CGameInstance::GetInstance()->Play_Sound(L"2_Boss_Spawn_StonePillar.mp3", 0.7f);
 
 	Spawn_StonePillars(); 
 }
@@ -498,8 +520,14 @@ void CBoss_Golem_State::Start_Dead(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.2f);
 	m_pModelCom->Set_CurAnimIndex(GOLEM_DIE);
 	dynamic_cast<CLaser*>(m_pBullet)->Set_Laser_Alpha_Zero(false);
+	CGameInstance::GetInstance()->Stop_All_Sound();
+
+	CGameInstance::GetInstance()->Play_Sound(L"99_Boss_Dead.mp3", 0.7f);
+
 	if(m_pModelCom->Get_LastAnimationIndex() == GOLEM_DIE)
 	{
+		// CGameInstance::GetInstance()->Play_Sound(L"99_Boss_Dead.mp3", 0.7f);
+
 		m_pMonster->Set_Dead(true);
 	}
 }
@@ -530,9 +558,25 @@ void CBoss_Golem_State::Tick_Intro1(_double dTimeDelta)
 		ImGuizmo::RecomposeMatrixFromComponents(Pos, Rot, scale, (_float*)&camWorld);
 		m_pGameInstance->Change_Camera();
 		m_pDynamic_Camera->Set_Boss_IntroCam(camWorld);
+		m_pDynamic_Camera->Set_LobbyCam(false);
 		m_bCamSet = true;
 		m_pFadeInOut->Fade_Out(true);
 	}
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.235f && m_bCanPlayShow3_FirstAssy == false)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"1_Boss_Show3_When_FirstAss.mp3", 1.0f);
+
+		m_bCanPlayShow3_FirstAssy = true;
+	}
+
+	if(m_pModelCom->Get_AnimationProgress() > 0.58f && m_bCanPlayShow3_HandClose == false)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"1_Boss_Show3_Hand_Close.mp3", 1.f);
+
+		m_bCanPlayShow3_HandClose = true;
+	}
+
 
 	if(m_pModelCom->Get_AnimationProgress() > 0.95f)
 	{
@@ -542,9 +586,27 @@ void CBoss_Golem_State::Tick_Intro1(_double dTimeDelta)
 
 void CBoss_Golem_State::Tick_Intro2(_double dTimeDelta)
 {
-	if(m_pModelCom->Get_AnimationProgress() > 0.01f)
+	if (m_pModelCom->Get_AnimationProgress() > 0.01f)
 	{
 		m_pFadeInOut->Fade_Out(true);
+	}
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.344f && m_bCanPlayShow4_HandDown == false)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"1_Boss_Show4_HandDown.mp3", 1.f);
+		m_bCanPlayShow4_HandDown = true;
+	}
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.581f && m_bCanPlayShow4_BreakWall == false)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"99_Boss_AssemBle_1.mp3", 1.f);
+		m_bCanPlayShow4_BreakWall = true;
+	}
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.66f && m_bCanPlayShow4_LeftHandUp == false)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"1_Boss_Show4_LeftHandUp.mp3", 0.7f);
+		m_bCanPlayShow4_LeftHandUp = true;
 	}
 
 	if(m_pModelCom->Get_AnimationProgress() > 0.76f && m_bSpawnOnce == false)
@@ -553,7 +615,13 @@ void CBoss_Golem_State::Tick_Intro2(_double dTimeDelta)
 		m_bSpawnOnce = true;
 	}
 
-	if(m_pModelCom->Get_AnimationProgress() > 0.975f)
+	if (m_pModelCom->Get_AnimationProgress() > 0.875f && m_bCanPlayShow4_HeadUp == false)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"1_Boss_Show4_HeadUp.mp3", 0.7f);
+		m_bCanPlayShow4_HeadUp = true;
+	}
+
+	if(m_pModelCom->Get_AnimationProgress() > 0.978f)
 	{
 		m_pFadeInOut->Fade_Out(false);
 	}
@@ -599,6 +667,15 @@ void CBoss_Golem_State::Tick_Ready_Lazer(_double dTimeDelta)
 	{
 		dynamic_cast<CLaser*>(m_pBullet)->Set_Laser_Alpha_Zero(true);
 	}
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.416f && m_bCanPlay_Lazer_HandDown == false)
+	{
+
+		CGameInstance::GetInstance()->Play_Sound(L"3_Boss_Lazer_HandDown.mp3", 1.0f);
+
+		m_bCanPlay_Lazer_HandDown = true;
+	}
+
 }
 
 void CBoss_Golem_State::Tick_Fire_Lazer(_double dTimeDelta)
@@ -611,6 +688,13 @@ void CBoss_Golem_State::Tick_Fire_Lazer(_double dTimeDelta)
 
 void CBoss_Golem_State::Tick_Ready_MagicStone(_double dTimeDelta)
 {
+	if (m_pModelCom->Get_AnimationProgress() > 0.638f && m_bCanPlay_MagicStone_Spawn == false)
+	{
+
+		CGameInstance::GetInstance()->Play_Sound(L"4_Boss_MagicStone_Spawn.mp3", 1.0f);
+
+		m_bCanPlay_MagicStone_Spawn = true;
+	}
 }
 
 void CBoss_Golem_State::Tick_End_MagicStone(_double dTimeDelta)
@@ -628,6 +712,19 @@ void CBoss_Golem_State::Tick_Melee_And_Ready_SpawnPillars(_double dTimeDelta)
 		m_pMonster->Collision_StonePillars();
 		m_bDestroy_Pillars_Once = true;
 	}
+	if (m_pModelCom->Get_AnimationProgress() > 0.166f && m_bCanPlay_Melee_Swing == false)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"2_Boss_Melee_Swing.mp3", 0.7f);
+		m_bCanPlay_Melee_Swing = true;
+	}
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.75f && m_bCanPlay_Melee_Destroy_StonePillars == false)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"2_Boss_Melee_Destroy_StonePillars.mp3", 0.7f);
+		m_bCanPlay_Melee_Destroy_StonePillars = true;
+		
+	}
+
 }
 
 void CBoss_Golem_State::Tick_Dead(_double dTimeDelta)
@@ -660,6 +757,10 @@ void CBoss_Golem_State::End_Intro2(_double dTimeDelta)
 	m_pGameInstance->Change_Camera();
 
 	m_pMonster->Render_UI();
+
+	CGameInstance::GetInstance()->Play_Sound(L"0_BossMap_BGM.mp3", 0.5f, true, false);
+
+	
 }
 
 void CBoss_Golem_State::End_Idle(_double dTimeDelta)
@@ -685,6 +786,7 @@ void CBoss_Golem_State::End_End_Arm_Fire(_double dTimeDelta)
 
 void CBoss_Golem_State::End_Ready_Lazer(_double dTimeDelta)
 {
+	m_bCanPlay_Lazer_HandDown = false;
 }
 
 void CBoss_Golem_State::End_Fire_Lazer(_double dTimeDelta)
@@ -699,6 +801,8 @@ void CBoss_Golem_State::End_Ready_MagicStone(_double dTimeDelta)
 {
 	Spawn_MagicStone();
 	m_iSpawnMagicStone += 1;
+
+	m_bCanPlay_MagicStone_Spawn = false;
 }
 
 void CBoss_Golem_State::End_End_MagicStone(_double dTimeDelta)
@@ -713,10 +817,14 @@ void CBoss_Golem_State::End_Start_SpawnPillars(_double dTimeDelta)
 void CBoss_Golem_State::End_Melee_And_Ready_SpawnPillars(_double dTimeDelta)
 {
 	m_bDestroy_Pillars_Once = false;
+	m_bCanPlay_Melee_Destroy_StonePillars = false;
+	m_bCanPlay_Melee_Swing = false;
 }
 
 void CBoss_Golem_State::End_Dead(_double dTimeDelta)
 {
+
+	
 	m_pMonster->Set_Dead(true);
 }
 
@@ -808,6 +916,8 @@ _bool CBoss_Golem_State::Is_Pillars_Empty()
 
 void CBoss_Golem_State::Spawn_StonePillars()
 {
+
+
 	CGameObject::GAMEOBJECTDESC GameObjectDesc;
 	// 1번째줄  97.75, 110, 124,19
 	GameObjectDesc.TransformDesc.vInitPos = _float3(110.4f, 0.f, 140.2f);
@@ -834,6 +944,9 @@ void CBoss_Golem_State::Spawn_StonePillars()
 	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
 	GameObjectDesc.TransformDesc.vInitPos = _float3(131.5f, 0.f, 116.558f);
 	(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Pillars", L"Prototype_GameObject_Normal_Boss_StonePillar", &GameObjectDesc));
+
+	CGameInstance::GetInstance()->Play_Sound(L"2_Boss_StonePillars_Grow.mp3", 0.7f);
+
 }
 
 void CBoss_Golem_State::Spawn_MagicStone()

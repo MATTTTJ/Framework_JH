@@ -81,6 +81,10 @@ private:					// Pattern CoolTime
 	_float						m_fCurPatrolTurnTime = 0.f;
 	_bool						m_bTurnPatrolDirection = false;
 
+	_bool						m_bWalkSoundOnce = false;
+
+	_float						m_fCurWalkSoundTime = 0.f;
+	_float						m_fWalkSoundTime = 0.2f;
 private:
 	void						Start_Idle(_double dTimeDelta);
 	void						Start_Run(_double dTimeDelta);

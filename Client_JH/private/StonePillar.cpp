@@ -51,6 +51,7 @@ HRESULT CStonePillar::Initialize_Clone(const wstring& wstrPrototypeTag, void* pA
 
 	Ready_DangerEffect();
 
+	m_fDeadTimer = 1.f;
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 	m_fMaxHeight = -0.135f;
 	return S_OK;
@@ -121,8 +122,8 @@ void CStonePillar::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 #ifdef _DEBUG
-		m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarColliderCom);
-		m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarExplodeCollCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pStonePillarExplodeCollCom);
 #endif
 	}
 }
@@ -156,6 +157,8 @@ void CStonePillar::Ready_DangerEffect()
 	RingDesc.GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x, 3.68f, Pos.z);
 	RingDesc.GameObjectDesc.m_iHP = 0;
 	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_DangerRing", L"Prototype_GameObject_Danger_Ring", &RingDesc));
+
+
 }
 
 void CStonePillar::Collision_To_Golem()
@@ -165,6 +168,7 @@ void CStonePillar::Collision_To_Golem()
 	_float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
 	GameObjectDesc.TransformDesc.vInitPos = _float3(Pos.x, Pos.y, Pos.z);
 	(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_StoneLight", L"Prototype_GameObject_Normal_Boss_StonePillar_Light", &GameObjectDesc));
+	// CGameInstance::GetInstance()->Play_Sound(L"2_Boss_StonePillar_Explode.mp3", 0.7f);
 
 	m_bDeadTimerStart = true;
 
@@ -200,7 +204,10 @@ _bool CStonePillar::Collision_To_MagicStone()
 					CMagicStone* pBullet = (CMagicStone*)pCollider->Get_Owner();
 					NULL_CHECK_RETURN(pBullet, false);
 
+					CGameInstance::GetInstance()->Play_Sound(L"4_Boss_MagicStone_Coll_Pillars.mp3", 0.7f);
+
 					pBullet->Set_Dead(true); // 총알이 어디 충돌했는지 판단하니까
+
 					Collision_To_Golem();
 					return true;
 				}
@@ -243,6 +250,7 @@ _bool CStonePillar::Collision_To_Bullet()
 				{
 					CBullet* pBullet = (CBullet*)pCollider->Get_Owner();
 					NULL_CHECK_RETURN(pBullet, false);
+					CGameInstance::GetInstance()->Play_Sound(L"Bullet_Dead.mp3", 0.5f);
 
 					pBullet->Set_Dead(true); // 총알이 어디 충돌했는지 판단하니까
 					return true;
@@ -289,7 +297,10 @@ _bool CStonePillar::Collision_To_LaserBullet()
 					CBullet* pBullet = (CBullet*)pCollider->Get_Owner();
 					NULL_CHECK_RETURN(pBullet, false);
 
+					CGameInstance::GetInstance()->Play_Sound(L"2_Boss_StonePillar_Explode.mp3", 0.5f);
+
 					pBullet->Set_Dead(true); // 총알이 어디 충돌했는지 판단하니까
+
 					Collision_To_Golem();
 					return true;
 				}

@@ -181,6 +181,15 @@
     <Filter Include="01. Utility\03. Components\12. Matetial">
       <UniqueIdentifier>{f1108938-08c7-4cfc-b2bc-26873eecb381}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\Sound">
+      <UniqueIdentifier>{d1eeaadc-6b48-4795-ab2b-384580d63097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\Sound\fmod">
+      <UniqueIdentifier>{31fc7b83-a838-4bcc-b4df-b49e223803a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\Sound\manager">
+      <UniqueIdentifier>{0f1d7917-bfe7-47dd-b33e-f927c4fbb118}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -426,6 +435,36 @@
     <ClInclude Include="..\public\VIBuffer_Point.h">
       <Filter>01. Utility\03. Components\02. VIBuffer\Point</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Fmod\fmod.h">
+      <Filter>00. System\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Fmod\fmod.hpp">
+      <Filter>00. System\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Fmod\fmod_codec.h">
+      <Filter>00. System\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Fmod\fmod_common.h">
+      <Filter>00. System\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Fmod\fmod_dsp.h">
+      <Filter>00. System\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Fmod\fmod_dsp_effects.h">
+      <Filter>00. System\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Fmod\fmod_errors.h">
+      <Filter>00. System\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Fmod\fmod_output.h">
+      <Filter>00. System\Sound\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Sound.h">
+      <Filter>00. System\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SoundMgr.h">
+      <Filter>00. System\Sound\manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -637,6 +676,12 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Point.cpp">
       <Filter>01. Utility\03. Components\02. VIBuffer\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sound.cpp">
+      <Filter>00. System\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SoundMgr.cpp">
+      <Filter>00. System\Sound\manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

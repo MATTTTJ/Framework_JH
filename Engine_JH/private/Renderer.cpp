@@ -167,7 +167,7 @@ HRESULT CRenderer::Draw_RenderGroup()
 	FAILED_CHECK_RETURN(Render_FADE(), E_FAIL);
 
 #ifdef _DEBUG
-	FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
+	// FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
 #endif
 
 #ifdef _DEBUG
@@ -180,30 +180,30 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pTarget_Manager)
-	{
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f), E_FAIL);
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f), E_FAIL);
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f), E_FAIL);
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Flag"), 100.0f, 700.f, 200.f, 200.f), E_FAIL);
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Outline"), 300.0f, 100.f, 200.f, 200.f), E_FAIL);
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_OriginEffect"), 300.0f, 300.f, 200.f, 200.f), E_FAIL);
-		//
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 500.0f, 100.f, 200.f, 200.f), E_FAIL);
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 500.0f, 300.f, 200.f, 200.f), E_FAIL);
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Dynamic_ShadowDepth"), 500.0f, 500.f, 200.f, 200.f), E_FAIL);
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Bloom"), 700.0f, 100.f, 200.f, 200.f), E_FAIL);
-		// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 700.0f, 300.f, 200.f, 200.f), E_FAIL);
-
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Effect"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Bloom"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Blur"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"));
-		// m_pTarget_Manager->Render_Debug(TEXT("MRT_Outline"));
-
-	}
+	// if (nullptr != m_pTarget_Manager)
+	// {
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f), E_FAIL);
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f), E_FAIL);
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f), E_FAIL);
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Flag"), 100.0f, 700.f, 200.f, 200.f), E_FAIL);
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Outline"), 300.0f, 100.f, 200.f, 200.f), E_FAIL);
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_OriginEffect"), 300.0f, 300.f, 200.f, 200.f), E_FAIL);
+	// 	//
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 500.0f, 100.f, 200.f, 200.f), E_FAIL);
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 500.0f, 300.f, 200.f, 200.f), E_FAIL);
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Dynamic_ShadowDepth"), 500.0f, 500.f, 200.f, 200.f), E_FAIL);
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Bloom"), 700.0f, 100.f, 200.f, 200.f), E_FAIL);
+	// 	// FAILED_CHECK_RETURN(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 700.0f, 300.f, 200.f, 200.f), E_FAIL);
+	//
+	// 	// m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"));
+	// 	// m_pTarget_Manager->Render_Debug(TEXT("MRT_Effect"));
+	// 	// m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"));
+	// 	// m_pTarget_Manager->Render_Debug(TEXT("MRT_Bloom"));
+	// 	// m_pTarget_Manager->Render_Debug(TEXT("MRT_Blur"));
+	// 	// m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"));
+	// 	// m_pTarget_Manager->Render_Debug(TEXT("MRT_Outline"));
+	//
+	// }
 #endif
 
 

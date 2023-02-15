@@ -114,6 +114,9 @@ private:
 	CNavigation*				m_pNavigationCom = nullptr;
 	_bool						m_bGoReload = false;
 	_bool						m_bDeadOnce = false;
+	_bool						m_bReloadSoundOnce = false;
+
+	_bool						m_bReloadPlayerSoundOnce = false;
 private:
 	WEAPON_OPTION				m_tWeaponOption[WEAPONTYPE_END];
 	vector<class CBullet*>		m_vecBullet;

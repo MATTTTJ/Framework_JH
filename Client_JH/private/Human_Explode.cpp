@@ -82,6 +82,7 @@ void CHuman_Explode::Tick(_double TimeDelta)
 
 	if (m_bPlayAnimation)
 		m_pModelCom->Play_Animation(TimeDelta);
+
 	Set_On_NaviMesh();
 
 	Collider_Tick(TimeDelta);
@@ -115,10 +116,8 @@ void CHuman_Explode::Late_Tick(_double TimeDelta)
 	if (nullptr != m_pRendererCom &&
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 	{
-		if (m_bIsOnPlayerEyes)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_OUTLINE, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_OUTLINE, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_DYNAMIC_SHADOWDEPTH, this);
-
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 #ifdef _DEBUG
@@ -258,6 +257,8 @@ void CHuman_Explode::Collision_Body(CBullet* pBullet)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
 	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 	{
+		CGameInstance::GetInstance()->Play_Sound(L"Stone_Dead.mp3", 1.f, false, false, 5);
+
 		Set_Dead(true);
 		return;
 	}
@@ -276,6 +277,8 @@ void CHuman_Explode::Collision_Head(CBullet* pBullet)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage * 2;
 	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 	{
+		CGameInstance::GetInstance()->Play_Sound(L"Stone_Dead.mp3", 1.f, false, false, 5);
+
 		Set_Dead(true);
 		return;
 	}
@@ -323,7 +326,7 @@ HRESULT CHuman_Explode::SetUp_Components()
 	CCollider::COLLIDERDESC	ColliderDesc;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(20.f, 20.f, 20.f);
+	ColliderDesc.vSize = _float3(15.f, 15.f, 15.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_DetectedSphere", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
 

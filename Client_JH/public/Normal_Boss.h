@@ -69,6 +69,8 @@ private:
 	_bool						m_bRenderUI = false;
 	_bool						m_bDeadAnimStart = false;
 	list<CGameObject*>			m_StonePillarList;
+
+	_bool						m_bLightOnce = false;
 private:
 	HRESULT						SetUp_Components();
 	HRESULT						SetUp_ShaderResources();

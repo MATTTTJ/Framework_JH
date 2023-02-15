@@ -207,7 +207,7 @@ HRESULT CPlayer::Initialize_Clone(const wstring& wstrPrototypeTag, void * pArg)
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
 	m_bCurRoomType[ROOM_A] = true;
-	
+	m_fFootSound = 0.45f;
 	return S_OK;
 }
 
@@ -225,6 +225,7 @@ void CPlayer::Set_On_NaviMesh()
 void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
 	if(m_bCurRoomType[ROOM_BOSS] == true)
 	{
 		_vector vPos = XMVectorSet(109.66f, 1.52f, 129.f, 1.f);
@@ -238,28 +239,49 @@ void CPlayer::Tick(_double dTimeDelta)
 
 		CGameInstance::GetInstance()->Set_LightPos(0, vPos);
 		CGameInstance::GetInstance()->Set_Far(6.f);
-
 	}
-	
-	
-	if (m_PlayerOption.m_iHp <= 0)
-		m_PlayerOption.m_iHp = 0;
-	if (m_PlayerOption.m_iShieldPoint <= 0)
-		m_PlayerOption.m_iShieldPoint = 0;
 
-	m_PlayerOption.m_iShieldPoint += (_int)(dTimeDelta * 30);
+	if(m_bCanPlayFootSound ==false)
+	{
+		m_fCurFootSound += (_float)dTimeDelta;
+	}
 
-	if ((_int)m_PlayerOption.m_iMaxShieldPoint <= m_PlayerOption.m_iShieldPoint)
-		m_PlayerOption.m_iShieldPoint = m_PlayerOption.m_iMaxShieldPoint;
+	if(m_fCurFootSound >= m_fFootSound && m_bCanPlayFootSound == false)
+	{
+		m_fCurFootSound = 0.f;
+		m_bCanPlayFootSound = true;
+	}
+
+	if (_int TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * TurnX * 0.1f);
+	}
+
+	if (_int TurnY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
+	{
+		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * TurnY * 0.1f);
+	}
 
 	Set_On_NaviMesh();
+
 	{
-		
 		m_fCurDashCoolTime += (_float)dTimeDelta;
 
 		if(m_bNowIsDash == true)
 		{
 			m_fCurDashTime += (_float)dTimeDelta;
+		}
+
+		if(m_bCanDamage == false)
+		{
+			m_fCurDamageCoolTime += (_float)dTimeDelta;
+		}
+
+		if(m_fCurDamageCoolTime >= m_fDamageCoolTime)
+		{
+			m_fCurDamageCoolTime = 0.f;
+
+			m_bCanDamage = true;
 		}
 	}
 
@@ -274,113 +296,9 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_bNowIsDash = false;
 	}
 
-
-	if (_int TurnX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * TurnX * 0.1f);
-	}
-
-	if (_int TurnY  = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * TurnY * 0.1f);
-	}
-
-#ifdef _DEBUG
-	if (CGameInstance::GetInstance()->Key_Down(DIK_F2))
-	{
-		m_pRendererCom->Switch_Collider_Render();
-	}
-#endif
-	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_F1))
-	{
-		static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Set_FixControl();
-	}
-	// if (CGameInstance::GetInstance()->Key_Down(DIK_F1))
-	// {
-	// 	m_PlayerOption.m_iEmeraldCnt += 10;
-	// }
+	Move_Input(dTimeDelta);
 
 
-
-	if (CGameInstance::GetInstance()->Key_Pressing(DIK_W))
-	{
-		m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
-	}
-
-	if (CGameInstance::GetInstance()->Key_Pressing(DIK_S))
-	{
-		m_pTransformCom->Go_Backward(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
-	}
-	if (CGameInstance::GetInstance()->Key_Pressing(DIK_A))
-	{
-		m_pTransformCom->Go_Left(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
-	}
-	if (CGameInstance::GetInstance()->Key_Pressing(DIK_D))
-	{
-		m_pTransformCom->Go_Right(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
-	}
-	if (CGameInstance::GetInstance()->Key_Down(DIK_LSHIFT) && m_bCanDash && m_bNowIsDash == false)
-	{
-		m_bNowIsDash = true;
-		m_bCanDash = false;
-	}
-
-
-
-	// if (CGameInstance::GetInstance()->Key_Down(DIK_END))
-	// {
-	// 	// m_bPlayFinish = true;
-	//
-	// 	FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)LEVEL_LOGO)), );
-	//
-	// 	return;
-	// }
-
-	// if (CGameInstance::GetInstance()->Key_Down(DIK_F6))
-	// {
-	// 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-	// 	CMonster*			pMonster = nullptr;
-	//
-	// 	_matrix PivotMatrix = XMMatrixIdentity();
-	// 	PivotMatrix.r[3] = XMVectorSet(-14.f, 0.f, 0.19f, 1.f);
-	//
-	// 	CMonster::MONSTEROPTION			MonsterDesc;
-	// 	MonsterDesc.m_bFirstSpawnType[CMonster::STATE_UPSPAWN] = true;
-	// 	MonsterDesc.MonsterDesc.m_iHP = MonsterDesc.MonsterDesc.m_iMaxHP = 300;
-	// 	MonsterDesc.MonsterDesc.m_iDamage = 15;
-	// 	MonsterDesc.MonsterDesc.m_iShield = MonsterDesc.MonsterDesc.m_iMaxShield = 0;
-	// 	MonsterDesc.MonsterDesc.TransformDesc.fSpeedPerSec = 5.f;
-	// 	MonsterDesc.m_iCellIndex = 40;
-	// 	pMonster = dynamic_cast<CMonster*>(pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Human_Spear", PivotMatrix, &MonsterDesc));
-	// 	pMonster->Set_Player(this);
-	//
-	// 	RELEASE_INSTANCE(CGameInstance);
-	// }
-
-	_bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Get_RenderState();
-	_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_RenderState();
-
-	if (CGameInstance::GetInstance()->Key_Down(DIK_F4))
-	{
-		DynamicCamera = !DynamicCamera;
-		StaticCamera = !StaticCamera;
-		CGameInstance::GetInstance()->Change_Camera();
-	}
-
-	if(m_bNowIsDash)
-	{
-		m_pTransformCom->Dash(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
-	}
-
-	if(CGameInstance::GetInstance()->Key_Pressing(DIK_F3))
-	{
-		// m_fDegree -=  dTimeDelta * 10.f;
-		// _float4 vDirection;
-		// _matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-221.33f));
-		// XMStoreFloat4(&vDirection, XMVector3TransformNormal(XMVectorSet(-cosf(XMConvertToRadians(60.f)), -sinf(XMConvertToRadians(60.f)), 0.f, 0.f), RotationMatrix));
-		//
-		// CGameInstance::GetInstance()->Set_LightDirection(1, vDirection); 
-	}
 
 	if(m_pState != nullptr)
 		m_pState->Tick(dTimeDelta);
@@ -395,57 +313,8 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_vecPlayerUI[i]->Tick(dTimeDelta);
 	}
 
-	_float4 R, U, L, P;
-	_matrix FakeWorldMatrix;
-	R = m_pTransformCom->Get_WorldMatrix().r[0];
-	U = m_pTransformCom->Get_WorldMatrix().r[1];
-	L = m_pTransformCom->Get_WorldMatrix().r[2];
-	P = m_pTransformCom->Get_WorldMatrix().r[3];
-	P = P + _float4(0.f, 0.f, 0.f, 0.f);
+	Collider_Update(dTimeDelta);
 
-	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
-	{
-		if (m_pColliderCom[i] == nullptr)
-			continue;
-
-		if (i == COLLIDER_MUZZLE)
-		{
-			if(m_PlayerOption.m_wstrCurWeaponName == L"WEAPON_DEFAULT")
-				m_pColliderCom[i]->Update(Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
-			else if (m_PlayerOption.m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
-			{
-				m_pColliderCom[i]->Update(Get_BoneMatrix("Att001") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
-			}
-		}
-		else if (i == COLLIDER_OBB)
-			m_pColliderCom[i]->Update(_matrix(R, U, L, P));
-		else 
-			m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
-	}
-	m_vCamPos = (Get_BoneMatrix("Bip001 Head") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix()).r[3];
-	m_pFirstAimColliderCom->Update(_matrix(R, U, L, P));
-	m_pSecondAimColliderCom->Update(_matrix(R, U, L, P));
-	// static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Late_Tick(dTimeDelta);
-
-	// if (CGameInstance::GetInstance()->Key_Down(DIK_F5))
-	// {
-	// 	_int tmp = m_PlayerOption.m_iHp + m_PlayerOption.m_iShieldPoint;
-	// 	_int Damage = 30;
-	// 	_int ShieldPoint = m_PlayerOption.m_iShieldPoint;
-	//
-	// 	_int result = m_PlayerOption.m_iShieldPoint - Damage;
-	//
-	// 	if (result < 0)
-	// 	{
-	// 		m_PlayerOption.m_iShieldPoint = 0;
-	//
-	// 		m_PlayerOption.m_iHp += result;
-	// 	}
-	// 	else if (result >= 0)
-	// 	{
-	// 		m_PlayerOption.m_iShieldPoint = result;
-	// 	}
-	// }
 	Set_Camera(dTimeDelta);
 
 }
@@ -469,15 +338,88 @@ void CPlayer::Late_Tick(_double dTimeDelta)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 #ifdef _DEBUG
-		for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
-		{
-			if (nullptr != m_pColliderCom[i])
-				m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[i]);
-		}
-		m_pRendererCom->Add_DebugRenderGroup(m_pFirstAimColliderCom);
-		m_pRendererCom->Add_DebugRenderGroup(m_pSecondAimColliderCom);
-		m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+		// for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
+		// {
+		// 	if (nullptr != m_pColliderCom[i])
+		// 		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[i]);
+		// }
+		// m_pRendererCom->Add_DebugRenderGroup(m_pFirstAimColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pSecondAimColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 #endif
+	}
+}
+
+void CPlayer::Move_Input(_double dTimeDelta)
+{
+	if (CGameInstance::GetInstance()->Key_Down(DIK_F1))
+	{
+		static_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Set_FixControl();
+
+	
+	}
+
+	if (CGameInstance::GetInstance()->Key_Pressing(DIK_W))
+	{
+		m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
+
+		if (m_bCanPlayFootSound == true)
+		{
+			CGameInstance::GetInstance()->Play_Sound(L"Player_Walk.mp3", 0.7f, false, true);
+			m_bCanPlayFootSound = false;
+		}
+	}
+
+	if (CGameInstance::GetInstance()->Key_Pressing(DIK_S))
+	{
+		m_pTransformCom->Go_Backward(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
+
+		if (m_bCanPlayFootSound == true)
+		{
+			CGameInstance::GetInstance()->Play_Sound(L"Player_Walk.mp3", 0.7f, false, true);
+			m_bCanPlayFootSound = false;
+		}
+	}
+	if (CGameInstance::GetInstance()->Key_Pressing(DIK_A))
+	{
+		m_pTransformCom->Go_Left(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
+	}
+	if (CGameInstance::GetInstance()->Key_Pressing(DIK_D))
+	{
+		m_pTransformCom->Go_Right(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
+	}
+
+	if (CGameInstance::GetInstance()->Key_Down(DIK_LSHIFT) && m_bCanDash && m_bNowIsDash == false)
+	{
+		m_bNowIsDash = true;
+		m_bCanDash = false;
+
+		if((rand() % 4) % 3 == 0)
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Dash.mp3", 0.5f, false, true, 4);
+		else if ((rand() % 4) % 3 == 1)
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Dash_1.mp3", 0.5f, false, true, 4);
+		else if ((rand() % 4) % 3 == 2)
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Dash_2.mp3", 0.5f, false, true, 4);
+		else
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Dash.mp3", 0.5f, false, true, 4);
+
+
+		CGameInstance::GetInstance()->Play_Sound(L"Player_Dash.mp3", 0.5f);
+	}
+
+	if (m_bNowIsDash)
+	{
+		m_pTransformCom->Dash(dTimeDelta, CTransform::TRANS_PLAYER, m_pNavigationCom);
+	}
+
+	_bool&		DynamicCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->front())->Get_RenderState();
+	_bool&		StaticCamera = dynamic_cast<CCamera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_ZCamera")->back())->Get_RenderState();
+
+	if (CGameInstance::GetInstance()->Key_Down(DIK_F4))
+	{
+		DynamicCamera = !DynamicCamera;
+		StaticCamera = !StaticCamera;
+		CGameInstance::GetInstance()->Change_Camera();
 	}
 }
 
@@ -514,6 +456,41 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
+void CPlayer::Collider_Update(_double dTimeDelta)
+{
+	_float4 R, U, L, P;
+	_matrix FakeWorldMatrix;
+	R = m_pTransformCom->Get_WorldMatrix().r[0];
+	U = m_pTransformCom->Get_WorldMatrix().r[1];
+	L = m_pTransformCom->Get_WorldMatrix().r[2];
+	P = m_pTransformCom->Get_WorldMatrix().r[3];
+	P = P + _float4(0.f, 0.f, 0.f, 0.f);
+
+	for (_uint i = 0; i < COLLIDERTYPE_END; ++i)
+	{
+		if (m_pColliderCom[i] == nullptr)
+			continue;
+
+		if (i == COLLIDER_MUZZLE)
+		{
+			if (m_PlayerOption.m_wstrCurWeaponName == L"WEAPON_DEFAULT")
+				m_pColliderCom[i]->Update(Get_BoneMatrix("Att") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+			else if (m_PlayerOption.m_wstrCurWeaponName == L"WEAPON_FLAMEBULLET")
+			{
+				m_pColliderCom[i]->Update(Get_BoneMatrix("Att001") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix());
+			}
+		}
+		else if (i == COLLIDER_OBB)
+			m_pColliderCom[i]->Update(_matrix(R, U, L, P));
+		else
+			m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
+	}
+
+	m_vCamPos = (Get_BoneMatrix("Bip001 Head") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix()).r[3];
+	m_pFirstAimColliderCom->Update(_matrix(R, U, L, P));
+	m_pSecondAimColliderCom->Update(_matrix(R, U, L, P));
+}
+
 
 void CPlayer::Set_Camera(_double dTimeDelta)
 {
@@ -543,9 +520,51 @@ void CPlayer::Collision_Event(CGameObject* pMonster)
 {
 	NULL_CHECK_RETURN(pMonster, );
 
-	CMonster::MONSTEROPTION		MonsterOption;
-	// MonsterOption.
-	// TODO :: 몬스터 옵션 지역변수로 저장하고 플레이어에 적용하기 
+	if (m_bCanDamage == false)
+		return;
+	else
+	{
+		// 소리 바꾸기
+		if((rand() % 6 ) % 5 == 0)
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Hit.mp3", 1.f, false, true);
+		else if((rand() % 6) % 5 == 1)
+		{
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Hit_1.mp3", 1.f, false, true);
+		}
+		else if ((rand() % 6) % 5 == 2)
+		{
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Hit_2.mp3", 1.f, false, true);
+		}
+		else if ((rand() % 6) % 5 == 3)
+		{
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Hit_3.mp3", 1.f, false, true);
+		}
+		else if ((rand() % 6) % 5 == 4)
+		{
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Hit_4.mp3", 1.f, false, true);
+		}
+		else
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Hit.mp3", 1.f, false, true);
+
+			// _int tmp = m_PlayerOption.m_iHp + m_PlayerOption.m_iShieldPoint;
+			// _int Damage = 3;
+			// _int ShieldPoint = m_PlayerOption.m_iShieldPoint;
+			//
+			// _int result = m_PlayerOption.m_iShieldPoint - Damage;
+			//
+			// if (result < 0)
+			// {
+			// 	m_PlayerOption.m_iShieldPoint = 0;
+			//
+			// 	m_PlayerOption.m_iHp += result;
+			// }
+			// else if (result >= 0)
+			// {
+			// 	m_PlayerOption.m_iShieldPoint = result;
+			// }
+
+			m_bCanDamage = false;
+	}
 }
 
 HRESULT CPlayer::SetUp_Components()

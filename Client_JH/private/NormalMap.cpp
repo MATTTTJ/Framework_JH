@@ -29,12 +29,17 @@ HRESULT CNormalMap::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg
 
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
+	CGameInstance::GetInstance()->Play_Sound(L"NormalMap_Bgm.mp3", 0.5f, true, false, 1);
+
 	return S_OK;
 }
 
 void CNormalMap::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+
+
 }
 
 void CNormalMap::Late_Tick(_double TimeDelta)

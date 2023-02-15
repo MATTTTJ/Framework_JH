@@ -1,0 +1,149 @@
+Sword 마무리 하고, 병주형 코드 확인하기
+
+
+Sword 공격, 걷기,완료 
+
+회피 작업
+
+Sword 완료 
+
+Explode 작업
+
+걷기, 자폭, 회피, 죽음
+//////////////////////////
+
+Bow
+
+/////////////////
+Spear
+회피, 공격 소리 좀 늦게, 공격 2는 소리 두번 재생
+
+/////////////////////
+
+Granade 
+
+걷기, 죽음, 공격, 회피
+
+Boom
+
+지지직 소리, 죽음
+
+/////////////////////////
+
+Knight
+
+쉴드 어택, 원거리공격, 근접 공격 // 완료
+
+걷기, 죽기, 맞을 때 // 완료
+
+///////////////////////////
+
+Bug 
+
+
+
+
+		BUG_RUN_F, // 찾음
+
+		BUG_SPAWN_JUNIOR, // 
+
+
+
+		RUSH_LOOP, // // 찾음
+		BUG_STARTRUSH,  // 
+		BUG_RUSH_LOOP, // 찾음
+		BUG_RUSH_END, //
+
+
+Bug_Junior
+
+Room B 폭탄병이랑, 자살병 처리 
+
+SPAWN_JUNIOR
+READY_RUSH_LOOP
+RUSH_LOOP
+
+//////////////////////////////////
+
+보스 
+
+GOLEM_DIE,
+		GOLEM_INCOMBAT_IDLE,
+		GOLEM_INTRO2,
+		GOLEM_INTRO1,
+		GOLEM_INTRO0,
+		GOLEM_FIRE_LAZER, GOLEM_READY_LAZER,
+		GOLEM_FIRE_RIGHTARM, GOLEM_FIRE_LEFTARM, GOLEM_END_FIREARM, GOLEM_READY_ARMFIRE,
+		GOLEM_END_MAGICSTONE, GOLEM_START_MAGICSTONE, GOLEM_START_SPAWNPILLARS, GOLEM_MELEE_N_SPAWNPILLARS,
+		GOLEM_ANIMEND
+
+// 플레이어 런 소리도 추가 
+// 완료
+
+
+1_Boss_Map_IntroStart_Bgm // 인트로 캠 시작하자마자 
+
+1_Boss_Show3_Hand_Close // Progress 0.58f
+
+1_Boss_Show3_When_FirstAss // 0.235f
+
+//////////////////////////////////////////////////////
+
+1_Boss_Show4_Start // 애니메이션 시작할 때 
+
+1_Boss_Show4_HandDown // 0.344f
+
+1_Boss_Show4_LeftHandUp // 0.66f
+
+1_Boss_Show4_HeadUp // 0.875f
+
+//////////////////////////////////////////////
+
+2_Boss_Melee_Swing // 0.166f
+
+2_Boss_Melee_Destroy_StonePillars // 0.75f
+
+2_Boss_Spawn_StonePillar  // 애니메이션 시작할 때 
+
+
+~ 다른 오브젝트에서 실행
+2_Boss_StonePillar_Explode // 이펙트 생성할 때 
+
+2_Boss_StonePillars_Grow // 올라오기 시작할 때
+~ 다른 오브젝트에서 실행
+
+///////////////////////////////////////////////////
+
+3_Boss_Lazer_Ready // 처음부터
+
+3_Boss_Lazer_HandDown // 0.416f
+
+3_Boss_Lazer_Fire // Start_Lazer_Fire
+
+/////////////////////////////////////////////////////////
+
+4_Boss_MagicStone_Spawn // 0.638f
+
+
+4_Boss_MagicStone_Go // 매직스톤 발사 시작할 때
+
+4_Boss_MagicStone_Coll_Pillars // 매직스톤이 기둥에 충돌할 때
+
+/////////////////////////////////////////////////////
+
+5_Boss_Locket_Arm_Ready // Start_LocketArm_Ready
+
+5_Boss_LocketArm_Fire // 발사 애니메이션 시작할 때
+
+5_Boss_LockectArm_End // 애니메이션 시작할 때 
+
+5_Boss_LocketArm_Dead // 죽을 때 재생
+
+// 라이트 시간 줄이기 
+
+
+39/ 179
+30/ 179 //F
+
+
+

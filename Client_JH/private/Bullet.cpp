@@ -54,20 +54,26 @@ void CBullet::Late_Tick(_double dTimeDelta)
 
 	if (m_tBulletOption.m_eOwner == OWNER_PLAYER)
 	{
-		if (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurRoomType(CPlayer::ROOM_KIGHT) == true)
-		{
-			Collision_Shield();
-			Collision_LArm();
-			Collision_RArm();
-		}
+		
 
 		Collision_HideCollider();
 		Collision_Head();
 		Collision_Body();
 
-		if (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurRoomType(CPlayer::ROOM_BOSS) == true)
+		if(dynamic_cast<CPlayer*>(m_pOwner)->Get_CurRoomType(CPlayer::ROOM_BUG) == true)
+		{
+			Collision_Head_Spawn_Bug();
+			Collision_Body_Spawn_Bug();
+		}
+		else if (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurRoomType(CPlayer::ROOM_BOSS) == true)
 		{
 			Collision_To_BossMonster();
+		}
+		else if (dynamic_cast<CPlayer*>(m_pOwner)->Get_CurRoomType(CPlayer::ROOM_KIGHT) == true)
+		{
+			Collision_Shield();
+			Collision_LArm();
+			Collision_RArm();
 		}
 	}
 	
@@ -88,7 +94,7 @@ void CBullet::Late_Tick(_double dTimeDelta)
 			
 		}
 
-		m_pRendererCom->Add_DebugRenderGroup(m_pBulletColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBulletColliderCom);
 	}
 	
 }
@@ -128,6 +134,11 @@ _bool CBullet::Collision_Body()
 
 				else if (m_pBulletColliderCom->Collision(pCollider))
 				{
+					if(Check_Dead() == true)
+					{
+						return false;
+					}
+
 					CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 					NULL_CHECK_RETURN(pMonster, false);
 
@@ -182,6 +193,13 @@ _bool CBullet::Collision_Body()
 
 						// Create_DamageFont();
 					}
+					CSound::SOUND_DESC SoundDesc;
+					SoundDesc.fRange = 100.f;
+					SoundDesc.bIs3D = true;
+					SoundDesc.pStartTransform = m_pTransformCom;
+					SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+					CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+					CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2); 
 
 					Set_Dead(true);
 
@@ -226,6 +244,13 @@ _bool CBullet::Collision_Head()
 
 				else if (m_pBulletColliderCom->Collision(pCollider))
 				{
+
+					if (Check_Dead() == true)
+					{
+						return false;
+					}
+
+
 					CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 					NULL_CHECK_RETURN(pMonster, false);
 
@@ -280,7 +305,228 @@ _bool CBullet::Collision_Head()
 
 						// Create_DamageFont();
 					}
+					CSound::SOUND_DESC SoundDesc;
+					SoundDesc.fRange = 100.f;
+					SoundDesc.bIs3D = true;
+					SoundDesc.pStartTransform = m_pTransformCom;
+					SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+					CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+					CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
+					Set_Dead(true);
 
+					// m_bCollOnce = true;
+					return true;
+				}
+				else
+					++iter;
+			}
+			return false;
+		}
+	}
+
+	return false;
+}
+
+_bool CBullet::Collision_Body_Spawn_Bug()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	// 몬스터 리스트를 가져와서 순회해야할것같음
+	list<CGameObject*>* CloneMonsters = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_SpawnBug");
+	if (CloneMonsters == nullptr || CloneMonsters->size() == 0)
+		return false;
+	else
+	{
+		m_MonsterList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_SpawnBug");
+		_int ListSize = 0;
+		ListSize = (_int)m_MonsterList.size();
+
+		if (ListSize != 0)
+		{
+			auto iter = m_MonsterList.begin();
+			for (auto& iter = m_MonsterList.begin(); iter != m_MonsterList.end();)
+			{
+				if (iter == m_MonsterList.end())
+					return false;
+
+				CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_HitBodySphere");
+
+				if (pCollider == nullptr)
+					++iter;
+
+				else if (m_pBulletColliderCom->Collision(pCollider))
+				{
+					if (Check_Dead() == true)
+						return false;
+
+					CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+					NULL_CHECK_RETURN(pMonster, false);
+
+					pMonster->Set_HitColor();
+					pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+
+					if (Check_Dead() == false && m_bIsClone == true)
+					{
+						if (m_tBulletOption.BulletDesc.m_iCountType == 0)
+						{
+							CDefault_Bullet_Dead::EFFECTDESC EffectDesc;
+							_float4 Position;
+							XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+
+							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+							CDefault_Bullet_Dead* pEffect = nullptr;
+							pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Dust", &EffectDesc));
+							pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Default_Bullet_Dead", &EffectDesc));
+						}
+						else if (m_tBulletOption.BulletDesc.m_iCountType == 1)
+						{
+							CDefault_Bullet_Dead::EFFECTDESC EffectDesc;
+							_float4 Position;
+							XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+							EffectDesc.m_pOwner = m_pOwner;
+							EffectDesc.m_tGameObjectDesc.m_iCountType = 0;
+							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+							CDefault_Bullet_Dead* pEffect = nullptr;
+							pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
+
+							XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+							EffectDesc.m_pOwner = m_pOwner;
+							EffectDesc.m_tGameObjectDesc.m_iCountType = 1;
+							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+							for (_uint i = 0; i < 4; ++i)
+								pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
+
+
+
+							GAMEOBJECTDESC GameObjectDesc;
+							ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
+							GameObjectDesc.m_iCountType = 0;
+							GameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							GameObjectDesc.m_vBulletLook = _float4(0.5f, 0.5f, 0.5f, 0.f);
+
+							pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Sphere", &GameObjectDesc);
+
+						}
+
+						// Create_DamageFont();
+					}
+					CSound::SOUND_DESC SoundDesc;
+					SoundDesc.fRange = 100.f;
+					SoundDesc.bIs3D = true;
+					SoundDesc.pStartTransform = m_pTransformCom;
+					SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+					CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+					CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
+
+					Set_Dead(true);
+
+					// m_bCollOnce = true;
+					return true;
+				}
+				else
+					++iter;
+			}
+			return false;
+		}
+	}
+
+	return false;
+}
+
+_bool CBullet::Collision_Head_Spawn_Bug()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	// 몬스터 리스트를 가져와서 순회해야할것같음
+	list<CGameObject*>* CloneMonsters = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_SpawnBug");
+	if (CloneMonsters == nullptr || CloneMonsters->size() == 0)
+		return false;
+	else
+	{
+		m_MonsterList = *pGameInstance->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_SpawnBug");
+		_int ListSize = 0;
+		ListSize = (_int)m_MonsterList.size();
+
+		if (ListSize != 0)
+		{
+			auto iter = m_MonsterList.begin();
+			for (auto& iter = m_MonsterList.begin(); iter != m_MonsterList.end();)
+			{
+				if (iter == m_MonsterList.end())
+					return false;
+
+				CCollider* pCollider = (CCollider*)(*iter)->Find_Component(L"Com_HitHeadSphere");
+
+				if (pCollider == nullptr)
+					++iter;
+
+				else if (m_pBulletColliderCom->Collision(pCollider))
+				{
+					if (Check_Dead() == true)
+						return false;
+
+					CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
+					NULL_CHECK_RETURN(pMonster, false);
+
+					pMonster->Set_HitColor();
+					pMonster->Collision_Head(this); // 총알이 어디 충돌했는지 판단하니까
+
+					if (Check_Dead() == false && m_bIsClone == true)
+					{
+						if (m_tBulletOption.BulletDesc.m_iCountType == 0)
+						{
+							CDefault_Bullet_Dead::EFFECTDESC EffectDesc;
+							_float4 Position;
+							XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+
+							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+							CDefault_Bullet_Dead* pEffect = nullptr;
+							pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Dust", &EffectDesc));
+							pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Default_Bullet_Dead", &EffectDesc));
+						}
+						else if (m_tBulletOption.BulletDesc.m_iCountType == 1)
+						{
+							CDefault_Bullet_Dead::EFFECTDESC EffectDesc;
+							_float4 Position;
+							XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+							EffectDesc.m_pOwner = m_pOwner;
+							EffectDesc.m_tGameObjectDesc.m_iCountType = 0;
+							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+							// CDefault_Bullet_Dead* pEffect = nullptr;
+							(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
+
+							XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+							EffectDesc.m_pOwner = m_pOwner;
+							EffectDesc.m_tGameObjectDesc.m_iCountType = 1;
+							EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+							for (_uint i = 0; i < 4; ++i)
+								(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
+
+
+
+							GAMEOBJECTDESC GameObjectDesc;
+							ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
+							GameObjectDesc.m_iCountType = 0;
+							GameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+							GameObjectDesc.m_vBulletLook = _float4(0.5f, 0.5f, 0.5f, 0.f);
+
+							pGameInstance->Clone_GameObject(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Sphere", &GameObjectDesc);
+
+						}
+
+						// Create_DamageFont();
+					}
+					CSound::SOUND_DESC SoundDesc;
+					SoundDesc.fRange = 100.f;
+					SoundDesc.bIs3D = true;
+					SoundDesc.pStartTransform = m_pTransformCom;
+					SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+					CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+					CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 					Set_Dead(true);
 
 					// m_bCollOnce = true;
@@ -323,6 +569,9 @@ _bool CBullet::Collision_HideCollider()
 					++iter;
 				else if (m_pBulletColliderCom->Collision(pCollider))
 				{
+					if (Check_Dead() == true)
+						return false;
+
 					CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 					NULL_CHECK_RETURN(pMonster, false);
 
@@ -368,6 +617,9 @@ _bool CBullet::Collision_Shield()
 
 				else if (m_pBulletColliderCom->Collision(pCollider))
 				{
+					if (Check_Dead() == true)
+						return false;
+
 					CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 					NULL_CHECK_RETURN(pMonster, false);
 
@@ -383,7 +635,13 @@ _bool CBullet::Collision_Shield()
 					EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
 					CDefault_Bullet_Dead* pEffect = nullptr;
 					pEffect = (CDefault_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
-
+					CSound::SOUND_DESC SoundDesc;
+					SoundDesc.fRange = 30.f;
+					SoundDesc.bIs3D = true;
+					SoundDesc.pStartTransform = m_pTransformCom;
+					SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+					CGameInstance::GetInstance()->Set_SoundDesc(L"Coll_Shield.mp3", SoundDesc);
+					CGameInstance::GetInstance()->Play_Sound(L"Coll_Shield.mp3", 0.7f, false, true, 2);
 					Set_Dead(true);
 
 					// m_bCollOnce = true;
@@ -427,11 +685,21 @@ _bool CBullet::Collision_LArm()
 
 				else if (m_pBulletColliderCom->Collision(pCollider))
 				{
+					if (Check_Dead() == true)
+						return false;
+
 					CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 					NULL_CHECK_RETURN(pMonster, false);
 
 					pMonster->Set_HitColor();
 					pMonster->Collision_Armor(this); // 총알이 어디 충돌했는지 판단하니까
+					CSound::SOUND_DESC SoundDesc;
+					SoundDesc.fRange = 100.f;
+					SoundDesc.bIs3D = true;
+					SoundDesc.pStartTransform = m_pTransformCom;
+					SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+					CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+					CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 					Set_Dead(true);
 
 					// m_bCollOnce = true;
@@ -475,11 +743,21 @@ _bool CBullet::Collision_RArm()
 
 				else if (m_pBulletColliderCom->Collision(pCollider))
 				{
+					if (Check_Dead() == true)
+						return false;
+
 					CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 					NULL_CHECK_RETURN(pMonster, false);
 
 					pMonster->Set_HitColor();
 					pMonster->Collision_Armor(this); // 총알이 어디 충돌했는지 판단하니까
+					CSound::SOUND_DESC SoundDesc;
+					SoundDesc.fRange = 100.f;
+					SoundDesc.bIs3D = true;
+					SoundDesc.pStartTransform = m_pTransformCom;
+					SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+					CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+					CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 					Set_Dead(true);
 					// m_bCollOnce = true;
 					return true;
@@ -506,9 +784,19 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -518,9 +806,20 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -530,9 +829,19 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -542,9 +851,19 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -554,9 +873,19 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -566,9 +895,19 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -578,9 +917,19 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -590,9 +939,19 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -602,9 +961,19 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -614,9 +983,19 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -626,9 +1005,20 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Body(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
+
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;
@@ -638,9 +1028,19 @@ _bool CBullet::Collision_To_BossMonster()
 		NULL_CHECK_RETURN(pCollider, false);
 		if (m_pBulletColliderCom->Collision(pCollider))
 		{
+			if (Check_Dead() == true)
+				return false;
+
 			CMonster* pMonster = (CMonster*)pCollider->Get_Owner();
 			NULL_CHECK_RETURN(pMonster, false);
 			pMonster->Collision_Head(this); // 총알이 어디 충돌했는지 판단하니까
+			CSound::SOUND_DESC SoundDesc;
+			SoundDesc.fRange = 100.f;
+			SoundDesc.bIs3D = true;
+			SoundDesc.pStartTransform = m_pTransformCom;
+			SoundDesc.pTargetTransform = pCollider->Get_Owner()->Get_Transform();
+			CGameInstance::GetInstance()->Set_SoundDesc(L"Hit_Monster.mp3", SoundDesc);
+			CGameInstance::GetInstance()->Play_Sound(L"Hit_Monster.mp3", 0.7f, false, true, 2);
 			Set_Dead(true);
 			// m_bCollOnce = true;
 			return true;

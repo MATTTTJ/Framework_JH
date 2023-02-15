@@ -44,12 +44,13 @@ void CMainApp::Tick(_double TimeDelta)
 	srand((unsigned)time(NULL));
 
 #ifdef  _DEBUG
-		m_TimeAcc += TimeDelta;
+		// m_TimeAcc += TimeDelta;
 #endif
 
 
 	m_pGameInstance->Tick_Engine(TimeDelta);
 
+	ShowCursor(false);
 
 }
 
@@ -69,16 +70,16 @@ HRESULT CMainApp::Render()
 	
 
 #ifdef _DEBUG
-	++m_iNumCallDraw;
-	if(m_TimeAcc >= 1.f)
-	{
-		wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumCallDraw);
+	// ++m_iNumCallDraw;
+	// if(m_TimeAcc >= 1.f)
+	// {
+	// 	wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumCallDraw);
+	//
+	// 	m_iNumCallDraw = 0;
+	// 	m_TimeAcc = 0;
+	// }
 
-		m_iNumCallDraw = 0;
-		m_TimeAcc = 0;
-	}
-
-	m_pGameInstance->Render_Font(TEXT("Font_Comic"), m_szFPS, _float2(100.f, 0.f), 0.f, _float2(1.f, 1.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	// m_pGameInstance->Render_Font(TEXT("Font_Comic"), m_szFPS, _float2(100.f, 0.f), 0.f, _float2(1.f, 1.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 #endif
 	m_pGameInstance->Present();
@@ -175,7 +176,7 @@ CMainApp * CMainApp::Create()
 	if (FAILED(pInstance->Initialize()))
 	{
 		MSG_BOX("Failed to Created : CMainApp");
-		Safe_Release(pInstance);
+		Safe_Release<CMainApp*>(pInstance);
 	}
 	return pInstance;
 }
@@ -184,9 +185,10 @@ void CMainApp::Free()
 {
 	// m_pGameInstance->Clear_ImguiObjects();
 
-	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pRenderer);
+	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+
 	CGameInstance::Release_Engine();
 }

@@ -34,6 +34,8 @@ HRESULT CLobby_Owner::Initialize_Clone(const wstring& wstrPrototypeTag, void * p
 	FAILED_CHECK_RETURN(SetUp_Components(), E_FAIL);
 
 	m_pModelCom->Set_CurAnimIndex(0);
+	CGameInstance::GetInstance()->Play_Sound(L"Lobby_Test.mp3", 0.5f, true, false, 1);
+
 	return S_OK;
 }
 

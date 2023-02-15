@@ -129,7 +129,7 @@ void CDynamic_Camera::Tick(_double TimeDelta)
 	}
 	else
 	{
-		// m_pTransformCom->Go_Straight(TimeDelta * 0.15f, CTransform::TRANS_BULLET);
+		m_pTransformCom->Go_Straight(TimeDelta * 0.15f, CTransform::TRANS_BULLET);
 	}
 
 	// m_bLobby = false;

@@ -109,7 +109,8 @@ public:
 	virtual void			Tick(_double dTimeDelta) override;
 	virtual void			Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
-
+	void					Collider_Update(_double dTimeDelta);
+	void					Move_Input(_double dTimeDelta);
 public :
 	void					Is_Dash(); 
 
@@ -139,6 +140,10 @@ private:
 	_bool					m_bNormalTexOn;
 	_bool					m_bSpecularTexOn;
 	// vector<CGameObject*>	m_vecPlayerParts;
+
+	_float					m_fCurDamageCoolTime = 0.f;
+	_float					m_fDamageCoolTime = 2.f;
+	_bool					m_bCanDamage = false;
 
 private:
 	//For Trigger
@@ -173,6 +178,18 @@ private: // State
 	vector<CGameObject*>	m_vecPlayerUI;
 
 	_bool					m_bHitColor = false;
+
+
+private:
+	// For_Sound
+
+	// 키 입력할 땐 무조건 소리 나옴 
+	_float					m_fCurFootSound = 0.f;
+	_float					m_fFootSound = 0.3f;
+	_bool					m_bCanPlayFootSound = true;
+
+
+
 private:
 	_float					m_fOutLineOffset = 0.003f;
 
@@ -186,6 +203,7 @@ public:
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
 	virtual void			Free() override;
 };
+
 
 
 

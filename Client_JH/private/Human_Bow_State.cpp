@@ -60,6 +60,17 @@ void CHuman_Bow_State::Tick(_double dTimeDelta)
 		
 	}
 
+	if (m_bWalkSoundOnce == false && m_pState->Get_CurState() == L"STATE::RUN")
+	{
+		m_fCurWalkSoundTime += (_float)dTimeDelta;
+	}
+
+	if (m_fCurWalkSoundTime >= m_fWalkSoundTime)
+	{
+		m_fCurWalkSoundTime = 0.f;
+		m_bWalkSoundOnce = true;
+	}
+
 	if (m_fCurHideCoolTime >= m_fHideCoolTime && m_bCanHide == false)
 	{
 		m_fCurHideCoolTime = 0.f;
@@ -332,6 +343,8 @@ void CHuman_Bow_State::Start_Damaged(_double dTimeDelta)
 	else if (m_bDamaged[HITHEAD] == true)
 		m_pModelCom->Set_CurAnimIndex(BOW_HITHEAD);
 
+	m_pGameInstance->Play_Sound(L"Bow_Hit.mp3", 1.f, false, false);
+
 	m_bDamaged[HIT] = false;
 }
 
@@ -350,6 +363,15 @@ void CHuman_Bow_State::Start_Attack_A(_double dTimeDelta)
 
 	m_pModelCom->Set_CurAnimIndex(BOW_FIRE);
 
+	CSound::SOUND_DESC SoundDesc;
+	SoundDesc.fRange = 23.f;
+	SoundDesc.bIs3D = true;
+	SoundDesc.pStartTransform = m_pTransformCom;
+	SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+	CGameInstance::GetInstance()->Set_SoundDesc(L"Bow_Attack_Arrow.mp3", SoundDesc);
+
+	m_pGameInstance->Play_Sound(L"Bow_Attack_Arrow.mp3", 1.f, false, false);
+
 	
 }
 
@@ -358,6 +380,16 @@ void CHuman_Bow_State::Start_Reload(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.1f);
 
 	m_pModelCom->Set_CurAnimIndex(BOW_RELOAD);
+
+	CSound::SOUND_DESC SoundDesc;
+	SoundDesc.fRange = 23.f;
+	SoundDesc.bIs3D = true;
+	SoundDesc.pStartTransform = m_pTransformCom;
+	SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+	CGameInstance::GetInstance()->Set_SoundDesc(L"Bow_Reload.mp3", SoundDesc);
+
+	m_pGameInstance->Play_Sound(L"Bow_Reload.mp3", 0.7f, false, false);
+
 }
 
 
@@ -366,6 +398,9 @@ void CHuman_Bow_State::Start_Melee_Attack(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.2f);
 
 	m_pModelCom->Set_CurAnimIndex(BOW_MELEE_ATTACK);
+
+	m_pGameInstance->Play_Sound(L"Bow_Melee.mp3", 1.f, false, false);
+
 }
 
 void CHuman_Bow_State::Start_Hide(_double dTimeDelta)
@@ -379,6 +414,16 @@ void CHuman_Bow_State::Start_Hide(_double dTimeDelta)
 	}
 	else
 		m_pModelCom->Set_CurAnimIndex(BOW_HIDE_RIGHT);
+
+	CSound::SOUND_DESC SoundDesc;
+	SoundDesc.fRange = 23.f;
+	SoundDesc.bIs3D = true;
+	SoundDesc.pStartTransform = m_pTransformCom;
+	SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+	CGameInstance::GetInstance()->Set_SoundDesc(L"Bow_Hide.mp3", SoundDesc);
+
+	m_pGameInstance->Play_Sound(L"Bow_Hide.mp3", 1.f, false, false);
+
 }
 
 void CHuman_Bow_State::Start_Death(_double dTimeDelta)
@@ -387,6 +432,8 @@ void CHuman_Bow_State::Start_Death(_double dTimeDelta)
 
 
 	m_pModelCom->Set_CurAnimIndex(BOW_JUSTSTAND);
+
+
 }
 
 void CHuman_Bow_State::Tick_Idle(_double dTimeDelta)
@@ -397,6 +444,14 @@ void CHuman_Bow_State::Tick_Idle(_double dTimeDelta)
 void CHuman_Bow_State::Tick_Run(_double dTimeDelta)
 {
 	m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
+
+
+	if (m_bWalkSoundOnce == true)
+	{
+		m_pGameInstance->Play_Sound(L"Bow_Walk.mp3", 1.f, false, true);
+		m_bWalkSoundOnce = false;
+
+	}
 }
 
 void CHuman_Bow_State::Tick_JustStand(_double dTimeDelta)

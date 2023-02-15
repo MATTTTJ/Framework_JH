@@ -47,7 +47,7 @@ private:
 	_float					m_fGrowTime = 2.f;
 
 	_float					m_fCurDeadTimer = 0.f;
-	_float					m_fDeadTimer = 1.5f;
+	_float					m_fDeadTimer = 0.5f;
 	_bool					m_bDeadTimerStart = false;
 
 	list<CGameObject*>		m_BulletList;

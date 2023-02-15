@@ -48,8 +48,19 @@ void CHuman_Explode_State::Tick(_double dTimeDelta)
 		if (!m_bCanHide)
 			m_fCurHideCoolTime += (_float)dTimeDelta;
 
+		if (m_bWalkSoundOnce == false && m_pState->Get_CurState() == L"STATE::RUN")
+		{
+			m_fCurWalkSoundTime += (_float)dTimeDelta;
+		}
+
 		m_fCurPatrolTurnTime += (_float)dTimeDelta;
 
+	}
+
+	if (m_fCurWalkSoundTime >= m_fWalkSoundTime)
+	{
+		m_fCurWalkSoundTime = 0.f;
+		m_bWalkSoundOnce = true;
 	}
 
 	if (m_fCurPatrolTurnTime >= m_fPatrolTurnTime)
@@ -257,6 +268,9 @@ void CHuman_Explode_State::Start_Hide(_double dTimeDelta)
 	}
 	else
 		m_pModelCom->Set_CurAnimIndex(EXPLODE_HIDE_RIGHT);
+
+	CGameInstance::GetInstance()->Play_Sound(L"Explode_Hide.mp3", 1.f, false, false, 5);
+
 }
 
 void CHuman_Explode_State::Start_Dead(_double dTimeDelta)
@@ -275,6 +289,20 @@ void CHuman_Explode_State::Tick_Idle(_double dTimeDelta)
 void CHuman_Explode_State::Tick_Run(_double dTimeDelta)
 {
 	m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
+
+	if (m_bWalkSoundOnce == true)
+	{
+		CSound::SOUND_DESC SoundDesc;
+		SoundDesc.fRange = 15.f;
+		SoundDesc.bIs3D = true;
+		SoundDesc.pStartTransform = m_pTransformCom;
+		SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+		CGameInstance::GetInstance()->Set_SoundDesc(L"Explode_Walk.mp3", SoundDesc);
+
+		m_pGameInstance->Play_Sound(L"Explode_Walk.mp3", 1.f, false, true);
+		m_bWalkSoundOnce = false;
+
+	}
 }
 
 void CHuman_Explode_State::Tick_JustStand(_double dTimeDelta)
@@ -349,6 +377,8 @@ void CHuman_Explode_State::End_Patrol(_double dTimeDelta)
 void CHuman_Explode_State::End_Attack_A(_double dTimeDelta)
 {
 	m_bAttackOnce = false;
+	CGameInstance::GetInstance()->Play_Sound(L"Explode_Fire.mp3", 1.f, false, false, 5);
+
 	m_pMonster->Set_Dead(true);
 }
 

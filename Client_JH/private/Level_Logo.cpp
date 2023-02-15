@@ -29,6 +29,8 @@ HRESULT CLevel_Logo::Initialize()
 	// FAILED_CHECK_RETURN(Ready_Layer_Light(), E_FAIL);
 	// // FAILED_CHECK_RETURN(Ready_Layer_Env(L"Layer_Env"), E_FAIL);
 	// FAILED_CHECK_RETURN(Ready_Layer_Lai_Home(L"Layer_Player"), E_FAIL);
+	CGameInstance::GetInstance()->Stop_All_Sound();
+
 	FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
 	// FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_ZCamera"), E_FAIL);
 
@@ -37,11 +39,15 @@ HRESULT CLevel_Logo::Initialize()
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_Setting::Create());
 	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_LevelSwitcher::Create(m_pDevice, m_pContext));
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_ProtoMgr::Create(m_pDevice, m_pContext));
-	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_MapEditor::Create());
+	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_MapEditor::Create());
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_AnimationMgr::Create());
 	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_ModelSave::Create(m_pDevice, m_pContext));
-	CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_NavigationEditor::Create(m_pDevice, m_pContext));
+	// CGameInstance::GetInstance()->Add_ImguiWindowObject(CImgui_NavigationEditor::Create(m_pDevice, m_pContext));
+	CGameInstance::GetInstance()->Stop_All_Sound();
+
 	m_fLogoTime = 0.f;
+	// CGameInstance::GetInstance()->Play_Sound(L"Ready_Logo.mp3", 0.5f, true, false, 1);
+
 	return S_OK;
 }
 
@@ -77,9 +83,10 @@ void CLevel_Logo::Late_Tick(_double TimeDelta)
 		}
 		m_vecLogo.clear();
 
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
-			return;
-
+		if (pGameInstance->Key_Down(DIK_SPACE))
+		{
+			FAILED_CHECK_RETURN(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY)), );
+		}
 
 
 		Safe_Release(pGameInstance);
@@ -151,7 +158,6 @@ CLevel_Logo * CLevel_Logo::Create(ID3D11Device * pDevice, ID3D11DeviceContext * 
 
 void CLevel_Logo::Free()
 {
-	__super::Free();
 
-	Safe_Release(m_pShader);
+	__super::Free();
 }

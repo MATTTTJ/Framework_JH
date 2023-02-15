@@ -100,7 +100,34 @@ private:					// Pattern CoolTime
 	_uint						m_iSpawnMagicStone = 0;
 
 private:
-	// vector<class CGameObject*>	m_vecBullet;
+	// For Sound
+
+	// 일회용
+	_bool						m_bCanPlayShow3_HandClose = false;
+	_bool						m_bCanPlayShow3_FirstAssy = false;
+
+	_bool						m_bCanPlayShow4_HandDown = false;
+	_bool						m_bCanPlayShow4_LeftHandUp = false;
+	_bool						m_bCanPlayShow4_HeadUp = false;
+	_bool						m_bCanPlayShow4_BreakWall = false;
+	// ~일회용
+
+	// 기둥 부수고 소환
+	_bool						m_bCanPlay_Melee_Swing = false;
+	_bool						m_bCanPlay_Melee_Destroy_StonePillars = false;
+	// ~기둥 부수고 소환
+
+	_bool						m_bCanPlay_Lazer_HandDown = false;
+
+	_bool						m_bCanPlay_MagicStone_Spawn = false;
+
+	// _bool						m_bCanPlay_ = false;
+	// _bool						m_bCanPlay_ = false;
+	// v
+	// _bool						m_bCanPlay = false;
+
+
+
 
 private:
 	void						Start_Common(_double dTimeDelta) {}

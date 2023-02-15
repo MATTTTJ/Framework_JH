@@ -36,7 +36,7 @@ HRESULT CHuman_Sword_State::Initialize(CHuman_Sword* pOwner, CState* pStateMachi
 		FAILED_CHECK_RETURN(SetUp_State_JustStand(), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	}
-
+	m_fWalkSoundTime = 0.3f;
 	return S_OK;
 }
 
@@ -54,8 +54,21 @@ void CHuman_Sword_State::Tick(_double dTimeDelta)
 		if (!m_bCanHide)
 			m_fCurHideCoolTime += (_float)dTimeDelta;
 
+		
+
 		m_fCurAttackCoolTime += (_float)dTimeDelta;
 		m_fCurDamagedAnimCoolTime += (_float)dTimeDelta;
+	}
+
+	if (m_bWalkSoundOnce == false && m_pState->Get_CurState() == L"STATE::RUN")
+	{
+		m_fCurWalkSoundTime += (_float)dTimeDelta;
+	}
+
+	if(m_fCurWalkSoundTime >= m_fWalkSoundTime)
+	{
+		m_fCurWalkSoundTime = 0.f;
+		m_bWalkSoundOnce = true;
 	}
 
 	if (m_fCurHideCoolTime >= m_fHideCoolTime && m_bCanHide == false)
@@ -260,6 +273,8 @@ void CHuman_Sword_State::Start_Run(_double dTimeDelta)
 {
 	m_pModelCom->Set_LerpTime(0.2f);
 
+	// m_pGameInstance->Play_Sound(L"StoneMan_Walk.mp3", 0.5f, false, false);
+
 	if (m_bFirstState[CHuman_Sword::STATE_GROUNDSPAWN] == true)
 	{
 		m_pModelCom->Set_CurAnimIndex(SWORD_RUN_B);
@@ -283,6 +298,7 @@ void CHuman_Sword_State::Start_Damaged(_double dTimeDelta)
 	// m_pModelCom->Set
 	m_pModelCom->Set_LerpTime(0.1f);
 	m_pMonster->Set_HideColl(false);
+	m_pGameInstance->Play_Sound(L"Man_Hit_Anim.mp3", 0.5f, false, false);
 
 
 	if (m_bDamaged[HITBODY] == true)
@@ -298,6 +314,9 @@ void CHuman_Sword_State::Start_Detected(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.2f);
 
 	m_pModelCom->Set_CurAnimIndex(SWORD_DECTED);
+
+	CGameInstance::GetInstance()->Play_Sound(L"Stone_Detected.mp3", 1.f, false, false);
+
 }
 
 void CHuman_Sword_State::Start_GroundSpawn(_double dTimeDelta)
@@ -305,12 +324,16 @@ void CHuman_Sword_State::Start_GroundSpawn(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.5f);
 
 	m_pModelCom->Set_CurAnimIndex(SWORD_GROUNDSPAWN);
+
+
+	CGameInstance::GetInstance()->Play_Sound(L"Sword_GroundSpawn.mp3", 1.f, false, false);
+
 }
 
 void CHuman_Sword_State::Start_Attack_A(_double dTimeDelta)
 {
 	m_pModelCom->Set_LerpTime(0.2f);
-
+	m_bAttackSoundOnce = false;
 	if ((rand() % 3) % 2 == 0)
 	{
 		m_pModelCom->Set_CurAnimIndex(SWORD_ATTACK_A);
@@ -336,6 +359,14 @@ void CHuman_Sword_State::Start_Hide(_double dTimeDelta)
 	else 
 		m_pModelCom->Set_CurAnimIndex(SWORD_HIDE_RIGHT);
 
+	// CSound::SOUND_DESC SoundDesc;
+	// SoundDesc.fRange = 20.f;
+	// SoundDesc.bIs3D = true;
+	// SoundDesc.pStartTransform = m_pTransformCom;
+	// SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+	// CGameInstance::GetInstance()->Set_SoundDesc(L"Stone_Hide.mp3", SoundDesc);
+	CGameInstance::GetInstance()->Play_Sound(L"Stone_Hide.mp3", 1.f, false, false, 5);
+
 }
 
 void CHuman_Sword_State::Start_Death(_double dTimeDelta)
@@ -360,6 +391,17 @@ void CHuman_Sword_State::Tick_Idle(_double dTimeDelta)
 void CHuman_Sword_State::Tick_Run(_double dTimeDelta)
 {
 	m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
+
+	if (m_bWalkSoundOnce == true)
+	{
+		m_pGameInstance->Play_Sound(L"StoneMan_Walk.mp3", 0.5f, false, true);
+		m_bWalkSoundOnce = false;
+	}
+
+
+	// if(m_pModelCom->Get_AnimationProgress() > 0.5f && m_bWalkSoundOnce == false)
+	// {
+	// }
 	// m_pMonster->Set_On_NaviMesh();
 }
 
@@ -378,6 +420,8 @@ void CHuman_Sword_State::Tick_Detected(_double dTimeDelta)
 
 void CHuman_Sword_State::Tick_GroundSpawn(_double dTimeDelta)
 {
+	// m_pGameInstance->Play_Sound(L"StoneMan_Walk.mp3", 0.5f, false, true);
+
 }
 
 void CHuman_Sword_State::Tick_Attack_A(_double dTimeDelta)
@@ -386,6 +430,12 @@ void CHuman_Sword_State::Tick_Attack_A(_double dTimeDelta)
 	{
 		m_pMonster->m_pPlayer->Collision_Event(m_pMonster);
 		m_bAttackOnce = true;
+	}
+
+	if(m_pModelCom->Get_AnimationProgress() > 0.3f && m_bAttackSoundOnce == false)
+	{
+		m_pGameInstance->Play_Sound(L"Sword_Attack.mp3", 0.5f, false, false);
+		m_bAttackSoundOnce = true;
 	}
 }
 
@@ -465,7 +515,6 @@ void CHuman_Sword_State::End_Attack_A(_double dTimeDelta)
 {
 	m_bCanAttack = false;
 	m_bAttackOnce = false;
-
 }
 
 void CHuman_Sword_State::End_Hide(_double dTimeDelta)

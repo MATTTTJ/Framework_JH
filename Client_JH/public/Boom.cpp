@@ -54,6 +54,15 @@ HRESULT CBoom::Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg)
 		m_pTransformCom->Set_Scaled(_float3(1000.f, 1000.f, 1.f));
 	}
 
+	// CSound::SOUND_DESC SoundDesc;
+	// SoundDesc.fRange = 10.f;
+	// SoundDesc.bIs3D = true;
+	// SoundDesc.pStartTransform = m_pTransformCom;
+	// SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+	// CGameInstance::GetInstance()->Set_SoundDesc(L"Granade_Boom.mp3", SoundDesc);
+
+	CGameInstance::GetInstance()->Play_Sound(L"Granade_Boom.mp3", 1.f, false, false);
+
 	return S_OK;
 }
 
@@ -86,6 +95,8 @@ void CBoom::Tick(_double dTimeDelta)
 	{
 		m_bFallTime = true;
 
+		CGameInstance::GetInstance()->Play_Sound(L"Boom_Dead.mp3", 0.7f, false, false);
+
 		Set_Dead(true);
 		// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(BoomPos.x, BoomPos.y + 0.35f, BoomPos.z, 1.f));
 		
@@ -111,7 +122,7 @@ void CBoom::Late_Tick(_double dTimeDelta)
 		true == CGameInstance::GetInstance()->isInFrustum_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), 2.f))
 	{
 #ifdef _DEBUG
-		m_pRendererCom->Add_DebugRenderGroup(m_pBoomColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBoomColliderCom);
 #endif
 	}
 

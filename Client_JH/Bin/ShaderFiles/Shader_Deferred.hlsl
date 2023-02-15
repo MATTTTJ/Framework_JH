@@ -277,44 +277,44 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector		vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexUV);
 	vector		vOutline = g_OutlineTexture.Sample(LinearSampler, In.vTexUV);
 
-	if (vBlur.a >= 0.05f)
-	{
-		//vBlur.rgb *= 3.f;
-		Out.vColor = vector(vBlur.rgb * vBlur.a + vDiffuse.rgb * (1.f - vBlur.a), 1.f) * vShade + vSpecular;
-
-		//글로우
-		if (vFlag.b == 1.f)
-		{
-			if (vEffect.a > 0.1f)
-			{
-				Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f) * vShade + vSpecular;
-			}
-		}
-	}
-	else
-	{
-		//이펙트 효과 없을 때
-		if (vEffect.a > 0.1f && vFlag.r == 0.f && vFlag.g == 0.f && vFlag.b == 0.f)
-		{
-			vDiffuse = vDiffuse * vShade + vSpecular;
-			Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
-		}
-		else
-		{
-			Out.vColor = vDiffuse * vShade + vSpecular;
-		}
-
-	}
-	//블룸
-	if (vFlag.g >= 0.1f)
-	{
-		vEffect.rgb = pow(pow(abs(vBloom.rgb), 2.2f) + pow(abs(vEffect.rgb), 2.2f), 1.f / 2.2f);
-		Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
-	}
+	// if (vBlur.a >= 0.05f)
+	// {
+	// 	//vBlur.rgb *= 3.f;
+	// 	Out.vColor = vector(vBlur.rgb * vBlur.a + vDiffuse.rgb * (1.f - vBlur.a), 1.f) * vShade + vSpecular;
 	//
+	// 	//글로우
+	// 	if (vFlag.b == 1.f)
+	// 	{
+	// 		if (vEffect.a > 0.1f)
+	// 		{
+	// 			Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f) * vShade + vSpecular;
+	// 		}
+	// 	}
+	// }
+	// else
+	// {
+	// 	//이펙트 효과 없을 때
+	// 	if (vEffect.a > 0.1f && vFlag.r == 0.f && vFlag.g == 0.f && vFlag.b == 0.f)
+	// 	{
+	// 		vDiffuse = vDiffuse * vShade + vSpecular;
+	// 		Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
+	// 	}
+	// 	else
+	// 	{
+			Out.vColor = vDiffuse * vShade + vSpecular;
+	// 	}
+	//
+	// }
+	// //블룸
+	// if (vFlag.g >= 0.1f)
+	// {
+	// 	vEffect.rgb = pow(pow(abs(vBloom.rgb), 2.2f) + pow(abs(vEffect.rgb), 2.2f), 1.f / 2.2f);
+	// 	Out.vColor = vector(vEffect.rgb * vEffect.a + vDiffuse.rgb * (1.f - vEffect.a), 1.f);
+	// }
+	// //
 	if (vOutline.a == 1.f)
 		Out.vColor.rgb = vOutline.rgb;
-
+	
 	if (Out.vColor.a == 0.f)
 		discard;
 
@@ -434,7 +434,7 @@ VS_OUT_BLUR VS_HORIZONTALBLUR(VS_IN In)
 	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
 
-	texelSize = 1.f / 4000.f;
+	texelSize = 1.f / 1280.f;
 
 	Out.texCoord1 = In.vTexUV + float2(texelSize * -4.0f, 0.0f);
 	Out.texCoord2 = In.vTexUV + float2(texelSize * -3.0f, 0.0f);
@@ -462,7 +462,7 @@ VS_OUT_BLUR VS_VERTICALBLUR(VS_IN In)
 	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
 
-	texelSize = 1.f / 1800.f;
+	texelSize = 1.f / 720.f;
 
 	Out.texCoord1 = In.vTexUV + float2(0.f, texelSize * -4.0f);
 	Out.texCoord2 = In.vTexUV + float2(0.f, texelSize * -3.0f);
@@ -663,7 +663,7 @@ PS_OUT PS_BLOOMFLAG(PS_IN In)
 	// 	Out.vColor = vector(vColor.rgb * 4.f, 1.f);
 	// }
 	float4 vSatColor = saturate(vColor);
-	float4 vHDRColor = vSatColor * pow(2.f, 0.6f);
+	float4 vHDRColor = vSatColor * pow(2.f, 0.8f);
 	vHDRColor.a = vSatColor.a;
 	Out.vColor = vHDRColor;
 	Out.vColor.a = vColor.a;

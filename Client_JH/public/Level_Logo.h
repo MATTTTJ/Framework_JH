@@ -32,7 +32,6 @@ private:
 	HRESULT			SetUp_Component();
 
 private:
-	class CShader*		m_pShader = nullptr;
 	_float				m_fCurLogoTime = 0.f;
 	_float				m_fLogoTime = 3.f;
 	_bool				m_bLevelChange = false;

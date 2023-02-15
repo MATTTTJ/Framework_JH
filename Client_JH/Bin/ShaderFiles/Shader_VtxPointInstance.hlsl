@@ -503,9 +503,9 @@ PS_OUT PS_MAIN_UVSPRITE(PS_IN In)
 
 	if (Out.vColor.a > 0.f)
 	{
-		Out.vFlag.r = 1.f;
-		Out.vFlag.g = 0.f;
-		Out.vFlag.b = 1.f;
+		Out.vFlag.r = 0.f;
+		Out.vFlag.g = 1.f;
+		Out.vFlag.b = 0.f;
 	}
 	else
 	{
@@ -588,7 +588,7 @@ PS_OUT PS_MAIN_FLAME_DEAD(PS_IN_UVSPRITE In)
 		discard;
 	if (Out.vColor.a > 0.f)
 	{
-		Out.vFlag.r = 0.f;
+		Out.vFlag.r = 1.f;
 		Out.vFlag.g = 1.f;
 		Out.vFlag.b = 0.f;
 	}
@@ -640,7 +640,7 @@ PS_OUT PS_MAIN_FLAME_DEAD_W_GLOW(PS_IN In)
 
 	if (Out.vColor.a > 0.f)
 	{
-		Out.vFlag.r = 0.f;
+		Out.vFlag.r = 1.f;
 		Out.vFlag.g = 1.f;
 		Out.vFlag.b = 0.f;
 	}

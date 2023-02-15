@@ -172,6 +172,16 @@ void CLittle_Bug_State::Start_Run(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.2f);
 
 	m_pModelCom->Set_CurAnimIndex(LITTLE_RUN);
+
+	// CSound::SOUND_DESC SoundDesc;
+	// SoundDesc.fRange = 10.f;
+	// SoundDesc.bIs3D = true;
+	// SoundDesc.pStartTransform = m_pTransformCom;
+	// SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+	// CGameInstance::GetInstance()->Set_SoundDesc(L"Bug_Walk_Junior.mp3", SoundDesc);
+
+	m_pGameInstance->Play_Sound(L"Bug_Walk_Junior.mp3", 1.0f);
+
 }
 
 void CLittle_Bug_State::Start_Damaged(_double dTimeDelta)
@@ -179,6 +189,8 @@ void CLittle_Bug_State::Start_Damaged(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.1f);
 	m_pMonster->Set_HideColl(false);
 	m_pModelCom->Set_CurAnimIndex(LITTLE_HITBODY);
+	m_pGameInstance->Play_Sound(L"Bug_Fly.mp3", 1.0f);
+
 	m_bDamaged[HIT] = false;
 }
 
@@ -186,6 +198,8 @@ void CLittle_Bug_State::Start_Attack_A(_double dTimeDelta)
 {
 	m_pModelCom->Set_LerpTime(0.2f);
 	m_pModelCom->Set_CurAnimIndex(LITTLE_ATTACK);
+	m_pGameInstance->Play_Sound(L"Bug_Fly.mp3", 1.0f);
+
 }
 
 void CLittle_Bug_State::Start_Death(_double dTimeDelta)
@@ -221,6 +235,8 @@ void CLittle_Bug_State::Tick_Idle(_double dTimeDelta)
 void CLittle_Bug_State::Tick_Run(_double dTimeDelta)
 {
 	m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 1.5f, m_pNavigationCom);
+
+
 }
 
 

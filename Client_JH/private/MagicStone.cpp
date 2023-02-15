@@ -103,6 +103,8 @@ void CMagicStone::Tick(_double TimeDelta)
 	if(m_fCurFireCoolTime>= m_fFireCoolTime && m_bFire == false)
 	{
 		m_vDir = m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION);
+		CGameInstance::GetInstance()->Play_Sound(L"4_Boss_MagicStone_Go.mp3", 0.7f);
+
 		m_bFire = true;
 	}
 
@@ -131,7 +133,7 @@ void CMagicStone::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 #ifdef _DEBUG
-		m_pRendererCom->Add_DebugRenderGroup(m_pMagicStoneColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pMagicStoneColliderCom);
 #endif
 	}
 }
@@ -157,15 +159,15 @@ HRESULT CMagicStone::Render()
 
 void CMagicStone::Ready_DangerEffect()
 {
-	CDefault_Bullet_Dead::EFFECTDESC EffectDesc;
-	_float4 Position;
-	XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
-	EffectDesc.m_pOwner = this;
-	EffectDesc.m_tGameObjectDesc.m_iCountType = 4;
-	EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
-	EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
-	// CDefault_Bullet_Dead* pEffect = nullptr;
-	m_pStoneEffect = (CFlame_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
+	// CDefault_Bullet_Dead::EFFECTDESC EffectDesc;
+	// _float4 Position;
+	// XMStoreFloat4(&Position, m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+	// EffectDesc.m_pOwner = this;
+	// EffectDesc.m_tGameObjectDesc.m_iCountType = 4;
+	// EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
+	// EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(CGameInstance::GetInstance()->Get_CamLook());
+	// // CDefault_Bullet_Dead* pEffect = nullptr;
+	// m_pStoneEffect = (CFlame_Bullet_Dead*)(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_GAMEPLAY, L"Layer_Effect", L"Prototype_GameObject_Effect_Flame_Bullet_Dead", &EffectDesc));
 }
 
 _bool CMagicStone::Collision_To_Bullet()
@@ -197,9 +199,10 @@ _bool CMagicStone::Collision_To_Bullet()
 				{
 					CBullet* pBullet = (CBullet*)pCollider->Get_Owner();
 					NULL_CHECK_RETURN(pBullet, false);
+					CGameInstance::GetInstance()->Play_Sound(L"4_Boss_MagicStone_Coll_Pillars.mp3", 0.7f);
 
 					pBullet->Set_Dead(true); // 총알이 어디 충돌했는지 판단하니까
-					m_pStoneEffect->Set_Dead(true);
+					// m_pStoneEffect->Set_Dead(true);
 
 					Set_Dead(true);
 					return true;
@@ -224,7 +227,9 @@ void CMagicStone::Fire_To_Player(_double TimeDelta)
 
 	if (CurPos.y < TargetPos.y)
 	{
-		m_pStoneEffect->Set_Dead(true);
+		CGameInstance::GetInstance()->Play_Sound(L"4_Boss_MagicStone_Coll_Pillars.mp3", 1.0f);
+
+		// m_pStoneEffect->Set_Dead(true);
 
 		Set_Dead(true);
 	}

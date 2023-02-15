@@ -13,6 +13,21 @@ CFire_Light::CFire_Light(const CFire_Light& rhs)
 {
 }
 
+void CFire_Light::Set_PlayerTransform(CTransform* pTrans)
+{
+	m_pTargetTransform = pTrans;
+
+	// CSound::SOUND_DESC SoundDesc;
+	// SoundDesc.fRange = 30.f;
+	// SoundDesc.bIs3D = true;
+	// SoundDesc.pStartTransform = m_pTransformCom;
+	// SoundDesc.pTargetTransform = m_pTargetTransform;
+	// // CGameInstance::GetInstance()->Set_SoundDesc(L"Fire.mp3", SoundDesc);
+	// CGameInstance::GetInstance()->Copy_Sound(TEXT("Fire.mp3"), TEXT("Fire_1.mp3"));
+	CGameInstance::GetInstance()->Play_Sound(L"Fire.mp3", 0.3f, true, true);
+
+}
+
 HRESULT CFire_Light::Initialize_Prototype()
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
@@ -73,8 +88,15 @@ void CFire_Light::Tick(_double dTimeDelta)
 
 	if(CGameInstance::GetInstance()->Get_LightDesc(m_iLightNumber)->isEnable == false)
 	{
+		CGameInstance::GetInstance()->Stop_Sound(10);
 		Set_Dead(true);
 	}
+
+	if(m_pTargetTransform != nullptr)
+	{
+		
+	}
+
 	// _vector tmp = dynamic_cast<CPlayer*>(m_pOwner)->Get_MuzzlePtr()->Get_SphereCenter() + _float4((dynamic_cast<CPlayer*>(m_pOwner)->Get_TransformState(CTransform::STATE_LOOK) * 0.2f));
 	// m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, tmp);
 

@@ -61,6 +61,17 @@ void CHuman_Spear_State::Tick(_double dTimeDelta)
 			m_fCurDamagedAnimCoolTime += (_float)dTimeDelta;
 	}
 
+	if (m_bWalkSoundOnce == false && m_pState->Get_CurState() == L"STATE::RUN")
+	{
+		m_fCurWalkSoundTime += (_float)dTimeDelta;
+	}
+
+	if (m_fCurWalkSoundTime >= m_fWalkSoundTime)
+	{
+		m_fCurWalkSoundTime = 0.f;
+		m_bWalkSoundOnce = true;
+	}
+
 	if (m_fCurHideCoolTime >= m_fHideCoolTime && m_bCanHide == false)
 	{
 		m_fCurHideCoolTime = 0.f;
@@ -306,6 +317,8 @@ void CHuman_Spear_State::Start_Damaged(_double dTimeDelta)
 	else if (m_bDamaged[HITHEAD] == true)
 		m_pModelCom->Set_CurAnimIndex(SPEAR_HITHEAD);
 
+	m_pGameInstance->Play_Sound(L"Man_Hit_Anim.mp3", 1.f, false, false);
+
 	m_bDamaged[HIT] = false;
 }
 
@@ -320,6 +333,7 @@ void CHuman_Spear_State::Start_Detected(_double dTimeDelta)
 {
 	m_pModelCom->Set_LerpTime(0.2f);
 	m_pModelCom->Set_CurAnimIndex(SPEAR_DETECTED);
+	CGameInstance::GetInstance()->Play_Sound(L"Stone_Detected.mp3", 1.f, false, false);
 }
 
 void CHuman_Spear_State::Start_Detected_Guard(_double dTimeDelta)
@@ -327,6 +341,9 @@ void CHuman_Spear_State::Start_Detected_Guard(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.2f);
 	m_pTransformCom->LookAt(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION));
 	m_pModelCom->Set_CurAnimIndex(SPEAR_GUARD);
+
+	m_pGameInstance->Play_Sound(L"Spear_Detected.mp3", 1.f, false, false);
+
 }
 
 void CHuman_Spear_State::Start_UpSpawn(_double dTimeDelta)
@@ -343,9 +360,17 @@ void CHuman_Spear_State::Start_Attack_A(_double dTimeDelta)
 	if ((rand() % 4) % 2 == 0)
 	{
 		m_pModelCom->Set_CurAnimIndex(SPEAR_ATTACK_A);
+		// m_pGameInstance->Play_Sound(L"Spear_Attack.mp3", 1.f, false, false);
+
 	}
 	else
+	{
 		m_pModelCom->Set_CurAnimIndex(SPEAR_ATTACK_B);
+		m_pGameInstance->Play_Sound(L"Spear_Attack_B.mp3", 1.f, false, false);
+
+	}
+
+	m_bAttackSoundOnce = false;
 }
 
 void CHuman_Spear_State::Start_Hide(_double dTimeDelta)
@@ -360,6 +385,9 @@ void CHuman_Spear_State::Start_Hide(_double dTimeDelta)
 	}
 	else
 		m_pModelCom->Set_CurAnimIndex(SPEAR_HIDE_RIGHT);
+
+	m_pGameInstance->Play_Sound(L"Stone_Hide.mp3", 1.f, false, false);
+
 }
 
 void CHuman_Spear_State::Start_Death(_double dTimeDelta)
@@ -377,6 +405,13 @@ void CHuman_Spear_State::Tick_Idle(_double dTimeDelta)
 void CHuman_Spear_State::Tick_Run(_double dTimeDelta)
 {
 	m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
+
+	if (m_bWalkSoundOnce == true)
+	{
+		m_pGameInstance->Play_Sound(L"StoneMan_Walk.mp3", 1.f, false, true);
+		m_bWalkSoundOnce = false;
+	}
+
 }
 
 void CHuman_Spear_State::Tick_JustStand(_double dTimeDelta)
@@ -414,12 +449,29 @@ void CHuman_Spear_State::Tick_Attack_A(_double dTimeDelta)
 		m_bAttackOnce = true; 
 	}
 
+
+
+
 	if (m_pModelCom->Get_CurAnimation() == SPEAR_ATTACK_B)
 	{
 		if (m_pModelCom->Get_AnimationProgress() > 0.5f &&m_pModelCom->Get_AnimationProgress() < 0.68f)
 		{
 			m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_MONSTER, m_pNavigationCom);
 			m_bAttackOnce = true;
+		}
+
+		if (m_pModelCom->Get_AnimationProgress() > 0.5f && m_bAttackSoundOnce == false)
+		{
+			m_pGameInstance->Play_Sound(L"Spear_Attack_2.mp3", 1.f, false, false);
+			m_bAttackSoundOnce = true;
+		}
+	}
+	else if(m_pModelCom->Get_CurAnimation() == SPEAR_ATTACK_A)
+	{
+		if (m_pModelCom->Get_AnimationProgress() > 0.3f && m_bAttackSoundOnce == false)
+		{
+			m_pGameInstance->Play_Sound(L"Sword_Attack.mp3", 1.f, false, false);
+			m_bAttackSoundOnce = true;
 		}
 	}
 }

@@ -54,6 +54,9 @@ public:
 	virtual HRESULT				Render() override;
 	virtual _bool				Collision_Body();
 	virtual _bool				Collision_Head();
+	virtual _bool				Collision_Body_Spawn_Bug();
+	virtual _bool				Collision_Head_Spawn_Bug();
+
 	virtual _bool				Collision_HideCollider();
 	virtual _bool				Collision_Shield();
 	virtual _bool				Collision_LArm();

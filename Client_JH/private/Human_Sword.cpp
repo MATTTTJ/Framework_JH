@@ -102,6 +102,7 @@ void CHuman_Sword::Tick(_double TimeDelta)
 	Set_On_NaviMesh();
 
 	Collider_Tick(TimeDelta);
+
 	Collision_PlayerEyes();
 
 	_uint UISize = (_uint)m_vecMonsterUI.size();
@@ -279,7 +280,7 @@ HRESULT CHuman_Sword::SetUp_Components()
 	CCollider::COLLIDERDESC	ColliderDesc;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(10.f, 10.f, 10.f);
+	ColliderDesc.vSize = _float3(8.f, 8.f, 8.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_DetectedSphere", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
 
@@ -329,6 +330,14 @@ void CHuman_Sword::Collision_Body(CBullet* pBullet)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
 	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 	{
+		CSound::SOUND_DESC SoundDesc;
+		SoundDesc.fRange = 30.f;
+		SoundDesc.bIs3D = true;
+		SoundDesc.pStartTransform = m_pTransformCom;
+		SoundDesc.pTargetTransform = m_pPlayer->Get_Transform(); 
+		CGameInstance::GetInstance()->Set_SoundDesc(L"Stone_Dead.mp3", SoundDesc);
+		CGameInstance::GetInstance()->Play_Sound(L"Stone_Dead.mp3", 0.5f, false, false);
+
 		Set_Dead(true);
 		return;
 	}
@@ -347,6 +356,14 @@ void CHuman_Sword::Collision_Head(CBullet* pBullet)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage * 2;
 	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 	{
+		CSound::SOUND_DESC SoundDesc;
+		SoundDesc.fRange = 30.f;
+		SoundDesc.bIs3D = true;
+		SoundDesc.pStartTransform = m_pTransformCom;
+		SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+		CGameInstance::GetInstance()->Set_SoundDesc(L"Stone_Dead.mp3", SoundDesc);
+		CGameInstance::GetInstance()->Play_Sound(L"Stone_Dead.mp3", 0.5f, false, false);
+
 		Set_Dead(true);
 		return;
 	}

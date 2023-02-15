@@ -81,15 +81,15 @@ void CLaiLuo_Home::Tick(_double TimeDelta)
 
 	CGameInstance::GetInstance()->Set_LightPos(0, vPos);
 
-	if (CGameInstance::GetInstance()->Key_Pressing(DIK_F3))
-	{
-		m_fDegree += (_float)TimeDelta * 10.f;
-		_float4 vDirection;
-		_matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fDegree));
-		XMStoreFloat4(&vDirection, XMVector3TransformNormal(XMVectorSet(-cosf(XMConvertToRadians(60.f)), -sinf(XMConvertToRadians(60.f)), 0.f, 0.f), RotationMatrix));
-		
-		CGameInstance::GetInstance()->Set_LightDirection(1, vDirection); 
-	}
+	// if (CGameInstance::GetInstance()->Key_Pressing(DIK_F3))
+	// {
+	// 	m_fDegree += (_float)TimeDelta * 10.f;
+	// 	_float4 vDirection;
+	// 	_matrix	RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_fDegree));
+	// 	XMStoreFloat4(&vDirection, XMVector3TransformNormal(XMVectorSet(-cosf(XMConvertToRadians(60.f)), -sinf(XMConvertToRadians(60.f)), 0.f, 0.f), RotationMatrix));
+	// 	
+	// 	CGameInstance::GetInstance()->Set_LightDirection(1, vDirection); 
+	// }
 
 	m_pModelCom->Play_Animation(TimeDelta);
 

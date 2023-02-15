@@ -26,6 +26,9 @@ HRESULT CElite_Bug_State::Initialize(CElite_Bug* pOwner, CState* pStateMachineCo
 
 	FAILED_CHECK_RETURN(SetUp_State_No_Detected(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
+	m_fSpawnJuniorCoolTime = 10.f;
+
+	m_fWalkSoundTime = 0.2f;
 
 	return S_OK;
 }
@@ -57,6 +60,21 @@ void CElite_Bug_State::Tick(_double dTimeDelta)
 		{
 			m_fCurRushTime += (_float)dTimeDelta;
 		}
+	}
+
+	if (m_bWalkSoundOnce == false &&
+		m_pState->Get_CurState() == L"STATE::RUN" ||
+		m_pState->Get_CurState() == L"STATE::SPAWN_JUNIOR" ||
+		m_pState->Get_CurState() == L"STATE::READY_RUSH_LOOP" ||
+		m_pState->Get_CurState() == L"STATE::RUSH_LOOP")
+	{
+		m_fCurWalkSoundTime += (_float)dTimeDelta;
+	}
+
+	if (m_fCurWalkSoundTime >= m_fWalkSoundTime)
+	{
+		m_fCurWalkSoundTime = 0.f;
+		m_bWalkSoundOnce = true;
 	}
 
 
@@ -285,6 +303,17 @@ void CElite_Bug_State::Start_Ending_Rush(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.1f);
 
 	m_pModelCom->Set_CurAnimIndex(BUG_RUSH_END);
+
+	CSound::SOUND_DESC SoundDesc;
+	SoundDesc.fRange = 15.f;
+	SoundDesc.bIs3D = true;
+	SoundDesc.pStartTransform = m_pTransformCom;
+	SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+	CGameInstance::GetInstance()->Set_SoundDesc(L"Bug_Test.mp3", SoundDesc);
+
+	m_pGameInstance->Play_Sound(L"Bug_Test.mp3", 1.0f, false, false);
+
+	m_bAttackSoundOnce = false;
 }
 
 void CElite_Bug_State::Start_Spawn_Junior(_double dTimeDelta)
@@ -306,23 +335,51 @@ void CElite_Bug_State::Tick_Ready_Rush_Loop(_double dTimeDelta)
 	m_pTransformCom->LookAt_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta);
 
 	m_pModelCom->Set_CurAnimIndex(BUG_READYRUSH_LOOP);
+
+	if (m_bWalkSoundOnce == true)
+	{
+		CSound::SOUND_DESC SoundDesc;
+		SoundDesc.fRange = 15.f;
+		SoundDesc.bIs3D = true;
+		SoundDesc.pStartTransform = m_pTransformCom;
+		SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+		CGameInstance::GetInstance()->Set_SoundDesc(L"Bug_Rush_Loop.mp3", SoundDesc);
+
+		m_pGameInstance->Play_Sound(L"Bug_Rush_Loop.mp3", 1.f);
+		m_bWalkSoundOnce = false;
+	}
+
 }
 
 void CElite_Bug_State::Tick_Starting_Rush(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.8f)
 	{
-		m_pTransformCom->Rush(dTimeDelta, CTransform::TRANS_MONSTER, m_pNavigationCom);
+		m_pTransformCom->Rush(dTimeDelta * 2.0, CTransform::TRANS_MONSTER, m_pNavigationCom);
 	}
 }
 
 void CElite_Bug_State::Tick_Rush_Loop(_double dTimeDelta)
 {
-	m_pTransformCom->Rush(dTimeDelta, CTransform::TRANS_MONSTER, m_pNavigationCom);
+	m_pTransformCom->Rush(dTimeDelta * 2.5, CTransform::TRANS_MONSTER, m_pNavigationCom);
+
+	if (m_bWalkSoundOnce == true)
+	{
+		CSound::SOUND_DESC SoundDesc;
+		SoundDesc.fRange = 15.f;
+		SoundDesc.bIs3D = true;
+		SoundDesc.pStartTransform = m_pTransformCom;
+		SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+		CGameInstance::GetInstance()->Set_SoundDesc(L"Bug_Walk.mp3", SoundDesc);
+
+		m_pGameInstance->Play_Sound(L"Bug_Walk.mp3", 0.7f, false, true);
+		m_bWalkSoundOnce = false;
+	}
 }
 
 void CElite_Bug_State::Tick_Ending_Rush(_double dTimeDelta)
 {
+
 }
 void CElite_Bug_State::Tick_Spawn_Junior(_double dTimeDelta)
 {
@@ -343,7 +400,7 @@ void CElite_Bug_State::Tick_Spawn_Junior(_double dTimeDelta)
 
 	if (m_pModelCom->Get_AnimationProgress() > 0.2f && m_pModelCom->Get_AnimationProgress() < 0.25f && m_bSpawnOnce == false)
 	{
-		CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
+		CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_SpawnBug", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
 		NULL_CHECK_RETURN(pMonster, );
 		pMonster->Set_Player(m_pPlayer);
 
@@ -351,24 +408,30 @@ void CElite_Bug_State::Tick_Spawn_Junior(_double dTimeDelta)
 	}
 	else if (m_pModelCom->Get_AnimationProgress() > 0.4f && m_pModelCom->Get_AnimationProgress() < 0.45f && m_bSpawnOnce == true)
 	{
-		CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
+		CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_SpawnBug", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
 		NULL_CHECK_RETURN(pMonster, );
 		pMonster->Set_Player(m_pPlayer);
 		m_bSpawnOnce = false;
 	}
 	else if (m_pModelCom->Get_AnimationProgress() > 0.6f && m_pModelCom->Get_AnimationProgress() < 0.65f && m_bSpawnOnce == false)
 	{
-		CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
+		CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_SpawnBug", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
 		NULL_CHECK_RETURN(pMonster, );
 		pMonster->Set_Player(m_pPlayer);
 		m_bSpawnOnce = true;
 	}
 	else if (m_pModelCom->Get_AnimationProgress() > 0.8f && m_pModelCom->Get_AnimationProgress() < 0.85f && m_bSpawnOnce == true)
 	{
-		CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_Monster", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
+		CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Clone_GameObjectReturnPtr_M(LEVEL_GAMEPLAY, L"Layer_SpawnBug", L"Prototype_GameObject_Normal_Little_Bug", PivotMatrix, &MonsterDesc));
 		NULL_CHECK_RETURN(pMonster, );
 		pMonster->Set_Player(m_pPlayer);
 		m_bSpawnOnce = false;
+	}
+
+	if (m_bWalkSoundOnce == true)
+	{
+		m_pGameInstance->Play_Sound(L"Bug_Fly.mp3", 0.7f, false, true);
+		m_bWalkSoundOnce = false;
 	}
 }
 
@@ -380,6 +443,19 @@ void CElite_Bug_State::Tick_Idle(_double dTimeDelta)
 void CElite_Bug_State::Tick_Run(_double dTimeDelta)
 {
 	m_pMonster->m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
+
+	if (m_bWalkSoundOnce == true)
+	{
+		CSound::SOUND_DESC SoundDesc;
+		SoundDesc.fRange = 15.f;
+		SoundDesc.bIs3D = true;
+		SoundDesc.pStartTransform = m_pTransformCom;
+		SoundDesc.pTargetTransform = m_pPlayer->Get_Transform();
+		CGameInstance::GetInstance()->Set_SoundDesc(L"Bug_Walk.mp3", SoundDesc);
+
+		m_pGameInstance->Play_Sound(L"Bug_Walk.mp3", 1.f, false, true);
+		m_bWalkSoundOnce = false;
+	}
 }
 
 void CElite_Bug_State::Tick_Patrol(_double dTimeDelta)

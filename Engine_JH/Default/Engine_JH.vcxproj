@@ -112,7 +112,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>Shlwapi.lib;d3d11.lib;dinput8.lib;dxguid.lib;Effects11d.lib;DirectXTKd.lib;assimp-vc140-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shlwapi.lib;d3d11.lib;dinput8.lib;dxguid.lib;Effects11d.lib;DirectXTKd.lib;assimp-vc140-mtd.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLib/</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -195,6 +195,14 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\Engine_Struct.h" />
     <ClInclude Include="..\public\Engine_Typedef.h" />
     <ClInclude Include="..\public\Engine_Utility.h" />
+    <ClInclude Include="..\public\Fmod\fmod.h" />
+    <ClInclude Include="..\public\Fmod\fmod.hpp" />
+    <ClInclude Include="..\public\Fmod\fmod_codec.h" />
+    <ClInclude Include="..\public\Fmod\fmod_common.h" />
+    <ClInclude Include="..\public\Fmod\fmod_dsp.h" />
+    <ClInclude Include="..\public\Fmod\fmod_dsp_effects.h" />
+    <ClInclude Include="..\public\Fmod\fmod_errors.h" />
+    <ClInclude Include="..\public\Fmod\fmod_output.h" />
     <ClInclude Include="..\public\FontMgr.h" />
     <ClInclude Include="..\public\Frustum.h" />
     <ClInclude Include="..\public\GameInstance.h" />
@@ -237,6 +245,8 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\Renderer.h" />
     <ClInclude Include="..\public\Render_Target.h" />
     <ClInclude Include="..\public\Shader.h" />
+    <ClInclude Include="..\public\Sound.h" />
+    <ClInclude Include="..\public\SoundMgr.h" />
     <ClInclude Include="..\public\State.h" />
     <ClInclude Include="..\public\StateMachine.h" />
     <ClInclude Include="..\public\Target_Manager.h" />
@@ -307,6 +317,8 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\Renderer.cpp" />
     <ClCompile Include="..\private\Render_Target.cpp" />
     <ClCompile Include="..\private\Shader.cpp" />
+    <ClCompile Include="..\private\Sound.cpp" />
+    <ClCompile Include="..\private\SoundMgr.cpp" />
     <ClCompile Include="..\private\State.cpp" />
     <ClCompile Include="..\private\StateMachine.cpp" />
     <ClCompile Include="..\private\Target_Manager.cpp" />

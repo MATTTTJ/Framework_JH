@@ -122,7 +122,7 @@ void CElite_Knight::Late_Tick(_double TimeDelta)
 		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTPOS]);
 		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
 		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pShieldColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pShieldColliderCom);
 		// m_pRendererCom->Add_DebugRenderGroup(m_pLeftArmColliderCom);
 		// m_pRendererCom->Add_DebugRenderGroup(m_pRightArmColliderCom);
 		// m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
@@ -260,6 +260,8 @@ void CElite_Knight::Collision_Body(CBullet* pBullet)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
 	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 	{
+		CGameInstance::GetInstance()->Play_Sound(L"Knight_Dead.mp3", 1.f, false, false);
+
 		Set_Dead(true);
 		return;
 	}
@@ -278,6 +280,8 @@ void CElite_Knight::Collision_Head(CBullet* pBullet)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage * 2;
 	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 	{
+		CGameInstance::GetInstance()->Play_Sound(L"Knight_Dead.mp3", 1.f, false, false);
+
 		Set_Dead(true);
 		return;
 	}
@@ -319,6 +323,7 @@ void CElite_Knight::Collision_Shield(CBullet* pBullet)
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
 	{
+		CGameInstance::GetInstance()->Play_Sound(L"Knight_Dead.mp3", 1.f, false, false);
 		Set_Dead(true);
 		return;
 	}

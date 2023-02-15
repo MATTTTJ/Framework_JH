@@ -74,6 +74,8 @@ void CRocketArm::Tick(_double dTimeDelta)
 	
 	if(CurPos.y < m_vTargetPos.y)
 	{
+		CGameInstance::GetInstance()->Play_Sound(L"5_Boss_LocketArm_Dead.mp3", 1.0f);
+
 		Set_Dead(true);
 	}
 
@@ -103,13 +105,18 @@ void CRocketArm::Late_Tick(_double dTimeDelta)
 {
 	// __super::Late_Tick(dTimeDelta);
 
-	Collision_To_Player(m_pBulletColliderCom);
+	if(Collision_To_Player(m_pBulletColliderCom))
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"5_Boss_LocketArm_Dead.mp3", 1.0f);
+
+		Set_Dead(true);
+	}
 
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 #ifdef _DEBUG
-		m_pRendererCom->Add_DebugRenderGroup(m_pBulletColliderCom);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pBulletColliderCom);
 #endif
 	}
 }

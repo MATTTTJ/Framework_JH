@@ -25,6 +25,8 @@ private:
 	virtual ~CFire_Light() = default;
 
 public:
+	void								Set_PlayerTransform(CTransform* pTrans);
+	
 	virtual HRESULT						Initialize_Prototype() override;
 	virtual HRESULT						Initialize_Clone(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void						Tick(_double dTimeDelta) override;
@@ -45,6 +47,7 @@ private:
 
 	EFFECTDESC						m_tEffectDesc;
 
+	CTransform*							m_pTargetTransform = nullptr;
 private:
 	_float4								m_vLook;
 	_float4								m_vUp;

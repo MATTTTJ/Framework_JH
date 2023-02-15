@@ -74,32 +74,37 @@ void CWeapon_State::Tick(_double dTimeDelta)
 
 	// 이동하기
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_1))
+	if (m_pGameInstance->Key_Down(DIK_1))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_pWeaponModelCom;
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_DEFAULT].m_wstrWeaponName;
 		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"";
 		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"1";
+		CGameInstance::GetInstance()->Play_Sound(L"Player_Weapon_Switch.mp3", 1.f, false, true);
 
 	}
-	else if (m_pGameInstance->Get_DIKeyState(DIK_2))
+	else if (m_pGameInstance->Key_Down(DIK_2))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FLAMEBULLET].m_pWeaponModelCom;
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FLAMEBULLET].m_wstrWeaponName;
 		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"";
 		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"2";
+		CGameInstance::GetInstance()->Play_Sound(L"Player_Weapon_Switch.mp3", 1.f, false, true);
+
 	}
-	else if (m_pGameInstance->Get_DIKeyState(DIK_3))
+	else if (m_pGameInstance->Key_Down(DIK_3))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FIREDRAGON].m_pWeaponModelCom;
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_FIREDRAGON].m_wstrWeaponName;
 		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"";
 		m_pPlayer->m_PlayerOption.m_wstrWeaponNumber = L"3";
+		CGameInstance::GetInstance()->Play_Sound(L"Player_Weapon_Switch.mp3", 1.f, false, true);
+
 	}
-	else if (m_pGameInstance->Get_DIKeyState(DIK_4))
+	else if (m_pGameInstance->Key_Down(DIK_4))
 	{
 		m_pModelCom = m_pPlayer->m_pModelCom = m_pPlayer->m_tWeaponDesc[CPlayer::WEAPON_POISON].m_pWeaponModelCom;
 		m_pPlayer->m_PlayerOption.m_wstrCurWeaponName = L"";
@@ -277,10 +282,14 @@ void CWeapon_State::Start_Reload(_double TimeDelta)
 	if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName)
 	{
 		m_pModelCom->Set_CurAnimIndex(DEFAULT_PISTOL_RELOAD);
+		CGameInstance::GetInstance()->Play_Sound(L"Default_Pistol_Reload_Start.mp3", 1.0f, false, true, 0);
+
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName)
 	{
 		m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_RELOAD);
+		CGameInstance::GetInstance()->Play_Sound(L"Flame_Bullet_Reload.mp3", 1.0f, false, true, 0);
+
 	}
 	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FIRE_DRAGON].wstrWeaponName)
 	{
@@ -350,6 +359,33 @@ void CWeapon_State::Tick_Fire(_double TimeDelta)
 
 void CWeapon_State::Tick_Reload(_double TimeDelta)
 {
+	if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName 
+		&& m_pModelCom->Get_AnimationProgress() > 0.8f 
+		&& m_bReloadSoundOnce == false)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"Default_Pistol_Reload_End.mp3", 1.0f, false, true, 0);
+		m_bReloadSoundOnce = true;
+	}
+	else if (m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[FLAME_BULLET].wstrWeaponName
+		&& m_pModelCom->Get_AnimationProgress() > 0.5f
+		&& m_bReloadSoundOnce == false)
+	{
+		m_pModelCom->Set_CurAnimIndex(FLAME_BULLET_RELOAD);
+		CGameInstance::GetInstance()->Play_Sound(L"Flame_Bullet_Reload_End.mp3", 1.0f, false, true, 0);
+		m_bReloadSoundOnce = true;
+	}
+
+
+	if(m_pPlayer->m_PlayerOption.m_wstrCurWeaponName == m_tWeaponOption[DEFAULT_PISTOL].wstrWeaponName
+		&& m_pModelCom->Get_AnimationProgress() > 0.394f
+		&& m_bReloadPlayerSoundOnce == false)
+	{
+		if((rand() % 2) % 2 == 0)
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Reload_2.mp3", 1.0f, false, true, 0);
+		else if ((rand() % 2) % 2 == 1)
+			CGameInstance::GetInstance()->Play_Sound(L"Lai_Reload_1.mp3", 1.0f, false, true, 0);
+		m_bReloadPlayerSoundOnce = true;
+	}
 }
 
 void CWeapon_State::Tick_Throw(_double TimeDelta)
@@ -446,7 +482,8 @@ void CWeapon_State::End_Reload(_double TimeDelta)
 			}
 		}
 	}
-
+	m_bReloadSoundOnce = false;
+	m_bReloadPlayerSoundOnce = false;
 	m_bGoReload = false;
 }
 
@@ -599,6 +636,8 @@ void CWeapon_State::Fire_DefaultPistol()
 
 	}
 
+	CGameInstance::GetInstance()->Play_Sound(L"Default_Pistol_Fire.mp3", 1.f, false, true, 0);
+
 	EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
 	EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());
 	EffectDesc.m_pOwner = m_pPlayer;
@@ -692,6 +731,8 @@ void CWeapon_State::Fire_FlameBullet()
 
 
 	}
+
+	CGameInstance::GetInstance()->Play_Sound(L"Flame_Bullet_Fire.mp3", 1.0f, false,true, 0);
 
 	EffectDesc.m_tGameObjectDesc.TransformDesc.vInitPos = _float3(Position.x, Position.y, Position.z);
 	EffectDesc.m_tGameObjectDesc.m_vBulletLook = XMVector3Normalize(m_pGameInstance->Get_CamLook());

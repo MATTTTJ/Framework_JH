@@ -80,6 +80,7 @@ void CLittle_Bug::Tick(_double TimeDelta)
 
 	if (m_bPlayAnimation)
 		m_pModelCom->Play_Animation(TimeDelta);
+
 	Set_On_NaviMesh();
 
 	Collider_Tick(TimeDelta);
@@ -113,7 +114,7 @@ void CLittle_Bug::Late_Tick(_double TimeDelta)
 
 	if (m_bPlayerDetected == true)
 	{
-		list<CGameObject*>* CloneMonsters = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_Monster");
+		list<CGameObject*>* CloneMonsters = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_GAMEPLAY, L"Layer_SpawnBug");
 		if (CloneMonsters == nullptr || CloneMonsters->size() == 0)
 			return;
 		else
@@ -178,12 +179,12 @@ void CLittle_Bug::Late_Tick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 #ifdef _DEBUG
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTPOS]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
-		m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_DETECTED]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITBODY]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_HITHEAD]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTPOS]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ATTRANGE]);
+		// m_pRendererCom->Add_DebugRenderGroup(m_pColliderCom[COLLTYPE_ONAIM]);
 		// m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 #endif
 	}
@@ -324,7 +325,11 @@ void CLittle_Bug::Collision_Body(CBullet* pBullet)
 	if (m_tMonsterOption.MonsterDesc.m_iHP >= 0)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
 	else if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"Bug_Dead.mp3", 1.0f, false, false);
+
 		Set_Dead(true);
+	}
 
 	m_pLittle_Bug_State->Reset_Damaged();
 	m_pLittle_Bug_State->Set_DamagedState(CLittle_Bug_State::HIT);

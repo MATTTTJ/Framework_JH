@@ -92,14 +92,31 @@ void CNormal_Boss::Tick(_double TimeDelta)
 
 	__super::Tick(TimeDelta);
 	
+	if(m_pState->Get_CurState() == L"STATE::INTRO2" && m_bLightOnce == false)
+	{
+		LIGHTDESC			LightDesc;
 
-	// _float4x4 tmp = m_pModelCom->Get_BonePtr("Bip001")->Get_CombindMatrix();
-	// // _float3 Dest;
-	// // XMStoreFloat3(&Dest, XMVectorSet(116.f, 1.3f, 179.f, 1.f));
-	// tmp._41 = 116.f;
-	// tmp._42 = 1.3f;
-	// tmp._43 = 179.f;
-	// m_pModelCom->Get_BonePtr("Bip 001")->Set_TransformMatrix(tmp);
+		ZeroMemory(&LightDesc, sizeof LightDesc);
+
+		LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+		LightDesc.isEnable = true;
+		/*LightDesc.vDirection = _float4(1.f, -1.f, 1.0f, 0.f);*/
+		_float4 Pos = m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION);
+		LightDesc.vPosition = Pos;
+		LightDesc.fRange = 10.0f;
+		LightDesc.vDiffuse = _float4(0.75f, 1.f, 0.f, 1.f);
+		LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+		LightDesc.vSpecular = LightDesc.vDiffuse;
+		FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Add_Light(m_pDevice, m_pContext, LightDesc), );
+
+		m_bLightOnce = true;
+	}
+
+	if(m_bLightOnce == true)
+	{
+		_float4 Pos = (Get_BoneMatrix("uv02") * CGameUtils::Get_PlayerPivotMatrix() * m_pTransformCom->Get_WorldMatrix()).r[3];
+		CGameInstance::GetInstance()->Set_LightPos(15,Pos);
+	}
 
 	
 

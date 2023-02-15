@@ -224,7 +224,11 @@ void CElite_Bug::Collision_Head(CBullet* pBullet)
 		m_tMonsterOption.MonsterDesc.m_iHP -= BulletDesc.BulletDesc.m_iDamage;
 
 	if (m_tMonsterOption.MonsterDesc.m_iHP <= 0)
+	{
+		CGameInstance::GetInstance()->Play_Sound(L"Bug_Elite_Dead.mp3", 1.0f, false, false);
+
 		Set_Dead(true);
+	}
 
 	m_pElite_Bug_State->Reset_Damaged();
 	m_pElite_Bug_State->Set_DamagedState(CElite_Bug_State::HIT);
@@ -317,7 +321,7 @@ HRESULT CElite_Bug::SetUp_Components()
 	CCollider::COLLIDERDESC	ColliderDesc;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(17.f, 17.f, 17.f);
+	ColliderDesc.vSize = _float3(10.f, 10.f, 10.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_GAMEPLAY, L"Prototype_Component_Collider_SPHERE", L"Com_DetectedSphere", (CComponent**)&m_pColliderCom[COLLTYPE_DETECTED], this, &ColliderDesc), E_FAIL);
 

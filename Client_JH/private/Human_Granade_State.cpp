@@ -33,6 +33,8 @@ HRESULT CHuman_Granade_State::Initialize(CHuman_Granade* pOwner, CState* pStateM
 		FAILED_CHECK_RETURN(SetUp_State_JustStand(), E_FAIL);
 		FAILED_CHECK_RETURN(SetUp_State_Idle(), E_FAIL);
 	}
+	m_fWalkSoundTime = 0.5f;
+
 	return S_OK;
 }
 
@@ -58,6 +60,18 @@ void CHuman_Granade_State::Tick(_double dTimeDelta)
 		m_fCurPatrolTurnTime += (_float)dTimeDelta;
 
 	}
+	if (m_bWalkSoundOnce == false && 
+		m_pState->Get_CurState() == L"STATE::RUN" || m_pState->Get_CurState() == L"STATE::PATROL")
+	{
+		m_fCurWalkSoundTime += (_float)dTimeDelta;
+	}
+
+	if (m_fCurWalkSoundTime >= m_fWalkSoundTime)
+	{
+		m_fCurWalkSoundTime = 0.f;
+		m_bWalkSoundOnce = true;
+	}
+
 
 	if (m_fCurHideCoolTime >= m_fHideCoolTime && m_bCanHide == false)
 	{
@@ -317,6 +331,8 @@ void CHuman_Granade_State::Start_Damaged(_double dTimeDelta)
 	else if (m_bDamaged[HITHEAD] == true)
 		m_pModelCom->Set_CurAnimIndex(BOOM_HITHEAD);
 
+	m_pGameInstance->Play_Sound(L"Granade_Hit.mp3", 1.f, false, false);
+
 	m_bDamaged[HIT] = false;
 }
 
@@ -331,6 +347,9 @@ void CHuman_Granade_State::Start_Attack_A(_double dTimeDelta)
 	m_pModelCom->Set_LerpTime(0.05f);
 
 	m_pModelCom->Set_CurAnimIndex(BOOM_THROW);
+
+	m_pGameInstance->Play_Sound(L"Granade_Attack.mp3", 1.f, false, false);
+
 }
 
 void CHuman_Granade_State::Start_Melee_Attack(_double dTimeDelta)
@@ -348,6 +367,9 @@ void CHuman_Granade_State::Start_Hide(_double dTimeDelta)
 	}
 	else
 		m_pModelCom->Set_CurAnimIndex(BOOM_HIDE_RIGHT);
+
+	m_pGameInstance->Play_Sound(L"Stone_Hide.mp3", 1.f, false, false);
+
 }
 
 void CHuman_Granade_State::Start_Death(_double dTimeDelta)
@@ -370,6 +392,13 @@ void CHuman_Granade_State::Tick_Idle(_double dTimeDelta)
 void CHuman_Granade_State::Tick_Run(_double dTimeDelta)
 {
 	m_pTransformCom->LookAt_Move_Monster(m_pPlayer->Get_TransformState(CTransform::STATE_TRANSLATION), dTimeDelta, 2.35f, m_pNavigationCom);
+
+	if (m_bWalkSoundOnce == true)
+	{
+		m_pGameInstance->Play_Sound(L"StoneMan_Walk.mp3", 1.f, false, true);
+		m_bWalkSoundOnce = false;
+	}
+
 }
 
 void CHuman_Granade_State::Tick_JustStand(_double dTimeDelta)
@@ -385,6 +414,12 @@ void CHuman_Granade_State::Tick_Patrol(_double dTimeDelta)
 		m_bTurnPatrolDirection = false;
 	}
 	m_pTransformCom->Go_Straight(dTimeDelta, CTransform::TRANS_MONSTER, m_pNavigationCom);
+
+	if (m_bWalkSoundOnce == true)
+	{
+		m_pGameInstance->Play_Sound(L"StoneMan_Walk.mp3", 0.3f, false, true);
+		m_bWalkSoundOnce = false;
+	}
 }
 
 void CHuman_Granade_State::Tick_Damaged(_double dTimeDelta)
